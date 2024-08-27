@@ -168,7 +168,6 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::post('estimations/replace-ai-desc', [ProjectEstimationController::class, 'replace_ai_desc'])->name('estimations.replace_ai_desc.estimate');
     Route::match(['get', 'post'], 'smart-progress', [ProjectEstimationController::class, 'queuesProgress'])->name('smart.progress');
     Route::post('estimations/cancel_queue/{id}', [ProjectEstimationController::class, 'cancel_queue'])->name('estimations.cancel_queue');
-    Route::get('estimations', [ProjectEstimationController::class, 'index'])->name('estimations.index');
     Route::get('estimations/copy/{id}', [ProjectEstimationController::class, 'copyEstimation'])->name('estimations.copy');
     Route::post('estimations/copy/store/{id}', [ProjectEstimationController::class, 'copyEstimationStore'])->name('estimations.copy.store');
     Route::delete('estimations/delete/{id}', [ProjectEstimationController::class, 'deleteProjectEstimation'])->name('estimations.deleteEstimation');

@@ -27,6 +27,7 @@ class CompanyMenuListener
             'module'     => $module,
             'permission' => 'taskly dashboard manage',
         ]);
+
         $menu->add([
             'category'   => 'Productivity',
             'title'      => __('Projects'),
@@ -36,6 +37,19 @@ class CompanyMenuListener
             'order'      => 300,
             'ignore_if'  => [],
             'depend_on'  => ['tabs'],
+            'route'      => '',
+            'module'     => $module,
+            'permission' => 'project manage',
+        ]);
+        $menu->add([
+            'category'   => 'Productivity',
+            'title'      => __('All Projects'),
+            'icon'       => 'square-check',
+            'name'       => 'all-projects',
+            'parent'     => 'projects',
+            'order'      => 10,
+            'ignore_if'  => [],
+            'depend_on'  => [],
             'route'      => 'projects.index',
             'module'     => $module,
             'permission' => 'project manage',
