@@ -40,31 +40,31 @@ class CompanyMenuListener
             'module'     => $module,
             'permission' => 'project manage',
         ]);
-        // $menu->add([
-        //     'category'   => 'Productivity',
-        //     'title'      => __('Project Report'),
-        //     'icon'       => '',
-        //     'name'       => 'project-report',
-        //     'parent'     => 'projects',
-        //     'order'      => 20,
-        //     'ignore_if'  => [],
-        //     'depend_on'  => [],
-        //     'route'      => 'project_report.index',
-        //     'module'     => $module,
-        //     'permission' => 'project report manage',
-        // ]);
-        // $menu->add([
-        //     'category'   => 'Productivity',
-        //     'title'      => __('System Setup'),
-        //     'icon'       => '',
-        //     'name'       => 'system-setup',
-        //     'parent'     => 'projects',
-        //     'order'      => 30,
-        //     'ignore_if'  => [],
-        //     'depend_on'  => [],
-        //     'route'      => 'pipelines.index',
-        //     'module'     => $module,
-        //     'permission' => 'taskly setup manage',
-        // ]);
+        $menu->add([
+            'category'   => 'Productivity',
+            'title'      => __('Project Report'),
+            'icon'       => '',
+            'name'       => 'project-report',
+            'parent'     => 'projects',
+            'order'      => 20,
+            'ignore_if'  => [],
+            'depend_on'  => [],
+            'route'      => 'project_report.index',
+            'module'     => $module,
+            'permission' => 'project report manage',
+        ]);
+        $menu->add([
+            'category'   => 'Productivity',
+            'title'      => __('System Setup'),
+            'icon'       => '',
+            'name'       => 'system-setup',
+            'parent'     => 'projects',
+            'order'      => 30,
+            'ignore_if'  => [],
+            'depend_on'  => [],
+            'route'      => 'pipelines.index',
+            'module'     => $module,
+            'permission' => 'taskly setup manage',
+        ]);
     }
 }

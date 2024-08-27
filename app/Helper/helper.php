@@ -56,9 +56,9 @@ if (! function_exists('getMenu')) {
             return array_search($a, array_keys($categoryIcon)) <=> array_search($b, array_keys($categoryIcon));
         });
 
-        return Cache::rememberForever($cacheKey, function () use ($groupedMenu) {
-            return generateMenu($groupedMenu, null);
-        });
+        return generateMenu($groupedMenu, null);
+        // return Cache::rememberForever($cacheKey, function () use ($groupedMenu) {
+        // });
     }
 
 }
