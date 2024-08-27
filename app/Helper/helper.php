@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Mail;
 use Modules\Taskly\Entities\Project;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Modules\Taskly\Service\projectsTabs;
 use Illuminate\Support\Facades\Validator;
@@ -109,7 +110,12 @@ if (! function_exists('generateSubMenu')) {
             $html .= '<li class="' . e($liClass) . '">';
 
             // Begin anchor tag
-            $route = ! empty($item['route']) ? route($item['route']) : '#!';
+            $route = '#!';
+
+            if (Route::has($item['route'])) {
+                $route = route($item['route']);
+            }
+
             $html .= '<a href="' . e($route) . '" class="dash-link">';
 
             // Add icon and title for parent items
