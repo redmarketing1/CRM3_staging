@@ -140,7 +140,7 @@ if (! function_exists('generateSubMenu')) {
                 $html .= '</ul>';
             }
 
-            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('projects') || request()->is('projects/*'))) {
+            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('project') || request()->is('project/*'))) {
                 $projectTabs = new projectsTabs();
                 $html .= $projectTabs->render();
             }
@@ -229,7 +229,7 @@ function projectList()
 
             $backgrounColor = $project->status_data->background_color ?? '';
             $shortName      = substr($statusName, 0, 2);
-            $projectUrl     = route('projects.show', [$project->id]);
+            $projectUrl     = route('project.show', [$project->id]);
 
             $html .= '<li class="tab-item">
                 <a class="tab-link" href="' . $projectUrl . '">

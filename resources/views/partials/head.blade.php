@@ -93,6 +93,12 @@
 
     @stack('css')
     @stack('availabilitylink')
+
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins/dropzone.min.css') }}">
+    <link href="{{ asset('assets/css/plugins/select2.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins/datatable/dataTables.dataTables.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <link rel='stylesheet' href='https://unpkg.com/nprogress@0.2.0/nprogress.css' />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">

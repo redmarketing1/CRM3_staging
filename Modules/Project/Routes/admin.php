@@ -13,7 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-Route::middleware(['auth'])->group(function () {
-    require module_path('Project', 'Routes/admin.php');
-});
+Route::resource('project', 'ProjectController');

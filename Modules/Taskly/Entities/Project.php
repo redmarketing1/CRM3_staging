@@ -89,7 +89,7 @@ class Project extends Model
      */
     public function url()
     {
-        return route('projects.show', [$this->id]);
+        return route('project.show', [$this->id]);
     }
 
     public function construction_detail()
