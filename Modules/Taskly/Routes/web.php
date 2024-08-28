@@ -25,7 +25,7 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::get('/project/copy/{id}', [ProjectController::class, 'copyproject'])->name('project.copy')->middleware(['auth']);
     Route::post('/project/copy/store/{id}', [ProjectController::class, 'copyprojectstore'])->name('project.copy.store')->middleware(['auth']);
 
-    Route::resource('projects', 'ProjectController')->middleware(['auth']);
+    // Route::resource('projects', 'ProjectController')->middleware(['auth']);
     Route::resource('stages', 'StageController')->middleware(['auth']);
     Route::post('projects/bulk_action', [ProjectController::class, 'bulk_action_projects'])->name('projects.bulk_action');
     Route::post('project/custom-status', [ProjectController::class, 'changeCustomStatus'])->name('project.custom-status');
