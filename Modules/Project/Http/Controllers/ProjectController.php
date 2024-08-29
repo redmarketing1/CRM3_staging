@@ -51,14 +51,6 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        // Check user permissions (uncomment if needed)
-        // if (auth()->user()->cannot('project show')) {
-        //     return redirect()
-        //         ->back()
-        //         ->with('error', __('Permission Denied.'));
-        // }
-
-
         $chartData = $this->getProjectChart([
             'workspace_id' => getActiveWorkSpace(),
             'project_id'   => $project->id,

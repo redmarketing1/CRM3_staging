@@ -14,10 +14,3 @@
  </div>
 
  {{ Form::close() }}
-
- @push('scripts')
-     <script type="javascript">
-    alert(3);
-     init_tiny_mce('.tinyMCE');
- </script>
- @endpush

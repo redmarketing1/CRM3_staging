@@ -13,4 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::prefix('project')->group(function () {
+
+    // ChatGPT : Route::resource('/', 'ProjectController')->parameters(['' => 'project'])->names('project');
+
+    Route::resource('{id}/feedback', 'ProjectFeedbackController')
+        ->names('project.feedback');
+
+    Route::resource('{id}/comment', 'ProjectCommentController')
+        ->names('project.comment');
+
+});
+
 Route::resource('project', 'ProjectController');

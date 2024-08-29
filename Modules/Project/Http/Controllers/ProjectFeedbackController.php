@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Taskly\Http\Controllers;
+namespace Modules\Project\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -25,7 +25,7 @@ class ProjectFeedbackController extends Controller
             return self::notfound();
         }
 
-        return view('taskly::projects.popup.add_feedback',
+        return view('project::project.popup.add_feedback',
             compact('currentWorkspace', 'project'),
         );
     }
@@ -161,6 +161,6 @@ class ProjectFeedbackController extends Controller
 
     protected function notfound()
     {
-        return view('taskly::projects.popup.404');
+        return view('project::project.popup.404');
     }
 }

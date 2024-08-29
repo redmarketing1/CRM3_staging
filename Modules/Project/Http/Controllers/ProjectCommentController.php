@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Taskly\Http\Controllers;
+namespace Modules\Project\Http\Controllers;
 
 
+use App\Models\Content;
 use Illuminate\Http\Request;
 use Google\Service\Blogger\Post;
 use Illuminate\Routing\Controller;
@@ -21,16 +22,18 @@ class ProjectCommentController extends Controller
      */
     public function index($projectID)
     {
-        $currentWorkspace = getActiveWorkSpace();
-        $project          = Project::find($projectID);
+
+        $project = Project::find($projectID);
+
+        $templateItems = Content::where('is_ai', 0)->get();
 
 
-        if (empty($project) && ! empty($currentWorkspace)) {
+        if (empty($project)) {
             return self::notfound();
         }
 
-        return view('taskly::projects.popup.add_comment',
-            compact('currentWorkspace', 'project'),
+        return view('project::project.popup.add_comment',
+            compact('project', 'templateItems'),
         );
     }
 
@@ -178,7 +181,7 @@ class ProjectCommentController extends Controller
 
     protected function notfound()
     {
-        return view('taskly::projects.popup.404');
+        return view('project::project.popup.404');
     }
 
 }

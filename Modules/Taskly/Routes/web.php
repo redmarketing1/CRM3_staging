@@ -22,7 +22,7 @@ use Modules\Taskly\Http\Controllers\ProjectEstimationController;
 Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::get('dashboard/taskly', [DashboardController::class, 'index'])->name('taskly.dashboard')->middleware(['auth']);
 
-    Route::resource('projects', 'ProjectController')->middleware(['auth']);    
+    Route::resource('projects', 'ProjectController')->middleware(['auth']);
 
     Route::get('/project/copy/{id}', [ProjectController::class, 'copyproject'])->name('project.copy')->middleware(['auth']);
     Route::post('/project/copy/store/{id}', [ProjectController::class, 'copyprojectstore'])->name('project.copy.store')->middleware(['auth']);
@@ -96,9 +96,6 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::delete('projects/milestone/{id}', [ProjectController::class, 'milestoneDestroy'])->name('projects.milestone.destroy')->middleware(['auth']);
     Route::delete('projects/{id}/file/delete/{fid}', [ProjectController::class, 'fileDelete'])->name('projects.file.delete')->middleware(['auth']);
 
-    /** Project Comment Section */
-    Route::resource('project/{id}/comment', ProjectCommentController::class)
-        ->names('project.comment');
 
     // Route::get('project/{id}/comment', [ProjectController::class, 'projectComment'])->name('project.comment.create');
     // Route::get('project/{id}/comment/{cid}/reply', [ProjectController::class, 'projectCommentReply'])->name('project.comment.reply');
@@ -106,10 +103,6 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::post('project/{id}/comment/delete', [ProjectController::class, 'projectCommentDelete'])->name('project.comment.delete');
     Route::post('project/{id}/get-comment', [ProjectController::class, 'getProjectComments'])->name('get.project.comment');
 
-
-    /** Project Client Feedback Section */
-    Route::resource('project/{id}/feedback', ProjectFeedbackController::class)
-        ->names('project.feedback');
 
     Route::delete('project/{pid}/client/feedback/{id}/destroy-attachment', [ProjectController::class, 'projectClientFeedbackDestroyAttachment'])->name('project.client.feedback.destroy_attachment');
     Route::post('project/{id}/client/feedback/delete', [ProjectController::class, 'projectClientFeedbackDelete'])->name('project.client.feedback.delete');
