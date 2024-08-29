@@ -51,77 +51,45 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        // if (auth()->user()->isAbleTo('project show')) {
+        // Check user permissions (uncomment if needed)
+        // if (auth()->user()->cannot('project show')) {
         //     return redirect()
         //         ->back()
         //         ->with('error', __('Permission Denied.'));
         // }
 
-        $daysleft         = $project->expired_date;
-        $estimationStatus = ProjectEstimation::$statues;
-        $statuesColor     = ProjectEstimation::$statuesColor;
 
-        $chartData = $this->getProjectChart(
-            [
-                'workspace_id' => getActiveWorkSpace(),
-                'project_id'   => $project->id,
-                'duration'     => 'week',
-            ],
-        );
-
+        $chartData = $this->getProjectChart([
+            'workspace_id' => getActiveWorkSpace(),
+            'project_id'   => $project->id,
+            'duration'     => 'week',
+        ]);
 
         $user = auth()->user();
-        if ($project) {
 
+        $project_estimations = ProjectEstimation::with('all_quotes_list')
+            ->where('project_id', $project->id)
+            ->where('init_status', 1)
+            ->when($user->type !== 'company', function ($query) use ($project) {
+                $estimationIds = EstimateQuote::where('project_id', $project->id)
+                    ->where('user_id', auth()->id())
+                    ->pluck('project_estimation_id')
+                    ->toArray();
 
+                return $query->whereIn('id', $estimationIds);
+            })
+            ->get();
 
-            if ($user->type != "company") {
-                $project_estimation_ids = EstimateQuote::where('project_id', $project->id)->where('user_id', Auth::user()->id)->pluck('project_estimation_id')->toArray();
-                //	$project_estimation_ids2 = SubContractorEstimation::where('project_id', $id)->where('user_id', \Auth::user()->id)->pluck('project_estimation_id')->toArray();
-
-                //	$project_estimation_ids = array_merge($project_estimation_ids1,$project_estimation_ids2);
-
-                $project_estimations = ProjectEstimation::with(['all_quotes_list'])->where('project_id', $project->id)->where('init_status', 1)->whereIn("id", $project_estimation_ids)->get();
-
-            } else {
-                $project_estimations = ProjectEstimation::with(['all_quotes_list'])->where('project_id', $project->id)->where('init_status', 1)->get();
-            }
-
-
-            $active_estimation = ProjectEstimation::where('project_id', $project->id)->where('is_active', 1)->first();
-            $feedbacks         = ProjectClientFeedback::where('project_id', $project->id)->whereNull('parent')->get();
-            $comments          = ProjectComment::where('project_id', $project->id)->whereNull('parent')->get();
-        }
-
-
-        $site_money_format = site_money_format();
-
-        $project_dropdowns = Label::get_project_dropdowns();
-
-        $projectStatus      = isset($project_dropdowns['project_status']) ? $project_dropdowns['project_status'] : array();
-        $status_labels      = isset($project_dropdowns['project_label']) ? $project_dropdowns['project_label'] : array();
-        $priorities         = isset($project_dropdowns['priority']) ? $project_dropdowns['priority'] : array();
-        $construction_types = isset($project_dropdowns['construction_type']) ? $project_dropdowns['construction_type'] : array();
-        $properties         = isset($project_dropdowns['property']) ? $project_dropdowns['property'] : array();
+        $estimationStatus = ProjectEstimation::$statues;
+        $projectLabel     = Label::get_project_dropdowns();
 
         return view('project::project.show', compact(
             'project',
-            'daysleft',
             'chartData',
             'project_estimations',
             'estimationStatus',
-            'statuesColor',
-            'site_money_format',
-            'active_estimation',
-            'feedbacks',
-            'comments',
-            'projectStatus',
-            'status_labels',
-            'priorities',
-            'construction_types',
-            'properties'),
-        );
-
+            'projectLabel',
+        ));
     }
 
     /**

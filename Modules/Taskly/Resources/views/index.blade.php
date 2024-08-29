@@ -5,7 +5,7 @@
 @endsection
 
 @section('page-breadcrumb')
-    {{ __('Project')}}
+    {{ __('Project') }}
 @endsection
 
 @section('content')
@@ -19,7 +19,9 @@
                                 <i class="fas fa-tasks bg-primary text-white"></i>
                             </div>
                             <p class="text-muted text-sm"></p>
-                            <a href="{{ route('projects.index') }}"><h5 class="mt-4 mb-4 text-primary">{{ __('Total Project') }}</h5></a>
+                            <a href="{{ route('project.index') }}">
+                                <h5 class="mt-4 mb-4 text-primary">{{ __('Total Project') }}</h5>
+                            </a>
                             <h3 class="mb-0">{{ $totalProject }} <span class="text-success text-sm"></span></h3>
                         </div>
                     </div>
@@ -57,7 +59,9 @@
                                 <i class="fas fa-users bg-success text-white"></i>
                             </div>
                             <p class="text-muted text-sm"></p>
-                            <a href="{{ route('users.index') }}"><h5 class="mt-4 mb-4 text-success">{{ __('Total User') }}</h5></a>
+                            <a href="{{ route('users.index') }}">
+                                <h5 class="mt-4 mb-4 text-success">{{ __('Total User') }}</h5>
+                            </a>
                             <h3 class="mb-0">{{ $totalMembers }} <span class="text-success text-sm"></span></h3>
                         </div>
                     </div>

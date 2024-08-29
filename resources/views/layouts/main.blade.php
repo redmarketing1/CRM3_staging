@@ -59,7 +59,7 @@
             <!-- [ breadcrumb ] start -->
             <div class="page-header">
                 <div class="page-block">
-                    <div class="row align-items-center justify-content-between">
+                    <div class="row gap-4 align-items-center justify-content-between">
                         <div class="col-auto">
                             <div class="page-header-title">
                                 <h4 class="m-b-10">@yield('page-title')</h4>

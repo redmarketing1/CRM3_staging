@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Modules\Taskly\Entities\Timesheet;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Taskly\Entities\ActivityLog;
 use Modules\Taskly\Entities\EstimateQuote;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -184,6 +185,11 @@ class Project extends Model
     public function status_data()
     {
         return $this->hasOne(Label::class, 'id', 'status');
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(ActivityLog::class, 'project_id', 'id')->latest();
     }
 
 }

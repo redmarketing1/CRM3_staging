@@ -1,115 +1,31 @@
 @extends('layouts.main')
 @php
+    $display_other_tabs = false;
+
+    if (\Auth::user()->hasRole('company') && $project->status == env('PROJECT_STATUS_CLIENT')) {
+        $display_other_tabs = true;
+    }
     if ($project->type == 'project') {
         $name = 'Project';
     } else {
         $name = 'Project Template';
     }
 @endphp
+
+
 @section('page-title')
-    {{ __($name . ' Detail') }}
+    {{ __('Project Detail') }}
 @endsection
 
-
-
 @section('page-breadcrumb')
-    {{ __($name . ' Detail') }}
+    {{ __('Project Detail') }}
 @endsection
 
 @section('page-action')
-    @if ($project->type == 'project')
-        @stack('addButtonHook')
-    @else
-        @stack('projectConvertButton')
-    @endif
-    <div class="col-md-auto col-sm-4 pb-3">
-        <a href="#" class="btn btn-xs btn-primary btn-icon-only col-12 cp_link"
-            data-link="{{ route('project.shared.link', [\Illuminate\Support\Facades\Crypt::encrypt($project->id)]) }}"
-            data-toggle="tooltip" data-bs-toggle="tooltip" data-bs-original-title="{{ __('Copy') }}">
-            <span class="btn-inner--text text-white">
-                <i class="ti ti-copy"></i></span>
-        </a>
-    </div>
-    @permission('project setting')
-        @php
-            $title =
-                module_is_active('ProjectTemplate') && $project->type == 'template'
-                    ? __('Shared Project Template Settings')
-                    : __('Shared Project Settings');
-        @endphp
-        <div class="col-sm-auto">
-            <a href="#" class="btn btn-xs btn-primary btn-icon-only col-12" data-title="{{ $title }}"
-                data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
-                data-bs-original-title="{{ __('Shared Project Setting') }}"
-                data-url="{{ route('project.setting', [$project->id]) }}">
-                <i class="ti ti-settings"></i>
-            </a>
-        </div>
-    @endpermission
-    <div class="col-sm-auto">
-        <a href="{{ route('projects.gantt', [$project->id]) }}"
-            class="btn btn-xs btn-primary btn-icon-only width-auto ">{{ __('Gantt Chart') }}</a>
-    </div>
-    @permission('task manage')
-        <div class="col-sm-auto">
-            <a href="{{ route('projects.task.board', [$project->id]) }}"
-                class="btn btn-xs btn-primary btn-icon-only width-auto ">{{ __('Task Board') }}</a>
-        </div>
-    @endpermission
-    @permission('bug manage')
-        <div class="col-sm-auto">
-            <a href="{{ route('projects.bug.report', [$project->id]) }}"
-                class="btn btn-xs btn-primary btn-icon-only width-auto">{{ __('Bug Report') }}</a>
-        </div>
-    @endpermission
-    @permission('project tracker manage')
-        @if (module_is_active('TimeTracker'))
-            <div class="col-sm-auto">
-                <a href="{{ route('projecttime.tracker', [$project->id]) }}"
-                    class="btn btn-xs btn-primary btn-icon-only width-auto ">{{ __('Tracker') }}</a>
-            </div>
-        @endif
-    @endpermission
-    @permission('project setting')
-        @if ($projectStatus)
-            <div class="col-sm-auto btn-group">
-                <button class="btn btn-xs btn-primary text-white btn-icon-only width-auto dropdown-toggle rounded-pill"
-                    type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    @php
-                        $selected_project_status = isset($project->status_data->name)
-                            ? $project->status_data->name
-                            : '';
-                    @endphp
-                    {{ $selected_project_status }}
-                </button>
-                <div class="dropdown-menu">
-                    @foreach ($projectStatus as $k => $status)
-                        @if ($status->id == env('PROJECT_STATUS_CLIENT'))
-                            <a href="javascript:void(0)" data-ajax-popup="true" data-toggle="tooltip" data-size="md"
-                                data-url="{{ route('projects.edit_form', [$project->id, 'project_status']) }}"
-                                data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                data-bs-whatever="{{ __('Select Final Estimation') }}"
-                                data-title="{{ __('Select Final Estimation') }}" class="dropdown-item"
-                                data-bs-toggle="tooltip">{{ $status->name }}</a>
-                        @else
-                            <a class="dropdown-item status" data-id="{{ $status->id }}"
-                                data-url="{{ route('project.status', $project->id) }}" href="#">{{ $status->name }}</a>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-        @endif
-    @endpermission
+    @include('project::project.utility.top_tools')
 @endsection
 
 @section('content')
-    @php
-        $display_other_tabs = false;
-
-        if (\Auth::user()->hasRole('company') && $project->status == env('PROJECT_STATUS_CLIENT')) {
-            $display_other_tabs = true;
-        }
-    @endphp
     <div class="row">
         <div class="col-sm-12">
             <div class="row">
@@ -134,7 +50,7 @@
 
                 @includeWhen($display_other_tabs, 'project::project.section.project_progress')
 
-                {{-- @include('project::project.utility.activity_log') --}}
+                @include('project::project.utility.activity_log')
 
             </div>
         </div>
@@ -144,7 +60,7 @@
 @push('scripts')
     <script>
         var active_estimation_id = '{{ isset($active_estimation->id) ? $active_estimation->id : 0 }}';
-        let moneyFormat = '{{ $site_money_format }}';
+        let moneyFormat = '{{ site_money_format() }}';
         var project_id = '{{ \Crypt::encrypt($project->id) }}';
 
         $(document).ready(function() {

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mt-5 mb-5">
     @if ($project->type == 'project')
         <div class="col-lg-3 col-6">
             <div class="card">
@@ -9,7 +9,9 @@
                         </div>
                         <div class="col text-end">
                             <h6 class="text-muted">{{ __('Days left') }}</h6>
-                            <span class="h6 font-weight-bold mb-0 ">{{ $daysleft }}</span>
+                            <span class="h6 font-weight-bold mb-0 ">
+                                {{ $project->expired_date }}
+                            </span>
                         </div>
                     </div>
                 </div>

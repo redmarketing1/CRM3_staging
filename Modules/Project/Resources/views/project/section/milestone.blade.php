@@ -1,4 +1,4 @@
-  <div class="card-container cc1">
+  <div class="card-container cc1 mt-3 mb-4">
       <div class="card milestone-card table-card">
           <div class="card-header">
               <div class="d-flex justify-content-between align-items-center">

@@ -34,10 +34,9 @@
                  <div class="d-flex align-items-center ">
                      @permission('project edit')
                          <div class="btn btn-light d-flex align-items-between me-3">
-                             <a href="#" class="" data-size="lg"
-                                 data-url="{{ route('project.edit', [$project->id]) ?? '#notfound' }}" data-=""
-                                 data-ajax-popup="true" data-title="{{ __('Edit ') . $name }}" data-toggle="tooltip"
-                                 title="{{ __('Edit') }}">
+                             <a href="javascript:void(0)" class="" data-size="lg"
+                                 data-url="{{ route('projects.edit', [$project->id]) }}" data-ajax-popup="true"
+                                 data-toggle="tooltip" title="{{ __('Edit Project') }}">
                                  <i class="ti ti-pencil"> </i>
                              </a>
                          </div>
@@ -45,7 +44,7 @@
                      @permission('project delete')
                          {!! Form::open([
                              'method' => 'DELETE',
-                             'route' => ['project.destroy', $project->id],
+                             'route' => ['projects.destroy', $project->id],
                              'id' => 'delete-form-' . $project->id,
                          ]) !!}
                          <button class="btn btn-light d" type="button"><a href="#" data-toggle="tooltip"

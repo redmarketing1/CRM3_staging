@@ -6505,7 +6505,6 @@ td .btn-sm {
 	background: none !important;
 } */
 
-.project .show,
 .project .project_progress,
 td .btn-sm i {
     color: #333 !important;
@@ -7792,6 +7791,9 @@ td.project-budget {
     column-gap: 0;
     display: block !important;
     flex: none !important;
+    margin-bottom: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
 }
 
 .dropzone .dz-preview {
@@ -7934,4 +7936,20 @@ span.select2-selection.select2-selection--multiple {
 
 .tab-pane.fade.active.show {
     display: block;
+}
+
+.badge.bg.Draft {
+    background-color: #1c232f !important;
+}
+
+.badge.bg.Open {
+    background-color: #3ec9d6 !important;
+}
+
+.badge.bg.Sent {
+    background-color: #46b119 !important;
+}
+
+.badge.bg.Close {
+    background-color: #f6225a !important;
 }

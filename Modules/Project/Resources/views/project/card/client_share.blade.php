@@ -38,7 +38,7 @@
                               @if (\Auth::user()->hasRole('company'))
                                   @permission('team client remove')
                                       <form id="delete-client-{{ $client->id }}"
-                                          action="{{ route('project.client.delete', [$project->id, $client->id]) }}"
+                                          action="{{ route('projects.client.delete', [$project->id, $client->id]) }}"
                                           method="POST" style="display: none;" class="d-inline-flex">
                                           <a href="#"
                                               class="action-btn btn-danger mx-1  btn btn-sm d-inline-flex align-items-center bs-pass-para show_confirm"
