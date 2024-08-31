@@ -71,6 +71,29 @@
                 document.querySelectorAll('.tinyMCE').forEach(function(editor) {
                     init_tiny_mce('#' + editor.id);
                 });
+
+
+                const dropdownItems = document.querySelectorAll(
+                    '.dropdown-premsg .dropdown-menu .dropdown-item');
+                const dropdownTriggerText = document.querySelector(
+                    '.dropdown-premsg .dropdown-toggle .drp-text');
+
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+
+                        // Get the template content and name from the clicked item
+                        const content = this.getAttribute('data-content');
+                        const templateName = this.textContent.trim();
+
+                        // Set the content in the TinyMCE editor
+                        tinymce.get('premsg').setContent(content);
+
+                        // Update the dropdown trigger text with the selected template name
+                        dropdownTriggerText.textContent = templateName;
+                    });
+                });
+
             });
 
             var type = '{{ $project->type }}';

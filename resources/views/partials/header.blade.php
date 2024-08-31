@@ -17,28 +17,23 @@
                     <a class="dash-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                         role="button" aria-haspopup="false"aria-expanded="false">
                         @if (!empty(Auth::user()->avatar))
-                        {{-- @dd(1,check_file(Auth::user()->avatar),get_file(Auth::user()->avatar),Auth::user()) --}}
                             <span class="theme-avtar">
-                                <img alt="#"
-                                    src="{{ check_file(Auth::user()->avatar) ? get_file(Auth::user()->avatar) : '' }}"
-                                    class="img-fluid rounded-circle" style="width: 100%">
+                                <img src="{{ asset(Auth::user()->avatar) }}" class="img-fluid rounded-circle w-100">
                             </span>
-                        @else
-                            <span class="theme-avtar">{{ substr(Auth::user()->name, 0, 1) }}</span>
                         @endif
                         <span class="hide-mob ms-2">{{ Auth::user()->name }}</span>
                         <i class="ti ti-chevron-down drp-arrow nocolor hide-mob"></i>
                     </a>
                     <div class="dropdown-menu dash-h-dropdown">
                         @permission('user profile manage')
-                            <a href="{{ route('profile') }}" class="dropdown-item">
+                            <a href="{{ route('profile') }}" class="dropdown-item d-flex">
                                 <i class="ti ti-user"></i>
                                 <span>{{ __('Profile') }}</span>
                             </a>
                         @endpermission
                         <a href="{{ route('logout') }}"
                             onclick="event.preventDefault(); document.getElementById('frm-logout').submit();"
-                            class="dropdown-item">
+                            class="dropdown-item d-flex">
                             <i class="ti ti-power"></i>
                             <span>{{ __('Logout') }}</span>
                         </a>
@@ -59,18 +54,24 @@
                         </a>
                     </li>
                 @endImpersonating
-				@permission('estimation manage')
-					@php 
-						$number_process_count 		= \App\Models\SmartPromptQueue::where('type', 1)->whereNull('result_number')->count();
-						$description_process_count  = \App\Models\SmartPromptQueue::where('type', 0)->whereNull('result_description')->count();
-					@endphp
-					<li class="dash-h-item">
-						<a class="dash-head-link me-0 ai_progress_link" href="{{ route('smart.progress') }}" alt="{{__('Smart Progress')}}" title="{{__('Smart Progress')}}">
-							<span class="">AI</span>
-							<i class="fa fa-spinner {{ (($number_process_count > 0) || ($description_process_count > 0)) ? 'fa-spin' : '' }}"></i>
-						</a>
-					</li>
-				@endpermission
+                @permission('estimation manage')
+                    @php
+                        $number_process_count = \App\Models\SmartPromptQueue::where('type', 1)
+                            ->whereNull('result_number')
+                            ->count();
+                        $description_process_count = \App\Models\SmartPromptQueue::where('type', 0)
+                            ->whereNull('result_description')
+                            ->count();
+                    @endphp
+                    <li class="dash-h-item">
+                        <a class="dash-head-link me-0 ai_progress_link" href="{{ route('smart.progress') }}"
+                            alt="{{ __('Smart Progress') }}" title="{{ __('Smart Progress') }}">
+                            <span class="">AI</span>
+                            <i
+                                class="fa fa-spinner {{ $number_process_count > 0 || $description_process_count > 0 ? 'fa-spin' : '' }}"></i>
+                        </a>
+                    </li>
+                @endpermission
                 @permission('user chat manage')
                     @php
                         $unseenCounter = App\Models\ChMessage::where('to_id', Auth::user()->id)
@@ -135,20 +136,24 @@
                                         @endif
                                     </div>
                                 @else
-                                @php
-                                    $route = ($workspace->is_disable == 1) ?  route('workspace.change', $workspace->id) : '#';
-                                @endphp
+                                    @php
+                                        $route =
+                                            $workspace->is_disable == 1
+                                                ? route('workspace.change', $workspace->id)
+                                                : '#';
+                                    @endphp
                                     <div class="d-flex justify-content-between bd-highlight">
 
-                                    <a href="{{ $route }}" class="dropdown-item">
-                                        <span>{{ $workspace->name }}</span>
-                                        @if ($workspace->created_by == Auth::user()->id)
-                                            <span class="badge bg-dark"> {{ Auth::user()->roles->first()->name }}</span>
-                                        @else
-                                            <span class="badge bg-dark"> {{ __('Shared') }}</span>
-                                        @endif
-                                    </a>
-                                    @if ($workspace->is_disable == 0)
+                                        <a href="{{ $route }}" class="dropdown-item">
+                                            <span>{{ $workspace->name }}</span>
+                                            @if ($workspace->created_by == Auth::user()->id)
+                                                <span class="badge bg-dark">
+                                                    {{ Auth::user()->roles->first()->name }}</span>
+                                            @else
+                                                <span class="badge bg-dark"> {{ __('Shared') }}</span>
+                                            @endif
+                                        </a>
+                                        @if ($workspace->is_disable == 0)
                                             <div class="action-btn mt-2">
                                                 <i class="ti ti-lock"></i>
                                             </div>
@@ -159,10 +164,12 @@
                             @if (getWorkspace()->count() > 1)
                                 @permission('workspace delete')
                                     <hr class="dropdown-divider" />
-                                        <a href="#!" data-url="{{route('company.info', Auth::user()->id)}}" class="dropdown-item" data-ajax-popup="true" data-size="lg" data-title="{{__('Workspace Info')}}">
-                                            <i class="ti ti-circle-x"></i>
-                                            <span>{{ __('View') }}</span> <br>
-                                        </a>
+                                    <a href="#!" data-url="{{ route('company.info', Auth::user()->id) }}"
+                                        class="dropdown-item" data-ajax-popup="true" data-size="lg"
+                                        data-title="{{ __('Workspace Info') }}">
+                                        <i class="ti ti-circle-x"></i>
+                                        <span>{{ __('View') }}</span> <br>
+                                    </a>
 
 
                                     <hr class="dropdown-divider" />
@@ -184,8 +191,8 @@
                 @endpermission
 
                 <li class="dropdown dash-h-item drp-language">
-                    <a class="dash-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
-                        role="button" aria-haspopup="false" aria-expanded="false">
+                    <a class="dash-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
+                        href="#" role="button" aria-haspopup="false" aria-expanded="false">
                         <i class="ti ti-world nocolor"></i>
                         <span class="drp-text hide-mob">{{ Str::upper(getActiveLanguage()) }}</span>
                         <i class="ti ti-chevron-down drp-arrow nocolor"></i>

@@ -1,7 +1,7 @@
  {{ Form::open(['route' => ['project.comment.store', $project->id], 'enctype' => 'multipart/form-data', 'id' => 'comment_form']) }}
 
  <div class="modal-body">
-     <div class="form-group">
+     <div class="form-group dropdown-premsg">
 
          <div class="mb-4">
              <div class="dropdown dash-h-item drp-language">
@@ -13,21 +13,73 @@
                      <i class="ti ti-chevron-down drp-arrow nocolor"></i>
                  </a>
                  <ul class="dropdown-menu w-100 dash-h-dropdown dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                     @foreach ($templateItems as $notification_template)
-                         <li>
-                             <a class="dropdown-item text-primary" href="#"
-                                 data-id="{{ $notification_template->id }}">
-                                 {{ $notification_template->name }}
-                             </a>
-                         </li>
-                     @endforeach
+                     <li>
+                         <a class="dropdown-item text-primary" href="#"
+                             data-content="Thank you for your feedback.">
+                             Thank You Message
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item text-primary" href="#"
+                             data-content="We appreciate your business.">
+                             Appreciation Message
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item text-primary" href="#"
+                             data-content="Your request has been received.">
+                             Request Received
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item text-primary" href="#"
+                             data-content="We will get back to you shortly.">
+                             Follow-Up Message
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item text-primary" href="#"
+                             data-content="Please provide more details.">
+                             Request for More Information
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item text-primary" href="#"
+                             data-content="Your order is being processed.">
+                             Order Processing
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item text-primary" href="#"
+                             data-content="Your appointment is confirmed.">
+                             Appointment Confirmation
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item text-primary" href="#"
+                             data-content="We are sorry for the inconvenience.">
+                             Apology Message
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item text-primary" href="#"
+                             data-content="Your account has been updated.">
+                             Account Update
+                         </a>
+                     </li>
+                     <li>
+                         <a class="dropdown-item text-primary" href="#"
+                             data-content="Your subscription has been renewed.">
+                             Subscription Renewal
+                         </a>
+                     </li>
                  </ul>
              </div>
          </div>
 
 
-         {{ Form::label('comment', __('Your comment'), ['class' => 'form-label text-lg mb-2']) }}
-         {{ Form::textarea('comment', null, ['class' => 'form-control tinyMCE', 'required' => 'required', 'rows' => 5, 'id' => 'commentboxes']) }}
+         {{ Form::label('comment', __('Your comment'), ['class' => 'form-label text-lg mb-2', 'id' => 'commentTextarea']) }}
+         {{ Form::textarea('comment', null, ['class' => 'form-control tinyMCE', 'required' => 'required', 'rows' => 5, 'id' => 'premsg']) }}
 
          {{ Form::file('file', ['class' => 'form-control text-lg mt-4', 'id' => 'file']) }}
      </div>
@@ -38,10 +90,3 @@
  </div>
 
  {{ Form::close() }}
-
- @push('scripts')
-     <script type="javascript">
-    alert(3);
-     init_tiny_mce('.tinyMCE');
- </script>
- @endpush

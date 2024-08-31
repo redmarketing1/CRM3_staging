@@ -21,9 +21,7 @@ use App\Models\ContentTemplateLang;
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Modules\Taskly\Entities\Project;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Modules\Taskly\Service\projectsTabs;
@@ -57,9 +55,11 @@ if (! function_exists('getMenu')) {
             return array_search($a, array_keys($categoryIcon)) <=> array_search($b, array_keys($categoryIcon));
         });
 
-        return generateMenu($groupedMenu, null);
-        // return Cache::rememberForever($cacheKey, function () use ($groupedMenu) {
-        // });
+        $cacheExpiration = now()->addDays(2);
+
+        return Cache::remember($cacheKey, $cacheExpiration, function () use ($groupedMenu) {
+            return generateMenu($groupedMenu, null);
+        });
     }
 
 }
@@ -140,7 +140,7 @@ if (! function_exists('generateSubMenu')) {
                 $html .= '</ul>';
             }
 
-            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('project') || request()->is('project/*'))) {
+            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('projects') || request()->is('project/*'))) {
                 $projectTabs = new projectsTabs();
                 $html .= $projectTabs->render();
             }
@@ -150,101 +150,6 @@ if (! function_exists('generateSubMenu')) {
 
         return $html;
     }
-}
-
-function projectTabItem()
-{
-    $html = '';
-
-    $all_projects = Project::all();
-
-
-    $html .= '<ul class="nav dash-item-tabs" id="myTab" role="tablist">';
-
-    $html .= '<li class="nav-item" role="presentation">
-                            <a class="nav-link" id="all-project" href="#all-project" role="tab" style="background-color:#eee;" data-bs-toggle="tab" data-bs-placement="top" title="all project">
-                                <i class="fa-solid fa-list"></i>
-                            </a>
-                        </li>';
-
-
-    foreach ($all_projects->unique('status_data.name') as $project) {
-
-        if (isset($project->status_data->name)) {
-
-            $status_css_name  = preg_replace('/[^a-zA-Z0-9_]/', '', strtolower(str_replace(' ', '_', $project->status_data->name)));
-            $status_name      = substr($project->status_data->name, 0, 2); // Get shortened status name
-            $status_full_name = $project->status_data->name;
-            $background_color = $project->status_data->background_color ?? '';
-            $font_color       = $project->status_data->font_color ?? '';
-            $project_count    = $all_projects->where('status_data.name', $status_full_name)->count();
-
-
-
-            $html .= '<li class="nav-item" role="presentation">';
-
-            $html .= '<a class="nav-link" id="contact-tab-' . $status_css_name . '" '
-                . 'href="#' . $status_css_name . '" '
-                . 'role="tab" '
-                . 'style="background-color:' . $background_color . '; color:' . $font_color . ';" '
-                . 'data-bs-toggle="tab" '
-                . 'data-bs-placement="top" '
-                . 'title="' . $status_full_name . '">'
-                . $status_name
-                . '<span>' . $project_count . '</span>'
-                . '</a>';
-
-            $html .= '</li>';
-
-
-        }
-
-    }
-
-    $html .= '</li>';
-    $html .= '</ul>'; // END Tab item button
-
-    return $html;
-}
-
-function projectList()
-{
-    $html = '';
-
-    $html .= '<div class="tab-content" id="myTabContent">';
-
-    $all_projects    = Project::with('status_data')->get();
-    $groupedProjects = $all_projects->groupBy('status_data.name');
-
-
-    foreach ($groupedProjects as $statusName => $projects) {
-
-        $html .= '<div class="tab-pane fade" id="' . strtolower($statusName) . '" role="tabpanel">';
-
-        $html .= '<ul class="tab-submenu">';
-
-        foreach ($projects as $project) {
-
-            $statusName = $project->status_data->name ?? 'NA';
-
-            $backgrounColor = $project->status_data->background_color ?? '';
-            $shortName      = substr($statusName, 0, 2);
-            $projectUrl     = route('project.show', [$project->id]);
-
-            $html .= '<li class="tab-item">
-                <a class="tab-link" href="' . $projectUrl . '">
-                    <span style="background-color: ' . $backgrounColor . ';">' . $shortName . '</span>
-                    ' . $project->name . '
-                </a>
-            </li>';
-        }
-
-        $html .= ' </ul>';
-
-        $html .= '</div>';
-    }
-
-    return $html;
 }
 
 if (! function_exists('categoryIcon')) {

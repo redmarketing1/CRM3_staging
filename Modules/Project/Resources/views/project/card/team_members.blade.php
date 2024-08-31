@@ -42,7 +42,7 @@
                                 @if ($user->id != Auth::id())
                                     @permission('team member remove')
                                         <form id="delete-user-{{ $user->id }}"
-                                            action="{{ route('project.user.delete', [$project->id, $user->id]) }}"
+                                            action="{{ route('projects.user.delete', [$project->id, $user->id]) }}"
                                             method="POST" style="display: none;" class="d-inline-flex">
                                             <a href="#"
                                                 class="action-btn btn-danger mx-1  btn btn-sm d-inline-flex align-items-center bs-pass-para show_confirm"

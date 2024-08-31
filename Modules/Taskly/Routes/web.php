@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\Route;
 use Modules\Taskly\Http\Controllers\ProjectController;
 use Modules\Taskly\Http\Controllers\DashboardController;
 use Modules\Taskly\Http\Controllers\ProjectReportController;
-use Modules\Taskly\Http\Controllers\ProjectCommentController;
-use Modules\Taskly\Http\Controllers\ProjectFeedbackController;
 use Modules\Taskly\Http\Controllers\ProjectProgressController;
 use Modules\Taskly\Http\Controllers\ProjectEstimationController;
 

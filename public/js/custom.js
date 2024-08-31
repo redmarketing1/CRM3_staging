@@ -1839,3 +1839,12 @@ function generate_slug(text) {
     slug = '{' + slug + '}';
     return slug;
 }
+
+
+/** project/{id} page */
+const tabs = document.querySelectorAll('#projectContent .tab-pane');
+tabs.forEach((tab, index) => {
+    if (index > 0) {
+        tab.classList.remove('show', 'active');
+    }
+}); 

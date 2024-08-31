@@ -217,7 +217,7 @@ class ProjectController extends Controller
             $l_name = isset($value->construction_detail->last_name) ? $value->construction_detail->last_name : '';
             $name   = '<div class="media align-items-center">
 					<div class="media-body">
-						<a href="' . route('projects.show', $value->id) . '"
+						<a href="' . route('project.show', $value->id) . '"
 						class="name mb-0 h6 text-sm project-title">' . $value->name . '</a>
 					</div>
 				</div>';
@@ -1181,7 +1181,7 @@ class ProjectController extends Controller
             $project  = Project::select('projects.*')->where('projects.workspace', '=', $currentWorkspace)->where('projects.id', '=', $projectID)->first();
             $projects = Project::select('projects.*')->join('client_projects', 'client_projects.project_id', '=', 'projects.id')->where('client_projects.client_id', '=', $objUser->id)->where('projects.workspace', '=', $currentWorkspace)->get();
         } else {
-            $project  = Project::select('projects.*')->join('user_projects', 'user_projects.project_id', '=', 'projects.id')->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', $currentWorkspace)->where('projects.id', '=', $projectID)->first();
+            $project = Project::select('projects.*')->join('user_projects', 'user_projects.project_id', '=', 'projects.id')->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', $currentWorkspace)->where('projects.id', '=', $projectID)->first();
             ;
             $projects = Project::select('projects.*')->join('user_projects', 'user_projects.project_id', '=', 'projects.id')->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', $currentWorkspace)->get();
         }
@@ -1269,7 +1269,7 @@ class ProjectController extends Controller
             $project  = Project::select('projects.*')->where('projects.workspace', '=', $currentWorkspace)->where('projects.id', '=', $projectID)->first();
             $projects = Project::select('projects.*')->join('client_projects', 'client_projects.project_id', '=', 'projects.id')->where('client_projects.client_id', '=', $objUser->id)->where('projects.workspace', '=', $currentWorkspace)->get();
         } else {
-            $project  = Project::select('projects.*')->join('user_projects', 'user_projects.project_id', '=', 'projects.id')->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', $currentWorkspace)->where('projects.id', '=', $projectID)->first();
+            $project = Project::select('projects.*')->join('user_projects', 'user_projects.project_id', '=', 'projects.id')->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', $currentWorkspace)->where('projects.id', '=', $projectID)->first();
             ;
             $projects = Project::select('projects.*')->join('user_projects', 'user_projects.project_id', '=', 'projects.id')->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', $currentWorkspace)->get();
         }
@@ -3180,7 +3180,7 @@ class ProjectController extends Controller
             return redirect()->back()->with('error', __('Permission Denied.'));
         }
     }
- 
+
     public function projectClientFeedbackDestroyAttachment($project_id, $id)
     {
         $project_client_feedback = ProjectClientFeedback::find($id);
