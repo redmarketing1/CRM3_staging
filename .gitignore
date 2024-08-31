@@ -15,4 +15,8 @@ uploads/*
 tests/*
 node_modules/*
 stubs/*
-bootstrap/cache/**/*
+# Ignore everything inside the bootstrap/cache folder
+bootstrap/cache/*
+
+# But don't ignore the folder itself
+!bootstrap/cache/
