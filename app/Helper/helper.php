@@ -55,11 +55,7 @@ if (! function_exists('getMenu')) {
             return array_search($a, array_keys($categoryIcon)) <=> array_search($b, array_keys($categoryIcon));
         });
 
-        $cacheExpiration = now()->addDays(2);
-
-        return Cache::remember($cacheKey, $cacheExpiration, function () use ($groupedMenu) {
-            return generateMenu($groupedMenu, null);
-        });
+        return generateMenu($groupedMenu, null);
     }
 
 }
