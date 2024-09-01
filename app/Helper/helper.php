@@ -24,8 +24,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use Modules\Taskly\Service\projectsTabs;
 use Illuminate\Support\Facades\Validator;
+use Modules\Project\Sidebar\projectsTabs;
 use Modules\Taskly\Entities\ProjectEstimation;
 
 if (! function_exists('getMenu')) {
@@ -133,6 +133,18 @@ if (! function_exists('generateSubMenu')) {
 
             $html .= '</a>'; // Close anchor tag
 
+            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('projects') || request()->is('project/*'))) {
+                $projectTabs = new projectsTabs();
+                $html .= $projectTabs->render();
+
+                if ($item['category'] == 'ProjectSubmenu') {
+                    $html .= $projectTabs->generateSubmenu($item);
+                }
+
+            }
+
+
+
             // Recursively generate submenu if item has children
             if ($hasChildren) {
                 $html .= '<ul class="dash-submenu">';
@@ -140,10 +152,7 @@ if (! function_exists('generateSubMenu')) {
                 $html .= '</ul>';
             }
 
-            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('projects') || request()->is('project/*'))) {
-                $projectTabs = new projectsTabs();
-                $html .= $projectTabs->render();
-            }
+
 
             $html .= '</li>'; // Close list item
         }

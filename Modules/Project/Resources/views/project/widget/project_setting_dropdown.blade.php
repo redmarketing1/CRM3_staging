@@ -4,7 +4,7 @@
 
             <button class="btn btn-xs btn-primary text-white btn-icon-only width-auto dropdown-toggle" type="button"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ $project->status_data->name ?? '' }}
+                {{ $project->status_data->name ?? 'Select Status' }}
             </button>
 
             <div class="dropdown-menu">
