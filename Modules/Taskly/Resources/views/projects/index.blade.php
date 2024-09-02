@@ -635,7 +635,7 @@
                                 error: function(data) {
                                     toastrs('Error',
                                         '{{ __('Some Thing Is Wrong!') }}', 'error'
-                                        );
+                                    );
                                 }
                             })
                         }
@@ -667,7 +667,27 @@
 
                 // Filter projects based on selected status
                 var statusId = $(this).attr('href').replace('#status-', '');
+                console.log(statusId);
+
                 if (statusId === '#all') {
+                    // Show all projects if "All" tab is selected
+                    $('.project-row').show();
+                } else {
+                    // Show only projects with the corresponding status
+                    $('.project-row').hide();
+                    $('.project-row[data-status="' + statusId + '"]').show();
+                }
+            });
+
+            $('#project a').on('click', function(e) {
+                e.preventDefault();
+
+                $(this).tab('show');
+
+                var statusId = $(this).attr('data-tabs-id');
+                console.log(statusId);
+
+                if (statusId === 'all') {
                     // Show all projects if "All" tab is selected
                     $('.project-row').show();
                 } else {

@@ -87,7 +87,8 @@
                         const templateName = this.textContent.trim();
 
                         // Set the content in the TinyMCE editor
-                        tinymce.get('premsg').setContent(content);
+                        // tinymce.get('premsg').setContent(content);
+                        $('#premsg').val(content);
 
                         // Update the dropdown trigger text with the selected template name
                         dropdownTriggerText.textContent = templateName;

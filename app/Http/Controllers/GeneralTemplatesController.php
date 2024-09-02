@@ -53,7 +53,7 @@ class GeneralTemplatesController extends Controller
      */
     public function create()
     {
-        //
+        return view('general_templates.create');
     }
 
     /**
@@ -61,7 +61,29 @@ class GeneralTemplatesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $validatedData = $request->validate([
+            'name'    => 'required|string|max:255',
+            'lang'    => 'required|string|max:3',
+            'content' => 'required|string',
+        ]);
+
+        tap(Content::create([
+            'name' => $validatedData['name'],
+        ]), function ($content) use ($validatedData) {
+            ContentTemplateLang::create([
+                'parent_id'  => $content->id,
+                'lang'       => $validatedData['lang'],
+                'content'    => $validatedData['content'],
+                'variables'  => null,
+                'created_by' => Auth::user()->id,
+                'workspace'  => getActiveWorkSpace(),
+            ]);
+        });
+
+        return redirect()
+            ->back()
+            ->with('success', __('Template message created successfully.'));
     }
 
     /**
