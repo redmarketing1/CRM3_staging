@@ -1,0 +1,26 @@
+,,,,,,"Netto inkl. Skonto",,10276.28,
+,,,,,,"Brutto inkl. Skonto",,12228.77,
+,,,,,,Netto,,10486.00,
+,,,,,,Brutto,19%,12478.34
+,,,,,,MwSt,,1992.34
+,,,,,,Skonto,,249.57
+,,,,,,,,Discount
+,,,,,,,,2.00
+" "
+" "," "," "," "," "," "," ","Mamed Isaev",
+Pos,"Group Name",Name,Beschreibung,Menge,Einheit,Optional,EP,GB
+01.01,Baustelleneinrichtung,Baustelleneinrichtung,"Baustellenkoordination: Organisation und Überwachung der Baustellenabläufe
+-- An- und Abfahrten: Pauschal 50 km inbegriffen
+-- Einsatz von Maschinen/Geräte: Bereitstellung und Nutzung notwendiger Maschinen und Geräte
+-- Verwaltung: Administrative Aufgaben und Dokumentation
+-- Sicherungsmaßnahmen: Durchführung von Sicherheitsvorkehrungen und Absperrungen",1,pschl,1,750.00,750.00
+02.01,Abrissarbeiten,"Durchbruch Trockenbau","-- Bestehenden Duchbruch wieder öffnen 
+-- Einsatz von Handwerkzeugen und Maschinen -- Sicherstellung der gründlichen Entfernung
+-- Schutzmaßnahmen für angrenzende Bauteile und Bereiche
+-- Reinigung der Arbeitsfläche nach Abschluss der Arbeiten",2,Stk,1,85.00,170.00
+03.01,"Wände und Decken",Spachtelarbeiten,"-- Füllen und verspachteln der Dübel Löcher an den Wänden
+-- Schleifen und evtl. erneutes verspachteln der Dübel Löcher",1,pschl,1,690.00,690.00
+03.02,"Wände und Decken",Malerarbeiten,"-- Abkleben und Abdecken der Flächen
+-- 2 Farbantriche - Decken und Wände deckend weiss streichen",420,m2,1,19.80,8316.00
+04.01,Trockenbau,"Leibung herstellen","-- Leibung mit Gipskarton verkoffern - Fugenband einarbeiten - Fugenfüllspachtel einbringen - Grundieren 
+-- mit Feinspachtel verputzen",2,stck,1,280.00,560.00

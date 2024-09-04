@@ -1,0 +1,3002 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<GAEB xmlns="http://www.gaeb.de/GAEB_DA_XML/DA83/3.2">
+  <GAEBInfo>
+    <Version>3.2</Version>
+    <VersDate>2013-10</VersDate>
+    <Date>2024-02-05</Date>
+    <Time>12:28:35</Time>
+    <ProgSystem>BUILDUP</ProgSystem>
+    <ProgName>BUILDUP v27.3.0.0</ProgName>
+    <Certific>Available</Certific>
+  </GAEBInfo>
+  <PrjInfo>
+    <NamePrj>SP</NamePrj>
+    <LblPrj>Oderstraße 22, 22a, 23, 23a, 10247 Berlin</LblPrj>
+    <Cur>EUR</Cur>
+    <CurLbl>Euro</CurLbl>
+  </PrjInfo>
+  <Award>
+    <DP>83</DP>
+    <AwardInfo>
+      <Cur>EUR</Cur>
+      <CurLbl>Euro</CurLbl>
+      <SubmLoc></SubmLoc>
+    </AwardInfo>
+    <OWN>
+      <DPNo></DPNo>
+      <AwardNo></AwardNo>
+    </OWN>
+    <BoQ ID="R_5887_88676A7E28764F12A0001DE72FC071AA">
+      <BoQInfo>
+        <Name>009</Name>
+        <LblBoQ>Trockenbau</LblBoQ>
+        <OutlCompl>AllTxt</OutlCompl>
+        <BoQBkdn>
+          <Type>BoQLevel</Type>
+          <LblBoQBkdn></LblBoQBkdn>
+          <Length>1</Length>
+          <Num>Yes</Num>
+        </BoQBkdn>
+        <BoQBkdn>
+          <Type>BoQLevel</Type>
+          <LblBoQBkdn></LblBoQBkdn>
+          <Length>1</Length>
+          <Num>Yes</Num>
+        </BoQBkdn>
+        <BoQBkdn>
+          <Type>BoQLevel</Type>
+          <LblBoQBkdn></LblBoQBkdn>
+          <Length>1</Length>
+          <Num>Yes</Num>
+        </BoQBkdn>
+        <BoQBkdn>
+          <Type>Item</Type>
+          <LblBoQBkdn></LblBoQBkdn>
+          <Length>2</Length>
+          <Num>Yes</Num>
+        </BoQBkdn>
+        <BoQBkdn>
+          <Type>Index</Type>
+          <LblBoQBkdn></LblBoQBkdn>
+          <Length>1</Length>
+          <Num>No</Num>
+          <Alignment>left</Alignment>
+        </BoQBkdn>
+      </BoQInfo>
+      <BoQBody>
+        <BoQCtgy ID="E_5887_88676A7E28764F12A0001DE72FC071AA" RNoPart="9">
+          <LblTx>
+            <p>
+              <span>Trockenbau</span>
+            </p>
+          </LblTx>
+          <BoQBody>
+            <Remark ID="H_5887_5A45A5B540254115990C7E2BD510CD58_VORTEXT">
+              <Description>
+                <CompleteText>
+                  <DetailTxt>
+                    <Text>
+                      <p style="text-align:center;"/>
+                      <p style="text-align:center;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">Leistungsverzeichnis über</span>
+                      </p>
+                      <p style="text-align:center;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">Trockenbau</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">	</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Bauvorhaben:	Oderstraße 22, 22a, 23, 23a</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">	</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">	</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Bauort:	10247 Berlin</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">	 </span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Angebotsabgabe:	Sanierungsprofi GmbH</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">	t.eggers@sanierungsprofi.de</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Ansprechpartner:	Thomas Eggers</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">							Tel.: 030 </span>
+                        <span style="font-family:Arial;color:rgb(0,0,0);">9921146-905</span>
+                        <br></br>
+                      </p>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Die Bindefrist beträgt:	6 Wochen</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Angebotsabgabefrist:	</span>
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">23. Februar 2024</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Ausführungsbeginn:	April 2024 - Jan. 2025 </span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Angebotssumme </span>
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">netto</span>
+                        <span style="font-family:Arial;color:rgb(0,0,0);">:	</span>
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">EURO</span>
+                        <span style="font-family:Arial;color:rgb(0,0,0);">  ....................................</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Mit der Unterschrift werden die Allgemeinen Vertragsbedingungen anerkannt.</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;"/>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">..............................................................................................................................................</span>
+                      </p>
+                      <p style="line-height:13px;text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Datum		Stempel			Unterschrift</span>
+                      </p>
+                    </Text>
+                  </DetailTxt>
+                  <OutlineText>
+                    <OutlTxt>
+                      <TextOutlTxt>
+                        <p>
+                          <span></span>
+                        </p>
+                      </TextOutlTxt>
+                    </OutlTxt>
+                  </OutlineText>
+                </CompleteText>
+              </Description>
+            </Remark>
+            <Remark ID="H_5887_AA9B359E7D3746DC9E62D19FDEB1E720_VORTEXT">
+              <Description>
+                <CompleteText>
+                  <DetailTxt>
+                    <Text>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">ALLGEMEINE VERTRAGSBEDINGUNGEN FÜR NACHUNTERNEHMER Stand: 10/2022</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">1. GEGENSTAND DES VERTRAGES</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">1.1 Die nachstehenden Vertragsbedingungen regeln das Rechtsverhältnis zwischen der sanierungsprofi GmbH (nachstehend AG genannt) und dem Nachunternehmer (nachstehenden NU genannt) bei der Vergabe und Ausführung von Bauleistungen.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">1.2. Der Vertragsschluss erfolgt ausschließlich auf der Grundlage dieser Allgemeinen Vertragsbedingungen. Andere Vertragswerke gelten nicht, auch soweit einzelne Regelungen in diesem Vertragswerk nicht enthalten sind.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">2. BESTANDTEILE DES VERTRAGES </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Für Art und Umfang der auszuführenden Leistungen und Lieferungen, sowie für die Abwicklung sind die folgenden Vertragsbestandteile in der angegebenen Reihenfolge maßgebend:</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">1. Das Auftrags- bzw. Zuschlagsschreiben.</span>
+                        <br></br>
+                        <span style="font-family:Arial;color:rgb(0,0,0);">2. Das Verhandlungsprotokoll nebst Anlagen, einschließlich der dort benannten weiteren </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">    Unterlagen.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">3. Für die Qualitäten: Das Leistungsverzeichnis mit den Technischen Vorbemerkungen des AG.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">4. Die vorliegenden Allgemeinen Vertragsbedingungen für Nachunternehmer.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">5. Die Vergabe- und Vertragsordnung für Bauleistungen (VOB/B) in der jeweils im Zeitpunkt des </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">     Vertragsschluss geltenden Fassung</span>
+                      </p>
+                      <ol style="text-align:left;">
+                        <li/>
+                      </ol>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">3. EINHEITSPREISE; UMFANG DER LEISTUNGSABGELTUNG</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">3.1 Die dem Auftrag zugrundeliegenden Einheitspreise sind Festpreise bis Bauende. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">3.2 In den Einheits- oder Pauschalpreisen bzw. in der Pauschalsumme ist alles inbegriffen, was zur vollständigen, ordnungsgemäßen und termingerechten Ausführung der Leistung oder </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Lieferung notwendig ist, insbesondere alle Nebenleistungen nach den entsprechenden </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Regelungen in den &quot;Allgemeinen Technischen Vertragsbedingungen für  Bauleistungen&quot; (ATV) der &quot;Vergabe- und Vertragsordnung für Bauleistungen&quot; (VOB/C), die zur Erfüllung der vertraglichen Verpflichtung erforderlich sind.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">3.3 Spätere Materialpreiserhöhungen oder sonstige Kostensteigerungen führen nicht zu</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">einer Änderung der vereinbarten Vergütung.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">4. AUSFÜHRUNGSUNTERLAGEN; BAUZUSTAND; BAUAUSFÜHRUNG</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">4.1 Der NU hat die ihm für die Ausführung seiner Arbeiten übergebenen Unterlagen </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">unverzüglich nach Erhalt in allen Punkten, insbesondere die Maße und Massen zu</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">überprüfen und diese mit den örtlichen Baumaßen zu vergleichen. Auf eventuelle</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Unstimmigkeiten gegenüber dem Leistungsverzeichnis hat er den AG unverzüglich</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">hinzuweisen. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">4.2 Muster und Proben hat der NU dem AG so frühzeitig vorzulegen, dass der Baufortschritt nicht gefährdet wird. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">4.3 Der NU hat sich vor Beginn seiner Arbeiten davon zu überzeugen, dass die für die Durchführung seiner Arbeiten erforderlichen örtlichen Voraussetzungen gegeben sind und die seinen Arbeiten voraus gegangenen Arbeiten ordnungsgemäß ausgeführt sind, um schädigende Auswirkungen auf die von ihm auszuführenden Leistungen zu vermeiden.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">4.4 Stellt der NU fest, dass ihm vorausgegangene Arbeiten nicht ordnungsgemäß ausgeführt worden sind, hat er dies dem AG unverzüglich mitzuteilen, um eine sofortige Nachbesserung veranlassen zu können und den Baufortschritt nicht zu verzögern</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">4.5 Der NU stellt den AG von Ersatzansprüchen Dritter, insbesondere Ansprüchen aus den §§ 906 ff. BGB, die auf der Bautätigkeit beruhen, frei, sofern der NU das Entstehen dieser Ersatzansprüche verschuldet hat.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">5. BEHINDERUNG</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">5.1 Alle Arbeiten sind im Rahmen der Gesamt- und Ablaufplanung auszuführen. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">5.2 Der NU ist verpflichtet, alle Behinderungen, die die termingerechte Ausführung seiner</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Arbeiten in Frage stellen, unverzüglich schriftlich anzuzeigen. Die Anzeige muss die</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Gründe der Behinderung enthalten.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">5.3 Eine Behinderung anderer Unternehmer ist zu vermeiden. Insbesondere sind bereits fertiggestellte Leistungen anderer Gewerke mit größtmöglicher Sorgfalt zu behandeln und Schäden an diesen unbedingt zu vermeiden. Sollte dennoch ein Schaden an einer vorangegangenen Leistung entstehen, so ist dieser entsprechend § 13.2 unverzüglich der Haftpflichtversicherung zu melden.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">6. AUFTRAGSFRISTEN UND VERTRAGSSTRAFE</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">6.1 Die Ausführung ist nach den im Verhandlungsprotokoll vereinbarten Fristen, bzw. nach Abruf, zu beginnen, angemessen zu fördern und zu vollenden. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">6.2 Bei einer Verzögerung der Anfangstermine aus bauseitigen Gründen bleibt in jedem Fall die Ausführungszeit, d.h. also die hierfür festgelegte Zahl der Werktage, verbindlich. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">6.3 Die im Auftragsschreiben und Verhandlungsprotokoll genannte Fertigstellungsfrist gilt als Vertragsfrist. Im Fall ihrer Nichteinhaltung ist der AG berechtigt, für jeden Werktag des schuldhaften Überschreitens der Fertigstellungsfrist die im Verhandlungsprotokoll jeweils vereinbarte Vertragsstrafe bis zum vereinbarten Höchstbetrag zu fordern, soweit der Nachunternehmer die Fristüberschreitung zu vertreten hat. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">6.4 Über die Vertragsstrafe hinausgehende Schadensersatzforderungen bleiben ausdrücklich vorbehalten. Eine verwirkte Vertragsstrafe wird auf verzugsbedingte Schadenersatzansprüche angerechnet. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">6.5 Der AG behält sich ausdrücklich vor die verwirkte Vertragsstrafe bis zur Schlusszahlung geltend machen zu können.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">6.6 Die Vertragsstrafenregelung gilt auch für Nachträge / Nachtragsleistungen.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">7. NEBENKOSTEN</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">7.1 Durch den AG werden keine Schuttmulden gestellt. Der NU ist verpflichtet, seinen anfallenden Schutt täglich auf eigene Rechnung, eigenverantwortlich und unaufgefordert nach den jeweils vor Ort geltenden gesetzlichen Regelungen, zu beseitigen. Sollte der NU einer Aufforderung der Bauleitung nach angemessener einmaliger Fristsetzung nicht nachkommen, so erfolgt eine Schuttbeseitigung durch den AG auf Kosten des NU. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">7.2 Sonstige Nebenkosten sind wie im Verhandlungsprotokoll festgelegt abzurechnen. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">7.3 Der AG ist berechtigt, die auf den NU entfallenden Kosten von den Abschlagszahlungen und/oder von der Schlussrechnung einzubehalten.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">8. ABNAHME; GEFAHRÜBERGANG</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">8.1 Es findet eine förmliche Abnahme gemäß § 12 Abs. 4 VOB/B statt. Das Abnahmeprotokoll ist von zwei vertretungsberechtigten Mitarbeitern des AG zu unterzeichnen. Die Fiktion der Abnahme durch rügelose Ingebrauchnahme im Sinne von § 12 Abs. 5 Nr. 2 VOB/ B wird ausdrücklich ausgeschlossen.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">8.2 Der NU trägt die Gefahr der Verschlechterung oder des Untergangs der Leistung bis</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">zur Abnahme des Werkes.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">9. ABRECHNUNG; ABSCHLAGSZAHLUNGEN</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">9.1 Die Abrechnung erfolgt, soweit kein Pauschalpreis vereinbart ist, nach gegenseitig anerkanntem Aufmaß.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">9.2 Sofern Abschlagszahlungen und damit verbundene Abschlagsrechnungen vereinbart sind, ist der Abschlagsrechnung jeweils eine prüffähige Aufstellung der Massen beizufügen. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">9.3 Einzureichen sind prüffähige, kumulierte Rechnungen in 2-facher Ausfertigung, aus denen die ausgeführten Gesamtleistungen ersichtlich sind. Die Schlussrechnung erfolgt innerhalb der Fristen des § 14 Abs. 3 VOB/B. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">9.4 Es wird vereinbart, dass der NU eine Sicherheit für die Vertragserfüllung durch Bürgschaft gemäß Muster (Anlage 4/1 zum Verhandlungsprotokoll) in Höhe von 10% der Gesamtauftragssumme leistet. Alternativ kann auf Wunsch des NU vereinbart werden, dass an den Abschlagszahlungen jeweils ein Einbehalt in Höhe von 10% vorgenommen wird.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">9.5 Für die Rechnungen ist eine Freistellungsbescheinigung  gemäß § 48 EStG vorzulegen.</span>
+                        <br></br>
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Liegt diese Freistellungsbescheinigung nicht vor, ist der AG gemäß § 48b EStG verpflichtet, von allen Gegenleistungen (in der Regel Zahlungen) 15% der Bruttozahlung einzubehalten und an das für den NU zuständige Finanzamt abzuführen.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">9.6 Voraussetzung für die Freigabe der ersten Abschlagszahlung ist die Vorlage der Gefährdungsanalyse (vgl. Ziffer 11 des Verhandlungsprotokolls) sowie der Nachweis über das Bestehen der Haftpflichtversicherung (vgl. Ziffer 9 des Verhandlungsprotokolls)</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">10. VORAUSZAHLUNG</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Gewährt der AG eine Abschlagszahlung für  Stoffe und Bauteile, die der NU noch nicht eingebaut hat oder leistet der AG eine Vorauszahlung auf solche Stoffe und Bauteile, so ist der NU verpflichtet, vor Auszahlung eine Bürgschaft entsprechend der Vorgaben des § 14 zu stellen.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">11. SCHLUSSZAHLUNG</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">11.1 Die Schlussrechnung kann nach vollständiger Fertigstellung der Leistung eingereicht werden. Die Zahlung der Schlussrechnung stellt keine Abnahme dar.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">11.2 Die Schlussrechnungsprüfung und Schlusszahlung erfolgt gemäß der Fristen von § 16 Abs. 3, Nr. 1 VOB/B, soweit im Verhandlungsprotokoll nichts anderes vereinbart ist.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">12. GEWÄHRLEISTUNG, MÄNGELANSPRÜCHE</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">12.1 Der NU übernimmt die Gewähr für seine Leistungen wie im Verhandlungsprotokoll vereinbart. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">12.2 Der NU ist verpflichtet, auf Verlangen des AG alle während der Gewährleistungsfrist hervortretenden Mängel, die auf vertragswidrige Leistung zurückzuführen sind, auf seine Kosten zu beseitigen.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">12.3 Als angemessene Frist im Sinne des § 13 VOB/B wird eine Frist von 10 Werktagen vereinbart.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">12.4 In Fällen, in denen erhebliche Gefahr für Leib oder Leben, Wertgegenstände, das Objekt insgesamt oder die öffentliche Sicherheit besteht (Notfall) ist sofortiges Handeln angezeigt. Hier wird eine Frist von höchstens 24h zur Beseitigung des Mangels vereinbart. Der AG ist berechtigt, sofort Maßnahmen zur Schadensminimierung zu veranlassen.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">12.5 Wird der Mangel nicht innerhalb der gesetzten Frist beseitigt, wird ohne weitere Ankündigung oder Nachfristsetzung die Selbstvornahme auf Kosten des NU vorgenommen. Darüber hinaus wird der AG die durch die Ausführung in Selbstvornahme entstandenen Kosten an den NU weiterberechnen. Für jeden im Fall der Selbstvornahme notwendigen Einsatz hat jedoch der NU mindestens einen Betrag in Höhe von 100,-€ zzgl. Mwst. für Koordination durch den Bauleiter, Fahrtkosten, Porto und Bearbeitung zu erstatten.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">12.6 Der AG ist berechtigt, die Ansprüche aus der Gewährleistung und die zu deren Absicherung gegebenen Sicherheiten an den Bauherrn oder an die jeweiligen Eigentümer des Bauvorhabens abzutreten.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">12.7 Für den Fall, dass der NU seinen Gewährleistungsverpflichtungen trotz Aufforderung durch den AG nicht nachkommt, seine Zahlungen einstellt oder das Insolvenzverfahren beantragt oder ein derartiges Verfahren eröffnet wird, tritt der NU seine sämtlichen, ihm gegenüber seinen Lieferanten und seinen Subunternehmern zustehenden Gewährleistungs- und Schadenersatzansprüche an den AG ab, der diese Abtretung hiermit ausdrücklich annimmt.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">13. VERSICHERUNGEN</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">13.1 Der AG schließt eine Bauleistungsversicherung für das gesamte Bauobjekt ab.</span>
+                        <br></br>
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Über den Umfang der Deckung hat sich der NU beim AG zu unterrichten. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">13.2 Der NU ist verpflichtet, jeden Schaden oder jeden Mangel, der einen Schaden nach sich ziehen kann, seiner Haftpflichtversicherung auch bereits vorsorglich zu melden sowie dem AG diese Meldung nachzuweisen.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">14. SICHERHEITSLEISTUNG</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">14.1 Der NU stellt Sicherheit in Form einer Vertragserfüllungsbürgschaft gemäß § 17 Abs. 4 VOB/B (nach Musterformular, Anlage 4/1 zum Verhandlungsprotokoll). Der NU übergibt diese dem AG innerhalb von zwei Wochen nach schriftlicher Auftragserteilung in Höhe des im Verhandlungsprotokoll festgelegten Prozentsatzes der vereinbarten Brutto-Auftragssumme (bei Umkehr der Steuerschuldnerschaft gemäß § 13b UStG nur aus der Nettoabrechnungssumme). Alternativ kann der NU wählen, dass statt der Sicherheit ein Bareinbehalt gemäß Ziffer 9.4 an den Abschlagszahlungen vorgenommen wird. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">14.2 Die Sicherheitsleistung wird erst nach Vorliegen der Vertragserfüllungsbürgschaftsurkunde in der vereinbarten Höhe ausbezahlt, falls keine weiteren Einschränkungen vorliegen. Die Rückgabe erfolgt nach Abnahme und Wegfall des Sicherungszweckes.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">14.3 Die Schlusszahlung wird in Höhe eines Teilbetrages von 5% der Brutto-Schlussrechnungssumme (bei Umkehr der Steuerschuldnerschaft § 13b UStG nur aus der Nettoabrechnungssumme) erst nach Vorliegen der vereinbarten Sicherheitsleistung (für die Gewährleistungs- Mängelansprüche des AG) fällig. Die Bürgschaft muss den Erfordernissen des § 17 Abs. 4 VOB/B und nachfolgender Bedingungen entsprechen (gemäß Muster). </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">14.4 Alle Bürgschaften müssen unbefristet, unwiderruflich, selbstschuldnerisch und unter Verzicht auf die Einreden der Aufrechenbarkeit und der Vorausklage nach den §§ 770, 771 BGB von einem inländischen Kreditinstitut oder Kreditversicherer ausgestellt sein. Die Bürgschaften haben vorzusehen, dass das Recht der Bundesrepublik Deutschland gilt. Der Ausschluss der Aufrechnung gilt als nicht vereinbart für den Fall, dass die Gegenforderung des Hauptschuldners unbestritten oder rechtskräftig festgestellt ist. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">14.5 Weiterhin müssen die Bürgschaften auch Garantie-, Schadensersatz- und Überzahlungs- oder Bereicherungsansprüche erfassen sowie Regressansprüche des Auftraggebers gegen den Auftragnehmer im Falle einer Inanspruchnahme des Auftraggebers aufgrund von § 14 AEntG oder § 13 MiLoG enthalten. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">14.6 Die Befreiung aus der Bürgschaft durch Hinterlegung des Bürgschaftsbetrages ist ausgeschlossen.</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">14.7 In den Bürgschaftsurkunden ist vorzusehen, dass der Bürge sich nicht auf die Einrede der Verjährung der Bürgschaftsforderung berufen darf, solange die Hauptforderung noch nicht verjährt ist. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">14.8 In Abänderung zum § 17 Abs. 8 Nr.2 VOB/B, wird die Sicherheitsleistung für Mängelansprüche erst nach Ablauf der Gewährleistungsfrist und Wegfall des Sicherungszweckes zurückgegeben.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">15. ABTRETUNGEN UND EIGENTUMSVORBEHALTE</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Eine Abtretung von Forderungen an Dritte, die dem NU aus diesem Vertrag gegen den AG erwachsen, ist ohne schriftliche Zustimmung des AG ausgeschlossen. Verlängerte Eigentumsvorbehalte von Lieferanten des NU können beim AG nicht geltend gemacht werden. Der AG ist von allen Rechten Dritter gegenüber dem NU freizustellen.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">16. WEITERVERGABE</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Eine Weitervergabe des ganzen Auftrages oder von Teilen des Auftrages seitens des NU ist nur mit vorheriger schriftlicher Zustimmung des AG gestattet.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">17. SONSTIGES </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">17.1  Der NU bestätigt, sich an die Vorschriften der Arbeitsplatz- und Baustellensicherung sowie der Baustellenverordnung zu halten und den Weisungen des Koordinators nach der Baustellenverordnung Folge zu leisten. Er wird hinsichtlich seiner Leistungen, insbesondere alle in Frage kommenden Vorschriften, Auflagen und Weisungen der zuständigen Behörden, wie z. B. Gewerbeaufsicht und Berufsgenossenschaft, einhalten. Der NU beschäftigt für seine Leistungen eigenes Aufsichtspersonal, das für die Einhaltung der Vorschriften Sorge trägt. Er haftet bei Nichtbeachtung dieser Vorschriften allein für alle sich daraus ergebenden Strafen, Unfälle und damit verbundenen Personen- und Sachschäden. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">17.2 Der NU ist bei dem Bauvorhaben als Subunternehmer des AG beschäftigt. Unabhängig von einer eventuellen Eigenverantwortlichkeit des AG gegenüber der Bauherrschaft übernimmt der NU für seine Leistung im Innenverhältnis zum AG die alleinige eigenverantwortliche Haftung.  </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">17.3 Für die Unterbringung der Arbeitskräfte sowie der Baustoffe auf der Baustelle hat der NU selbst zu sorgen. Das Einrichten, das Aufstellen von Unterkünften und Baracken, das Einrichten von Materiallagern und die Benutzung von Räumen dürfen nur im Einvernehmen mit dem AG erfolgen. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">17.4 Der NU hat eigenverantwortlich die Fachbauleitung für sein Gewerk gemäß den Vorgaben aus den Vertragsunterlagen zu koordinieren sowie den Fortschrittseiner Arbeiten in entsprechenden Zeitabständen zu kontrollieren, so dass er seine vertraglichen Leistungen im terminlich vorgegebenen Zeitraum erfüllen kann. Die Bauleitung des AG ersetzt nicht die Kontrolle des NU für dein Gewerk.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">18. GERICHTSSTAND; ANZUWENDENDES RECHT</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">Für Streitigkeiten aus und im Zusammenhang mit dem Vertragsverhältnis ist ausschließlicher Gerichtsstand Rastatt, soweit nicht gesetzlich zwingend etwas Anderes vorgeschrieben ist. Das Vertragsverhältnis unterliegt mit sämtlichen Bestandteilen deutschem Recht. Das Recht über den internationalen Handelskauf wird ausdrücklich ausgeschlossen.</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">19. TEILUNWIRKSAMKEIT; VERTRAGSÄNDERUNG</span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">19.1 Sollten einzelne Bestimmungen dieses Vertrages unwirksam oder undurchführbar sein bzw. nach Vertragsschluss unwirksam oder undurchführbar werden, so wird dadurch die Wirksamkeit des Vertrags im Übrigen nicht berührt. Anstelle der unwirksamen oder undurchführbaren Bestimmung soll diejenige wirksame und durchführbare Regelung treten, deren Wirkungen der wirtschaftlichen Zielsetzung möglichst nahe kommen, die die Vertragsparteien mit der unwirksamen beziehungsweise undurchführbaren Bestimmung verfolgt haben. Die vorstehenden Bestimmungen gelten entsprechend für den Fall, dass sich der Vertrag als lückenhaft erweist. </span>
+                      </p>
+                      <p style="text-align:left;">
+                        <span style="font-family:Arial;color:rgb(0,0,0);">19.2 Jede Änderung und Ergänzung des Vertrages bedarf der Schriftform..</span>
+                      </p>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;"/>
+                      <p style="text-align:left;"/>
+                    </Text>
+                  </DetailTxt>
+                  <OutlineText>
+                    <OutlTxt>
+                      <TextOutlTxt>
+                        <p>
+                          <span></span>
+                        </p>
+                      </TextOutlTxt>
+                    </OutlTxt>
+                  </OutlineText>
+                </CompleteText>
+              </Description>
+            </Remark>
+            <BoQCtgy ID="E_5887_36B20711D64F407596FE8C89CA7DD335" RNoPart="1">
+              <LblTx>
+                <p>
+                  <span>TROCKENBAUARBEITEN  DIN 18350 Wände und Decken</span>
+                </p>
+              </LblTx>
+              <BoQBody>
+                <Remark ID="H_5887_AAA2D0E477F14FFC845C0AA569587D55_VORTEXT">
+                  <Description>
+                    <CompleteText>
+                      <DetailTxt>
+                        <Text>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;text-decoration:underline;">Bauhauptarbeiten</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Der Bauherr, die Quantum Immobilien Kapitalverwaltungsgesellschaft mbh, beabsichtigt die Dachgeschosse der vier aneinander gereihten Vorderhäuser Oderstr. 22, 22a, 23 und 23a in 10247 Berlin-Friedrichshain neu als Holzkonstruktion zu errichten und auszubauen.</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Länge des neuen Daches: 79 m</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">max First-Höhe des neuen Daches: 5,75 m</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Hier werden die dafür notwendigen Hochbauleistungen ausgeschrieben. </span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Die TGA-Leistungen werden durch das IB tga experts parallel ausgeschrieben / versandt und sollen zusammen vergeben werden.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">Ausführungszeitraum: April 2024 - Jan. 2025 </span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Die Leistung soll als komplette Leistung vergeben und aus einer Hand organisiert  und ausgeführt werden, wenn möglich also als GU-Leistung.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Im nachfolgenden Leistungsverzeichnis werden die</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Hochbauarbeiten beschrieben, bestehend aus den </span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Gewerken / Leistungen / Titeln:</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Baustelleneinrichtung</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Gerüst</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Abbruch</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Deckenverstärkung ü.4. OG</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Dachstuhl, Deckenaufdopplung</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Maurer-/Betonarbeiten</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Dachdeckungs- Klempnerarbeiten</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Außenputz</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Innenputz</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Trockenbau</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Die Gewerke </span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Fenster / Fassade</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Schlosser-/ Metallbau</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- HLS und Elektro</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Tischler</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Fliesen </span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Bodenbelag / Parkett</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Maler </span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">- Reinigung </span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">werden anschließend getrennt ausgeschrieben.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Der neue Dachstuhl wird auf der obersten, massiven Geschossdecke (Stahlbeton-Rippendecke) des bewohnten Bestandsgebäudes  v. 1957 errichtet und ausgebaut.</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Anzahl Wohnungen neu im DG:   4</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Wohnfläche neu DG   690 m²</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);font-weight:bold;">v</span>
+                            <span style="font-family:Arial;color:rgb(0,0,0);">gl. Grundrißpläne &amp; Schnitte in der Anlage.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Alle Steigleitungen, etc sind in den Geschossen vorbereitet, so dass keine Arbeiten in den bewohnten Wohnungen vorgesehen sind.</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Der Bauherr stellt  Straßenlandsondernutzungsrechte zur Verfügung. Die BE soll/ kann in der Oderstr. vorne oder im Wendeplatz der Müggelstr. hinten eingerichtet werden, s. Lageplan. </span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);"> </span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Der Auftragnehmer hat sich vor Angebotsabgabe von den</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">örtlichen Verhältnissen und Gegebenheiten zu</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">überzeugen, so dass Nachforderungen mit Hinweis auf</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">abweichende Leistungsvoraussetzungen ausgeschlossen</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">sind. Für eine Ortsbegehung stehen wir Ihnen unter</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="font-family:Arial;color:rgb(0,0,0);">Tel. Nr. 030 - 44055510 zur Verfügung.</span>
+                          </p>
+                        </Text>
+                      </DetailTxt>
+                      <OutlineText>
+                        <OutlTxt>
+                          <TextOutlTxt>
+                            <p>
+                              <span>Baubeschreibung</span>
+                            </p>
+                          </TextOutlTxt>
+                        </OutlTxt>
+                      </OutlineText>
+                    </CompleteText>
+                  </Description>
+                </Remark>
+                <Remark ID="H_5887_CF227B0E662A442BB3DCBF0BA7A75E39_VORTEXT">
+                  <Description>
+                    <CompleteText>
+                      <DetailTxt>
+                        <Text>
+                          <p style="text-align:left;">
+                            <span style="">Die im folgenden Titel beschriebenen GK-Decken befinden</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">sich im DG, d. h. es handelt sich um die Unterdecken /</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Wände des neuen Dachstuhles.</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Auf eine rissfreie Konstruktion und auf den</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Feuerhemmenden Schutz (F30) der Tragkonstruktion ist zu</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">achten.</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Alle Wände/ Decken werden doppelt beplankt, gespachtelt</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">und geschliffen, Q2 anstrichfertig.</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Es sind die Herstellerhinweise des verwendeten</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Herstellers zu beachten.</span>
+                          </p>
+                        </Text>
+                      </DetailTxt>
+                      <OutlineText>
+                        <OutlTxt>
+                          <TextOutlTxt>
+                            <p>
+                              <span>Hinweis</span>
+                            </p>
+                          </TextOutlTxt>
+                        </OutlTxt>
+                      </OutlineText>
+                    </CompleteText>
+                  </Description>
+                </Remark>
+                <Remark ID="H_5887_385077D37ECC41F480C6A4EE345FF3EE_VORTEXT">
+                  <Description>
+                    <CompleteText>
+                      <DetailTxt>
+                        <Text>
+                          <p style="text-align:left;">
+                            <span style="">Zusätzliche technische Vertragsbedingungen</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Trockenbauarbeiten nach DIN 18350</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Der Ausführung der Trockenputzarbeiten liegen zugrunde:</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Alle einschlägigen Vorschriften, sofern nachstehend</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">keine besonderen Angaben gemacht sind.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Die Herstellervorschriften hinsichtlich Ständerabstand,</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Tragkonstruktion bei abgehängten Decken, Profilbreite</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">etc., sind zu berücksichtigen.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">In den nachstehenden Leistungsbeschreibungen sind</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Ergänzungen enthalten, die nicht gesondert vergütet</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">werden, sofern nicht im Leistungstext hierfür</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">gesonderte Positionen ausgewiesen sind:</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Das Stellen von GK-Montagewänden bedeutet, daß diese</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Arbeiten in der Regel in 2 Abschnitten zu erfolgen</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">haben, d.h. Stellen der Ständerprofile und einseitige</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Beplankung. Nach Ausführung sämtlicher</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Installationsarbeiten wird die 2. Beplankung /</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Schließung ausgeführt.</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Unterbrechungskosten werden aus diesem Grunde nicht</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">vergütet.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Sämtliche Leistungen verstehen sich als komplette</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Leistungen, einschließlich aller verzinkten</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Befestigungsmaterialien, Abhängungen und Absteigungen</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">etc., fugenlos/malerfertig auf allen Arten von Decken</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">(Beton-, Holzbalkendecke etc.) und an allen Arten von</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Wänden (Mauerwerk, Holz, Beton etc.).</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Es sind die Ebenheitstoleranzen gem. DIN18202, Tab.3,</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Zeile 7 anzuwenden.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Es dürfen nur verzinkte Ständer-, Decken- und</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Fußbodenanschlußprofile verwendet werden. Ebenso sind</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">die Unterkonstruktionen für abgehängte Decken aus</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">verzinkten Profilen, bestehend aus Grundlattung und</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Traglattung, herzustellen. Schrägwandflächen an</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Dachverbandshölzern (Sparren etc.) können eine vom</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Auftragnehmer zu liefernde und einzubauende</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Unterkonstruktion aus imprägnierten Dachlatten</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">erhalten. Maßnahmen, die für einen fluchtgerechten</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Einbau notwendig sind, sind in die Einheitspreise</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">einzukalkulieren (Unterfüttern, Unterkeilen etc.).</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">In die Einheitspreise einzukalkulieren sind das</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Herstellen aller Wandkreuzungen und Abzweigungen sowie</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Abschlüsse von frei im Raum endenden Wänden, Öffnungen</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">und Ausfräsungen für Schalter, Steckdosen,</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Abzweigdosen, Sanitär-, Heizungs- und</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Lüftungsinstallation und alle sonstigen Einbauteile.</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Das nachträgliche Schließen und Anarbeiten von</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Öffnungen wird nicht gesondert vergütet. Elektrokabel</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">sind durch herzustellende Öffnungen in den Platten aus</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">der Wand herauszuführen.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Herstellen der Leibungskränze für Dachflächenfenster</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">o.ä.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Herstellen eines elastischen Decken-, Wand- und</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Bodenanschlusses aus Mineralfaserstreifen.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Einlegen und Befestigen von Mineralfaserdämmstoff je</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">nach Anforderung an den Schallschutz.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Soweit gefordert, hat der Auftragnehmer den Nachweis</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">für die Erfüllung der Schallschutz-Forderungen zu</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">führen. Eventuelle Kosten für Messversuche im Labor</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">oder vor Ort sowie Gebühren für die Beauftragung eines</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">zugelassenen Institutes sind bei begründeten Zweifeln</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">vom Auftragnehmer zu tragen.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Sämtliche Ecken, Kanten und Vorsprünge sind mit</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">verzinkten Eckschutzschienen zu versehen.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">In den Bädern sind verzinkte Klebebleche, Höhe 15 cm</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">über OK wasserführender Schicht (Fliesen) als</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Unterschnitt für die Sockelklebung einzubauen.(hier</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">gesondert vergütet)</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Sämtliche Anschlüsse an andere Baumaterialien (z.B.</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">GK-Platten/Putz, GK-Platten/Türzargen,</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">GK-Platten/Fensterrahmen) sind einzuschneiden</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">(Sollrißfuge) und dauerelastisch auszuspritzen.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">In die Türöffnungen sind verzinkte Stahlprofile für den</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Einbau der Zargen einzustellen.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Die im Leistungsverzeichnis abgegebenen Einheitspreise</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">gelten auch für Kleinstmengen (Schließen von</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Türöffnungen, Rohrabspannungen etc.), wenn hierfür im</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Leistungstext keine gesonderten Positionen ausgewiesen</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">sind.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Für das Aufsetzen von GK-Platten im Klebeverfahren an</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">putzfreien oder verputzten Wänden ist der Untergrund</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">vom Auftragnehmer auf Verträglichkeit hin zu</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">untersuchen. Gegebenenfalls wird eine andere</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Ausführungsart gewählt (z.B. GK-Platten auf</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Unterkonstruktion). Es dürfen nur die vom Hersteller</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">zugelassenen Klebematerialien verwendet werden.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Werden vom Auftragnehmer die Wärmedämmarbeiten mit</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">ausgeführt (z.B. beim Ausbau von Dachgeschossen), sind</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">die Dämmstreifen entsprechend dem Sparrenabstand zu</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">liefern. Beim Aufmaß werden die Sparren übermessen. Die</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Dämmung unterseitig alukaschiert ist dicht</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">gestoßen zu verlegen. Auf das Ausstopfen aller Ecken</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">und die Dichte aller Beschädigungen der Alu-Kaschierung</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">sind mit Alu-Streifen zu verkleben. Die Befestigung</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">(Nagelstreifen) ist sorgfältig auszuführen. Eventuell</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">durchhängende Dämmung ist gegebenenfalls</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">mittels unterseitig aufgenagelten imprägnierten Latten</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">oder Leisten zu sichern.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Alle notwendigen Arbeitsrüstungen über 2,0m sind mit</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">den Einheitspreisen abgegolten.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Das Reinigen der Arbeitsbereiche sowie das Entfernen</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">störender Einbauteile und Materialien vor Beginn der</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Arbeiten.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Die Unterhaltung der erbrachten Leistung bis zur</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Übergabe an den Auftraggeber oder die Hausverwaltung</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">ist Sache des Auftragnehmers und wird nicht gesondert</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">vergütet.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Die Leistungen sind nach Angabe und Aufforderung</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">abschnittsweise, falls im Interesse des Auftraggebers</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">erforderlich, mit angemessener Unterbrechung Hand in</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Hand mit den übrigen am Bau beschäftigten Firmen</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">durchzuführen.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">Mit den im Leistungsverzeichnis und speziell in den</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Vertragsbedingungen zum Leistungsverzeichnis</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">enthaltenen Angaben über Bauart, Bauteil, Baustoff und</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Abmessung gelten auch der Herstellungsvorgang und</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">-ablauf bis zur fertigen Leistung unter Zugrundelegung</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">der anerkannten Regeln der Technik und der Bestimmungen</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">der DIN als beschrieben und bei den angebotenen</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Einheitspreisen als berücksichtigt. Hierbei bedeutet</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Bauart: Das Herstellen durch Zusammenfügen der Stoffe</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">und Bauteile bis zur fertigen Leistung.</span>
+                          </p>
+                          <p style="text-align:left;"/>
+                          <p style="text-align:left;">
+                            <span style="">In diesen &quot;Zusätzlichen technischen</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Vertragsbedingungen&quot; sind Trockenputzarbeiten sowohl</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">für die Errichtung von Neubauten als auch für die</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Durchführung von Modernisierungs- und</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Instandhaltungsarbeiten aufgeführt bzw. beschrieben. Es</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">gelten jeweils die Bestimmungen für die vorgegebene</span>
+                          </p>
+                          <p style="text-align:left;">
+                            <span style="">Ausführungsart.</span>
+                          </p>
+                        </Text>
+                      </DetailTxt>
+                      <OutlineText>
+                        <OutlTxt>
+                          <TextOutlTxt>
+                            <p>
+                              <span>Hinweis</span>
+                            </p>
+                          </TextOutlTxt>
+                        </OutlTxt>
+                      </OutlineText>
+                    </CompleteText>
+                  </Description>
+                </Remark>
+                <BoQCtgy ID="E_5887_CCFC1827B0F54251B4A97A22F416EE08" RNoPart="1">
+                  <LblTx>
+                    <p>
+                      <span>TROCKENPUTZ</span>
+                    </p>
+                  </LblTx>
+                  <BoQBody>
+                    <Itemlist>
+                      <Item ID="P_5887_46C1E7720B17443686D2B84EE4338978" RNoPart="1">
+                        <Qty>15.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:26px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">GK-Bauplatte, 12,5 mm punktförmig mit Ansetzbinder</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Wandtrockenputz, GK, 12,5 mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_E4FA2A92105A4E77BB6533AB02E83077" RNoPart="2">
+                        <Qty>30.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">wie vor, jedoch imprägnierte (grüne) Beplankung im Badbereich</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Wandtrockenputz, GKi, 12,5 mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                    </Itemlist>
+                  </BoQBody>
+                </BoQCtgy>
+                <BoQCtgy ID="E_5887_38B99A8B02F148ED86A9C80BC20ABC96" RNoPart="2">
+                  <LblTx>
+                    <p>
+                      <span>MONTAGEWÄNDE</span>
+                    </p>
+                  </LblTx>
+                  <BoQBody>
+                    <Itemlist>
+                      <Item ID="P_5887_3BB7F88ACAE54A87B5FFA317F371E53D" RNoPart="1">
+                        <Qty>25.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-left:6px;margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Profile               : 		50/50/0,6 mm</span>
+                                </p>
+                                <p style="margin-left:6px;margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung je Seite   : 	2x12,5 mm Bauplatte</span>
+                                </p>
+                                <p style="margin-left:6px;margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmdicke             : 	50 mm</span>
+                                </p>
+                                <p style="margin-left:6px;margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Mindestrohdichte      : 	40 kg/m³</span>
+                                </p>
+                                <p style="margin-left:6px;margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schalldämmung       : 	Rw 50 dB</span>
+                                </p>
+                                <p style="margin-left:6px;margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Feuerwiderstandsklasse:	 /</span>
+                                </p>
+                                <p style="margin-left:6px;margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Wanddicke gesamt   : 	100 mm</span>
+                                </p>
+                                <p style="margin-left:6px;margin-right:23px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort                  :  	DG</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GK-Ständerwand, d=100mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_3E099DD8B31F40BCB68BB5337D95D69C" RNoPart="2">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>1.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Profile               : 		75/50/0,6 mm</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung je Seite   : 	1x12,5 mm Bauplatte</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmdicke             : 	60 mm</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Mindestrohdichte      : 	40 kg/m³</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schalldämmung       : 	Rw 50 dB</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Feuerwiderstandsklasse: 	/</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Wanddicke gesamt   : 	100 mm</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort                  :  	DG</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GK-Ständerwand, d=100mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_DAB596042B994825BAA62E327A44781E" RNoPart="3">
+                        <Qty>902.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">wie vor jedoch beidseitig doppelt beplankt mit GK-Bauplatte (dadurch F30).</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GK-Ständerwand, d=125mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_C63683A34EB34CB99652622B11DFDFF7" RNoPart="4">
+                        <Qty>20.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:33px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">zulage zur Vorposition für Herstellen der 12,5 cm GK-Wand als Rundung.</span>
+                                </p>
+                                <p style="margin-right:33px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">DM ca. 170 cm</span>
+                                </p>
+                                <p style="margin-right:33px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: W 1+4, um Spindeltreppen</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Zulage f. Rundung</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_FD22651ED31E48B4AD26A894E9B55620" RNoPart="5">
+                        <Qty>24.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">wie vor jedoch d=15 cm, CW 100, beidseitig doppelt beplankt mit GK-Bauplatte.</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: Innenwände zur Aufnahme der Unterverteilung Fußbodenheizung, Stützen, etc.</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GK-Ständerwand, d=150mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_46699DE8C8424C148BF79C4E3751AB19" RNoPart="6">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>1.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Doppelständerwand als Wohnungstrennwand,</span>
+                                </p>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Profile               : 2 x CW 75/50/0,6 getrennt, mit</span>
+                                </p>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">mind. 1cm Luft</span>
+                                </p>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung je Seite: 2x12,5 mm Brandschutzplatten</span>
+                                </p>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmdicke             : 100 mm</span>
+                                </p>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schalldämmung: Bewertetes</span>
+                                </p>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schall-Längs-Dämm-Maß Rw 57 dB</span>
+                                </p>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Feuerwiderstandsklasse: F 90 A</span>
+                                </p>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Wanddicke             : 210 mm</span>
+                                </p>
+                                <p style="margin-right:39px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: DG</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GK-Ständerwand, Wohnungstrennwand, WD 100</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_FDB9BAC4E348439986D0DFDA63EB902A" RNoPart="7">
+                        <Qty>250.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:57px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">als Zulage zu Vorpositionen:</span>
+                                </p>
+                                <p style="margin-right:57px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">statt GK-Bauplatte  mit GK-Feuchtraumplatte beplanken.</span>
+                                </p>
+                                <p style="margin-right:57px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung     : 1x12,5 mm (grün)</span>
+                                </p>
+                                <p style="margin-right:57px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Oberfläche: malerfertig</span>
+                                </p>
+                                <p style="margin-right:57px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: Bäder, Feuchträume</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GKi, 2.Lage, als Zulage</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_EDA4EB5987F045799C36C740D2D2E736" RNoPart="8">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>902.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:43px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Gipskarton-Wände statt mit o. g. Mineralwolle mit organischer Dämmplatte abgleitsicher im Profilzwischenraum einsetezn.</span>
+                                </p>
+                                <p style="margin-right:43px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Stärke entsprechend den Herstellerangaben zur Herstellung der Brand-/ Schallschutzanforderungen.</span>
+                                </p>
+                                <p style="margin-right:43px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Kalkulationgröße: 60 mm</span>
+                                </p>
+                                <p style="margin-right:43px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr. : Heraflax o. glw.</span>
+                                </p>
+                                <p style="margin-right:43px;text-align:left;"/>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>alt.: organische Dämmung, als Zulage</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_B796CE69C08343759DE29DEF1C20A144" RNoPart="9">
+                        <Qty>32.000</Qty>
+                        <QU>m</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:29px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Quertraversen aus Holzbohlen, 20cm, in</span>
+                                </p>
+                                <p style="margin-right:29px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Gipskartonständerwänden, als Befestigungsgrundlage für</span>
+                                </p>
+                                <p style="margin-right:29px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Leitungen, Oberschränke, Waschtische, etc.</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Quertraversen für Ständerwände, Installation</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                    </Itemlist>
+                  </BoQBody>
+                </BoQCtgy>
+                <BoQCtgy ID="E_5887_05ABDC84513D46EEA949DAEBB0DB547A" RNoPart="3">
+                  <LblTx>
+                    <p>
+                      <span>WANDBEKLEIDUNG</span>
+                    </p>
+                  </LblTx>
+                  <BoQBody>
+                    <Itemlist>
+                      <Item ID="P_5887_4AC3C478CBF1462B844D8FDC2789DD78" RNoPart="1">
+                        <Qty>140.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Gipskartonplatten-Vorsatzschale für Holzständer-Aussenwände mit</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Ständerwerk aus verzinkten 50er CW-Ständern und</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">U-Randprofilen 30/30/6. </span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung     : 2 x 12,5 mm GKB</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmung: 4 cm MiWo</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Bautiefe: ca. 8 cm</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Bauhöhe:        raumhoch</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Oberfläche: Q2, anstrichfertig</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: alle Aussenwände </span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Laibungen Fenster &gt;2,5 m² in Folgeposition</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GK-Vorsatzschale, Aussenwände</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_C4B34D9658424993BD4461F7B480B5E7" RNoPart="2">
+                        <Qty>219.000</Qty>
+                        <QU>m</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:42px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Zulage zur Vorposition für Fenstertür-Laibungen seitlich und oben</span>
+                                </p>
+                                <p style="margin-right:42px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung     : 2 x 12,5 mm GKB</span>
+                                </p>
+                                <p style="margin-right:42px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Laibungstiefe: ca. 10 cm</span>
+                                </p>
+                                <p style="margin-right:42px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Bauhöhe:        raumhoch</span>
+                                </p>
+                                <p style="margin-right:42px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Oberfläche: Q2, anstrichfertig</span>
+                                </p>
+                                <p style="margin-right:42px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: alle Aussenwände </span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Zulage f. Laibungen Aussenwände</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_A7D0E7254C48402789C108F79E12B682" RNoPart="3">
+                        <Qty>20.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Gipskartonplatten-Vorsatzschale für Vorwand-Inst. mit</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Ständerwerk aus verzinkten 50er CW-Ständern und</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">U-Randprofilen 30/30/6. Enthalten ist das Spachteln</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">jeder Plattenlage, das Herstellen aller Anschlußfugen,</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">das Herstellen der Vorwandauflager, das</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Anarbeiten an Installationsleitungen, Öffnungen und</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Objekthalterungen.</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einschließlich waagrechter Beplankung als oberer</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Abschluß.</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung     : 1x12,5 mm, 1x 12,5 mm Feuchtraumplatte</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Bautiefe: ca. 18 cm</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Bauhöhe:        ca 1,18m</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Oberfläche: fliesenfertig</span>
+                                </p>
+                                <p style="margin-right:47px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: Vorwandinstallationen Bäder</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GK-Vorsatzschale, Vorwand.Inst.</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_C2100F6CA1414241AF420FAF76087044" RNoPart="4">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>32.500</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Gipskartonplatten-Vorsatzschale als schalldämmende</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Wandverkleidung mit F90, bestehend aus freistehender</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Metall- Unterkonstruktion, sowie vollflächiger</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">doppelter Bekleidung und dazwischenliegender</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmatteneinlage. Die Anschlüsse an die angrenzenden</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Bauteile sind mit einem Randprofil 50x50x6 mm,</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">stumpf herstellen zu malerfertig verspachteln.</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Profile               : 75/50/0,6 mm</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung      : 1x 25mm Massiv-Bauplatte, 1x 18mm</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Feuerschutzplatte, Fabr. Knauf o. glw.</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmung        : Mineralwolle, zB. Isover BS 40</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmdicke       : 40 mm</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Mindestrohdichte: 40 kg/m³</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schalldämmung   : 30dB (Verbesserung)</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: Wohnungstrennwände</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GK-Vors., Aufdoppelung Wohnungstrennwand</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_D9C26E03366C447FA79FFF38FB943D61" RNoPart="5">
+                        <Qty>26.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Installationsschächte und Abkofferungen aus</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Gipskartonplatten für Rohrleitungen und dergl., incl. erforderlicher Unterkonstruktion aus Metallprofilen CW 75 herstellen, malerfertig verspachteln, Dämmung 50 mm MW stramm einpassen, ggf. Hohlräume mit loser Mineralwolle voll ausstopfen</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Aufmaß      : Abwicklungsfläche</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung: 2x12,5 mm, innen GKBi (grün)</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Brandschutzanforderung  F30</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GK-Schächte, 2x12,5 mm m. Dämm.</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_3048536836674C02A1A5E5160578B917" RNoPart="6">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>254.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Verkleidung im Außenbereich</span>
+                                </p>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">liefern und einbauen, bestehend aus</span>
+                                </p>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">von innen nach außen:</span>
+                                </p>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Lattung 4/6 cm senkrecht auf Mauerwerk / Schalung einschl. Ausgleich</span>
+                                </p>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Holz-Zement-Platte hinterlüftet, einschl. vollflächiger Spachtelung gemäß Herstellerangaben.</span>
+                                </p>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Alle Kanten / Plattenenden</span>
+                                </p>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">sind mit Schutzschienen auszubilden.</span>
+                                </p>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Auch Kleinflächen.</span>
+                                </p>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabrikat:     Perlite Perlcon-Board 15mm o. glw.,</span>
+                                </p>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Untergrund: Holzständerwerk</span>
+                                </p>
+                                <p style="margin-right:41px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort:  VH Dachfassaden </span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Dachfassaden - Verkleidung</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                    </Itemlist>
+                  </BoQBody>
+                </BoQCtgy>
+                <BoQCtgy ID="E_5887_69280206194148C38F0816D2B60F7309" RNoPart="4">
+                  <LblTx>
+                    <p>
+                      <span>DÄMMUNGEN DACH zwischen Sparren</span>
+                    </p>
+                  </LblTx>
+                  <BoQBody>
+                    <Itemlist>
+                      <Item ID="P_5887_514787881CB7493EA45BB01BD69BE9BA" RNoPart="1">
+                        <Qty>1260.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Zwischensparrendämmung in der Sparrenebene zwischen Dampfbremse / UK abg. GK-Decke und Unterdeckplatte Steildach bzw. OSB des Flachdaches liefern und einblasen gem. Herstellerhinweisen:</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Material: Holzwolle</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmstärke: 16 cm </span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">WLG 039 </span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr. Steico zell o.glw.</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;"/>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Angebotenes Fabrikat:     .............................</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">(Vom Bieter auszufüllen)</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Leistung inkl. und gemäß bauphysikalischem Hersteller-Nachweis des Dachaufbaues.</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: Flach- und Steildach</span>
+                                </p>
+                                <p style="margin-right:46px;text-align:left;"/>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Zwischen-Sparren-Dämmung Steil- u. Flachdach: Steico zell, 16 cm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_2E2A333D76394A14BA488C9F5D2FBC6F" RNoPart="2">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>1260.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">alt. zwischen die Sparren Steildach:</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">statt Einblasdämmung Plattenware</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Material: Holzwolleleichtbauplatte</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmstärke: 16 cm </span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">WLG 036 </span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr. Steico flex o.glw.</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;"/>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Angebotenes Fabrikat:     .............................</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">(Vom Bieter auszufüllen)</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Leistung inkl. und gemäß bauphysikalischem Hersteller-Nachweis des Dachaufbaues.</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;"/>
+                                <p style="margin-right:36px;text-align:left;"/>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>alt.: Steico flex, 16 cm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_7A09CD97E6924DF69DDCDAACBFF67458" RNoPart="3">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>1260.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Montage von Mineralwolle in Decken oder Dachschrägen oder Abseiten stramm zwischen den neuen Sparren / Balken einbauen und gleitsicher befestigen. </span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Alle Zwischenräume sowie die Fugen z.B. an Dachflächenfenstern sind dicht auszustopfen.</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Incl. systemgleicher Dampfbremse aus PE-Folie &gt;1mm, mind. 30 cm stoßüberlappend und Abdichtung aller Anschlüsse und Überlappungen mit Aluband, etc.</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmdicke: 220 mm WLG 035</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Nicht brennbar A1</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort DG zwischen Sparren.</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabrikat:    </span>
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">ISOVER Integra ZKF 1-035 Zwischensparren-Klemmfilz</span>
+                                  <span style="font-family:Arial;color:rgb(0,0,0);"> o. glw.</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>alt..Mineralfaserdämmung, d=160mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                    </Itemlist>
+                  </BoQBody>
+                </BoQCtgy>
+                <BoQCtgy ID="E_5887_A3E2154940614FB39CCA645C95CB6320" RNoPart="5">
+                  <LblTx>
+                    <p>
+                      <span>DECKEN DG</span>
+                    </p>
+                  </LblTx>
+                  <BoQBody>
+                    <Itemlist>
+                      <Item ID="P_5887_180BC4EB4364428B95C8358B9BCC8907" RNoPart="1">
+                        <Qty>1400.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Gipskarton-Decke abgehängt, F30, im geneigten</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Flachdach / Steildach-Bereich, bestehend aus:</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">- Unterkonstruktion aus einem Tragrost aus Grund- und</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Tragprofil an der bestehenden Rohdecke / Sparren mit</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schnellabhängern, Draht mit Öse, befestigen</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">- Dampfsperre einschl. aller Anschlüsse u Durchdringungen herstellen,</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);"> </span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr. Knauf Piano o.glw.</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;"/>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">- Bekleidung aus  2 Lagen Gipskartonbauplatten zwischen den Holzbindern, anstrichfertig gespachtelt und geschliffen inkl.</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">- Schattenfuge 2*2,5 cm entlang Sparren, mit Randprofil hinmterlegt und schwarz beschichtet .</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">- Verlauf: UK Sparren folgend. </span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">- Fensteröffnungen v. Dachflächenfenstern &gt; 2,5 m² werden abgezogen, Laibungen werden gesondert vergütet, Ausführung nach Detail / Absprache vor Ort.</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">- Arbeitsrüstungen / Zulage für Arbeitshöhen bis </span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">H = Dach 1 bis 3,5m bzw Dach 2 bis bis 5, 0 m sind enthalten.</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Profile: CD 60/27/0,6  UD 28/27/0,6</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung: 2 x 12,5mm Feuerschutzplatte</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Oberfläche: Q2, anstrichfertig</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmung: 40 mm Mineralfaser</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Feuerwiderstandsklasse: F30</span>
+                                </p>
+                                <p style="margin-right:35px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: DG</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>GK-Decke DG, abg., F30, Dämmung 40mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_6A08BBB9195E4CD98CCFC986F394BC01" RNoPart="2">
+                        <Qty>1400.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:34px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Zulager für:</span>
+                                </p>
+                                <p style="margin-right:34px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Gipskarton-Decke vollflächig Q3-gespachtelt statt Q2.</span>
+                                </p>
+                                <p style="margin-right:34px;text-align:left;"/>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Q3 als Zulage</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_B81797684AFB4022B3B0C09A6D5C5033" RNoPart="3">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>1400.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:30px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Gipskarton-Wände statt mit o. g. Mineralwolle mit organischer Dämmplatte 4cm abgleitsicher im Profilzwischenraum einsetzen.</span>
+                                </p>
+                                <p style="margin-right:30px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr. : Steico o. glw.</span>
+                                </p>
+                                <p style="margin-right:30px;text-align:left;"/>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>alt.: organische Dämmung, als Zulage</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_FE56CD8D67D245DFACC1160DD54CAED6" RNoPart="4">
+                        <Qty>5.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:27px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Abschluß einer abgehangenen Decke / Schürze, mit</span>
+                                </p>
+                                <p style="margin-right:27px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Unterkonstruktion aus Profilen der abgehängten Decke,</span>
+                                </p>
+                                <p style="margin-right:27px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Deckenanschluß elastisch, Unterkante mit Kantenschutz.</span>
+                                </p>
+                                <p style="margin-right:27px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Höhe bis 30 cm</span>
+                                </p>
+                                <p style="margin-right:27px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung: 2*12,5 mm </span>
+                                </p>
+                                <p style="margin-right:27px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmung: 40 mm Mineralfaser</span>
+                                </p>
+                                <p style="margin-right:27px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Feuerwiderstandsklasse: F30</span>
+                                </p>
+                                <p style="margin-right:27px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: Schürze Höhenversprung DG</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Höhenversprung Decke verkleiden</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_76A202F9A60F466F8CA1BE5BD424A61E" RNoPart="5">
+                        <Qty>8.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:52px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Laibungen von Lichtkuppeln und Dachfenstern über 2,5 m² verkleiden, senkrecht mit oberem, waagerechtem Abschluss an den LiKu-Rahmen gem. Herstellervorschrift.</span>
+                                </p>
+                                <p style="margin-right:52px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beplankung: 2*12,5 mm GKB </span>
+                                </p>
+                                <p style="margin-right:52px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Brandschutz: f30</span>
+                                </p>
+                                <p style="margin-right:52px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Dämmung: 40 mm Mineralfaser</span>
+                                </p>
+                                <p style="margin-right:52px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: Lichtkuppeln DG</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Laibungen v. Lichtkuppeln und Dachfenstern</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_1777199D0A1E4850AE67DB25CC371638" RNoPart="6">
+                        <Qty>120.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Feuchtraumplatten für die beschriebene Position</span>
+                                </p>
+                                <p style="margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">verwenden; als Zulage.</span>
+                                </p>
+                                <p style="margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: Bäder, Feuchträume, Abstellräume mit Waschmaschine, WC</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Feuchtraumplatten, Zulage</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_EC9FD14797AC4E8498EF5C9616295AEC" RNoPart="7">
+                        <Qty>40.000</Qty>
+                        <QU>Stk</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Lochbohrung für Leuchten / Downlights, etc</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">DM: 68 mm als Zulage.</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Downlight, Zulage</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                    </Itemlist>
+                  </BoQBody>
+                </BoQCtgy>
+                <BoQCtgy ID="E_5887_AE78A43DE2E94FF7AE95DE5286935719" RNoPart="6">
+                  <LblTx>
+                    <p>
+                      <span>FB-AUFBAU DG (oberhalb OSB Zimmerer)</span>
+                    </p>
+                  </LblTx>
+                  <BoQBody>
+                    <Itemlist>
+                      <Item ID="P_5887_704EF100EFB844A6AC08EC7A90C2D28E" RNoPart="1">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>518.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:29px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Ausgleichsdämmung auf ausgehöhte OSB der Vorpositionen  einbringen und waagerecht verlegen.</span>
+                                </p>
+                                <p style="margin-right:29px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Installationsbereiche sind mit gebundener Schüttung zu verfüllen.</span>
+                                </p>
+                                <p style="margin-right:29px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Höhe im Mittel: 20 mm, ggf. mehrschichtig</span>
+                                </p>
+                                <p style="margin-right:29px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr.: fermacell EPS DEO 200 KPa o.glw.</span>
+                                </p>
+                                <p style="margin-right:29px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">angebotenes Fabr. : </span>
+                                </p>
+                                <p style="margin-right:29px;text-align:left;"/>
+                                <p style="margin-right:29px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">......................................</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>EPS 20 mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_C801650556F3490C95918DE4B39120C1" RNoPart="2">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>518.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Auf grob ausgehöhte OSB-Platte des Zimmerers:</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Zementär gebundene Schüttung</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">als Höhen- und Niveauausgleich liefern und</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">in Waage -auch über Installationen hinweg- abziehen.</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Baustoffklasse: Nicht brennbar A 2 </span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Anwendungsbereich: 1 bis 4 </span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">(max. 4,0 kN Einzellast; Nutzlast bis 5,0 kN/m²)</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Trockenrohdichte: ca. 350 kg/m³</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Feuchtebereich: 0, A0, A </span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Höhentoleranz Oberfläche: max 1 cm / WE</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Mindestschütthöhe 30 mm</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr.: Fermacell Gebundene Schüttung o. glw.</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Angebotenes Erzeugnis/System:</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;"/>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">         ........................</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">         (vom Bieter einzutragen)</span>
+                                </p>
+                                <p style="margin-right:40px;text-align:left;"/>
+                                <p style="margin-right:40px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: DG vollflächig innen</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>alt: Schüttung 30mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_7BF5ABF49823475D8F15C3F1DB3B0021" RNoPart="3">
+                        <Qty>518.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:37px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Trittschalldämmung d= 12 mm unter FBH u Trockenestrich auf die ausgehöhte OSB der  Vorpositionen liefern u verlegen </span>
+                                </p>
+                                <p style="margin-right:37px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Bauart: TSD 15 - 12 mm entsprechend den       Herstellervorschriften einschl. aller         Materialien, Befestigungs-/Verbindungsmittel und Randdämmstreifen </span>
+                                </p>
+                                <p style="margin-right:37px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Brandschutz: keine Anforderungen.</span>
+                                </p>
+                                <p style="margin-right:37px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Anwendungsbereich: 1 kN Einzellast / 2,0 kN/m²         Nutzlast.</span>
+                                </p>
+                                <p style="margin-right:37px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Trittschall Ln,w = 48 dB</span>
+                                </p>
+                                <p style="margin-right:37px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: DG vollflächig innen</span>
+                                </p>
+                                <p style="margin-right:37px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr.: ISOVER Akustic EP 3 o.glw.</span>
+                                </p>
+                                <p style="margin-right:37px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Angebotenes Erzeugnis/System: (vom Bieter einzutragen)</span>
+                                </p>
+                                <p style="margin-right:37px;text-align:left;"/>
+                                <p style="margin-right:37px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">.............................</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>TSD 15/12 mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_7DCF64D113164EA29F2EB5883FB7BCB1" RNoPart="4">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>1.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:25px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">alt. wie vor, jedoch: 22/20mm</span>
+                                </p>
+                                <p style="margin-right:25px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr.: Isover TP o. glw.</span>
+                                </p>
+                                <p style="margin-right:25px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">        </span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>alt.: TSD 22/20 mm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_AD69B003F918485BA9384B8778CB9345" RNoPart="5">
+                        <Qty>518.000</Qty>
+                        <QU>m²</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Trockenestrich, d= 25 mm</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">        </span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Trockenunterboden liefern und als schwimmenden Estrich auf der TSD der Vorposition verlegen</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Bauart: Estrich Element 25 mm dick aus</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">- Gipsfaserplatten mit umlaufenden Stufenfalz und</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Trockenunterboden entsprechend den       Herstellervorschriften einschl. aller         Materialien, Befestigungs-/Verbindungsmittel liefern und für Parkettverklebung montieren.</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Brandschutz: keine Anforderungen.</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Anwendungsbereich: 1 kN Einzellast / 2,0 kN/m²         Nutzlast.</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Trittschall Ln,w = 48 dB</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: DG vollflächig innen</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr.: fermacell Estrich-Element 2 E22 o. glw.</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Angebotenes Erzeugnis/System: (vom Bieter einzutragen)</span>
+                                </p>
+                                <p style="margin-right:32px;text-align:left;"/>
+                                <p style="margin-right:32px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">.............................</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Trockenestrich</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                    </Itemlist>
+                  </BoQBody>
+                </BoQCtgy>
+                <BoQCtgy ID="E_5887_4684C54616BB4D1E8075A06850B8D4E0" RNoPart="7">
+                  <LblTx>
+                    <p>
+                      <span>EINBAUELEMENTE, TÜREN, FENSTER</span>
+                    </p>
+                  </LblTx>
+                  <BoQBody>
+                    <Itemlist>
+                      <Item ID="P_5887_AD21F3D6BD8E40CFA05F4CBC3120350A" RNoPart="1">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>6.000</Qty>
+                        <QU>Stk</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schnellbauzarge aus feuerverzinktem Feinblech, gewalzt, incl. Zinkchromatgrundierung, Gehrungen</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">durchgehend verschweißt und sauber geschliffen, für</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">stumpf einschlagende Blätter mit Hohlkammerdichtungen,</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">dauerhaft rückstellfähig. Die zwei Distanzwinkel im</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schwellenbereich sind sofort nach der Montage zu</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">entfernen.</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Gewändeanschluß: GK</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Maulweite: 10,0 - 12,5 cm</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Blechdicke: 1,5 mm</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Beschichtet /  Lackiert RAL 9010 reinweiß</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: DG </span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabrikat: Hörmann Vario Fix o. glw.</span>
+                                </p>
+                                <p style="margin-right:31px;text-align:left;"/>
+                                <p style="margin-right:31px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Angebotenes Fabrikat: ..............</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Schnellbauzarge, H = 2,26 m, B = 76 m</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_815E506CA45F4CAEA8CB0E71B4892D4E" RNoPart="2">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>23.000</Qty>
+                        <QU>Stk</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:53px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schnellbauzarge wie vor, jedoch RBM b=88,5cm</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Schnellbauzarge, H = 2,26 m, B = 88,5 m</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_6B6227ED0A034C5EBD31C67BF15DE74B" RNoPart="3">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>1.000</Qty>
+                        <QU>St</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:36px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schnellbauzargen wie vor, jedoch H = 2,51 m</span>
+                                </p>
+                                <p style="margin-right:36px;text-align:left;"/>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>alt.: Schnellbauzargen, 88,5 / 251</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_667075F0959B46C7A08E9916382230C7" RNoPart="4">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>1.000</Qty>
+                        <QU>St</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:48px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schnellbauzargen wie vor, jedoch wandbündig mit Schattennut, bündig mit Wandoberfläche GK</span>
+                                </p>
+                                <p style="margin-right:48px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Türhöhe       :  226mm</span>
+                                </p>
+                                <p style="margin-right:48px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Türbreite: 88,5 cm</span>
+                                </p>
+                                <p style="margin-right:48px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Maulweite: 10,0 - 12,5 cm</span>
+                                </p>
+                                <p style="margin-right:48px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: DG </span>
+                                </p>
+                                <p style="margin-right:48px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabrikat: Hörmann o. glw.</span>
+                                </p>
+                                <p style="margin-right:48px;text-align:left;"/>
+                                <p style="margin-right:48px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Angebotenes Fabrikat: .....</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>alt: Schnellbauzargen, 88,5 / 226 wandbündig</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_B2FE01EA4BA24A2A8F387BD0B363F0BE" RNoPart="5">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>4.000</Qty>
+                        <QU>Stk</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schiebetür, vor der Wand laufend / aufgesetzt,</span>
+                                </p>
+                                <p style="margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">RBM b=88,5 cm, H = 2,26 cm</span>
+                                </p>
+                                <p style="margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">einschl. Türblatt endbeschichtet weiß RAL 9010 mit Griffmuldenbeschlag,</span>
+                                </p>
+                                <p style="margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">dreidimensional verstellbar, Schließpuffer</span>
+                                </p>
+                                <p style="margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr.: Slide compact o.glw.</span>
+                                </p>
+                                <p style="margin-right:38px;text-align:left;"/>
+                                <p style="margin-right:38px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Angebotenes Fabr.:  .............................</span>
+                                </p>
+                                <p style="margin-right:38px;text-align:left;"/>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Schiebetür, H = 2,26 m, B = 88,5 m 1-flg</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_88227AC469EA4569A46C73A4A727755B" RNoPart="6">
+                        <Provis>WithoutTotal</Provis>
+                        <Qty>4.000</Qty>
+                        <QU>Stk</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:33px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Schiebetür, vor der Wand laufend / aufgesetzt,</span>
+                                </p>
+                                <p style="margin-right:33px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">RBM b=151 cm, H = 2,26 cm</span>
+                                </p>
+                                <p style="margin-right:33px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">einschl. Türblätter endbeschichtet weiß RAL 9010 mit Griffmuldenbeschlag,</span>
+                                </p>
+                                <p style="margin-right:33px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">dreidimensional verstellbar, Schließpuffer</span>
+                                </p>
+                                <p style="margin-right:33px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr.: Slide compact </span>
+                                </p>
+                                <p style="margin-right:33px;text-align:left;"/>
+                                <p style="margin-right:33px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Angebotenes Fabr.:  .............................</span>
+                                </p>
+                                <p style="margin-right:33px;text-align:left;"/>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Schiebetür, H = 2,26 m, B = 1,50m, 2-flg</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_EC64CB20941540F2972DC8F9A88EF0A6" RNoPart="7">
+                        <Qty>4.000</Qty>
+                        <QU>St</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:30px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Zulage für das Liefern und Einbauen einer Revisionsklappe aus Stahlblech verzinkt.</span>
+                                </p>
+                                <p style="margin-right:30px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Keine Brandschutzanforderung.</span>
+                                </p>
+                                <p style="margin-right:30px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Größe: ca. 30/30 cm</span>
+                                </p>
+                                <p style="margin-right:30px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Oberfläche: wandbündig mit GK-belegt, anstrichfertig</span>
+                                </p>
+                                <p style="margin-right:30px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr.: Alu-top</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Revisionsöffnungen als Zulage 30*30 cm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_E0B962E2622C49ADA7DE0512335612FA" RNoPart="8">
+                        <Qty>4.000</Qty>
+                        <QU>St</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:52px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">wie vor, jedoch Größe: ca. 50/50 cm</span>
+                                </p>
+                                <p style="margin-right:52px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Fabr.: Alu-top</span>
+                                </p>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Revisionsöffnungen als Zulage 50*50 cm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_AB6EFEAD6AD04FDEBD6D3DB32B4C2E5F" RNoPart="9">
+                        <Qty>4.000</Qty>
+                        <QU>St</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt>
+                              <Text>
+                                <p style="margin-right:51px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">wie vor, jedoch Revi-Klappe mit GK belegbar ähnlich einer Alutop-Klappe, Verschluss magnetisch. </span>
+                                </p>
+                                <p style="margin-right:51px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Größe ca. 80/50 cm</span>
+                                </p>
+                                <p style="margin-right:51px;text-align:left;">
+                                  <span style="font-family:Arial;color:rgb(0,0,0);">Einbauort: vor Verteiler Fußbodenheizung </span>
+                                </p>
+                                <p style="margin-right:51px;text-align:left;"/>
+                              </Text>
+                            </DetailTxt>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Revisionsöffnungen FBH mit GK belegbar als Zulage 80*50 cm</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                    </Itemlist>
+                  </BoQBody>
+                </BoQCtgy>
+                <BoQCtgy ID="E_5887_65A5558042614B2ABAEFAB08E3890463" RNoPart="8">
+                  <LblTx>
+                    <p>
+                      <span>STUNDENSÄTZE</span>
+                    </p>
+                  </LblTx>
+                  <BoQBody>
+                    <Itemlist>
+                      <Item ID="P_5887_B4337BBB47C34C5DAEF5220F0E1274CF" RNoPart="1">
+                        <Qty>10.000</Qty>
+                        <QU>h</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt/>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Stundensatz Facharbeiter, Trockenbau</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                      <Item ID="P_5887_FD6B8B4061E74BF482E9DDA72B2EE2D8" RNoPart="2">
+                        <Qty>10.000</Qty>
+                        <QU>h</QU>
+                        <Description>
+                          <CompleteText>
+                            <DetailTxt/>
+                            <OutlineText>
+                              <OutlTxt>
+                                <TextOutlTxt>
+                                  <p>
+                                    <span>Stundensatz Helfer, Trockenbau</span>
+                                  </p>
+                                </TextOutlTxt>
+                              </OutlTxt>
+                            </OutlineText>
+                          </CompleteText>
+                        </Description>
+                      </Item>
+                    </Itemlist>
+                  </BoQBody>
+                </BoQCtgy>
+              </BoQBody>
+            </BoQCtgy>
+          </BoQBody>
+        </BoQCtgy>
+      </BoQBody>
+    </BoQ>
+  </Award>
+</GAEB>

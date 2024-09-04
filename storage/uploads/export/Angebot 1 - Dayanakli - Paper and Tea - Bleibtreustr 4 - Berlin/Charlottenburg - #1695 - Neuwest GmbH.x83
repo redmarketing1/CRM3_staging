@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GAEB xmlns="http://www.gaeb.de/GAEB_DA_XML/DA83/3.2">
+    <PrjInfo>
+        <Cur>EUR</Cur>
+    </PrjInfo>
+    <Award>
+        <BoQ>
+            <BoQBody>
+                <BoQCtgy RNoPart="01">
+                    <LblTx>
+                        <p>
+                            <span>Baustelleneinrichtung</span>
+                        </p>
+                    </LblTx>
+                    <BoQBody>
+                        <Itemlist>
+                            <Item RNoPart="01">
+                                <Provis>1</Provis>
+                                <Qty>1</Qty>
+                                <QU>pschl</QU>
+                                <UP>750.00</UP>
+                                <IT>750.00</IT>
+                                <QuotePrice RNoPart="0">
+                                    <Text>Mamed Isaev</Text>
+                                    <SinglePrice>750.00</SinglePrice>
+                                    <TotalPrice>750.00</TotalPrice>
+                                </QuotePrice>
+                                <Description>
+                                    <CompleteText>
+                                        <DetailTxt>
+                                            <Text>
+                                                <p>
+                                                    <span>Baustellenkoordination: Organisation und Überwachung der Baustellenabläufe
+-- An- und Abfahrten: Pauschal 50 km inbegriffen
+-- Einsatz von Maschinen/Geräte: Bereitstellung und Nutzung notwendiger Maschinen und Geräte
+-- Verwaltung: Administrative Aufgaben und Dokumentation
+-- Sicherungsmaßnahmen: Durchführung von Sicherheitsvorkehrungen und Absperrungen</span>
+                                                </p>
+                                            </Text>
+                                        </DetailTxt>
+                                        <OutlineText>
+                                            <OutlTxt>
+                                                <TextOutlTxt>
+                                                    <p>
+                                                        <span>Baustelleneinrichtung</span>
+                                                    </p>
+                                                </TextOutlTxt>
+                                            </OutlTxt>
+                                        </OutlineText>
+                                    </CompleteText>
+                                </Description>
+                            </Item>
+                        </Itemlist>
+                                            </BoQBody>
+                </BoQCtgy>
+                <BoQCtgy RNoPart="02">
+                    <LblTx>
+                        <p>
+                            <span>Abrissarbeiten</span>
+                        </p>
+                    </LblTx>
+                    <BoQBody>
+                        <Itemlist>
+                            <Item RNoPart="01">
+                                <Provis>1</Provis>
+                                <Qty>2</Qty>
+                                <QU>Stk</QU>
+                                <UP>85.00</UP>
+                                <IT>170.00</IT>
+                                <QuotePrice RNoPart="0">
+                                    <Text>Mamed Isaev</Text>
+                                    <SinglePrice>85.00</SinglePrice>
+                                    <TotalPrice>170.00</TotalPrice>
+                                </QuotePrice>
+                                <Description>
+                                    <CompleteText>
+                                        <DetailTxt>
+                                            <Text>
+                                                <p>
+                                                    <span>-- Bestehenden Duchbruch wieder öffnen 
+-- Einsatz von Handwerkzeugen und Maschinen -- Sicherstellung der gründlichen Entfernung
+-- Schutzmaßnahmen für angrenzende Bauteile und Bereiche
+-- Reinigung der Arbeitsfläche nach Abschluss der Arbeiten</span>
+                                                </p>
+                                            </Text>
+                                        </DetailTxt>
+                                        <OutlineText>
+                                            <OutlTxt>
+                                                <TextOutlTxt>
+                                                    <p>
+                                                        <span>Durchbruch Trockenbau</span>
+                                                    </p>
+                                                </TextOutlTxt>
+                                            </OutlTxt>
+                                        </OutlineText>
+                                    </CompleteText>
+                                </Description>
+                            </Item>
+                        </Itemlist>
+                                            </BoQBody>
+                </BoQCtgy>
+                <BoQCtgy RNoPart="03">
+                    <LblTx>
+                        <p>
+                            <span>Wände und Decken</span>
+                        </p>
+                    </LblTx>
+                    <BoQBody>
+                        <Itemlist>
+                            <Item RNoPart="01">
+                                <Provis>1</Provis>
+                                <Qty>1</Qty>
+                                <QU>pschl</QU>
+                                <UP>690.00</UP>
+                                <IT>690.00</IT>
+                                <QuotePrice RNoPart="0">
+                                    <Text>Mamed Isaev</Text>
+                                    <SinglePrice>690.00</SinglePrice>
+                                    <TotalPrice>690.00</TotalPrice>
+                                </QuotePrice>
+                                <Description>
+                                    <CompleteText>
+                                        <DetailTxt>
+                                            <Text>
+                                                <p>
+                                                    <span>-- Füllen und verspachteln der Dübel Löcher an den Wänden
+-- Schleifen und evtl. erneutes verspachteln der Dübel Löcher</span>
+                                                </p>
+                                            </Text>
+                                        </DetailTxt>
+                                        <OutlineText>
+                                            <OutlTxt>
+                                                <TextOutlTxt>
+                                                    <p>
+                                                        <span>Spachtelarbeiten</span>
+                                                    </p>
+                                                </TextOutlTxt>
+                                            </OutlTxt>
+                                        </OutlineText>
+                                    </CompleteText>
+                                </Description>
+                            </Item>
+                            <Item RNoPart="02">
+                                <Provis>1</Provis>
+                                <Qty>420</Qty>
+                                <QU>m2</QU>
+                                <UP>19.80</UP>
+                                <IT>8316.00</IT>
+                                <QuotePrice RNoPart="0">
+                                    <Text>Mamed Isaev</Text>
+                                    <SinglePrice>19.80</SinglePrice>
+                                    <TotalPrice>8316.00</TotalPrice>
+                                </QuotePrice>
+                                <Description>
+                                    <CompleteText>
+                                        <DetailTxt>
+                                            <Text>
+                                                <p>
+                                                    <span>-- Abkleben und Abdecken der Flächen
+-- 2 Farbantriche - Decken und Wände deckend weiss streichen</span>
+                                                </p>
+                                            </Text>
+                                        </DetailTxt>
+                                        <OutlineText>
+                                            <OutlTxt>
+                                                <TextOutlTxt>
+                                                    <p>
+                                                        <span>Malerarbeiten</span>
+                                                    </p>
+                                                </TextOutlTxt>
+                                            </OutlTxt>
+                                        </OutlineText>
+                                    </CompleteText>
+                                </Description>
+                            </Item>
+                        </Itemlist>
+                                            </BoQBody>
+                </BoQCtgy>
+                <BoQCtgy RNoPart="04">
+                    <LblTx>
+                        <p>
+                            <span>Trockenbau</span>
+                        </p>
+                    </LblTx>
+                    <BoQBody>
+                        <Itemlist>
+                            <Item RNoPart="01">
+                                <Provis>1</Provis>
+                                <Qty>2</Qty>
+                                <QU>stck</QU>
+                                <UP>280.00</UP>
+                                <IT>560.00</IT>
+                                <QuotePrice RNoPart="0">
+                                    <Text>Mamed Isaev</Text>
+                                    <SinglePrice>280.00</SinglePrice>
+                                    <TotalPrice>560.00</TotalPrice>
+                                </QuotePrice>
+                                <Description>
+                                    <CompleteText>
+                                        <DetailTxt>
+                                            <Text>
+                                                <p>
+                                                    <span>-- Leibung mit Gipskarton verkoffern - Fugenband einarbeiten - Fugenfüllspachtel einbringen - Grundieren 
+-- mit Feinspachtel verputzen</span>
+                                                </p>
+                                            </Text>
+                                        </DetailTxt>
+                                        <OutlineText>
+                                            <OutlTxt>
+                                                <TextOutlTxt>
+                                                    <p>
+                                                        <span>Leibung herstellen</span>
+                                                    </p>
+                                                </TextOutlTxt>
+                                            </OutlTxt>
+                                        </OutlineText>
+                                    </CompleteText>
+                                </Description>
+                            </Item>
+                        </Itemlist>
+                                            </BoQBody>
+                </BoQCtgy>
+            </BoQBody>
+        </BoQ>
+    </Award>
+</GAEB>

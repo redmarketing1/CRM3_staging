@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Created with Dangl GAEB Tool, Copyright 2013 - 2024 Dangl IT GmbH, www.dangl-it.com, Version 2.8.8 (Built: 17.04.2024 11:43)-->
+<GAEB xmlns="http://www.gaeb.de/GAEB_DA_XML/DA83/3.3">
+  <GAEBInfo>
+    <Version>3.3</Version>
+    <VersDate>2021-05</VersDate>
+    <Date>2024-05-03</Date>
+    <Time>16:06:36</Time>
+    <ProgSystem>Dangl GAEB Tool - www.dangl-it.com - Version 2.8.8</ProgSystem>
+    <ProgName>WebGAEB</ProgName>
+  </GAEBInfo>
+  <PrjInfo>
+    <NamePrj>Typ 1.5 MW</NamePrj>
+    <PrjID>e1445b1e-1b7c-4de5-8ead-9ff227aea7be</PrjID>
+    <Cur>EUR</Cur>
+    <CurLbl>EUR</CurLbl>
+    <BidCommPerm>No</BidCommPerm>
+  </PrjInfo>
+  <Award>
+    <DP>83</DP>
+    <AwardInfo>
+      <BoQID>e1445b1e-1b7c-4de5-8ead-9ff227aea7be</BoQID>
+      <Cur>EUR</Cur>
+      <CurLbl>EUR</CurLbl>
+    </AwardInfo>
+    <OWN>
+      <Address>
+        <Name1>, , ,</Name1>
+        <Street></Street>
+        <PCode></PCode>
+        <City></City>
+      </Address>
+    </OWN>
+    <BoQ ID="ID_49b4456e-2e25-4f3d-b783-f643405b2cf3">
+      <BoQInfo>
+        <Name></Name>
+        <LblBoQ>Fliesenarbeiten - 1/2 Doppelhaus</LblBoQ>
+        <Date>2024-05-03</Date>
+        <OutlCompl>AllTxt</OutlCompl>
+        <BoQBkdn>
+          <Type>BoQLevel</Type>
+          <Length>2</Length>
+          <Num>Yes</Num>
+        </BoQBkdn>
+        <BoQBkdn>
+          <Type>BoQLevel</Type>
+          <Length>1</Length>
+          <Num>Yes</Num>
+        </BoQBkdn>
+        <BoQBkdn>
+          <Type>BoQLevel</Type>
+          <Length>1</Length>
+          <Num>Yes</Num>
+        </BoQBkdn>
+        <BoQBkdn>
+          <Type>Item</Type>
+          <Length>4</Length>
+          <Num>Yes</Num>
+        </BoQBkdn>
+        <BoQBkdn>
+          <Type>Index</Type>
+          <Length>1</Length>
+          <Num>No</Num>
+        </BoQBkdn>
+      </BoQInfo>
+      <BoQBody>
+        <Remark ID="ID_fd36bd2c-6004-4802-8676-b5a977a81ba4">
+          <Description>
+            <CompleteText>
+              <ComplTSA>No</ComplTSA>
+              <ComplTSB>No</ComplTSB>
+              <DetailTxt>
+                <Text>
+                  <span>Hinweistext</span>
+                  <br></br>
+                  <br></br>
+                  <span>Die Massen diese Ausschreibung beschreiben jeweils</span>
+                  <br></br>
+                  <span>ein Haus,</span>
+                  <br></br>
+                  <span>als Kopfhaus mit einer Wohneinheit.</span>
+                  <br></br>
+                  <br></br>
+                  <span>Nicht als Doppelhaus!</span>
+                </Text>
+              </DetailTxt>
+            </CompleteText>
+          </Description>
+        </Remark>
+        <BoQCtgy ID="ID_5e4c2322-f472-491f-be09-57b99e32a828" RNoPart="2">
+          <LblTx>
+            <span>Vorbereitende Maßnahmen</span>
+          </LblTx>
+          <BoQBody>
+            <Itemlist>
+              <Item ID="ID_ed175396-87ad-405d-9c11-56e04a8d3070" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <Qty>33.9</Qty>
+                <QU>m2</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>Yes</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Tiefgrund auf Wänden und Böden</span>
+                        <br></br>
+                        <span>Grundierung von Wand und Bodenflächen mit für die</span>
+                        <br></br>
+                        <span>nachfolgend beschriebenen Aufbauten geeignetem</span>
+                        <br></br>
+                        <span>Tiefgrund.</span>
+                        <br></br>
+                        <span>Untergrund Wand: GK-Platten, Kalk-Zementputz,</span>
+                        <br></br>
+                        <span>Stahlbeton</span>
+                        <br></br>
+                        <span>Boden: Zementestrich, Stahlbeton.</span>
+                        <br></br>
+                        <TextComplement MarkLbl="01" Kind="Bidder">
+                          <ComplBody>
+                            <span>Angebotenes Fabrikat: '..........'</span>
+                          </ComplBody>
+                        </TextComplement>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Tiefgrund auf Wänden und Böden</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+              <Item ID="ID_4074be82-f856-4598-a367-33f2099e0785" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <RefDescr>Ref</RefDescr>
+                <Qty>7.3</Qty>
+                <QU>m2</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>Yes</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Abdichtung der Fußbodenflächen,</span>
+                        <br></br>
+                        <span>als Flächenabdichtung nach DIN 18195,</span>
+                        <br></br>
+                        <span>oberflächendicht auf gereinigtem Untergrund nach</span>
+                        <br></br>
+                        <span>Herstellervorschrift</span>
+                        <br></br>
+                        <span>Untergrund : trockener Zement-Heizestrich/</span>
+                        <br></br>
+                        <span>Ausgleichsspachtelung,</span>
+                        <br></br>
+                        <span>aus einer zweikomponenten - Dichtschlämme</span>
+                        <br></br>
+                        <span>für anschließende direkte Verfliesung im Dünnbett.</span>
+                        <br></br>
+                        <span>Der Untergrund ist entsprechend Herstellervorschrift zu</span>
+                        <br></br>
+                        <span>verfestigen und zu grundieren.</span>
+                        <br></br>
+                        <span>(Verbundabdichtung nach ZDB-Merkblatt,</span>
+                        <br></br>
+                        <span>geeignet für direkte Dünnbettverfliesung).</span>
+                        <br></br>
+                        <span>einschl. Haftbrücke.</span>
+                        <br></br>
+                        <TextComplement MarkLbl="01" Kind="Bidder">
+                          <ComplBody>
+                            <span>Gewähltes Fabrikat der Abdichtung: '..........'</span>
+                          </ComplBody>
+                        </TextComplement>
+                        <br></br>
+                        <br></br>
+                        <span>Einschließlich sämtlicher:</span>
+                        <br></br>
+                        <br></br>
+                        <span>Sicherheits-Dichtbänder im den Ixelbereichen,</span>
+                        <br></br>
+                        <span>(2 K-Dichtschlämme),</span>
+                        <br></br>
+                        <span>als flexibles Dichtband im Wand- und Bodenixel,</span>
+                        <br></br>
+                        <span>nach Herstellervorschrift, in vorbeschriebene</span>
+                        <br></br>
+                        <span>Flächenabdichtung, einspachteln,</span>
+                        <br></br>
+                        <span>passend zur Zweikomponentenabdichtung,</span>
+                        <br></br>
+                        <span>liefern, einlegen, und mit 2 K-Dichtschlämme,</span>
+                        <br></br>
+                        <span>entsprechend Herstellervorschriften,</span>
+                        <br></br>
+                        <span>einbauen.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Eckausbildungen der Ixelabdichtungen,</span>
+                        <br></br>
+                        <span>der Innen- und Außenecken.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Abd.-Anschlüsse an Rohrdurchdringungen,</span>
+                        <br></br>
+                        <span>in allen Dimensionen,</span>
+                        <br></br>
+                        <span>Überwiegend Durchmesser 2 bis 20 cm,</span>
+                        <br></br>
+                        <span>von Armaturen, Heizrohren und Abflussleitungen,</span>
+                        <br></br>
+                        <span>mittels flexiblen Dichtmanschetten.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Eindichten von Bodeneinläufen,</span>
+                        <br></br>
+                        <span>Größe ca 10 x 80 cm,</span>
+                        <br></br>
+                        <span>einschließlich Dichtbandeinlage.</span>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Abdichtung der Fußbodenflächen,</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+              <Item ID="ID_a9dc611f-2461-48ba-b973-45b79823f266" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <RefDescr>Rep</RefDescr>
+                <RefRNo IDRef="ID_4074be82-f856-4598-a367-33f2099e0785"></RefRNo>
+                <Qty>25.3</Qty>
+                <QU>m2</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>Yes</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Abdichtung der Wand- und Duschwandflächen,</span>
+                        <br></br>
+                        <span>als Flächenabdichtung nach DIN 18195,</span>
+                        <br></br>
+                        <span>oberflächendicht auf gereinigtem Untergrund nach</span>
+                        <br></br>
+                        <span>Herstellervorschrift</span>
+                        <br></br>
+                        <span>Untergrund : Kalk-Zementputz, Ausgleichsspachtelung,</span>
+                        <br></br>
+                        <span>Gipskarton oder Zementfasertrockenbauplatten,</span>
+                        <br></br>
+                        <span>aus einer zweikomponenten - Dichtschlämme</span>
+                        <br></br>
+                        <span>für anschließende direkte Verfliesung im Dünnbett.</span>
+                        <br></br>
+                        <span>Der Untergrund ist entsprechend Herstellervorschrift zu</span>
+                        <br></br>
+                        <span>verfestigen und zu grundieren.</span>
+                        <br></br>
+                        <span>(Verbundabdichtung nach ZDB-Merkblatt,</span>
+                        <br></br>
+                        <span>geeignet für direkte Dünnbettverfliesung).</span>
+                        <br></br>
+                        <span>einschl. Haftbrücke.</span>
+                        <br></br>
+                        <TextComplement MarkLbl="01" Kind="Bidder">
+                          <ComplBody>
+                            <span>Gewähltes Fabrikat der Abdichtung: '..........'</span>
+                          </ComplBody>
+                        </TextComplement>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Abdichtung der Wand- und Duschwandflächen,</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+              <Item ID="ID_422c4b5b-995e-48c7-a222-596ff7c72690" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <RefDescr>Rep</RefDescr>
+                <RefRNo IDRef="ID_4074be82-f856-4598-a367-33f2099e0785"></RefRNo>
+                <Qty>16</Qty>
+                <QU>m</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>Yes</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Abdichtungsaufkantung hinter den Sockelleisten,</span>
+                        <br></br>
+                        <span>Höhe ca. 10 cm,</span>
+                        <br></br>
+                        <span>als Flächenabdichtung nach DIN 18195,</span>
+                        <br></br>
+                        <span>oberflächendicht auf gereinigtem Untergrund nach</span>
+                        <br></br>
+                        <span>Herstellervorschrift,</span>
+                        <br></br>
+                        <span>Untergrund : Kalk-Zementputz, Ausgleichsspachtelung,</span>
+                        <br></br>
+                        <span>Gipskarton oder Zementfasertrockenbauplatten,</span>
+                        <br></br>
+                        <span>aus einer zweikomponenten - Dichtschlämme</span>
+                        <br></br>
+                        <span>auf Neuputzflächen an Wänden und Trockenbauwänden,</span>
+                        <br></br>
+                        <span>für anschließende direkte Verfliesung im Dünnbett,</span>
+                        <br></br>
+                        <span>einschl. Haftbrücke.</span>
+                        <br></br>
+                        <TextComplement MarkLbl="01" Kind="Bidder">
+                          <ComplBody>
+                            <span>Gewähltes Fabrikat der Abdichtung: '..........'</span>
+                          </ComplBody>
+                        </TextComplement>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Abdichtungsaufkantung hinter den Sockelleisten,</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+            </Itemlist>
+          </BoQBody>
+        </BoQCtgy>
+        <BoQCtgy ID="ID_15d23669-61c6-41f8-8e94-1ae717b95a54" RNoPart="3">
+          <LblTx>
+            <span>Bodenflächen Bäder und Wohnräume</span>
+          </LblTx>
+          <BoQBody>
+            <Itemlist>
+              <Item ID="ID_d46e3a28-27f2-4740-86f2-7e65b4766e18" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <RefDescr>Ref</RefDescr>
+                <Qty>7.3</Qty>
+                <QU>m2</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>Yes</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Bodenfliesen, Feinsteinzeug, 30 x 60 cm,</span>
+                        <br></br>
+                        <span>als Dünnbettverfliesung,</span>
+                        <br></br>
+                        <span>auf Estrichflächen, mit 2K Dichtschlämmenabdichtung der</span>
+                        <br></br>
+                        <span>Vorpositionen,</span>
+                        <br></br>
+                        <span>fluchtgerecht verlegt,</span>
+                        <br></br>
+                        <span>die Verfliesung hat so zu erfolgen, dass die</span>
+                        <br></br>
+                        <span>Wandfliesenfugen über den Sockelbereich, in die</span>
+                        <br></br>
+                        <span>Bodenflächen übergehen.</span>
+                        <br></br>
+                        <span>Restfliesenbreiten von &lt; 3 cm sind zu vermeiden.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Material :</span>
+                        <br></br>
+                        <span>Feinsteinzeugfliesen gem. DIN EN 14411,</span>
+                        <br></br>
+                        <span>für Boden- und Wandbekleidung im Innen- und</span>
+                        <br></br>
+                        <span>Außenbereich geeignet,</span>
+                        <br></br>
+                        <span>Stärke: ca. 9,0 mm,</span>
+                        <br></br>
+                        <span>Format Nennmaß:  600 x 300 mm,</span>
+                        <br></br>
+                        <span>Farbe: hell-grau,</span>
+                        <br></br>
+                        <span>Verlegeart: Kreuzfugenverband,</span>
+                        <br></br>
+                        <span>Oberfläche: eben und vergütet,</span>
+                        <br></br>
+                        <span>Produktnorm Bla,</span>
+                        <br></br>
+                        <span>Trittsicherheit: R10,</span>
+                        <br></br>
+                        <span>Abrieb: 4</span>
+                        <br></br>
+                        <br></br>
+                        <span>1. Wahl, einschließlich Verfugung,</span>
+                        <br></br>
+                        <span>Fugenfarbe:  getönt in Fliesenfarbe nach Wahl des AG's,</span>
+                        <br></br>
+                        <span>Fliesen und Fugen nach Bemusterung und Wahl des AG's</span>
+                        <br></br>
+                        <br></br>
+                        <span>Die Fliesen und Fugen sind spätestens 2 Wochen nach</span>
+                        <br></br>
+                        <span>Auftragsvergabe, als Muster vorzulegen.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Ausführung einschließlich sämtlicher Zuschnitte und</span>
+                        <br></br>
+                        <span>Anpassarbeiten.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Ausführungsbereich: Bodenflächen</span>
+                        <br></br>
+                        <TextComplement MarkLbl="01" Kind="Bidder">
+                          <ComplBody>
+                            <span>Gewähltes Fabrikat:  '..........'</span>
+                          </ComplBody>
+                        </TextComplement>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <span>Einschließlich sämtlicher:</span>
+                        <br></br>
+                        <br></br>
+                        <span>Anarbeitung der Bodenfliesen an Einbauteile</span>
+                        <br></br>
+                        <span>wie z.B. Bodeneinläufe und Rohrduchdringungen.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Fugenversiegelung Bodenanschlüsse, dauerelastisch</span>
+                        <br></br>
+                        <span>herstellen,</span>
+                        <br></br>
+                        <span>mit einer geeigneten dauerelastischen Fugen auf</span>
+                        <br></br>
+                        <span>Silikonbasis,</span>
+                        <br></br>
+                        <span>einschließlich Fugenvorbereitung,</span>
+                        <br></br>
+                        <span>für Nassräume geeignet,</span>
+                        <br></br>
+                        <span>nach Verarbeitungsempfehlung des Herstellers.</span>
+                        <br></br>
+                        <span>Farbton entsprechend der Fugenfarbe.</span>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Bodenfliesen, Feinsteinzeug, 30 x 60 cm,</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+              <Item ID="ID_070e8fc8-d02d-4b96-87da-a55559d5eac9" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <Qty>16</Qty>
+                <QU>m</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>No</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Wandsockel</span>
+                        <br></br>
+                        <span>Material: Feinsteinzeug wie Bodenbeläge,</span>
+                        <br></br>
+                        <span>Oberkante gefast</span>
+                        <br></br>
+                        <span>Höhe: ca. 6 cm,</span>
+                        <br></br>
+                        <span>Untergrund: Kalksandsteinmauerwerk bzw. Trockenbau,</span>
+                        <br></br>
+                        <span>liefern und im Dünnbett, gemäß Herstellervorschrift,</span>
+                        <br></br>
+                        <span>einschließlich sämtlicher Schnitte und Eckausbildungen,</span>
+                        <br></br>
+                        <span>als Sockelstreifen an den Wandflächen verlegen.</span>
+                        <br></br>
+                        <span>Die Fugenaufteilung der Bodenbeläge ist im Sockel mit</span>
+                        <br></br>
+                        <span>aufzunehmen.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Farbton entsprechend Fugenmaterial. schwarz /</span>
+                        <br></br>
+                        <span>anthrazit, nach Wahl des Architekten ausgebildet.</span>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Wandsockel</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+              <Item ID="ID_a0794379-abf6-422d-88be-92d4fff6f64d" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <RefDescr>Rep</RefDescr>
+                <RefRNo IDRef="ID_d46e3a28-27f2-4740-86f2-7e65b4766e18"></RefRNo>
+                <Qty>1</Qty>
+                <QU>m2</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>Yes</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Zulage Gefälleverlegung im Duschbereich,</span>
+                        <br></br>
+                        <span>mit Ausbildung der Grate zur Entwässerungsrinne,</span>
+                        <br></br>
+                        <span>Feinsteinzeug glasiert, entsprechend den Bodenfliesen,</span>
+                        <br></br>
+                        <span>als Zulage zu den Bodenfliesen der Vorposition.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Ausführungsort: Duschbereiche</span>
+                        <br></br>
+                        <TextComplement MarkLbl="01" Kind="Bidder">
+                          <ComplBody>
+                            <span>Gewähltes Fabrikat:  '..........'</span>
+                          </ComplBody>
+                        </TextComplement>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Zulage Gefälleverlegung im Duschbereich,</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+              <Item ID="ID_096871c2-7c42-4b92-a776-ae9c5e939f81" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <Qty>1.5</Qty>
+                <QU>m</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>No</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Türschienen,</span>
+                        <br></br>
+                        <span>Edelstahl 15/30/3 mm,</span>
+                        <br></br>
+                        <span>in verschiedenen Längen von 0,75 m bis 1,25 m</span>
+                        <br></br>
+                        <span>liefern und nach Angabe der Bauleitung in die</span>
+                        <br></br>
+                        <span>Bodenbeläge einbauen.</span>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Türschienen,</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+            </Itemlist>
+          </BoQBody>
+        </BoQCtgy>
+        <BoQCtgy ID="ID_3618574b-e75d-4ee4-8bf6-c4c7be49e98e" RNoPart="4">
+          <LblTx>
+            <span>Wandfliesen</span>
+          </LblTx>
+          <BoQBody>
+            <Itemlist>
+              <Item ID="ID_5f40027c-9b3e-4b86-aa84-1e5892ab388f" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <Qty>25.3</Qty>
+                <QU>m2</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>No</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Wandfliesen, Steingutfliesen, 30 x 60 cm,</span>
+                        <br></br>
+                        <span>als Dünnbettverfliesung,</span>
+                        <br></br>
+                        <span>auf Massivwänden, bzw. auf doppelt beplankten</span>
+                        <br></br>
+                        <span>Trockenbauwänden, mit 2K Dichtschlämmenabdichtung,</span>
+                        <br></br>
+                        <span>der Vorpositionen,</span>
+                        <br></br>
+                        <span>fluchtgerecht verlegt,</span>
+                        <br></br>
+                        <span>die Verfliesung hat so zu erfolgen, dass die</span>
+                        <br></br>
+                        <span>Wandfliesenfugen über den Sockelbereich, in die</span>
+                        <br></br>
+                        <span>Bodenflächen übergehen.</span>
+                        <br></br>
+                        <span>Restfliesenbreiten von &lt; 3 cm sind zu vermeiden.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Material :</span>
+                        <br></br>
+                        <span>Feinsteinzeugfliesen gem. DIN EN 14411,</span>
+                        <br></br>
+                        <span>für Boden- und Wandbekleidung im Innen- und</span>
+                        <br></br>
+                        <span>Außenbereich geeignet,</span>
+                        <br></br>
+                        <span>Stärke: ca. 9,0 mm,</span>
+                        <br></br>
+                        <span>Format Nennmaß:  600 x 300 mm,</span>
+                        <br></br>
+                        <span>Farbe: dunkel-grau, nach Wahl des AG's,</span>
+                        <br></br>
+                        <span>Verlegeart: Kreuzfugenverband,</span>
+                        <br></br>
+                        <span>Oberfläche: eben und vergütet,</span>
+                        <br></br>
+                        <span>Produktnorm Bla,</span>
+                        <br></br>
+                        <span>Abrieb: 4</span>
+                        <br></br>
+                        <br></br>
+                        <span>Höhe bis 2,10 m ,</span>
+                        <br></br>
+                        <br></br>
+                        <span>1. Wahl, einschließlich Verfugung,</span>
+                        <br></br>
+                        <span>nach Bemusterung und Wahl des Architekten.</span>
+                        <br></br>
+                        <span>Die Fliesen und Fugen sind spätestens 2 Wochen nach</span>
+                        <br></br>
+                        <span>Auftragsvergabe, als Muster vorzulegen.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Vor dem Verfliesen sind alle Untergrundflächen mit</span>
+                        <br></br>
+                        <span>einer geeigneten Tiefengrundierung zu streichen.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Ausführung einschließlich sämtlicher Zuschnitte und</span>
+                        <br></br>
+                        <span>Anpassarbeiten.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Ausführungsbereich:</span>
+                        <br></br>
+                        <span>Dusche Höhe ca. 2,10 m,</span>
+                        <br></br>
+                        <span>Wannenbereiche mit Objekten Höhe ca. 1,20 m,</span>
+                        <br></br>
+                        <span>Waschtisch- und Sockelbereiche H= 1,20 m.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Gewähltes. Fabrikat:  '..........'</span>
+                        <br></br>
+                        <br></br>
+                        <span>Einschließlich sämtlicher:</span>
+                        <br></br>
+                        <br></br>
+                        <span>Aussparrungen, ca. 150 x 300 mm ,</span>
+                        <br></br>
+                        <span>für WC und PP Spühlamaturen.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Bauseits gelieferte Elektrodosen,</span>
+                        <br></br>
+                        <span>nach Angaben der Bauleitung,</span>
+                        <br></br>
+                        <span>in die Fliesenwände einarbeiten.</span>
+                        <br></br>
+                        <span>Einschließlich Herstellung des Ausschnittes in der</span>
+                        <br></br>
+                        <span>Trockenbauwand, im Zuge der Verfliesungsarbeiten.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Anarbeitungen an Rohrdurchführungen,</span>
+                        <br></br>
+                        <span>in allen Dimensionen,</span>
+                        <br></br>
+                        <span>überwiegend Durchmesser bis 20 cm.</span>
+                        <br></br>
+                        <br></br>
+                        <span>Fugenversiegelung Wandanschlüsse,</span>
+                        <br></br>
+                        <span>dauerelastisch herstellen,</span>
+                        <br></br>
+                        <span>mit einer geeigneten dauerelastischen Fugen auf</span>
+                        <br></br>
+                        <span>Silikonbasis,</span>
+                        <br></br>
+                        <span>einschließlich Fugenvorbereitung,</span>
+                        <br></br>
+                        <span>für Nassräume geeignet,</span>
+                        <br></br>
+                        <span>nach Verarbeitungsempfehlung des Herstellers.</span>
+                        <br></br>
+                        <span>Farbton entsprechend der Fugenfarbe.</span>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Wandfliesen, Steingutfliesen, 30 x 60 cm,</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+              <Item ID="ID_de2a3992-d067-49d3-bb73-0bc95f2606e3" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <Qty>1.4</Qty>
+                <QU>m2</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>No</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Zulage Wannenbekleidung,</span>
+                        <br></br>
+                        <span>mit Bodenfliesen,</span>
+                        <br></br>
+                        <span>auf Wannenverkleidung bzw. Kunststoffwannenträger,</span>
+                        <br></br>
+                        <span>mit Feinsteinbodenfliesen,</span>
+                        <br></br>
+                        <span>Farbton: hell-grau,</span>
+                        <br></br>
+                        <span>entsprechend der Vorposition "Bodenfliesen"</span>
+                        <br></br>
+                        <span>einschließlich sämtlicher Zusatzleistungen.</span>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Zulage Wannenbekleidung,</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+              <Item ID="ID_370d53c1-fda4-4504-80aa-46825d620131" RNoPart="0" RNoIndex="0">
+                <UPBkdn>No</UPBkdn>
+                <Qty>6.2</Qty>
+                <QU>m</QU>
+                <Description>
+                  <CompleteText>
+                    <ComplTSA>No</ComplTSA>
+                    <ComplTSB>No</ComplTSB>
+                    <DetailTxt>
+                      <Text>
+                        <span>Eckschutzwinkel aus Nirostamaterial</span>
+                        <br></br>
+                        <span>V2A (leicht abgerundet),</span>
+                        <br></br>
+                        <span>1,5 mm dick,</span>
+                        <br></br>
+                        <span>liefern und sach- und fachgerecht,</span>
+                        <br></br>
+                        <span>nach Anweisung der Bauleitung einbauen.</span>
+                        <br></br>
+                        <span>Schutzfolie nach den Verfugungsarbeiten abziehen,</span>
+                        <br></br>
+                        <span>Einbaubereich: freie Fliesenkanten, Vorsprünge.</span>
+                      </Text>
+                    </DetailTxt>
+                    <OutlineText>
+                      <OutlTxt>
+                        <TextOutlTxt>
+                          <span>Eckschutzwinkel aus Nirostamaterial</span>
+                        </TextOutlTxt>
+                      </OutlTxt>
+                    </OutlineText>
+                  </CompleteText>
+                </Description>
+              </Item>
+            </Itemlist>
+          </BoQBody>
+        </BoQCtgy>
+      </BoQBody>
+    </BoQ>
+  </Award>
+</GAEB>

@@ -84,7 +84,6 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-
         if (Auth::user()->isAbleTo('project manage')) {
             $objUser     = Auth::user();
             $projectUser = array();
@@ -186,6 +185,7 @@ class ProjectController extends Controller
         foreach ($record as $key => $value) {
             $image       = '<img class="default-thumbnail" width="100%" src="' . URL('assets/images/default_thumbnail3.png') . '">';
             $latest_file = $value->project_default_file;
+            
             //dd($latest_file);
             //	dd($latest_file);
             if (isset($latest_file->file_name)) {

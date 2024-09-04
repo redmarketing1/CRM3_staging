@@ -1,0 +1,2519 @@
+#begin[GAEB]
+ #begin[GAEBInfo]
+  [Version]1.2[end]
+  [VersMon]3[end]
+  [VersJahr]2002[end]
+  [Datum]07.06.2023[end]
+  [Uhrzeit]15:28[end]
+  [ProgSystem]/ GAEB Toolbox V3.3 G90 R20201103[end]
+  [ProgName]iTWO_64 V9.1.962[end]
+  [Zeichensatz]ANSI[end]
+ #end[GAEBInfo]
+ #begin[PrjInfo]
+  [Name]233008[end]
+  [Bez]UW Berlin Süd-Ost[end]
+  [Wae]EUR[end]
+  [WaeBez]Euro[end]
+ #end[PrjInfo]
+ #begin[Vergabe]
+  [DP]83[end]
+  #begin[VergabeInfo]
+   [Wae]EUR[end]
+   [WaeBez]Euro[end]
+  #end[VergabeInfo]
+  #begin[AG]
+   #begin[Adresse]
+   #end[Adresse]
+  #end[AG]
+  #begin[LV]
+   #begin[LVInfo]
+    [Name]03[end]
+    [Bez]UW-BnS  1. BA und Ausbau Tr. 416[end]
+    [Datum]07.06.2023[end]
+    [KurzLang]1[end]
+    #begin[LVGlied]
+     [Typ]LVStufe[end]
+     [Bez]Bereich[end]
+     [Laenge]2[end]
+    #end[LVGlied]
+    #begin[LVGlied]
+     [Typ]LVStufe[end]
+     [Bez]2[end]
+     [Laenge]2[end]
+    #end[LVGlied]
+    #begin[LVGlied]
+     [Typ]LVStufe[end]
+     [Bez]Abschnitt[end]
+     [Laenge]2[end]
+    #end[LVGlied]
+    #begin[LVGlied]
+     [Typ]Position[end]
+     [Laenge]4[end]
+    #end[LVGlied]
+    #begin[LVGlied]
+     [Typ]Index[end]
+     [Laenge]1[end]
+    #end[LVGlied]
+    [USt]19,00[end]
+   #end[LVInfo]
+   #begin[LVBereich]
+    [OZ]04[end]
+    [Bez]Betriebsgebäude Typ 2[end]
+    #begin[LVBereich]
+     [OZ]0402[end]
+     [Bez]Technische Gebäudeausrüstung[end]
+     #begin[LVBereich]
+      [OZ]040201[end]
+      [Bez]Lüftung[end]
+      #begin[Hinweis]
+       #begin[Beschreibung]
+        [Langtext]Vorbemerkungen-Technische Erläuterungen
+        
+        Zum Leistungsverzeichnis und zu den lüftungstechnischen Zeichnungen W22 und W23, ergänzend nachfolgende anlagentechnische Erläuterungen.
+        
+        1. Lüftungs-/Klimaanlage Leittechnikraum R 01
+        Die Lüftung und Klimatisierung des Leittechnikraumes erfolgt über zwei Anlagensysteme.
+        
+        Betrieb über eine mechanische Be-und Entlüftung mit einem Abluftventilator, montiert in einer Wandöffnung (Außenwandöffnung verschlossen mit Klappe und Gitter) bei gleichzeitiger freier Nachströmung der Zuluft über eine ebenfalls mit Klappe und Gitter verschlossene Außenwandöffnung. Diese Art der mechanischen Lüftung garantiert die Einhaltung der geforderten Raumlufttemperatur von 26°C, entsprechend der festgelegten inneren Wärmelast der Schaltschränke von 10,0 kW, nur noch bis zu einer bestimmten Sommeraußentemperatur.
+        
+        Für den Außentemperaturbereich bis ca. 32°C  wird zusätzlich eine Luftkühlung im Umluftprinzip vorgesehen.
+        
+        Betriebstechnisch wirken die beiden Anlagen dann nacheinander wie folgt:
+        
+        - Solange die sommerlichen Außentemperaturen es zulassen wird die anfallende Kühllast (Transmission/Strahlung Gebäudehülle, Schaltschränke, Beleuchtung usw.) zur Einhaltung der geforderten Raumlufttemperatur von 26°C mit der mechanischen Lüftungsanlage abgeführt.
+        - Kann die geforderte Raumlufttemperatur von 26°C mit der mechanischen Lüftungsanlage nicht mehr eingehalten werden, schaltet sich das Klimagerät (Luftkühlanlage im Umluftbetrieb) ein. Dazu wird die Lüftungsanlage ausgeschaltet und die anfallende Kühllast wird ausschließlich über das Klimagerät abgeführt. Das Klimagerät ist mit seiner Kälteleistung für die gesamte Kühllast in diesem Temperaturbereich ausgelegt.
+        
+        Ein paralleler Betrieb beider Anlagen wird ausgeschlossen, da sonst die über die Lüftungsanlage einströmende warme Außenluft dann noch neben der technologischen Kühllast zur Einhaltung der Raumlufttemperatur zusätzlich gekühlt werden müsste.
+        
+        Bei Ausfall der Klimaanlage wird die mechanische Lüftung unabhängig von den jeweiligen 
+        Außenluftverhältnissen und bei einem Raumluftzustand über 26°C immer eingeschaltet. (Notbetrieb)
+        
+        Die Ein- und Ausschaltroutinen der beiden Anlagen werden entsprechend Arbeitsblatt TRN 03.11.01-9 (Steuerung Lüftung und Kühlung) festgelegt.
+        
+        Funktion von Hand und Automatik wie folgt:
+        
+        Mechanische Be- und Entlüftung
+        
+        Das Ein- und Ausschalten des Ablüfters und die Steuerung der Klappen erfolgt über den Steuerschrank Lüftung des Bauherrn.
+        
+        Handschaltung
+        Schalter: EIN, Lüftungsgitter: AUF, Lüfter: EIN
+        
+        Schalter: AUS, Lüftungsgitter: ZU, Lüfter: AUS
+        
+        Rückmeldung: Lüftungsgitter: ZU, Lüfter: AUS
+        
+        Störmeldung: Lüfterklappe gestört, Lüfter gestört
+        
+        Automatik
+        Raumtemperatur: T=21°C, Lüftungsgitter: ZU, Lüfter: AUS
+        
+        Raumtemperatur: T=22°C, Lüftungsgitter: AUF
+        
+        Raumtemperatur: T=24°C, Lüfter: EIN
+        
+        Raumtemperatur: T=26°C, Lüftungsgitter: ZU, Ablüfter: AUS
+        
+        Rückmeldung: Lüftungsgitter: Z, Lüfter: AUS
+        
+        Störmeldung: Lüfterklappe gestört, Lüfter gestört
+        
+        Klimaanlage
+        Raumtemperatur: T=26°C, Klimagerät: EIN
+        
+        Raumtemperatur: T=24°C, Klimagerät: AUS
+        
+        Bei Störung und Ausfall der Klimaanlage werden die beiden Anlagen so verschaltet, dass bei Raumtemperaturen über 26°C bis zur Störungsbeseitigung die mechanische Be- und  Entlüftungsanlage in Betrieb bleibt.
+        
+        Die Klimatisierung (Raumkühlung) erfolgt mit einem Zentralgerät als Zwischendeckengerät 
+        (Inneneinheit) vom Zwischendeckengerät erfolgt die Luftverteilung über Wickelfalzrohr zu den Luftauslässen, die im Wesentlichen als Decken-Drallauslässe und Gitterauslässe ausgeführt 
+        werden. Die direkten Anschlüsse an Decken-Drallauslässe und Gitterauslässe werden mit Flexrohr ausgeführt. Alle lufttechnischen Anlagenteile werden in der neu zu errichtenden Unterhang-Decke montiert. Die Decken-Drallluftauslässe werden über den Schaltschränken, dem Deckenraster angepasst, angeordnet. Dazu sind die Einlegeplatten der Unterhang-Decke auszuschneiden.
+        Das Zentralgerät saugt über perforierte Lochdeckenplatten (alternativ über ein Deckengitter) im Umluftprinzip die Abluft des Raumes frei an, filtert diese und bereitet diese im Gerät als Zuluft wieder auf.
+        
+        Zur Wartung des Gerätes und des turnusmäßig zu wechselnden Filters ist eine Wartungsöffnung in der Unterhangdecke als abnehmbare Einlegeplatte vorgesehen. Alle Luftleitungen werden gegen Schwitzwasser gedämmt.
+        
+        Das Außengerät wird an der Giebelseite auf Wandkonsolen befestigt.
+        
+        Die Anlage wird mit dem Kältemittel R 410A betrieben.
+        
+        Die Kälte-, Elektro- und Steuerleitungen werden vom Außengerät an der Mauerwerks-Fassade nach oben bis in den Unterhang-Deckenbereich geführt. Geschützt werden die Leitungen durch einen Edelstahlkanal. Die weitere Verlegung der Leitungen erfolgt im Leittechnikraum innerhalb der Unterhang-Decke.
+        
+        Das anfallende Tauwasser des Zentralgerätes wird über das bestehende Entwässerungsnetz im Gebäude abgeleitet. Die Tauwasserleitung vom Zentralgerät wird als Gefälleleitung in Edelstahl, Verbindungen verpresst, im Unterhang-Deckenbereich bis zum Anschlusspunkt Schmutzwasser (Trockenbauschacht Kleinküche/ Aufenthaltsraum 02) verlegt.
+        Die Einbindung in die Schmutzwasserfallleitung erfolgt sanitärseitig drucklos über einen Siphon.
+        Der Anschluss muss vor dem bauseitigen Schließen des Trockenbauschachtes erfolgen.
+        
+        Regelung und Steuerung der Klimaanlage
+        Das Außengerät und das Innengerät der Klimaanlage werden regelungstechnisch so ausgestattet, dass die Steuerung sowohl örtlich als auch über die vorhandene Gebäudeleittechnik erfolgen kann.
+        
+        Steuerung über Kabelfernbedienung
+        Die über die Klimaanlage mitgelieferte Kabelfernbedienung dient der örtlichen Einstellung der Parameter und der Wartung und Fehlerauslesung. Mit der Kabelfernbedienung ist auch eine zeitweise individuelle Regelung vor Ort möglich.
+        
+        Die möglichen Grundfunktionen und weiteren Einstellmöglichkeiten sind detailliert im Leistungsverzeichnis (Pos. 1.16.040) beschrieben.
+        
+        Externe Steuerung und Überwachung über Zusatzmodul
+        Da der Leittechnikraum nicht ständig besetzt ist, kann die Klimaanlage extern gesteuert und überwacht werden. Bei dieser überwiegenden Betriebsweise kann die örtliche Kabelfernbedienung durch die externe Steuerung gesperrt werden. Ein örtlicher Eingriff ist nur nach Freigabe möglich.
+        
+        Für die externe Steuerung und Überwachung der Klimaanlage ist am Innengerät eine Zusatzplatine - potentialfreien Weiterleitung aller Betriebszustände vorgesehen. Dieses Bauteil gehört zum Leistungsumfang Klimaanlage, der Anschluss zum HLS-Steuerschrank gehört zum Leistungsumfang Elektro (Auftraggeber/ Bauherr).
+        Die möglichen Ein- und Ausgabeoptionen sind detailliert im Leistungsverzeichnis Pos. 1.16.050 beschrieben.
+        
+        2. Be- und Entlüftung Gleichrichterraum R 06
+        Die Lüftung des Gleichrichterraumes erfolgt über eine mechanische Be-und Entlüftung bestehend aus einer Abluftanlage, montiert im Dachraum, bei gleichzeitiger freier Nachströmung der Zuluft über einen Außen-/ Zuluftkanal. Zuluft strömt frei in den Raum ein und wird nach Durchströmung im Deckenbereich über die mechanische, im Dachbereich installierte Abluftanlage abgesaugt.
+        
+        Die Be- und Entlüftung erfolgt mit nachfolgend beschriebenen Anlagenteilen:
+        Belüftung frei nachströmend über einen Außen-/ Zuluftkanal.
+        Der Außen-/ Zuluftkanal für die frei nachströmende Zuluft in den Gleichrichterraum (06) wird als Deckenkanal innerhalb des Betriebsmittelraumes (09) in der Qualifikation F90 ausgeführt. Den äußeren Abschluss des Außen- und Zuluftkanals an der Fassade bildet ein Wetterschutzgitter H x B 490 x 1290 mm. Die Anordnung des Gitters und der Anschluss des Außen-/ Zuluftkanals sind dem Grundriss und den Schnitten zu entnehmen.
+        
+        Der Deckenkanal selbst wird lüftungsseitig als verzinkter Stahlblechkanal mit diffusionsdichter Dämmung gegen Schwitzwasser sowie mit einer F90Bekleidung (4-seitige) Ummantelung) im Trockenbau (Promat), entsprechend dem Amtlichen Prüfzeugnis ABP Nr. P-3096/090/12-MPA BS, ausgeführt. (Ausführung siehe beigelegter Schnitt W20)
+        
+        Die Bekleidung des Lüftungskanals ist als Leistung im Gewerk Lüftung erfasst.
+        
+        Innerhalb der Raumnische zwischen Eigenbedarfs- und Gleichrichterraum wird der Deckenkanal senkrecht nach unten geführt.
+        
+        Die Raumnische wird bauseits mit einer Schachtverkleidung F90, verschlossen. In der Raumnische ist lüftungsseitig auch der notwendige Taschenfilter installiert. Die bauseits für die Durchführung des Lüftungskanals im oberen Bereich der Schachtverkleidung gelassene Aussparung muss lüftungsseitig mit Anarbeitung der F90-Kanalbekleidung fachgerecht geschlossen werden. Zur Bedienung und Wartung des Taschenfilters wird bauseits in der Schachtverkleidung ein einflügeliger Revisionsflügel F90 eingebaut. Der Luftaustritt erfolgt vom Schacht in den Gleichrichterraum über eine Wandöffnung im Fußbodenbereich, verschlossen mit einem lüftungsseitigen Gitter.
+        
+        Entlüftung über mechanische Abluftanlage
+        Die Bestimmung der Abluftmengen sind aus den Angaben zu den Verlustwärmen im Gleichrichterraum ermittelt worden. Daraus ergibt sich, dass neben dem Maximalwert aber ein Minimalwert bei reinem Erhaltungs-Lade-betrieb vorherrscht. Um diesem Betriebszustand Rechnung zu tragen, ist die Abluftanlage einschließlich Ablüfter für den Betrieb mit 2 Drehzahlen (z.B. polumschaltbar) geplant. Damit wird die Abluftanlage mit kleinerer Luftmengen für den "sogenannten Normalfall" mit energetischem Vorteil und der Verringerung des Unterdruckes im Gleichrichterraum betrieben.
+        
+        Abluft wird unter der Decke des Gleichrichterraumes über 2 St. Brandschutzklappen K90, DN 400, mittels im Dachraum installierten Ablüfters abgesaugt. Die Brandschutzklappen sind unter der Decke mit Schutzgittern verschlossen. Die Brandschutzklappen werden in die Betondecke (F90) eingesetzt und vorschriftsmäßig vergossen. Die dafür erforderlichen Deckenaussparungen mit einem Durchmesser von 50 cm werden bauseits vorgesehen.
+        
+        Die Funktion der Brandschutzklappen ist im Leistungsverzeichnis detailliert beschrieben
+        
+        Die mechanische Abluftanlage selbst ist verrohrt auf dem Dachboden aufgestellt.
+        Der Ablüfter, als Rohrlüfter vorgesehen, saugt die Abluft aus dem Gleichrichterraum über ein Rohrsystem aus verzinktem Wickefalzrohr an und bläst die Abluft zur Geräuschminderung über nachgeschaltete Kanal-Kulissenschaldämpfer in den Dachraum. Den äußeren Abschluss des Ausblases bildet ein eckiger Schutzgitter-Kanal. Der Rohrlüfter selbst wird mittels Verlängerungsrohr und 2 St. elastischen Stutzen in das Rohrsystem eingebaut. Die Verbindungen werden mit passend zum Ventilatorflansch gebohrten Flanschen hergestellt. Der Rohrlüfter wird auf Montagekonsolen aus verzinktem Stahlblech primär befestigt. Die Montagekonsolen erhalten Schwingungsdämpfer für Druckbelastung und werden auf der Unterstützungsbefestigung verschraubt. Es wird ein Reparaturschalter vorgesehen. (Lage örtlich nach Bedienseite anpassen!)
+        
+        Die Ein- und Ausschaltroutinen der Anlage wird entsprechend Arbeitsblatt TRN 03.11.01-9 (Steuerung Lüftung und Kühlung) festgelegt.
+        
+        Das Ein- und Ausschalten des Ablüfters sowie die Drehzahlsteuerung erfolgt über den HLS-Steuerschrank des Bauherrn.
+        
+        Funktion von Hand und Automatik wie folgt:
+        Handschaltung
+        Über Betriebsschalter 0-1-2 für polumschaltbare Ventilatoren mit Dahlander-Wicklung.
+        
+        Schalter:
+        1-EIN Lüfter Stufe 1   : EIN
+        2-EIN Lüfter Stufe 2   : EIN
+        
+        Schalter:
+        0-AUS Lüfter   : AUS
+        Rückmeldung   : Lüfter: AUS
+        Störmeldung   : Lüfter gestört
+        
+        Automatik
+        Ablüfter Stufe 1   : ca. 2.000 m3/h (1.380 min-1)
+        Raumtemperatur   : T=29°C Ablüfter Stufe 1: EIN
+        Raumtemperatur   : T=26°C Ablüfter Stufe 1: AUS
+        
+        Ablüfter Stufe 2   : ca. 4.000 m3/h (2.840 min-1)
+        Raumtemperatur   : T=32°C Ablüfter Stufe 2: EIN
+        Raumtemperatur   : T=29°C Ablüfter Stufe 1: EIN
+        
+        3. Be- und Entlüftung Eigenbedarfsraum R 07
+        Die Lüftung des Eigenbedarfsraumes erfolgt über eine mechanische Be-und Entlüftung bestehend aus einem Abluftventilator, montiert in einer Wandöffnung (Außenwandöffnung verschlossen mit Klappe und Gitter) bei gleichzeitiger freier Nachströmung der Zuluft über eine ebenfalls mit Klappe und Gitter verschlossene Außenwandöffnung. Die Zu- und Abluftklappen werden AUF-ZU-gesteuert, der Ablüfter raumlufttemperaturabhängig EIN-AUS-geschaltet.
+        
+        Zuluftöffnung
+        Den äußeren Fassadenabschluss bildet ein Wetterschutzgitter aus Aluminium mit zwei versetzt hintereinanderliegenden Winkellamellenreihen selbstreinigend, durchstecksicher, eingebaut in die bauseits vorgesehene Wandöffnung.
+        
+        Innen wird ein Lüftungsgitter als Überdruckklappe aus Aluminium eingebaut. Gesteuert wird die Klappe entsprechend Betrieb Ablüfter AUF-ZU, bei Stromausfall ZU, mit einem an der Innenseite montierte Hubmagneten, verschlossen an der Außenseite mit einem abnehmbaren Rahmen mit Niro-Insektengaze.
+        
+        Abluftöffnung
+        Äußerer Fassadenabschluss mit Wetterschutzgitter wie Zuluftöffnung.
+        
+        Innen Lüftungsgitter als Überdruckklappe wie Zuluftöffnung.
+        
+        Zwischen äußerem Wetterschutzgitter und innerer Überdruckklappe wird mittels Aufnahmeblech der Ablüfter installiert.
+        
+        Die Ein- und Ausschaltroutinen der beiden Anlagen werden entsprechend Arbeitsblatt TRN 03.11.01-9 (Steuerung Lüftung und Kühlung) festgelegt.
+        
+        Das Ein- und Ausschalten des Ablüfters und die Steuerung der Klappen erfolgt über den Steuerschrank Lüftung des Bauherrn.
+        
+        Funktion von Hand und Automatik wie folgt:
+        Handschaltung
+        Schalter: EIN Lüftungsgitter: AUF Lüfter: EIN
+        Schalter: AUS Lüftungsgitter: ZU Lüfter: AUS
+        
+        Rückmeldung: Lüftungsgitter: ZU Lüfter: AUS
+        Störmeldung: Lüfterklappe gestört Lüfter gestört
+        
+        Automatik
+        Raumtemperatur: T=18°C, Lüftungsgitter: ZU
+        Raumtemperatur: T=21°C, Lüfter: AUS
+        Raumtemperatur: T=22°C, Lüftungsgitter: AUF
+        Raumtemperatur: T=26°C, Lüfter: EIN
+        
+        Rückmeldung: Lüftungsgitter: ZU, Lüfter: AUS
+        Störmeldung: Lüfterklappe gestört, Lüfter gestört
+        
+        4. Freie Lüftung Batterieraum 05
+        Die Be- und Entlüftung des Batterieraumes erfolgt über eine natürliche freie Lüftung. Die unverschließbare Zuluft- und Abluftöffnung befinden sich beide in der Außenwand. Zuluft strömt über eine Wandöffnung in Fußbodennähe ein, Abluft wird über eine Wandöffnung in Deckennähe abgeführt.
+        
+        Zuluft:
+        Die Zuluftzuführung erfolgt über einen bauseitigen Schacht im Batterieraum. Die notwendige unverschließbare Außenluftöffnung und die innere Zuströmöffnung werden diesem Schacht zugeordnet. Äußeres Wetterschutzgitter und inneres Zuluftgitter, ausgeführt als Insektenschutzgitter, werden höhenversetzt angeordnet. Durch diesen Höhenversatz der inneren und äußeren Zuluftöffnung kann bei Windanfall dem Eintrag von Staub in den Batterieraum entgegengewirkt werden. In der im Schacht entstandenen Bodenvertiefung kann sich Staub und Laub sammeln und über die bauseitige Revisionsklappe beseitigt werden. Der Schacht wird entsprechend den baulichen Anforderungen ausgeführt.
+        
+        Abluft:
+        Abluft wird über eine in der Außenwand angeordnete unverschließbare Abluftöffnung in Deckennähe aus dem Batterieraum abgeführt. Den äußeren Abschluss in der Fassade bildet ein durchstecksicheres Wetterschutzgitter, innen wird ein Insektenschutzgitter angeordnet.
+        
+        Die Größe der Zu- und Abluftöffnungen sind durch notwendige Luftmengen zur Einhaltung des Explosionsschutzes im Batterieraum bestimmt. Die Einhaltung der gesetzlichen Bestimmungen werden in einem Explosionsschutz-Dokument nachgewiesen. Die Anordnung und Größe der Gitter sind dem LV, dem Grundriss und den Schnitten zu entnehmen.
+        
+        5. Be- und Entlüftung Sanitärräume 03.2 und 03.3
+        Die Sanitärräume 03.2-Sanitär-WC und 03.3-Sanitär-Waschraum werden mechanisch entlüftet, Zuluft strömt frei nach.
+        
+        Abluft:
+        Abluft aus den Sanitärräumen wird über eine mechanische Entlüftungsanlage, bestehend aus Rohrventilator und Rohrsystem aus verzinktem Wickelfalzrohr abgesaugt. Als Abluft-Luftdurchlässe werden Tellerventile in die Trockenbauwand eingesetzt. Der Anschluss der Tellerventile an das Rohrsystem erfolgt mittels Flexrohr. Die Abluft wird direkt in das Freie über ein in die Außenwand eingebautes Außengitter aus Kunststoff, mit eingelegtem Fliegenschutzgitter, geblasen. Die Schaltung der Entlüftungsanlage erfolgt über einen separaten Taster vom Vorraum. Die Entlüftungsanlage wird innerhalb der Trockenbauwand installiert. Bauseitig wird zur Wartung des Rohrlüfters eine Revisions-Klappe vorgesehen. Die Abluftleitungen in der Trockenbauwand erhalten eine Schwitzwasserdämmung.
+        
+        Zuluft:
+        Zuluft strömt frei in den Sanitärrum über ein in die Außenwand eingesetztes Zuluftelement nach. Das Zuluftgitter besteht aus einem Außengitter, einer Wandhülse und einem Innengitter aus Kunststoff. In das Innengitter ist ein Luftfilter G2 eingelegt.
+        [end]
+        [Kurztext]Vorbemerkungen-Technische Erläuterungen[end]
+       #end[Beschreibung]
+      #end[Hinweis]
+      #begin[Position]
+       [OZ]0402010010[end]
+       #begin[Beschreibung]
+        [Langtext]DC Inverter Außeneinheit, Mono- und Simultan-Splitsystem, mit Kältemittel R410A, kombinierbar mit nachstehender Inverter Inneneinheit als Zwischendeckengerät.
+        bestehend aus:
+        Verdichter/Kondensatoreinheit für den Anschluss von 1 Stück nachstehender Inneneinheit als Zwischendeckengerät mit DC-Inverter-Technologie Gehäuse aus verzinktem Stahlblech mit Einbrennlackierung. Drehzahlgeregelter DC- Rollkolbenverdichter mit stufenloser Leistungsregelung. DC-Verdichter schallgedämpft gekapselt und schwingungsfrei gelagert, Trockner, Filter, Flüssigkeitsabscheider, elektronisches Expansionsventil (Außeneinspritzung), 4-Wege-Umkehrventil für Wärmepumpenbetrieb. Vorgefüllt mit Kältemittel R410A für eine Leitungslänge von bis zu 30 m. Temperatursensoren zur Kältekreisüberwachung und bedarfsabhängigen Leistungsregelung. Luftgekühlter Wärmeübertrager in großflächiger, gebogener Ausführung aus Kupferrohr mit Alu-Lamellen. Luftaustritt horizontal. Geräuscharmer, langsam laufender, stufenlos drehzahlgeregelter Axialventilator, statisch und dynamisch ausgewuchtet, schwingungsgedämpft gelagert.
+        
+        Sicherheitseinrichtungen:
+        Selbstdiagnosefunktionsanzeige über 2 LED's auf der Elektronik, Ventilatormotor mit thermischem Überlastschutz und Außentemperatursensor, Verdichter mit thermischem Überlastschutz, Heißgastemperatursensor, Spitzenspannungsüberwachung und Überstromauslöser. Servicefernbedienung zur Abfrage der Betriebszustände direkt an der Außeneinheit anschließbar.
+        
+        Einsatzbereich:
+        Der Kühlbetrieb ist bei einer Außentemperatur von -15 bis 46°C möglich.
+        
+        Technische Daten
+        Verdichter/Kondensatoreinheit
+        Nennkälteleistung   : 12,50 kW
+        Regelbereich Kühlen   : 3,30-14,00 kW
+        Nennheizleistung   : 14,00 kW
+        Regelbereich Heizen   : 4,10-16,00 kW
+        Luftvolumenstrom Kühlen   : max. 7.800 m3/h
+        Luftvolumenstrom Heizen   : max. 6.600 m3/h
+        Schalldruckpegel Kühlen/ Heizen   : 53 dB(A)
+        Abmessungen Höhe/Breite/Tiefe   : 1416/940/340 mm
+        Masse   : 98 kg
+        
+        Kältetechnische Daten
+        Kältemittelleitungsdurchmesser
+        Einspritzleitungsanschluss   : 9,52 (10) mm
+        Saugleitungsanschluss   : 15,88 (15) mm
+        Max. mögliche Leitungslänge   : 75 m
+        Max. mögliche Höhendifferenz
+        IE über AE   : 15 m
+        Max. mögliche Höhendifferenz
+        AE über IE   : 30 m
+        Werks. Kältemittelfüllung (R410A)   : 3,40 kg
+        Vorgefüllt bis   : 30 m
+        Nachfüllmenge   : 50 g/m
+        
+        Elektrodaten
+        
+        Spannungsversorgung   : 400/3N~/50 V/Ph/Hz
+        max. Stromaufnahme   : 10 A
+        Leistungsaufnahme min/max   : 0,9/5,2 kW
+        Nennbetriebsstrom Kühlen   : 5,9 A
+        Zuleitungsquerschnitt   : 5x2,5* mm2
+        Steuerleitungsquerschnitt
+        (Busleitung)   : 2x0,75 mm2
+        Absicherung, träge   : 3x16* A
+        Spannungsversorgung und Absicherung der Inneneinheit separat! (*=Richtwerte, es gelten die örtlichen EVU-Vorschriften!)
+        
+        Einschließlich Reparaturschalterset 25 A, für die Aufputzmontage inklusive Verschraubungen.
+        
+        Bemerkung:
+        Stromversorgung der Außeneinheit gehört nicht zum Leistungsumfang, wird durch Auftraggeber/ Bauherr realisiert.
+        
+        Installationshöhe: bis 3,50 m über OK Gelände.
+        liefern und montieren
+        
+        Fabrikat   : Kaut/ Panasonic
+        
+        Typ   : Mono/ Simultan Außengerät U-125PE1E8 oder gleichwertig - Gleichwertigkeit ist durch den Bieter detailliert nachzuweisen.
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Mono-/ Simultan-Außengerät[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010020[end]
+       #begin[Beschreibung]
+        [Langtext]Inverter Inneneinheit als Zwischendeckengerät, Kanalanschlussmodell mit hoher statischer Pressung, mit DC-Inverter-Technologie für effiziente Leistungsregelung, anschließbar an vorgenannte angebotene Außeneinheit, zur Zwischendeckenmontage für druckseitigen Kanalanschluss über Flansch für runde Luftkanalanschlüsse,
+        bestehend aus:
+        Gehäuse aus verzinktem Stahlblech, innen und außen mit diffusionsdichtem Moosgummi schall- und wärmedämmend ausgekleidet. Tauwasserwanne mit Ablaufstutzen und Tauwasserhebepumpe mit Sicherheitsschwimmerschalter. Außenluftanschlussmöglichkeit, saugseitiger Kanalanschluss, Luftfilter serienmäßig, wahlweise von hinten oder von unten montierbar, druckseitiger Kanalanschlussstutzen horizontal. Extrem leise laufende(r) Tangentialventilator(en) mit diagonal angeordneten, vorwärts gekrümmten Schaufeln zur Reduzierung des Luftschalls, statisch und dynamisch ausgewuchtet, DC-Inverter Ventilatormotor, direkt angetrieben, schwingungsgedämpft gelagert. Wärmeübertrager aus Kupferdrallrohr mit Alu-Profilschlitz-Lamellen. Trockner/Filter, Flüssigkeitsverteiler und Bördelanschlüsse für die Kältemittelleitungen. Komplett verdrahteter Schaltkasten mit der Möglichkeit zur Erhöhung der externen statischen Pressung.
+        
+        32-bit-Mikroprozessor, PID-Regelung über Thermistoren an der Wärmeübertrager-Oberfläche, Temperatursensor im Rückluftstrom. Alle Gerätefunktionen wahlweise über Standard-, Infrarot-, Basis- und / oder Systemfernbedienung steuerbar. Anzeige und Abfrage aller Systemparameter, der letzten 4 Fehlermeldungen, Selbstdiagnosefunktion und freie Programmierung des E²-PROM z.B.min./max. Sollwerte, Sensorabgleich, Filterreinigungsintervall, Lüftersteuerung (WP), Prioritäten, Adressen usw. mittels Standardfernbedienung. Darüber hinaus sollen Möglichkeiten der Einbindung und übergeordneten Regelung mit allen gängigen GLT-Systemen bestehen.
+        
+        Automatische Wiedereinschaltung nach Spannungsabfall. (Nach Spannungsrückkehr muss ein sofortiger störungsfreier Wiederanlauf ohne Zeitverzögerung erfolgen!)
+        
+        Technische Daten
+        Nennkühlleistung   : 14,00 kW
+        Regelbereich Kühlen   : 3,30-15,50 kW
+        Nennheizleistung   : 16,00 kW
+        Regelbereich Heizen   : 4,10-18,00 kW
+        Energieeffizienzklasse Kühlen   : A
+        Energieeffizienzklasse Heizen   : A
+        Wirkungsgrad EER Kühlen   : 3,25 W/W
+        Wirkungsgrad COP Heizen   : 3,60 W/W
+        Entfeuchtungsleistung   : 9,0 l/h
+        Luftvolumenstrom Kühlen/Heizen   : max. 2.160 m3/h
+        Externe stat. Pressung   : 100 (10-150) Pa
+        Schallleistungspegel in 1 m
+        Entfernung (ni, mi, ho)   : 55/58/62 dB(A)
+        Schalldruckpegel Kühlen/Heizen   : 33/36/40 dB(A)
+        
+        Kälteanschlussdaten
+        Kältemittelleitungsanschlüsse
+        (Einspritz-/Saugleitung)   : 10/ 5 mm
+        Tauwasserpumpenanschluss
+        Außen- o   : 32 mm
+        Förderhöhe Tauwasserpumpe
+        
+        von Geräteunterkante   : 850 mm
+        Abmessungen
+        Höhe/Breite/Tiefe   : 290/1400/70  mm
+        Masse   : 45 kg
+        
+        Elektroanschlussdaten
+        Spannungsversorgung   : 230/1/50 V/Ph/Hz
+        Leistungsaufnahme Kühlen   : 0,23 kW
+        Leistungsaufnahme Heizen   : 0,23 kW
+        Stromaufnahme Kühlen   : 1,50 A
+        Stromaufnahme Heizen   : 1,50 A
+        Zuleitungsquerschnitt zur IE 3x1,5* mm2
+        Steuerleitungsquerschnitt LIYCY
+        (Busleitung)   : 2 x 0,75 mm2
+        Absicherung, träge   : 10* A
+        (*=Richtwerte, es gelten die örtlichen EVU-Vorschriften!)
+        Spannungsversorgung und Absicherung der Außeneinheit separat!
+        
+        Vorgenanntes raumlufttechnisches Gerät, einschließlich systembedingten Befestigungsmaterial liefern, bei Erfordernis auf der Baustelle komplettieren und schwingungsgedämpft an der Decke montieren, Installationshöhe: bis 3,50 m über OKFF.
+        
+        Fabrikat   : Kaut/Panasonic
+        Typ   : Pac-i Inverter Zwischendeckengerät hohe statische Pressung S-140PF1E5 oder gleichwertig - Gleichwertigkeit ist durch den Bieter detailliert nachzuweisen.
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Inverter Inneneinheit als Zwischendeckengerät (Kanalanschlussmodell)[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010030[end]
+       #begin[Beschreibung]
+        [Langtext]Flansch für runde Luftkanalanschlüsse für vorstehende angebotene Inverter-Inneneinheit (Zwischendeckengerät als Kanalanschlussmodell), als Sonderzubehör,  Formstück aus verzinktem Stahlblech für 4 Stück Wickelfalz-Rohrleitungsanschlüsse DN 200. Anbau druckseitig an Inverter-Inneneinheit anstatt eines Standard-Rechteckflansches.
+        
+        liefern und montieren
+        
+        Fabrikat   : Kaut/ Panasonic
+        
+        Typ   : Flansch mit 4 Anschlussstutzen DN 200 CZ-160DAF2 oder gleichwertig - Gleichwertigkeit ist durch den Bieter detailliert nachzuweisen
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Flansch für runde Luftkanalanschlüsse[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010040[end]
+       #begin[Beschreibung]
+        [Langtext]Standardkabelfernbedienung zur Einzelgerätesteuerung der vorgenannten Inneneinheit, mit übersichtlichem LC-Display, störunanfälligen Kurzhubtasten, Temperaturfühler und integrierter Wandhalterung.
+        
+        Grundfunktionen:
+        - Ein/ Aus
+        - Betriebsartenwahl (Kühlen, Heizen, Entfeuchten, Automatik, Umluft)
+        - Ventilatordrehzahl (niedrig/ mittel/ hoch, Automatik)
+        - Solltemperatur (Kühlen/ Entfeuchten: 18-30°C /
+         Heizen: 16-30°C
+        - 24-Stunden-Echtzeituhr mit Timer-Funktion und Wochentagsanzeige
+        - Monitorsystem für die Abfrage der Systemparameter
+        - Diagnosefunktion; Anzeige der letzten 4 Fehlermeldungen
+        
+        Weitere Einstellmöglichkeiten:
+        - Raumtemperaturerfassung umschaltbar, wahlweise über die Inneneinheit oder über die Fernbedienung einstellbar.
+        - Wochenprogramm Ein/Aus
+        - Anzeige der Sollzustände der zugehörigen Inneneinheit.
+        - Filterüberwachung mit Filterresetfunktion,
+        - automatische Wiedereinschaltung nach Spannungsausfall
+        - Selbstdiagnosefunktion und freie Programmierung des E2-PROM abweichend von den Werkseinstellungen z.B. (min./max. Sollwerte, Fühlerabgleich, Filterreinigungsintervall, Lüftersteuerung (WP), Prioritäten, Adressen, usw.)
+        - Testbetriebsfunktion
+        
+        Technische Daten:
+        Elektroanschluss über Inneneinheit   : 2x0,75 mm2
+        
+        Standardkabelfernbedienung einschließlich aller erforderlichen Steuerleitungen zum Außen- und den Innengeräten, im Aufputz-Kunststoffkanal verlegt, liefern und montieren. Montageort der Kabelfernbedienung in Abstimmung mit Bauleitung festlegen.
+        
+        Abmessungen H/B/T   : 120x120x16 mm
+        
+        Fabrikat   : Kaut/ Panasonic
+        
+        Typ   : Kabelfernbedienung CZ-RTC2 oder gleichwertig - Gleichwertigkeit ist durch den Bieter detailliert nachzuweisen
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Standardkabelfernbedienung[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010050[end]
+       #begin[Beschreibung]
+        [Langtext]Zusatzmodul zur externen Ansteuerung und Überwachung der vorstehenden Inneneinheit.
+        - externes Ein-und Ausschalten über Impuls-oder Dauersignal
+        - externes Verriegeln der Fernbedienung jeder einzelnen Inneneinheit
+        - Betriebsmeldung jeder einzelnen Inneneinheit über potentilafreien Kontakt (1 A)
+        - Alarmmeldung bei Spannungsausfall
+        - Alarmmeldung der Inneneinheit über potentialfreien Kontakt (1 A)
+        - Potentialfreie Einbindung in bauseitige GLT, EIB-, LON-BUS- Netzwerke
+        - Mit Anschlussleitung ca. 1 m und Stecker 6-polig
+        - LED-Anzeige für Betriebs- und Störmeldung
+        
+        Zulässige Schaltspannung 250V AC / 1A für Betriebs- und Störmeldungen.
+        
+        liefern und montieren
+        
+        Fabrikat   : Kaut/ Panasonic
+        Typ   : PFEA-8iDC2 nur über Fa. Kaut zu beziehen! oder gleichwertig - Gleichwertigkeit ist durch den Bieter detailliert nachzuweisen
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Zusatzplatine für externe Steuerung und Überwachung der Inneneinheit[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010060[end]
+       #begin[Beschreibung]
+        [Langtext]Gehäuse, passend für vorstehende Zusatzplatine. Universal Aufputz-Gehäuse für trockene Räume (IP30).
+        
+        Technische Merkmale
+        - Höhe   : 180 mm
+        - Breite   : 110 mm
+        - Tiefe   : 82 mm
+        - RAL-Farbe   : 9010
+        - Schutzart   : IP30
+        - Schutzklasse   : Schutzklasse II
+        
+        liefern und montieren
+        
+        Fabrikat   : Kaut
+        
+        Typ   : PFEA-G3 nur über Fa. Kaut zu beziehen! oder gleichwertig - Gleichwertigkeit ist durch den Bieter detailliert nachzuweisen
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Gehäuse für Zusatzplatine[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010070[end]
+       [Bedarf]E[end]
+       #begin[Beschreibung]
+        [Langtext]Profillamellengitter aus Aluminium, Lüftungsgitter für Abluft, zum Einbau in eine Zwischendecke (Raster 62,5x62,5 cm), einschließlich erforderlicher Anpassarbeiten, mit umlaufenden Profilfrontrahmen und waagerecht eingesetzten Profillamellen, verdeckte Schraubbefestigung, leicht abnehmbar für die Filterwartung des Zwischendeckengerätes, Sonderfarbton RAL nach Wahl Bauherr und Abstimmung mit Bauleitung,
+        Volumenstrom   : 1.980 m3/h
+        Größe (BxH)   : 1225 mm x 425 mm
+        
+        liefern und montieren
+        
+        Fabrikat   : Wildeboer
+        Typ   : ABGPNR-PD 140 TS oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        
+        Hinweis:
+        Gitter wird lüftungsseitig nur installiert, wenn der Einbau von Deckenrasterplatten mit Lochbild bauseits nicht erfolgt!
+        [end]
+        [Kurztext]Profillamellengitter aus Aluminium 1225x425[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010080[end]
+       #begin[Beschreibung]
+        [Langtext]Befestigung Außengerät an Wandkonsolen, mit 2 Stück Wandkonsolen mit integrierter Wasserwaage passend zum beschriebenen Fabrikat Pac-i Außeneinheit, max. Traglast 160 kg, (A 400-760 mm B 430 mm)
+        
+        Montagehöhe   : bis ca. 1,80 m über Gelände
+        
+        Die Wandkonsolen sind mit mechanischen Schwerlastdübeln verzinkt (Bolzenankern für Schwerlast) im tragfähigen Teil der zweischaligen Mauerwerks-Außenwand mit innenliegender Mineralwolledämmschicht zu befestigen.
+        
+        Bemerkung:
+        Länge der Schwerlast-Bolzenanker entsprechend der 25 cm dicken Verblendmauerwerksschale mit Mineralwolledämmschicht auswählen.
+        
+        liefern und montieren
+        
+        Fabrikat   : Kaut/ Panasonic
+        Typ   : TSMC 180 EVO oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Befestigung Außengerät an Wandkonsolen[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010090[end]
+       #begin[Beschreibung]
+        [Langtext]Kältemittelleitung, mit Isolierung, 15 m, DN 10 Kupferleitung als Flüssigkeitsleitung in Kühlschrankqualität, speziell gereinigt, getrocknet, gerollt, beidseitig verschlossen, ohne Montage und Kältemittelfüllung.
+        
+        - Kupferrohr   : 10x1,0 mm
+        - Armaflexisolierung   : H10, wasserdampfdiffusionsdicht (im Außenbereich 3 m mit Feinblechmantel, verzinkt, ausführen) Isolierdicke 13 mm,
+        - einfache Länge   : 12 m
+        
+        einschließlich Fittinge, Befestigungs- und Lötmaterial sowie Kleber.
+        
+        Vorgenannte Materialien nur liefern, Montage in separater Position erfasst.
+        [end]
+        [Kurztext]Kältemittelleitung, mit Isolierung, DN10[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010100[end]
+       #begin[Beschreibung]
+        [Langtext]Kältemittelleitung, mit Isolierung, 15 m, DN 15 Kupferleitung als Sauggasleitung in Kühlschrankqualität, speziell gereinigt, getrocknet, gerollt, beidseitig verschlossen, ohne Montage und Kältemittelfüllung.
+        
+        - Kupferrohr   : 15x1,0 mm
+        - Armaflexisolierung   : H10, wasserdampfdiffusionsdicht (im Außenbereich 3 m mit Feinblechmantel, verzinkt, ausführen) Isolierdicke 13 mm,
+        - einfache Länge   : 12 m,
+        
+        einschließlich Fittinge, Befestigungs- und Lötmaterial sowie Kleber
+        
+        Vorgenannte Materialien nur liefern, Montage in separater Position erfasst.
+        [end]
+        [Kurztext]Kältemittelleitung, mit Isolierung, DN15[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010110[end]
+       #begin[Beschreibung]
+        [Langtext]Montage Kältemittelleitungen für vorgenannten angebotenen Inverter Verdichter-/ Kondensator- und der Inneneinheit.
+        
+        Zu den Montageleistungen gehören:
+        
+        - Montage aller Kältemittelleitungen DN 10-15 vom Inverter Verdichter-/Kondensator- zur Inneneinheit vorgenannte Kupferleitungen, mit Isolierung, Durchmesser Flüssigkeitsleitung 10 mm, Durchmesser Sauggasleitung 15 mm, Isolierung wasserdampfdiffusionsdicht, im Außenbereich 3 m mit Feinblechmantel, verzinkt, ausführen
+        
+        - Herstellen der beidseitigen Rohranschlüsse an den vorgenannten angebotenen Inverter Verdichter-/Kondensator- und der Inneneinheit.
+        
+        Montagehöhe: bis 3,50 m über OKFF.
+        [end]
+        [Kurztext]Montage Kältemittelleitungen[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]12,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010120[end]
+       #begin[Beschreibung]
+        [Langtext]Lieferung und Montage Elektro- und Steuerleitungen für vorgenannten Inverter Verdichter-/ Kondensator- und die Inneneinheit.
+        
+        Zu den Leistungen gehören:
+        
+        - Lieferung und Montage der Elektro- und Steuerleitungen gemäß den Schaltplänen des Lieferers der Raumkühlanlage (Der Elektro-Hauptanschluss an die Außeneinheit gehört nicht zum Leistungsumfang)
+        
+        - Lieferung und Montage des Aufputz-Kunststoffkanals für die gemeinsame Verlegung der erforderlichen Kälte-, Elektro-und Steuerleitungen auf der Innenwand
+        
+        Montagehöhe: bis 3,50 m über OKFF.
+        [end]
+        [Kurztext]Montage Elektro- und Steuerleitungen[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]12,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010130[end]
+       #begin[Beschreibung]
+        [Langtext]Aufputz-Edelstahlblechkanal (Kabelkanal) für die gemeinsame Verlegung der erforderlichen Kälte-, Elektro-und Steuerleitungen.
+        
+        Einschließlich Deckel mit Drehriegelverschluss, einschließlich Endkappen (Endstücke) einschließlich erforderlicher Verbinder, einschließlich Befestigung auf der verklinkerten Gebäudeaußenwand.
+        
+        Material   : Edelstahl 1.4301
+        Materialstärke   : 1 mm
+        Abmessung   : 150x60 mm
+        
+        Lieferung und Montage
+        [end]
+        [Kurztext]Aufputz-Kanal aus Edelstahl für Außenverlegung von Kälte- undElektroleitungen[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]2,500[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010140[end]
+       #begin[Beschreibung]
+        [Langtext]Aufputz-Kunststoffkanal (Kabelkanal) für die gemeinsame Verlegung der erforderlichen Kälte-, Elektro-und Steuerleitungen aus der Innenwand.
+        
+        Einschließlich Deckel, Endkappen (Endstücke), erforderliche Verbinder.
+        Einschließlich Befestigung auf der Innenwand als Sichtmauerwerk.
+        
+        Abmessung: 150x60 mm
+        
+        Lieferung und Montage
+        [end]
+        [Kurztext]Aufputz-Kunststoffkanal  für Innenverlegung von Kälte- undElektroleitungen[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]1,500[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010150[end]
+       #begin[Beschreibung]
+        [Langtext]Kondensatwasserableitung DN 32 vom Innengerät, bestehend aus:
+        
+        - 6,0 m Edelstahlrohr verpresst, DN 32,
+        - 1 Stück Anschluss an Inneneinheit als Zwischendeckengerät
+        
+        Einschließlich der erforderlichen Rohrhalterungen, Verbindungselemente, Dicht- und Kleinmaterialien, zur Ableitung des anfallenden Kondensates liefern und montieren.
+        
+        Montagehöhe: bis 3,50 m über OKFF.
+        
+        Hinweis:
+        Die Montageleistungen sind vor dem Schließen des bauseitigen Trockenbauschachtes und der Zwischendecke auszuführen.
+        [end]
+        [Kurztext]Kondenswasserableitung DN32[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010160[end]
+       #begin[Beschreibung]
+        [Langtext]Wickelfalzrohr Luftleitung als gerades Wickelfalzrohr aus verzinktem Stahlblech nach DIN EN 1506 und DIN   12237mit allen Form- und Verbindungsteilen aus sendzimierverzinktem Stahlblech mit folgenden technischen Merkmalen:
+        
+        - mit werksseitiger montierter Doppellippendichtung aus alterungsbeständigem EPDM-Gummi, drucksicher und temperaturbeständig
+        - Rohrverbindungen mit Nippel
+        - Verbinden von Formteilen mit Muffen
+        - Messstellen zum einwandfreien Nachweis von Gesamt- und Teilluftmengen
+        - Reinigungs- und Revisionsöffnungen an Einbauteilen, wie Klappen, Filter, Umlenkungen usw.
+        - einschließlich kompletten Aufhänge- und Befestigungsmaterial mit schalldämmender Zwischenlage sowie Dichtungsmaterial,
+        - einschließlich aller erforderlichen Verbindungselemente wie Muffen, Steckverbinder
+        
+        Das Herstellen von Passlängen ist im Einheitspreis einzukalkulieren.
+        
+        Montagehöhe: bis 3,50 m
+        
+        Technische Daten:
+        Drucksicher gegen Überdrücke   : bis +3000 Pa
+        Drucksicher gegen Unterdruck   : bis -5000 Pa
+        Temperaturbeständig   : -30 bis +100°C
+        Dichtheitsklasse   : D nach DIN EN 12237
+        Durchmesser   : 125 mm (DN 125)
+        Minimale Blechdicke   : 0,6 mm
+        
+        Fabrikat   : LindabSafe
+        Typ   : SR oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Wickelfalzrohr, DN125[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]10,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010170[end]
+       #begin[Beschreibung]
+        [Langtext]Wickelfalzrohr
+        
+        Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch
+        
+        Abmessung: DN 200
+        [end]
+        [Kurztext]Wickelfalzrohr, DN200[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]26,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010180[end]
+       #begin[Beschreibung]
+        [Langtext]Bogen als Zulage für vorgenanntes Rohrmaterial, aus Stahlblech, verzinkt, 90°, aus gepressten Halbschalen, r=1,0 d
+        
+        Abmessung   : DN 125.
+        Montagehöhe   : bis 3,50 m
+        
+        Fabrikat   : LindabSafe
+        Typ   : BU 90° oder gleichwertig
+        
+        Angebotenes Fabrikat   : .............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Bogen, DN125[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]6,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010190[end]
+       #begin[Beschreibung]
+        [Langtext]Bogen
+        
+        Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch
+        
+        Abmessung: DN 200
+        [end]
+        [Kurztext]Bogen, DN200[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]10,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010200[end]
+       #begin[Beschreibung]
+        [Langtext]T-Stück, reduziert als Zulage für vorgenanntes Rohrmaterial, aus Stahlblech, verzinkt, DN 200/ 125/ 200
+        
+        Montagehöhe   : bis 3,50 m
+        
+        Fabrikat   : LindabSafe
+        Typ   : TCPRCU oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]T-Stück, reduziert, DN200/125/200[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010210[end]
+       #begin[Beschreibung]
+        [Langtext] Flexibles Rohr
+        - Flexibles 2- lagig gewickelt und gefalztes Aluminiumrohr nach DIN EN 13180 als Anschlussleitung für Luftdurchlässe an die Hauptleitung, nicht brennbar nach DIN 4102 Klasse A1.
+        - Betriebsdruck: maximal 2500 Pa
+        - einsetzbar von -20 bis +100 Grad C
+        - kleinster Biegeradius: r=0.6*d
+        
+        Der Einheitspreis beinhaltet:
+        - Ablängen des Flex- Rohres als Anschlussleitung in Teilstücken zwischen ca. 1 bis 2 m je nach Anschlusssituation
+        - Verbindung der T- Stücken und der Anschlussstutzen der Luftdurchlässe mit Flex- Rohr
+        - Herstellen der kraftschlüssigen Verbindung an den Anschlussstutzen mit je einer Bandschelle aus rostfreiem Stahl mit Schneckengewinde und unverlierbarem verzinkten Spannschloss
+        - Komplettes Aufhänge- und Befestigungsmaterial.
+        
+        Montagehöhe   : bis 3,50 m
+        
+        Abmessung   : DN 125
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Alu-Flexrohr, DN125[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010220[end]
+       #begin[Beschreibung]
+        [Langtext]Flexibles Rohr
+        
+        Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch
+        
+        Abmessung: DN 200
+        [end]
+        [Kurztext]Alu-Flexrohr, DN200[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]4,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010230[end]
+       #begin[Beschreibung]
+        [Langtext]Deckendrallauslass in quadratischer Ausführung, freier Querschnitt, Widerstand und Geräusch in allen Lamellenstellungen gleichbleibend. Bestehend aus Frontplatte aus Stahlblech pulverlackiert RAL 9010 (weiß), mit umlaufender Schaumstoffdichtung, mit drehbar gelagerten, einzeln einstellbaren, radial angeordneten Luftlenklamellen, in Tragflügelprofilform, aus Kunststoff RAL 9010 (weiß), mit Luftstrahlführung "B".
+        
+        Mit Anschlusskasten für Zuluft (SAK-Z) aus verzinktem Stahlblech, mit einer von der Frontseite verstellbaren Lochblechdrossel zur Luftmengenregulierung sowie seitlichem Stutzen und Aufhängeösen.
+        
+        Mit einer von der Frontseite verstellbaren Lochblechdrossel im Anschlusskasten zur Luftmengenregulierung.
+        
+        Einbauort   : Bauseitige Zwischendecke, Raster 62,5x62,5 cm
+        Montagehöhe   : bis 3,50 m
+        
+        Fabrikat   : SCHAKO
+        Typ   : DQJA-SR-Z-B-500-SM-SAK-Z-L oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Drallauslass Typ DQJA-Z-500[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]4,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010240[end]
+       #begin[Beschreibung]
+        [Langtext]Rechteckiges Aluminiumgitter/ Anschlusskasten, als Kombination, bestehend aus:
+        
+        Gitter mit einzeln einstellbaren, waagerechten Lamellen aus Aluminium und einem 2. senkrechten einstellbaren Lamellensatz. Durchlass ist für die horizontale Zufuhr von Kühlluft geeignet. Gitter mit verdeckter Befestigung durch Klemmfedern zur einfachen Revision für Reinigungszwecke ohne Werkzeug demontierbar. Gitter aus Aluminium, pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers,
+        
+        Abmessungen   : 500x150
+        Fabrikat   : Lindab Comfort
+        Typ   : C21
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        
+        Einschließlich:
+        Anschlusskasten passend für den Einbau der vorgenannten, angebotenen Zuluftgitter. Anschlusskasten mit Anschlussstutzen mit Doppellippendichtung, Anschluss rückseitig. Mit einer vom Raum aus bedienbaren Mess- und/oder Drosseleinrichtung zur Volumenstromeinstellung ausgerüstet. Mit einem Teleskopanschluss mit 70 mm Teleskop.
+        
+        Material   : verzinktes Stahlblech
+        Abmessungen   : 500x150
+        Fabrikat   : Lindab Comfort
+        Typ   : WB 1
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Rechteckiges Aluminiumgitter/ Anschlusskasten[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010250[end]
+       #begin[Beschreibung]
+        [Langtext]Wandeinbau-Ventilator, für Entlüftung von Technikräumen, Ventilator aus Kunststoff, Motorbetrieb für Dauerbetrieb, wartungsfrei, thermischer Überlastungsschutz, Schutzgitter nach DIN EN ISO 13857. Anschlussmöglichkeit für elektrische Auf- oder Unterputzinstallation. Einbau in Wanddurchbruch mit Aufnahmeblech.
+        
+        Technische Daten
+        Ausführung   : Quadratische Wandplatte
+        Fördervolumen   : 1.500 m³/h frei saugend
+        Drehzahl   : 1.220 1/min
+        Luftrichtung   : Entlüftung
+        Spannungsart   : Wechselstrom
+        Bemessungsspannung   : 230 V
+        Netzfrequenz   : 50 Hz
+        Nennleistung   : 78 W
+        IMax   : 0,33 A
+        Schutzart (IP)   : 44
+        Einbauart   : Aufputz im Aufnahmeblech nach Zeichnung W 22
+        Einbaulage   : waagerecht
+        Material   : Kunststoff
+        Farbe   : verkehrsweiß, ähnlich RAL 9016
+        Gewicht   : 4,6 kg
+        Nennweite   : 315 mm
+        Fördermitteltemperatur
+        bei IMax   : -20 - +40°C
+        Schalldruckpegel   : 57 dB (A)
+        
+        einschließlich Reparaturschalter
+        
+        Einbau in bauseitiger Konstruktion
+        Wanddicke 49 cm:
+        hinterlüftete Vorsatzschale 11,5 cm
+        tragendes Mauerwerk 24 cm
+        
+        Montage im Eigenbedarfsraum 07
+        Montage im Leittechnikraum 01
+        
+        Montagehöhe   : bis 3,50 m über OKFF.
+        
+        (Detail "E" und "A" der Lüftungszeichnung W22)
+        
+        Hersteller   : Maico-Ventilatoren
+        
+        Typ   : EN 31 Wandeinbauventilator
+        [end]
+        [Kurztext]Wandeinbau-Ventilator[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010260[end]
+       #begin[Beschreibung]
+        [Langtext]Entlüftungsanlage für WC- und Waschraum bestehend aus:
+        
+        1 Stück Rohrventilator zur Entlüftung, als Bad- und WC-Lüfter, für Einbau in Rohrsystem aus Wickelfalzrohr, DN 100,
+        
+        Technische Daten
+        - Förderstrom   : 240 m³/h freiausblasend
+        - Drehzahl   : 2.170 min-1
+        - Leistung   : ca. 23 W
+        - Spannung   : 230 V/ 50 Hz
+        - Schutzgrad   : IP 44
+        
+        Einschließlich 2 St.flexible Verbindungsmanschetten inkl. je 2 St. Schlauchschellen, zur Montage zwischen Ventilator und Wickelfalzrohr.
+        
+        Montage in der Trockenbauwand. Bauseitig wird eine Revi-Klappe vorgesehen.
+        
+        Schaltung des WC-Lüfters über separaten Taster vom Vorraum.
+        
+        Fabrikat: Helios
+        Typ: Rohrventilator MV 100 B-Einstufig  oder gleichwertig
+        
+        angebotenes Fabrikat: .................................
+        Typ: ........................................
+        
+        1 Stück Wandhülse, aus Kunststoff, Länge variabel bis 500 mm
+        Nennweite: 100
+        Typ: Maico, WH 100
+        
+        1 Stück Außengitter, aus Kunststoff, Farbe braun für Klinkerfassaden,
+        Nennweite: 100
+        Typ: Maico, SG 100 B
+        
+        1 Stück Fliegengitter, zum Einbau in Außengitter SG 100 B,
+        Nennweite: 100
+        Typ: Maico, FG 100
+        
+        2 Stück Luftdurchlässe für Abluft als Tellerventil für den Einsatz in WC-Räumen, bestehend aus rundem Frontrahmen aus Stahlblech und umlaufender Schaumstoffdichtung. Mit verstellbaren Mengeneinsteller zur Luftmengenregulierung. Kontermutter zur Sicherung der Luftmengeneinstellung, sowie Gewindspindel aus Messing oder Edelstahl. Einschließlich Einbaurahmen aus verzinktem Stahlblech, einschließlich Herstellen einer Wandöffnung,
+        D=120 mm, in Gipskartonplatte, d=25 mm, Anschluss Flex-Rohr DN 100 an Anschlussstutzen.
+        
+        Größe: DN 100
+        Farbe: pulverbeschichtet RAL 9010 (weiß)
+        
+        2,5 m Wickelfalzrohr mit werksseitig montierter Doppellippendichtung, einschließlich notwendiger Nippel, Muffen und Befestigungen in der Trockenbauwand. Das Herstellen von Passlängen ist im Einheitspreis einzukalkulieren.
+        
+        Nennweite: 100
+        Typ: Lindab-SR/SRDS 1
+        
+        1 Stück T-Stück als Zulage für vorgenanntes Rohrmaterial, aus Stahlblech, verzinkt, DN 100/100.
+        
+        1 Stück Bogen als Zulage für vorgenanntes Rohrmaterial, aus Stahlblech, verzinkt, 90°, aus gepressten Halbschalen,  r=1,0 d, DN 100.
+        
+        1,5 m Flexrohr ALU 2 A Flexibles zweilagig verrilltes Aluminiumrohr als Anschlussleitung an die Hauptleitung, nicht brennbar nach DIN 4102 Klasse A1. kleinster Biegeradius: r=0.6*d einschließlich Herstellen von Passlängen, einschließlich erforderlicher Schlauchschellen für Befestigung des Flex-Rohres an Lüfter-/ Abluftventilstutzen und an Stutzen Rohr/ Formstücke.
+        
+        1,5 m2 Schwitzwasserdämmung für Luftleitungen, in der Trockenbauwand, Medientemperatur 20°C, Umgebungstemperatur -16°C, Dämmung aus nicht brennbaren Stoffen DIN 4102-1,
+        Baustoffklasse A 2, in Gebäuden, Luftleitungen aus Stahlblech, verzinkt, einschließlich der Form- und Verbindungsstücke, wie Bögen, Etagen, Abzweige und Übergänge. Die Dämmung besteht aus: Mineralwollematten, mit einer gitternetzverstärkten, reißfesten Alu Sandwich-Folie mit selbstklebender Überlappung kaschiert, Bindedraht, ohne Ummantelung. Verarbeitung nach Anweisung des Herstellers.
+        Dämmstärke: 40,0 mm
+        Größter Durchmesser: bis 100 mm
+        
+        Montagehöhe: bis 3,50 m
+        
+        komplett liefern und montieren
+        [end]
+        [Kurztext]Entlüftungsanlage für WC- und Waschraum, DN100[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010270[end]
+       #begin[Beschreibung]
+        [Langtext]Zuluftelement für WC- und Waschraum für Belüftung, liefern und einsetzen, bestehend aus:
+        
+        1 Stück Außengitter, aus Kunststoff,
+        Farbe   : braun für Klinkerfassaden,
+        Nennweite   : 100
+        Typ   : Maico, SG 100 B
+        
+        1 Stück Wandhülse, aus Kunststoff, Länge variabel bis 500 mm
+        Nennweite   : 100
+        Typ   : Maico, WH 100
+        
+        1 Stück Innengitter, aus Kunststoff, mit Luftfilter G2
+        Farbe   : verkehrsweiß, ähnlich 9016
+        Nennweite   : 100
+        Typ   : Maico, ESG 10/2
+        [end]
+        [Kurztext]Zuluftelement für WC- und Waschraum, DN100[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010280[end]
+       #begin[Beschreibung]
+        [Langtext]Türlüftungsgitter, nicht verschließbar,
+        Breite   : 600 mm
+        Höhe   : 277 mm
+        Freier Querschitt   : ca. 150 cm2
+        Einbau   : in Tür vom Sanitärraum.
+        Material ist mit dem Auftraggeber abzustimmen.
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Türlüftungsgitter[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010290[end]
+       #begin[Beschreibung]
+        [Langtext]Axial-Mitteldruckventilator, polumschaltbar, 2 Drehzahlen, Drehstrom 3-PH 400 V, 50 Hz, Dahlander-Wicklung Y/YY,
+        
+        Rohrgehäuse aus Stahlblech mit beidseitig angeformten Flanschen, Lochbild. Eingebautes Nachleitrad aus Stahlblech. Oberflächenschutz durch Pulverbeschichtung RAL 7015 (grau).
+        
+        Axiales Laufrad aus Aluminiumguss mit im Stillstand stufenlos verstellbaren Schaufeln (10 Stück) Vibrationsfreier Lauf durch dynamische Wuchtung nach Gütestufe G 6 3 VDI 2060 und DIN ISO 1940.
+        
+        Wartungsfreier Drehstrom-IEC Normmotor, Schutzart IP 55, mit serienmäßigem Klemmenkasten aus Kunststoff, außen am Rohr montiert.
+        
+        Technische Daten
+        Volumenstrom   : 4.000/ 2000 m3/h
+        Fördermedium   : Luft
+        Temperatur   : 40°C
+        Totaldruckerhöhung   : 470/125 Pa
+        Ventilator-Drehzahl   : 2.890/1.400 U/min
+        Schalleistungspegel   : 96 dB
+        Schaufelwinkel   : 15 Grad
+        Leistungsbedarf   : 1,9/0,4 kW
+        Strom ungeregelt   : 1,07/4,14 A
+        Anlaufstrom ungeregelt   : 28,98 A
+        Drehstrommotor   : IEC-Normmotor
+        Drehzahlen   : 2 polumschaltbar
+        Spannung   : 400/400 V/3 ph/ 50 Hz
+        Gewicht   : 45 kg
+        Fabrikat   : Helios
+        Typ   : AMD 400/4/2 0,4/1,9 kW oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        
+        einschließlich Zubehör zum vorgenannten Fabrikat:
+        - 1 St. Verlängerungsrohr VR 400 Rohrstück mit beidseitigen Flanschen und  Bohrungen. Aus feuerverzinktem Stahlblech zur Verlängerung des Ventilatorschachtes.
+        
+        - 2 St. elastischen Segeltuchstutzen STS 400 elastische Manschette aus silikonfreiem PVC-Gewebe (max. 80°C). Beidseitig mit verzinkten Winkel- Flanschringen.
+        
+        - 1 Satz/2 Stück Montagekonsole MK 400-450 zur Befestigung des Ventilator-Flanschgehäuses. Aus feuerverzinktem Stahl. Bohrung auf den Lochkreis der Ventilatorflansche abgestimmt. Einschließlich Schrauben und Muttern.
+        
+        - 1 Satz/ 4 Stück Gummi-Schwingungsdämpfer SDD 1 für Druckbelastung. Montage in Verbindung mit den vorgenannten Montagekonsolen (Zubehör)
+        
+        - 1 Stück Reparaturschalter (Lage örtlich nach Bedienseite anpassen!)
+        
+        Komplett liefern und montieren.
+        
+        Für Entlüftungsanlage Gleichrichterraum 06.
+        
+        Installationsort: Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        
+        Montagehöhe: Dachraum bis 3,50 m
+        [end]
+        [Kurztext]Axial-Mitteldruckventilator[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010300[end]
+       #begin[Beschreibung]
+        [Langtext]Taschenfilter für Kanaleinbau,
+        bestehend aus:
+        
+        Universalgehäuse aus verzinktem Stahlblech, bestehend aus Standard-Zellenrahmen für die Aufnahme des Taschenfilterelementes zur Abscheidung von Grob- und Feinstaub. Universalgehäuse in einstufiger Ausführung für Partikelfilter mit seitlicher Bedienungstür mit Handgriffen und Klemmverschlüssen für Filterwechsel. Anordnung der Bedienungstür wahlweise rechts oder links je nach Luftrichtung. Gehäuserahmen mit breiten Dichtflächen als Anschlussrahmen für Luftleitungen Druckmessstellen am Universalgehäuse.
+        
+        Nenngröße   : B x H x T 710 x 710 x 650 mm
+        Fabrikat   : Trox
+        Typ   : Universalgehäuse UCA-1SPF oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        
+        Mit Taschenfilter aus Chemiefaservliesen zur Abscheidung von Grobstaub. Filtermedium in Taschenform. Taschenfilter als Feinstaubfilter nach Eurovent zertifiziert.
+        
+        Materialien und Oberflächen
+        - Filtermedien aus hochwertigen Chemiefaservliesen
+        - Rahmen aus Kunststoff oder verzinktem Stahlblech
+        
+        Ausführungen
+        - Rahmen aus Kunststoff Auslegungsdaten
+        - Filterklasse G4 nach DIN EN 779
+        - Nennvolumenstrom 4.000 m³/h
+        - Anfangs-Druckdifferenz 35 Pa
+        - Nenngröße B x H x T 592 x 592 x 600 mm
+        - Taschentiefe 600 mm
+        - Anzahl der Taschen 6 St.
+        
+        Fabrikat   : Trox
+        Typ   : Chemiefaservlies Serie PCF oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        
+        Lüftungsanlage Gleichrichterraum  Zuluft Einbau im Schacht.
+        [end]
+        [Kurztext]Taschenfilter für Kanaleinbau[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010310[end]
+       #begin[Beschreibung]
+        [Langtext]Filterüberwachung als Differenzdruckmessgerät mit Analoganzeige, mit einem potenzialfreien Schaltkontakt, eingebaut in ein Kunststoffgehäuse zum Wandaufbau. Der parallel betriebene Differenzdruckschalter überwacht den voreingestellten Druckwert am Filter. Wird dieser überschritten setzt der Grenzwertschalter eine Meldung ab. Einschließlich: Druckmessschläuche passend zum Differenzdruckmessgerät, Länge: 2x1,5 m, einschließlich erforderliche Bohrungen durch 240 mm dicke Mauerwerkswand, einschließlich komplettem Befestigungsmaterial
+        
+        Beschreibung
+        Medium   : Luft
+        Mess-/Anzeigebereich   : ab 0-300 Pa
+        Einstellbereich SP1   : ab 40-300 Pa
+        Kontaktbelastbarkeit   : 230 V/ 5A
+        Max. Betriebsdruck   : 70 kPa
+        Druckanschlüsse   : zwei Druckstutzen für Schlauch 4x6/8 mm
+        Elektrischer Anschluss   : Schraubklemmen über M 16 Kabelverschraubung
+        Gehäuseabmessungen   : HxBxT 200x20x90 mm
+        Montagehöhe   : bis 3,50 m
+        Fabrikat   : Briem
+        Typ   : MD 201-3 MB oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Kanalfilterüberwachung[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010320[end]
+       #begin[Beschreibung]
+        [Langtext]Brandschutzklappe, wartungsfrei, mit allgemein bauaufsichtlicher Zulassung Feuerwiderstandsklasse K 90, zum Einbau in eine massive Decke, mit einseitigem Luftleitungsanschluss auf der einen Seite und Schutzgitteranschluss auf der anderen Seite Raumseite, Luftströmung vertikal, Gehäuse aus verzinktem Stahlblech mit elektrischem Antrieb 230 V~ und mit thermischer Auslöseeinrichtung 70°C. Mit 2 Endlagenschaltern für Stellungsanzeige Auf/Zu.
+        
+        Für Entlüftungsanlage Gleichrichterraum 06.
+        
+        Nenndurchmesser   : DN 400
+        Länge         : 500 mm
+        Montageort      : Einbau in massive Decke 20 cm, über Gleichrichterraum (06).
+        Montagehöhe      : Dachraum bis 3,50 m
+        Fabrikat      : Wildeboer
+        Typ         : FR90-WF
+        Bauaufsichtliche
+        Zulassung   : Z 41.3-599 oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        
+        Bauaufsichtliche
+        Zulassung   : ..............................
+        [end]
+        [Kurztext]Brandschutzklappe, DN400[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010330[end]
+       #begin[Beschreibung]
+        [Langtext]Gehäuseverlängerung für Brandschutzklappe, DN 400, mit Anschlussflanschen für vorstehende angebotene Brandschutzklappe, zur Überbrückung größerer Deckendicken oder zur Herstellung des Klappenblattfreilaufes bei Abdeckgittern und elastischen Stutzen.
+        
+        Für Entlüftungsanlage Gleichrichterraum 06.
+        
+        Montagehöhe   : Dachraum bis 3,50 m
+        Nenndurchmesser   : DN 400
+        Länge   : 150 mm
+        Fabrikat   : Wildeboer oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        [end]
+        [Kurztext]Gehäuseverlängerung für Brandschutzklappe, DN400[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010340[end]
+       #begin[Beschreibung]
+        [Langtext]Schutzgitter für vorstehende angebotene runde Brandschutzklappe ohne Anschlussleitungen zum Schutz der Durchströmungsöffnungen, gestanzt aus Stahlblech, Maschenweite 20 mm, pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers, zum Anbau an die Brandschutzklappe im Gleichrichterraum 06,
+        
+        Nenndurchmesser   : DN 400
+        Montageort   : Decke über Gleichrichterraum (06).
+        Montagehöhe   : Dachraum bis 3,50 m
+        Fabrikat   : Wildeboer oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        [end]
+        [Kurztext]Schutzgitter DN400[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010350[end]
+       #begin[Beschreibung]
+        [Langtext]Elastischer Stutzen, als Verbindungsstück zur Montage zwischen Brandschutzklappe und Rohrsystem zur Dehnungsaufnahme und Unterbindung der Körperschallübertragung und zur Überbrückung von Montagetoleranzen. Elastische Manschette aus PVC-beschichtetem Polyestergewebe, cadmiumfrei, mit mindestens 100 mm Dehnungsaufnahme bei 200 mm gestreckter Länge. (max. 80°C). Beidseitig mit verzinkten Winkel-Flanschringen, Maße nach DIN 24155 Bl.2. Einschließlich Installation des Potentialausgleich nach DIN EN 60204-1.
+        
+        Für Entlüftungsanlage Gleichrichterraum 06.
+        Abmessungen   : Durchmesser 400 mm
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        Montagehöhe   : Dachraum bis 3,50 m
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Elastischer Stutzen DN400[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010360[end]
+       #begin[Beschreibung]
+        [Langtext]Kulissenschalldämpfer mit eingebauten Kulissen, 100 mm dick, Mineralwolle nicht brennbar DIN 4102 A2. Gehäuse aus verzinktem Stahlblech, beidseitig mit Anschlussrahmen.
+        
+        Breite   : 500 mm
+        Höhe   : 600 mm
+        Länge   : 1000 mm
+        Kulissen   : 2
+        Spalt   : 3 St. A 100 mm
+        Druckverlust   : < 20 Pa
+        
+        Für Entlüftungsanlage Gleichrichterraum 06.
+        
+        Luftvolumenstrom   : 4000 m3/h
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        
+        Montagehöhe   : Dachraum bis 3,50 m
+        
+        Fabrikat   : TROX
+        Typ   : MS-10oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Kulissenschalldämpfer, l=1000mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010370[end]
+       #begin[Beschreibung]
+        [Langtext]Kulissenschalldämpfer mit eingebauten Kulissen, Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch
+        
+        Länge: 500 mm
+        [end]
+        [Kurztext]Kulissenschalldämpfer l=500mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010380[end]
+       #begin[Beschreibung]
+        [Langtext]Wickelfalzrohr
+        Luftleitung als gerades Wickelfalzrohr aus verzinktem Stahlblech mit Versteifungssicken nach DIN EN 1506 und DIN EN 12237 mit allen Form- und Verbindungsteilen aus sendzimierverzinktem Stahlblech mit folgenden technischen Merkmalen:
+        
+        - mit werksseitiger montierter Doppellippendichtung aus alterungsbeständigem EPDM-Gummi, drucksicher und temperaturbeständig
+        - Rohrverbindungen mit Nippel
+        - Verbinden von Formteilen mit Muffen
+        - Meßstellen zum einwandfreien Nachweis von Gesamt- und Teilluftmengen
+        - Reinigungs- und Revisionsöffnungen an Einbauteilen, wie Klappen, Filter, Umlenkungen usw.
+        - mit verzinkter Tragkonstruktion aus Profilstahl, zur Auflage/ Aufhängung des Luftleitungssystems,
+        - einschließlich kompletten Aufhänge- und Befestigungsmaterial mit schalldämmender Zwischenlage sowie Dichtungsmaterial
+        - einschließlich aller erforderlichen Verbindungselemente wie Muffen, Steckverbinder
+        
+        Das Herstellen von Passlängen ist im Einheitspreis einzukalkulieren.
+        
+        Technische Daten
+        Drucksicher gegen Überdrücke   : bis +3000 Pa
+        Drucksicher gegen Unterdruck   : bis -5000 Pa
+        Temperaturbeständig   : -30 bis +100°C
+        Dichtheitsklasse   : D nach DIN EN 12237
+        Durchmesser   : 400 mm (DN 400)
+        Minimale Blechdicke   : 0,6 mm
+        
+        Für Entlüftungsanlage Gleichrichterraum 06.
+        
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        Montagehöhe   : Dachraum bis 3,50 m
+        Fabrikat   : LindabSafe
+        Typ   : SRDS 1 oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Wickelfalzrohr, DN400[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010390[end]
+       #begin[Beschreibung]
+        [Langtext]Bogen als Zulage für vorgenanntes Rohrmaterial, aus Stahlblech, verzinkt, 90°, Segmentausführung, r=1,0 d. Eine Seite mit werksseitiger montierter Doppellippendichtung, andere Seite mit verzinktem Winkel-Flanschring, Maße nach DIN 24155 Bl.2.
+        
+        Abmessung   : DN 400.
+        
+        Für Entlüftungsanlage Gleichrichterraum 06.
+        
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        Montagehöhe   : Dachraum bis 3,50 m
+        Fabrikat   : LindabSafe
+        Typ   : BFU 90° ähnlich oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Bogen DN400[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010400[end]
+       #begin[Beschreibung]
+        [Langtext]Bogen als Zulage für vorgenanntes Rohrmaterial, aus Stahlblech, verzinkt, 90°, Segmentausführung, r=1,0 d
+        
+        Abmessung   : DN 500
+        
+        Für Entlüftungsanlage Gleichrichterraum 06.
+        
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        Montagehöhe   : Dachraum bis 3,50 m
+        Fabrikat   : LindabSafe
+        Typ   : BFU 90° oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Bogen DN500[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010410[end]
+       #begin[Beschreibung]
+        [Langtext]Flexibles Rohr
+        - Flexibles 2- lagig gewickelt und gefalztes Aluminiumrohr nach DIN EN 13180 als Anschlussleitung für Luftdurchlässe an die Hauptleitung, nicht brennbar nach DIN 4102 Klasse A1.
+        - Betriebsdruck: maximal 2500 Pa
+        - einsetzbar von -20 bis +100 Grad C
+        - kleinster Biegeradius: r=0.6*d
+        
+        Der Einheitspreis beinhaltet:
+        - Ablängen des Flex- Rohres als Passlängen je nach Anschlusssituation
+        - Herstellen der kraftschlüssigen Verbindung an den Anschlussstutzen mit je einer Bandschelle aus rostfreiem Stahl mit Schneckengewinde und unverlierbarem verzinkten Spannschloss
+        - Komplettes Aufhänge- und Befestigungsmaterial.
+        
+        Montagehöhe   : bis 3,50 m
+        Abmessung   : DN 400
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Alu-Flexrohr, DN400[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010420[end]
+       #begin[Beschreibung]
+        [Langtext]Übergangsrohr als Zulage für vorgenanntes Rohrmaterial, aus Stahlblech, verzinkt, Übergang symmetrisch.
+        Runde Seite DN 500 mit werksseitiger montierter Doppellippendichtung, runde Seite DN 400 mit verzinktem Winkel-Flanschring, Maße nach DIN 24155 Bl.2.
+        
+        Abmessung   : 500-400.
+        
+        Für Entlüftungsanlage Gleichrichterraum 06.
+        
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        Montagehöhe   : Dachraum bis 3,50 m
+        Fabrikat   : LindabSafe
+        Typ   : RCLU ähnlich oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Übergangsrohr 500/400[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010430[end]
+       #begin[Beschreibung]
+        [Langtext]Übergangsrohr als Sonderanfertigung als Zulage für vorgenanntes Rohrmaterial, aus Stahlblech, verzinkt, Übergang symmetrisch als Passlänge nach Aufmaß vor Ort,
+        
+        Abmessung   : 500-400/-ca. 200.
+        
+        Für Entlüftungsanlage Gleichrichterraum 06.
+        
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        Montagehöhe   : Dachraum bis 3,50 m
+        Typ   : RCLU ähnlich
+        [end]
+        [Kurztext]Übergangsrohr 500/400-ca. 200 Sonderanfertigung[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010440[end]
+       #begin[Beschreibung]
+        [Langtext]T-Stück als Zulage für vorgenanntes Rohrmaterial, aus Stahlblech, verzinkt,
+        
+        Hauptrohr-Nenndurchmesser 500 mm mit werksseitiger montierter Doppellippendichtung
+        
+        Nebenrohr-Nenndurchmesser 400 mm als Passlänge und mit verzinktem Winkel-Flanschring, Maße nach DIN 24155 Bl.2.
+        
+        Entlüftungsanlage Gleichrichterraum 06.
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        Montagehöhe   : Dachraum bis 3,50 m
+        [end]
+        [Kurztext]T-Stück 500/ 400, Sonderanfertigung[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010450[end]
+       #begin[Beschreibung]
+        [Langtext]Übergangsstück rund/eckig
+        Ausführung: Stahl verzinkt, runde Seite DN 400 mit verzinktem Winkel-Flanschring, Maße nach DIN 24155 Bl.2, eckige Seite mit Anschlussrahmen entsprechend danach angeschlossenem Kulissenschalldämpfer,
+        
+        Abmessungen:
+        axb / d1 / Länge   : 500x600/400/450.
+        
+        Entlüftungsanlage Gleichrichterraum 06.
+        
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        Montagehöhe   : Dachraum bis 3,50 m
+        Fabrikat   : LindabSafe
+        Typ   : LORU ähnlich oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Angebotener Typ   : ..............................
+        [end]
+        [Kurztext]Übergangsstück 500x600/400-450[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010460[end]
+       #begin[Beschreibung]
+        [Langtext]Muffen als Zulage für vorgenanntes Rohrmaterial, zur Verbindung von Formteilen, aus Stahlblech, verzinkt DN 400.
+        [end]
+        [Kurztext]Muffen, DN400[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010470[end]
+       #begin[Beschreibung]
+        [Langtext]Muffen als Zulage für vorgenanntes Rohrmaterial, zur Verbindung von Formteilen, aus Stahlblech, verzinkt, DN 500
+        [end]
+        [Kurztext]Muffen, DN500[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]4,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010480[end]
+       #begin[Beschreibung]
+        [Langtext]Ausblasstutzen mit Schutzgitter Formteil als Rechteckkanal, nach DIN EN 1507 Ausblasstutzen aus sendzimierverzinktem Feinblech, DIN 10346, Längsnähte gefalzt, Verbindung über Profilrahmen, Wandungen mittels Sicken versteift, mit Schutzgitter 20 x 20 mm und Leichtprofilrahmen für Fortluftausblas,
+        
+        Luftmenge   : 4.000 m3/h
+        Abmessungen (BxHxL)   : 500x600x500 mm
+        Entlüftungsanlage Gleichrichterraum 06.
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter  beengten Verhältnissen.
+        Montagehöhe   : Dachraum bis 3,50 m
+        [end]
+        [Kurztext]Ausblasstutzen als Kanal mit Schutzgitter 500x600x500[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010490[end]
+       #begin[Beschreibung]
+        [Langtext]Rechteckkanal Luftleitung als Rechteckkanal nach DIN EN 1507 und DIN ISO 690 mit verzinkter Tragkonstruktion aus Profilstahl, zur Auflage/ Aufhängung des Luftleitungssystems, einschließlich Gewindestangen und kadmierten Befestigungsschrauben mit zugelassenen Dübeln, mit schalldämmender Zwischenlage aus Profilgummiband, maximale Temperatur der geförderten Luft: 40°C.
+        
+        Ausführung:
+        Stahl verzinkt DIN EN 10346, längsgefalzt, Wandungen mittels Sicken versteift, zusätzliche Flächenversteifungen nach Herstellerstandard, Dichtheitsklasse A nach DIN EN 12237, Betriebsüber- und -unterdruck maximal 630 Pa, Kanalverbindung mit Profilrahmen oder nach Wahl des Bieters, mit kadmierten Schrauben und Dichtungen, Blechdicke nach DIN EN 1507.
+        
+        Größte Kantenlänge: über 500 bis 1000 mm, Abrechnungsgruppe L2, DIN 18379
+        max. Kanallänge: 1500 mm
+        
+        Installationsort: Montage im Betriebsmittelraum 09.
+        
+        Montagehöhe: bis 3,50 m
+        
+        Freie Zuluftnachströmung für Belüftung des Gleichrichterraumes.
+        [end]
+        [Kurztext]Luftleitung als Rechteckkanal, über 500 bis 1000mm[end]
+       #end[Beschreibung]
+       [ME]m²[end]
+       [Menge]10,800[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010500[end]
+       #begin[Beschreibung]
+        [Langtext]Formstück für Luftleitung als Rechteckkanal nach DIN EN 1507 und DIN ISO 690, mit verzinkter Tragkonstruktion aus Profilstahl, zur Auflage/ Aufhängung des Luftleitungssystems, einschließlich Gewindestangen und kadmierten Befestigungsschrauben mit zugelassenen Dübeln, mit schalldämmender Zwischenlage aus Profilgummiband, maximale Temperatur der geförderten Luft: 40 °C.
+        als Passkanal
+        als Bogenkanal, Übergangsbogenkanal, einschließlich einwandiger Leitbleche,
+        als Übergangskanal,
+        als Übergangsstück,
+        als Abzweig,
+        als Boden,
+        als Trennblech.
+        
+        Ausführung
+        Stahl verzinkt DIN EN 10346, längsgefalzt, Wandungen mittels Sicken versteift, zusätzliche Flächenversteifungen nach Herstellerstandard, Dichtheitsklasse A nach DIN EN 12237 Betriebsüber- und -unterdruck maximal 630 Pa, Kanalverbindung mit Profilrahmen oder nach Wahl des Bieters, mit kadmierten Schrauben und Dichtungen, Blechdicke nach DIN EN 1507.
+        
+        Größte Kantenlänge   : über 500 bis 1000 mm
+        
+        Abrechnungsgruppe F2, DIN 18379
+        
+        Installationsort   : Montage im Betriebsmittelraum 09.
+        
+        Montagehöhe   : bis 3,50 m
+        
+        Freie Zuluftnachströmung für Belüftung des Gleichrichterraumes.
+        [end]
+        [Kurztext]Formstück für Rechteckkanal, über 500 bis 1000mm[end]
+       #end[Beschreibung]
+       [ME]m²[end]
+       [Menge]15,200[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010510[end]
+       #begin[Beschreibung]
+        [Langtext]Sonderbefestigungen für Luftleitungen, Befestigung von runden/ eckigen Luftleitungen am Baukörper aus Profilstahl in verzinkter Ausführung. Einschließlich Befestigungskleinmaterial. Notwendige Befestigungskonstruktionen sind vor Ort aufzumessen, anzuliefern und zu montieren. Abrechnung nach Einheitsgewichten.
+        
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        Installationshöhe im Dach   : bis 3,50 m
+        [end]
+        [Kurztext]Sonderbefestigungen für Luftleitungen[end]
+       #end[Beschreibung]
+       [ME]kg[end]
+       [Menge]25,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010520[end]
+       #begin[Beschreibung]
+        [Langtext]Sonderbefestigungen für Rohrlüfter, aus Kantenholz zur Auflage des Rohrlüfters. Einschließlich Befestigungskleinmaterial. Notwendige Befestigungskonstruktionen sind vor Ort aufzumessen, anzuliefern und zu montieren.
+        
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter  beengten Verhältnissen.
+        
+        Installationshöhe im Dach   : bis 3,50 m
+        [end]
+        [Kurztext]Sonderbefestigungen für Rohrlüfter aus Kanthölzern[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]4,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010530[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter für Zuluft, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit einer horizontalen feststehenden Winkellamellenreihe, aus gezogenem Strangprofil 90° (selbstreinigend), untere Lamelle mit Wasserableitblech. Mit umlaufendem Anschlag von 27 mm Breite an der äußeren Stirnseite.
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Zubehör
+        Alu-Kasten (erst auf Baustelle montieren), aus Aluminium naturblank,
+        Innenmaß   : B 1290 mm x H 490 mm x T 47 mm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Tel.-Nr. 04532 / 2045-0;
+        Fax-Nr. 04532 /2045-20
+        
+        Typ   : LW 1010.461.40.00
+        
+        äußere Abmessungen
+        Breite   : 1290 mm  (über Anschlag 1344 mm)
+        Höhe   : 490 mm  (über Anschlag 544 mm)
+        Tiefe   : 47 mm
+        
+        Einbauort. Betriebsmittelraum 09, außen, für Zuluft Gleichrichterraum. (Grundriss Lüftungsanlage W23)
+        [end]
+        [Kurztext]Lüftungsgitter 1290x490x47mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010540[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter für Zuluft/ Abluft, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit zwei versetzt hintereinanderliegenden Winkellamellenreihen aus gezogenem Strangprofil 90° (selbstreinigend), durchstecksicher und erhöhter Schutz gegenüber äußeren Einflüssen, Schutzart VDE 0101, DIN EN 60529 IP-4-5 untere Lamelle mit Wasserableitblech. Mit umlaufendem Anschlag von 27 mm Breite an der äußeren Stirnseite, Befestigungslaschen an den Seiten.
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Zubehör
+        Alu-Kasten (erst auf Baustelle montieren), aus Aluminium naturblank,
+        Innenmaß   : B 430 mm x H 430 mm x T 490 mm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Tel.-Nr. 04532 / 2045-0;
+        Fax-Nr. 04532 / 2045-20
+        
+        Typ   : LDW 1011.461.40.00
+        
+        äußere Abmessungen
+        Breite   : 430 mm (über Anschlag 484 mm)
+        Höhe   : 430 mm (über Anschlag 484 mm)
+        Tiefe   : 95 mm
+        
+        Einbauort Batterieraum 05, außen
+        [end]
+        [Kurztext]Lüftungsgitter 430x430x95mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010550[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter für Zuluft / Abluft, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit zwei versetzt hintereinanderliegenden Winkellamellenreihen, aus gezogenem Strangprofil 90° (selbstreinigend), durchstecksicher und erhöhter Schutz gegenüber äußeren Einflüssen, Schutzart VDE 0101, DIN EN 60529 IP-4-5 untere Lamelle mit Wasserableitblech. Mit umlaufendem Anschlag von 27 mm Breite an der äußeren Stirnseite, Befestigungslaschen an den Seiten.
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Zubehör
+        Alu-Kasten (erst auf Baustelle montieren), aus Aluminium naturblank,
+        Innenmaß   : B 490 mm x H 490 mm x T 95 mm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Typ   : LDW 1011.461.40.00
+        
+        äußere Abmessungen
+        Breite   : 490 mm (über Anschlag 544 mm)
+        Höhe   : 490 mm (über Anschlag 544 mm)
+        Tiefe   : 95 mm
+        
+        Einbauort   : Eigenbedarfsraum 07, außen
+        [end]
+        [Kurztext]Lüftungsgitter 490x490x95mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010560[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter für Zuluft / Abluft, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit zwei versetzt hintereinanderliegenden Winkellamellenreihen, aus gezogenem Strangprofil 90° (selbstreinigend), durchstecksicher und erhöhter Schutz gegenüber äußeren Einflüssen, Schutzart VDE 0101, DIN EN 60529 IP-4-5 untere Lamelle mit Wasserableitblech. Mit umlaufendem Anschlag von 27 mm Breite an der äußeren Stirnseite, Befestigungslaschen an den Seiten.
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Zubehör
+        Alu-Kasten (erst auf Baustelle montieren), aus Aluminium naturblank,
+        Innenmaß: B 790 mm x H 490 mm x T 490 mm
+        
+        Fabrikat: LAFIRO-Lüftungselemente,
+        Typ: LDW 1011.461.40.00
+        
+        äußere Abmessungen
+        Breite: 790 mm (über Anschlag 844 mm)
+        Höhe: 490 mm (über Anschlag 544 mm)
+        Tiefe: 95 mm
+        
+        Einbauort: Raum für Leittechnik, Bedienarbeitsplatz und Nachrichtentechnik 01, außen
+        [end]
+        [Kurztext]Lüftungsgitter 790x490x95mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010570[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter für Abluft, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit einer als Überdruckklappe entwickelten Lamellenreihe aus Spezialprofil. Lamelle frei pendelnd in Kunststoffbuchsen gelagert, bei inneren Druck öffnen die Lamellen, zusätzlich über ein Regulierungsgestänge in geöffneter Position zu halten, 
+        an der Innenseite montierter Stellantriebsmotor Typ Belimo (Nennspannung AC/DC 24V) Ansteuerung kommunikativ, stetig DC(0) 2...10V, MP-Bus fähig, mit Notstellfunktion; Lamellen schließen selbständig bei Stromausfall,
+         umlaufender Anschlag von 27 mm Breite an der äußeren Stirnseite, an der Außenseite abnehmbarer Rahmen mit Niro-Insektengaze mit 1,4x1,4 mm Maschenweite.
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Typ   : LKRF-RG-ER 1028.461.57.50
+        
+        äußere Abmessungen
+        Breite   : 490 mm (über Anschlag 544 mm)
+        Höhe   : 490 mm (über Anschlag 544 mm)
+        Tiefe   : 95 mm
+        
+        Einbauort   : Eigenbedarfsraum 07, innen
+        [end]
+        [Kurztext]Lüftungsgitter 490x490x95mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010580[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter für Abluft, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit einer als Überdruckklappe entwickelten Lamellenreihe aus Spezialprofil. Lamelle frei pendelnd in Kunststoffbuchsen gelagert, bei inneren Druck öffnen die Lamellen, zusätzlich über ein Regulierungsgestänge in geöffneter Position zu halten, 
+        an der Innenseite montierter Stellantriebsmotor Typ Belimo (Nennspannung AC/DC 24V) Ansteuerung kommunikativ, stetig DC(0) 2...10V, MP-Bus fähig, mit Notstellfunktion; Lamellen schließen selbständig bei Stromausfall, umlaufender Anschlag von 27 mm Breite an der äußeren Stirnseite, an der Außenseite abnehmbarer Rahmen mit Niro-Insektengaze mit 1,4x1,4 mm Maschenweite.
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Typ   : LKRF-RG-ER 1028.461.57.50
+        
+        äußere Abmessungen
+        Breite   : 790 mm (über Anschlag 844 mm)
+        Höhe   : 490 mm (über Anschlag 544 mm)
+        Tiefe   : 95 mm
+        
+        Einbauort: Raum für Leittechnik, Bedienarbeitsplatz und Nachrichtentechnik 01, innen
+        [end]
+        [Kurztext]Lüftungsgitter 790x490x95mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010590[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter für Zuluft, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit einer horizontalen Klappen-Lamellenreihe 
+        Aus Spezialprofil, in Kunststoffteilen gelagert und über ein Regulierungsgestänge (sendzimirverzinkt) voll zu öffnen bzw. zu schließen 
+        an der Innenseite montierter Stellantriebsmotor Typ Belimo (Nennspannung AC/DC 24V) Ansteuerung kommunikativ, stetig DC(0) 2...10V, MP-Bus fähig, mit Notstellfunktion; Lamellen schließen selbständig bei Stromausfall, umlaufender Anschlag von 27 mm Breite an der äußeren Stirnseite, an der Außenseite abnehmbarer Rahmen mit Niro-Insektengaze mit 1,4x1,4 mm Maschenweite.
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Typ   : LKR-RG-ER 1027.461.47.50
+        
+        äußere Abmessungen
+        Breite   : 490 mm (über Anschlag 544 mm)
+        Höhe   : 490 mm (über Anschlag 544 mm)
+        Tiefe   : 95 mm
+        
+        Einbauort   : Eigenbedarfsraum 07, innen
+        [end]
+        [Kurztext]Lüftungsgitter 490x490x95mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010600[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter für Zuluft, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit einer horizontalen Klappen-Lamellenreihe Aus Spezialprofil, in Kunststoffteilen gelagert und über ein Regulierungsgestänge (sendzimirverzinkt) voll zu öffnen bzw. zu schließen
+        an der Innenseite montierter Stellantriebsmotor Typ Belimo (Nennspannung AC/DC 24V) Ansteuerung kommunikativ, stetig DC(0) 2...10V, MP-Bus fähig, mit Notstellfunktion; Lamellen schließen selbständig bei Stromausfall, umlaufender Anschlag von 27 mm Breite an der äußeren Stirnseite, an der Außenseite abnehmbarer Rahmen mit Niro-Insektengaze mit 1,4x1,4 mm Maschenweite.
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Typ   : LKR-RG-ER 1027.461.47.50
+        
+        äußere Abmessungen
+        Breite   : 790 mm (über Anschlag 844 mm)
+        Höhe   : 490 mm (über Anschlag 544 mm)
+        Tiefe   : 95 mm
+        
+        Einbauort   : Raum für Leittechnik, Bedienarbeitsplatz  und Nachrichtentechnik 01, innen
+        [end]
+        [Kurztext]Lüftungsgitter 790x490x95mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010610[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit zwei versetzt hintereinanderliegenden Winkellamellenreihen, aus gezogenem Strangprofil 90° (selbstreinigend), durchstecksicher und erhöhter Schutz gegenüber äußeren Einflüssen, Schutzart VDE 0101, DIN EN 60529 IP-4-5 untere Lamelle mit Wasserableitblech. Mit umlaufendem Anschlag von 27 mm Breite an der äußeren Stirnseite, 
+        Befestigungslaschen an den Seiten.
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Zubehör
+        Alu-Kasten (erst auf Baustelle montieren), aus Aluminium naturblank,
+        Innenmaß   : B 430 mm x H 430 mm x T 490 mm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Typ   : LDW 1011.461.40.00
+        
+        äußere Abmessungen
+        Breite   : 430 mm (über Anschlag 484 mm)
+        Höhe   : 430 mm (über Anschlag 484 mm)
+        Tiefe   : 95 mm
+        
+        Einbauort   : Betriebsmittelraum 09, außen
+        [end]
+        [Kurztext]Lüftungsgitter 430x430x95mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010620[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit einer horizontalen Klappen-Lamellenreihe aus Spezialprofil, in Kunststoffteilen gelagert und über ein handbetätigtes Regulierungsgestänge (sendzimir verzinkt) voll zu öffnen bzw. zu schließen, umlaufender Anschlag von 27 mm Breite an der äußeren Stirnseite, an der Außenseite abnehmbarer Rahmen mit Niro-Insektengaze mit 1,4x1,4 mm Maschenweite.
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Typ   : LKR-RG 1027.461.47.00
+        
+        äußere Abmessungen
+        Breite   : 430 mm (über Anschlag 484 mm)
+        Höhe   : 430 mm (über Anschlag 484 mm)
+        Tiefe   : 95 mm
+        
+        Einbauort   : Betriebsmittelraum 09, innen
+        [end]
+        [Kurztext]Lüftungsgitter 430 x 430 x 95 mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010630[end]
+       #begin[Beschreibung]
+        [Langtext]Insektenschutzgitter, Rahmen mit Niro-Insektengaze 1,4x1,4 mm Maschenweite und einem Drahtdurchmesser von 0,224 mm, aus Aluminium naturfarbig eloxiert E6/EV1 oder RAL 9016, Rahmen wird direkt auf die Mauer gesetzt.
+        
+        Breite innen   : 440 mm
+        Höhe innen   : 440 mm
+        Tiefe   : 11 mm
+        
+        Bemerkung
+        Spezielle Anfertigung des Insektenschutzgitters der Fa. LAFIRO-Lüftungselemente für den Batterieraum im Betriebs-/ Wartengebäude des Unternehmens 50Hertz Transmission GmbH!
+        
+        Für Zuluft und Abluft
+        Einbauort   : Batterieraum 05, innen
+        [end]
+        [Kurztext]Insektenschutzgitter[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010640[end]
+       #begin[Beschreibung]
+        [Langtext]Alu-Blech für Maico-Lüfter Type EN 31, aus Aluminium naturblank, Innenmaß 490x490 mm. Ausführung nach Detail im Grundriss W19.
+        
+        Einsetzen des Aufnahmebleches in bauseitigen Außenwand-Durchbruch.
+        
+        Einbauort: Eigenbedarfsraum 08
+        [end]
+        [Kurztext]Aufnahmeblech aus Alu-Blech für Wandlüfter, 490x490mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010650[end]
+       #begin[Beschreibung]
+        [Langtext]Alu-Blech für Maico-Lüfter Type EN 31, aus Aluminium naturblank, Innenmaß 790x490 mm. Ausführung nach Detail im Grundriss W19.
+        
+        Einsetzen des Aufnahmebleches in bauseitigen Außenwand-Durchbruch.
+        
+        Einbauort: Leittechnikraum 01
+        [end]
+        [Kurztext]Aufnahmeblech aus Alu-Blech für Wandlüfter, 790x490mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010660[end]
+       #begin[Beschreibung]
+        [Langtext]Brandschutzverkleidung für Stahlblechkanal zur freien Zuluftnachströmung als Anlagenteil Lüftungsanlage Gleichrichterraum. Nachträgliche F90-Bekleidung des Stahlblechkanals ist als 4-seitige Ummantelung im Trockenbau nach Amtlichem Prüfzeugnis ABP Nr. P-3096/090/12-MPA BS auszuführen. Bekleidung mit Brandschutzplatten aus Fiebersilikat, Baustoffklasse A1, DIN 4102, Planungsfabrikat: Promatect LS-Brandschutzbauplatten, d=35 mm. Zur angebotenen Leistung gehört die Einkalkulierung des sich ergebenden Verschnittanteils, das örtliche zuschneiden und montieren nach Bedarf sowie zusätzliche Plattenstreifen für Kanalstöße, Verstärkungen, Aussteifungen entsprechend Ausführungsvorschriften und die kompletten Befestigungen als Tragschienensysteme mit Gewindestäben an der Geschossdecke befestigt, einschließlich allem erforderlichen Befestigungsmaterial und erforderlichem Brandschutzplattenkleber.
+        
+        Die Bekleidung ist ordnungsgemäß mit Aufklebern als Brandschutzkonstruktion zu kennzeichnen.
+        
+        Ausführung   : nach Vorschriften des Herstellers
+        Plattenstärke, geplant   : 35 mm
+        Größte Kantenlänge   : über 500 mm bis 1.400 mm
+        
+        Montagehöhe   : bis 3,50 m
+        Montageort   : Betriebsmittelraum 09
+        Hersteller   : Promat
+        Fabrikat   : Promatect LS-Brandschutzbauplatten, d=35 mm nach Datenblatt 478
+        
+        Amtliches Prüfzeugnis   :  ABP Nr. P-3096/090/12-MPA BS oder gleichwertig
+        
+        Angebotener Hersteller   : ..............................
+        
+        Angebotenes Fabrikat   : ..............................
+        
+        Amtliches Prüfzeugnis   : ..............................
+        [end]
+        [Kurztext]Brandschutzverkleidung mit Brandschutzplatten aus Fiebersilikat, L90[end]
+       #end[Beschreibung]
+       [ME]m²[end]
+       [Menge]19,200[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010670[end]
+       #begin[Beschreibung]
+        [Langtext]Wärmedämmung an Luftleitungen, rund, nach DIN 4140 Teil 1
+        Mediumtemperatur 20°C,
+        Umgebungstemperatur -16°C,
+        Dämmung aus nichtbrennbaren Stoffen DIN 4102 Teil 1 Baustoffklasse A2, auf der Außenfläche runder Luftleitungen aus feuerverzinktem Stahlblech, einschließlich aller Form- und Verbindungsstücke, wie Bögen, Etagen, Abzweige und Übergänge.
+        
+        Die Dämmung besteht aus:
+        Mineralwollematten, mit einer gitternetzverstärkten, reißfesten Alu-Sandwich-Folie mit selbstklebender Überlappung kaschiert, Bindedraht, ohne Ummantelung. Verarbeitung nach Anweisung des Herstellers.
+        
+        Installationsort   : Montage im Dachraum innerhalb der Dachbinder unter beengten Verhältnissen.
+        Montagehöhe   : Dachraum bis 3,50 m
+        Dämmstärke   : 40,0 mm
+        Größter Umfang   : bis 2.000 mm
+        Wärmeleitfähigkeit   : WLG 040
+        
+        Angebotenes Fabrikat   : ..............................
+        [end]
+        [Kurztext]Wärmedämmung an Luftleitung, rund[end]
+       #end[Beschreibung]
+       [ME]m²[end]
+       [Menge]3,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010680[end]
+       #begin[Beschreibung]
+        [Langtext]Wärmedämmung an Luftleitungen, eckig, Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch für eckige Luftleitungen einschließlich Formstücke.
+        
+        Umfang der Dämmung: bis 2.500 mm
+        [end]
+        [Kurztext]Wärmedämmung an Luftleitung, eckig[end]
+       #end[Beschreibung]
+       [ME]m²[end]
+       [Menge]5,500[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010690[end]
+       #begin[Beschreibung]
+        [Langtext]Kältedämmung an Luftleitungen eckig, Tauwasserdämmung im Gebäude an der Zuluftleitung Lüftungsanlage Gleichrichterraum. Nach DIN 4140 Teil 2.
+        Medientemperatur -15°C,
+        Umgebungstemperatur 20°C,
+        Dämmung auf der Außenfläche eckiger Luftleitungen aus Stahlblech, verzinkt, einschließlich Ausschnitte und aller Formstücke.
+        
+        Die Dämmung besteht aus:
+        Flexiblem geschlossigem Weichschaum auf Basis synthetischen Kautschuks mit geschlossenzelliger Materialstruktur. Alle Dämmplattenstöße verklebt.
+        Baustoffklasse B2: Normalentflammbar nach DIN 4102. Wärmeleitfähigkeit bei 0°C Mitteltemperatur 0,036 W/(mk), Wasserdampfdiffusionswiderstand 7,00, Farbe schwarz.
+        
+        Verarbeitung nach Anweisung des Herstellers.
+        
+        Einschließlich allem benötigtem Zubehör wie Kleber, Reiniger, selbstklebendes Band zur Herstellung der kompletten Kältedämmung.
+        
+        Einbauort: Zuluftkanal Lüftung Gleichrichterraum, montiert im Betriebsmittelraum 09
+        
+        Höhe der Leitungen über Standfläche bis 3,5 m
+        
+        Dämmung   : Platten, selbstklebend
+        Dämmstärke   : 19,0 mm
+        Umfang der Dämmung   : bis 2.000 mm
+        Fabrikat   : AF/Armaflex Platten, oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        [end]
+        [Kurztext]Kältedämmung an Luftleitung, eckig[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]2,700[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010700[end]
+       #begin[Beschreibung]
+        [Langtext]Kältedämmung an Luftleitungen rund, Tauwasserdämmung an Zuluftleitungen der Raumkühlanlage,
+        Medientemperatur 12°C,
+        Umgebungstemperatur 26°C,
+        Dämmung an der Außenfläche runder Luftleitungen aus Stahlblech, verzinkt, einschließlich der Form- und Verbindungsstücke, wie Bögen, Etagen, Abzweige und Übergänge.
+        In Gebäuden, Raum 01-Leittechnik, Bedienarbeitsplatz und Nachrichtentechnik.
+        
+        Die Dämmung besteht aus:
+        Flexiblem Schaumstoff auf Basis synthetischen Kautschuks mit geschlossenzelliger Materialstruktur. Alle Dämmplattenstöße verklebt. Baustoffklasse B2: Normalentflammbar nach DIN 4102. Wärmeleitfähigkeit bei 0°C Mitteltemperatur 0,036 W/(mk), Wasserdampfdiffusionswiderstand 7,00, Farbe schwarz.
+        Verarbeitung nach Anweisung des Herstellers.
+        
+        Einschließlich allem benötigtem Zubehör wie Kleber, Reiniger, selbstklebendes Band zur Herstellung der kompletten Kältedämmung.
+        
+        Dämmung   : Platten, selbstklebend
+        Dämmstärke   : 19,0 mm
+        Größter Durchmesser   : 250 mm
+        Umfang der Dämmung   : bis 1.000 mm
+        Angebotenes Fabrikat   : AF/Armaflex Platten oder gleichwertig
+        
+        Angebotenes Fabrikat   : ..............................
+        [end]
+        [Kurztext]Kältedämmung an Luftleitungen rund[end]
+       #end[Beschreibung]
+       [ME]m²[end]
+       [Menge]28,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010710[end]
+       #begin[Beschreibung]
+        [Langtext]Kunststoff-Mantelleitung NYM-J 5x1,5 mm² zum Verlegen unter-Putz, einschließlich Fräsen und wieder verschließen.
+        [end]
+        [Kurztext]Kunststoff-Mantelleitung, verlegen unter Putz, NYM-J 5x1,5mm²[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]30,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010720[end]
+       #begin[Beschreibung]
+        [Langtext]Kunststoff-Mantelleitung Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch NYM-J 5x1,5 mm² Verlegung oberhalb der Stahlbetondecke.
+        [end]
+        [Kurztext]Kunststoff-Mantelleitung, verlegen auf der Stahlbetondecke, NYM-J 5x1,5mm²[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]10,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010730[end]
+       #begin[Beschreibung]
+        [Langtext]Kunststoff-Mantelleitung Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch NYM(St)-J 5x2,5 mm² (abgeschirmt) Verlegung im Installationskanal.
+        [end]
+        [Kurztext]Kunststoff-Mantelleitung verlegen im I-Kanal, NYM(St)-J 5x2,5mm² (abgeschirmt)[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]10,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010740[end]
+       #begin[Beschreibung]
+        [Langtext]Kunststoff-Mantelleitung Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch NYM-J 3x2,5 mm², Verlegung unter Putz, einschließlich Fräsen und wieder verschließen.
+        [end]
+        [Kurztext]Kunststoff-Mantelleitung, verlegen unter Putz, NYM-J 3x2,5mm²,[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]28,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010750[end]
+       #begin[Beschreibung]
+        [Langtext]Kunststoff-Mantelleitung Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch NYM(St)-J 3x2,5 mm², (abgeschirmt) Verlegung im Installationskanal.
+        [end]
+        [Kurztext]Kunststoff-Mantelleitung, verlegen im I-Kanal, NYM(St)-J 3x2,5mm²,(abgeschirmt)[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]15,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010760[end]
+       #begin[Beschreibung]
+        [Langtext]Kunststoff-Mantelleitung Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch NYM-J 3x4 mm², Verlegung unter Putz, einschließlich Fräsen und wieder verschließen.
+        [end]
+        [Kurztext]Kunststoff-Mantelleitung, verlegen unter Putz, NYM-J 3x4mm²,[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]20,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010770[end]
+       #begin[Beschreibung]
+        [Langtext]Kunststoff-Mantelleitung Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch NYM(St)-J 3x4 mm², (abgeschirmt) Verlegung im Installationskanal.
+        [end]
+        [Kurztext]Kunststoff-Mantelleitung, verlegen im I-Kanal, NYM(St)-J 3x4mm², (abgeschirmt)[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]20,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010780[end]
+       #begin[Beschreibung]
+        [Langtext]Kunststoff-Mantelleitung Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch Steuerleitung (Busleitung) NYM(St)-J 3x4 mm², (abgeschirmt) Verlegung im Installationskanal.
+        [end]
+        [Kurztext]Kunststoff-Mantelleitung, verlegen im I-Kanal, LIY-CY 2x0,75mm², (abgeschirmt)[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]20,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010790[end]
+       #begin[Beschreibung]
+        [Langtext]Fernmeldekabel, mit Isolierstoffabstandschellen an Wänden und Decken verlegen bzw. in Rohr oder Installationskanäle einziehen, einschl. aller Nebenarbeiten. J-Y(St)Y 2x2x0,6 mm.
+        [end]
+        [Kurztext]Fernmeldekabel an Wänden, J-Y(St)Y,  2x2x0,6mm²[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]85,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010800[end]
+       #begin[Beschreibung]
+        [Langtext]Anschluss an bauseits bereitgestelltes Zuleitungskabel vornehmen.
+        [end]
+        [Kurztext]Anschluss an Zuleitungskabel[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]5,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010810[end]
+       #begin[Beschreibung]
+        [Langtext]Kabelanschluss an Lüftermotoren.
+        [end]
+        [Kurztext]Kabelanschluss von Lüftermotoren[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]4,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010820[end]
+       #begin[Beschreibung]
+        [Langtext]Kabelanschluss am Hubmagneten des Lüftungsgitters zum Öffnen und Schließen der Jalousie-Lüftungsgitter
+        [end]
+        [Kurztext]Kabelanschluss am Hubmagneten des Lüftungsgitters[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]4,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010830[end]
+       #begin[Beschreibung]
+        [Langtext]Kabelanschluss an Brandschutzklappe.
+        [end]
+        [Kurztext]Kabelanschluss an Brandschutzklappe[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]4,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010840[end]
+       #begin[Beschreibung]
+        [Langtext]Bezeichnungsschild,
+        
+        Schild   : aus Schicht-Pressstoff, mit Kunststoffabdeckung
+        
+        Farbe   : schwarze Schrift auf
+        Beschriftung   : weißem Hintergrund
+        
+        Beschriftung   : zweizeilig,
+        Höhe   : 52 mm,
+        Breite   : 148 mm.
+        
+        Texte:
+        Lüftung Gleichrichterraum
+        Ablüfter
+        
+        Lüftung Gleichrichterraum
+        Taschenfilter
+        
+        Lüftung Gleichrichterraum
+        Brandschutzklappe 1
+        
+        Lüftung Gleichrichterraum
+        Brandschutzklappe 2
+        
+        Lüftung Gleichrichterraum
+        Reparaturschalter Ablüfter1
+        
+        Lüftung Leittechnikraum
+        Reparaturschalter Außengerät
+        
+        Lüftung Leittechnikraum
+        Reparaturschalter Ablüfter
+        
+        Lüftung Leittechnikraum
+        Inspektion Kanalgerät
+        
+        Lüftung Eigenbedarfsraum
+        Reparaturschalter Ablüfter
+        
+        unverschließbare Zuluftöffnung, nicht zustellen
+        
+        WC-Ablüfter
+        
+        Angebotenes Fabrikat   : ...............................
+        [end]
+        [Kurztext]Bezeichnungsschild[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]11,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010850[end]
+       #begin[Beschreibung]
+        [Langtext]Versiegeln der Lüftungsgitter, Abdichtung zwischen Lüftungsgitter und der Bauwerksaußenwandseite mit dauerelastischen Stoffen.
+        [end]
+        [Kurztext]Versiegelung Lüftungsgitter[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]22,500[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010860[end]
+       #begin[Beschreibung]
+        [Langtext]Versiegeln der Lüftungsgitter und verz. Formstücke Leistung wie zuletzt in vollem Wortlaut beschrieben, jedoch Abdichtung Lüftungsgitter und verzinkter Formstücke auf der Innenseite der Außenwand.
+        [end]
+        [Kurztext]Versiegelung Lüftungsgitter und verzinkter Formteile[end]
+       #end[Beschreibung]
+       [ME]m[end]
+       [Menge]29,500[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010870[end]
+       #begin[Beschreibung]
+        [Langtext]Verschließen von Öffnungen/ Durchbrüchen, nach Einbau der Brandschutzklappen, in der Feuerwiderstandsdauer K 90, Schließen des Ringspaltes zwischen Brandschutzklappe und Durchbruch in der Massivdecke mit Mörtel der Mörtelgruppe MGIII (Brandschott).
+        [end]
+        [Kurztext]Verschließen von Öffnungen/ Durchbrüchen in K 90[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]4,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010880[end]
+       #begin[Beschreibung]
+        [Langtext]Herstellen von Kernbohrungen in Wänden, aus Stahlbeton
+        
+        Bohrungsdurchmesser   : 100 mm
+        Wanddicke   : 24 cm
+        horizontal
+        [end]
+        [Kurztext]Herstellen von Kernbohrungen, Betonwand, Durchmesser 100mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010890[end]
+       #begin[Beschreibung]
+        [Langtext]Herstellen von Kernbohrungen in Wänden, aus Stahlbeton
+        
+        Bohrungsdurchmesser   : 150 mm
+        Wanddicke   : 24 cm
+        horizontal
+        [end]
+        [Kurztext]Herstellen von Kernbohrungen, Betonwand, Durchmesser 150mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010900[end]
+       #begin[Beschreibung]
+        [Langtext]Herstellen von Kernbohrungen in der Außenwand, Außenwand mehrschichtig bestehend aus:
+        24 cm Kalksandstein
+        13,3 cm Mineralwolledämmung
+        11.5 cm Klinkermauerwerk
+        
+        Bohrungsdurchmesser   : bis 150 mm
+        Gesamtwanddicke   : 49 cm
+        Horizontal
+        
+        Bohrungsdurchmesser dem Außendurchmesser des Lüftungsrohres angepasst.
+        [end]
+        [Kurztext]Herstellen von Kernbohrungen, Außenwand, Durchmesser 150mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010910[end]
+       #begin[Beschreibung]
+        [Langtext]Herstellen von Kernbohrungen in der Außenwand, Außenwand mehrschichtig bestehend aus:
+        24 cm Kalksandstein
+        13,3 cm Mineralwolledämmung
+        11.5 cm Klinkermauerwerk
+        
+        Bohrungsdurchmesser: bis 100 mm
+        Gesamtwanddicke: 49 cm
+        Horizontal
+        
+        Bohrungsdurchmesser dem Außendurchmesser der Kältemittel-/ Elektroleitungen vom Außengerät angepasst.
+        [end]
+        [Kurztext]Herstellen von Kernbohrungen, Außenwand, Durchmesser bis 100mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010920[end]
+       #begin[Beschreibung]
+        [Langtext]Herstellen von Kernbohrungen in der Innenwand, aus Kalksandstein
+        
+        Bohrungsdurchmesser: bis 60 mm
+        Gesamtwanddicke: 24 cm
+        Horizontal
+        
+        Bohrungsdurchmesser dem Außendurchmesser der Rohrleitung angepasst.
+        [end]
+        [Kurztext]Herstellen von Kernbohrungen, Innenwand, Durchmesser 60mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010930[end]
+       #begin[Beschreibung]
+        [Langtext]Inbetriebnahme, Einregulieren, Probebetrieb der vorgenannten Inverter-Raumkühlanlage, Einstellen der planmäßigen Parameter, mit Messung dieser Parameter und Anfertigung des Protokolls.
+        
+        Parametrierung, Einregulierung und Messung von Parametern als Bestandteil der Funktionsprüfungen und Funktionsmessungen nach VOB Teil C-DIN 18379, Abschnitt 3.5. Besondere Leistung nach VOB Teil C-DIN 18379, Abschnitt 4.2.19.
+        
+        Einmalige Einweisung des Bedienpersonals in die Anlage nach DIN 18379, Abschnitt 3.4.2 gehört zur Regelleistung und ist in dieser LV-Position nicht zu erfassen.
+        [end]
+        [Kurztext]Inbetriebnahme, Einregulieren, Probebetrieb der Inverter-Raumkühlanlage[end]
+       #end[Beschreibung]
+       [ME]psch[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010940[end]
+       #begin[Beschreibung]
+        [Langtext]Inbetriebnahme, Einregulieren, Probebetrieb der vorgenannten Lüftungsanlagen, Einstellen der planmäßigen Parameter, mit Messung dieser Parameter und Anfertigung des Protokolls.
+        
+        Parametrierung, Einregulierung und Messung von Parametern als Bestandteil der Funktionsprüfungen und Funktionsmessungen nach VOB Teil C-DIN 18379, Abschnitt 3.5. Besondere Leistung nach VOB Teil C-DIN 18379, Abschnitt 4.2.19.
+        
+        Einmalige Einweisung des Bedienpersonals in die Anlage nach DIN 18379, Abschnitt 3.4.2 gehört zur Regelleistung und ist in dieser LV-Position nicht zu erfassen.
+        [end]
+        [Kurztext]Inbetriebnahme, Einregulieren, Probebetrieb der Lüftungsanlagen[end]
+       #end[Beschreibung]
+       [ME]psch[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010950[end]
+       #begin[Beschreibung]
+        [Langtext]Bestandsdokumentation - Klima- und Lüftungsanlage, nach Fertigstellung des Objektes, jedoch spätestens zum Zeitpunkt der Abnahme, sind die Revisionsunterlagen unter Verwendung der Ausführungsunterlagen prüffähig zu liefern.
+        
+        Dazu gehören:
+        - Inhaltsverzeichnis
+        - Fachunternehmererklärung
+        - Revisionszeichnungen: auf der Grundlage der fortgeschriebenen AU-Zeichnungen,
+        - Zusammenstellung der wichtigsten technischen Daten: Leistungsangaben zu allen Hauptaggregaten wie Lüfter, Stellantriebe usw. Temperatur- und Druckangaben, eingestellte Grenzwerte von Sicherheitseinrichtungen,
+        - Betriebs- und Wartungsanleitungen für einen sicheren und wirtschaftlichen Betrieb, Erläuterungen der Gesamtfunktion, abgestimmt auf das Anlagenschema, Angaben und Hinweise zu möglichen Störungen und deren Behebung,  Auswirkung von Störungen, Art der Störmeldung, automatische oder manuelle Entriegelung
+        - Stromlaufplan nach DIN EN 60848,
+        - Hersteller- und Montagefirmenverzeichnis für alle Einbauteile und elektrischen Betriebsmittel,
+        - Ersatzteillisten mit Fabriks- und Typenangabe sowie Ersatzteilbezeichnung,
+        - Herstellerunterlagen und -anweisungen,
+        - Prüfbescheinigungen und Protokolle über:  Einmessung, Einregulierung, Stromaufnahmemessungen, Schaltschrankprüfung,
+        
+        Protokoll der Einweisung des Bedienungs- und Wartungspersonals.
+        
+        Ablieferung in 3-facher Ausfertigung (in DIN A4 -Ordner).
+        [end]
+        [Kurztext]Bestandsdokumentation - Klima- und Lüftungsanlage[end]
+       #end[Beschreibung]
+       [ME]psch[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010960[end]
+       #begin[Beschreibung]
+        [Langtext]Wartung Lüftungsanlagen/ Raumkühlanlage
+        Der Auftragnehmer ist bis zum Ablauf von 3 Monaten nach der Übergabe der Anlage an den Auftraggeber verpflichtet, mit diesem einen Wartungsvertrag auf Grund seines Angebotes abzuschließen. Er hat keinen Anspruch auf den Abschluss des Vertrages. Es wird beabsichtigt dem AN die Wartung für die Dauer von 2 Jahren zu übertragen.
+        
+        Der Leistungsumfang umfasst die Wartung von
+        3 St. Lüfter
+        1 St. Mono-/ Simultansystem bestehend aus Außengerät und Inneneinheit (Zwischendeckengerät),
+        2 St. Funktionskontrolle der Brandschutzklappen
+        1 St. Kanalfilter - Auswechseln verschmutzter Filtermatten nach Erreichen des Enddruckes.
+        4 St. Inspektion und Funktionskontrolle der gesteuerten Jalousieklappen
+        
+        Mit dem Angebotspreis sind die vorgenannten Wartungsleistungen und die damit in Zusammenhang stehenden Verbrauchs- und Hilfsmaterialien sowie Kleinteile bis insgesamt 10,00 EUR (netto) je Jahr sowie Arbeitslöhne, Fahrt- und Nebenkosten abgegolten. Im Preis nicht enthalten sind Aufwendungen für die Beseitigung von Schäden sowie Ersatzteile (außer vorgenannte Kleinteile).
+        
+        Hinweis:
+        Der Angebotspreis für die Wartung wird bei der Wertung des Gesamtangebotes berücksichtigt. Bei der Wertung werden unabhängig von der vereinbarten Vertragsdauer die Kosten für die Wartung von 2 Jahren zugrunde gelegt. Als Einheitspreis sind hier die Kosten je Jahr einzutragen.
+        
+        [end]
+        [Kurztext]Wartung Lüftungsanlagen/ Raumkühlanlage[end]
+       #end[Beschreibung]
+       [Menge]2,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010970[end]
+       #begin[Beschreibung]
+        [Langtext]Schutzgitter, verzinkte Ausführung, Zuluftgitter als Maschendrahtgitter, Schutzgittermaschenweite 20 mm, mit umlaufenden Flachstahlrahmen, in der lichten Abmessung der bauseitigen Öffnung. Der umlaufende Rahmen wird direkt auf die Wand gedübelt.
+        
+        Luftmenge   : 4.000 m3/h
+        Abmessungen (BxH)   : 450x1.050 mm
+        Installationsort   : Gleichrichterraum 06
+        Belüftungsanlage
+        Montagehöhe   : bis 3,50 m
+        [end]
+        [Kurztext]Schutzgitter 450x1.050mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010980[end]
+       #begin[Beschreibung]
+        [Langtext]Druckentlastungselement mit Lüftungsfunktion regulierbar, Typ LKRF, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. 
+        
+        Montage von innen:
+        Rahmen aus Kasten-U-Profil mit einer als Überdruckklappe entwickelten Lamellenreihe aus Spezialprofil.
+        Lamelle frei pendelndin Kunststoffbuchsen gelagert, bei innerem Druck öffnen die Lamellen,
+        zusätzlich über ein Regulierungsgestänge in geöffneter Position zu halten.
+        Mit umlaufendem Anschlag von 27 mm Breite an der inneren Stirnseite, in der Breite 2-teilig,
+        innen oben rechts ein Erdungsanschluss M12 gemäß VDE,
+        äußere Abmessungen:
+        Breite: 1.625mm (über Anschlag 1.679mm)
+        Höhe:    615mm (über Anschlag 669mm)
+        Tiefe:      95mm
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Tel.-Nr. 04532 / 2045-0;
+        Fax-Nr. 04532 /2045-20
+        
+        Typ   : LW 1028.461.50
+        
+        äußere Abmessungen
+        Breite   : 1290 mm  (über Anschlag 1344 mm)
+        Höhe   : 490 mm  (über Anschlag 544 mm)
+        Tiefe   : 47 mm
+        
+        Einbauort. 30-kV-Raum, innen
+        [end]
+        [Kurztext]Druckentlastungselement,innen, 163,5x62,5cm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+      #begin[Position]
+       [OZ]0402010990[end]
+       #begin[Beschreibung]
+        [Langtext]Lüftungsgitter für Zuluft, aus Aluminium pulverbeschichtet in RAL-Ton nach Wahl des Auftraggebers. Rahmen aus Kasten-U-Profil, mit einer horizontalen feststehenden Winkellamellenreihe, aus gezogenem Strangprofil 90° (selbstreinigend), untere Lamelle mit Wasserableitblech. Mit umlaufendem Anschlag von 27 mm Breite an der äußeren Stirnseite,
+        in der Breite 2-teilig, Befestigungslaschen an den Seiten
+        
+        Einbau in gedämmte hinterlüftete KS-Wand, Gesamtwandstärke 49 cm
+        
+        Fabrikat   : LAFIRO-Lüftungselemente,
+        Tel.-Nr. 04532 / 2045-0;
+        Fax-Nr. 04532 /2045-20
+        
+        Typ   : LW 1010.461.40.00
+        
+        äußere Abmessungen
+        Breite   : 1625 mm  (über Anschlag 1679 mm)
+        Höhe   :   615 mm  (über Anschlag 669 mm)
+        Tiefe   :     47 mm
+        
+        Gesamte freie Querschnitt: 0,60m²
+        
+        Einbauort. 30-kV-Raum, außen
+        [end]
+        [Kurztext]Lüftungsgitter 1635x 625mm[end]
+       #end[Beschreibung]
+       [ME]St[end]
+       [Menge]1,000[end]
+      #end[Position]
+     #end[LVBereich]
+    #end[LVBereich]
+   #end[LVBereich]
+  #end[LV]
+ #end[Vergabe]
+#end[GAEB]217|536

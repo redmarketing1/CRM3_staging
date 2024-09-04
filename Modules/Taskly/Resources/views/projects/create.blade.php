@@ -12,7 +12,7 @@
         </div>
         <div class="form-group col-md-12">
             {{ Form::label('projectname', __('Description'),['class'=>'form-label']) }}
-            {{ Form::textarea('description', '', array('class' => 'form-control','rows'=>3,'required'=>'required','id'=>"description",'placeholder'=> __('Add Description'))) }}
+            {{ Form::textarea('description', '', array('class' => 'form-control tinyMCE','rows'=>3,'required'=>'required','id'=>"description",'placeholder'=> __('Add Description'))) }}
         </div>
         <div class="form-group col-md-12">
             {{ Form::label('users_list', __('Users'),['class'=>'form-label']) }}
