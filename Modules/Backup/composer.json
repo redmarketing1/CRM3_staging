@@ -1,0 +1,24 @@
+{
+    "name": "fxcjahid/backup",
+    "description": "",
+    "authors": [
+        {
+            "name": "Fxcjahif",
+            "email": "fxcjahid3@gmail.com"
+        }
+    ],
+    "require": {
+        "spatie/laravel-backup": "^9.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Backup\\": ""
+        }
+    }
+}

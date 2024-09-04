@@ -3,7 +3,6 @@
 namespace Modules\Taskly\Listeners;
 
 use App\Events\CompanyMenuEvent;
-use Modules\Taskly\Entities\Project;
 
 class CompanyMenuListener
 {

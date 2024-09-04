@@ -22,25 +22,25 @@ class MenuServiceProvider extends Provider
      *
      * @var array
      */
-    
+
     protected $listen = [
-        SuperAdminMenuEvent::class => [
-            SuperAdminMenuListener::class
+        SuperAdminMenuEvent::class        => [
+            SuperAdminMenuListener::class,
         ],
         SuperAdminSettingMenuEvent::class => [
-            SuperAdminSettingMenuListener::class
+            SuperAdminSettingMenuListener::class,
         ],
-        SuperAdminSettingEvent::class => [
-            SuperAdminSettingListener::class
+        SuperAdminSettingEvent::class     => [
+            SuperAdminSettingListener::class,
         ],
-        CompanyMenuEvent::class => [
-            CompanyMenuListener::class
+        CompanyMenuEvent::class           => [
+            CompanyMenuListener::class,
         ],
-        CompanySettingMenuEvent::class => [
-            CompanySettingMenuListener::class
+        CompanySettingMenuEvent::class    => [
+            CompanySettingMenuListener::class,
         ],
-        CompanySettingEvent::class => [
-            CompanySettingListener::class
+        CompanySettingEvent::class        => [
+            CompanySettingListener::class,
         ],
     ];
 }
