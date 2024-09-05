@@ -8,7 +8,7 @@
             </div>
             <div class="float-end">
                 <p class="text-muted d-sm-flex align-items-center mb-0">
-                    <a href="#" class="btn btn-sm btn-primary" data-ajax-popup="true" data-title="{{ __('Invite') }}"
+                    <a href="javascript:;" class="btn btn-sm btn-primary" data-ajax-popup="true" data-title="{{ __('Invite') }}"
                         data-bs-toggle="tooltip" data-bs-title="{{ __('Invite') }}"
                         data-url="{{ route('projects.invite.popup', [$project->id]) }}"><i
                             class="ti ti-brand-telegram"></i></a>
@@ -24,7 +24,7 @@
                     <div class="row align-items-center justify-content-between">
                         <div class="col-sm-auto mb-3 mb-sm-0">
                             <div class="d-flex align-items-center px-2">
-                                <a href="#" class=" text-start">
+                                <a href="javascript:;" class=" text-start">
                                     <img alt="image" data-bs-toggle="tooltip" data-bs-placement="top"
                                         title="{{ $user->name }}"
                                         @if ($user->avatar) src="{{ get_file($user->avatar) }}" @else src="{{ get_file('avatar.png') }}" @endif

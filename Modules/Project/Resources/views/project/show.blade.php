@@ -807,7 +807,7 @@
             // Call the default addedfile event handler
             myDropzone.emit("addedfile", mockFile);
             // And optionally show the thumbnail of the file:
-            myDropzone.emit("thumbnail", mockFile, "{{ $thumbnail_url }}");
+            myDropzone.emit("thumbnail", mockFile, "{{ get_file($file->file_path) }}");
             myDropzone.emit("complete", mockFile);
 
             dropzoneBtn(mockFile, {
