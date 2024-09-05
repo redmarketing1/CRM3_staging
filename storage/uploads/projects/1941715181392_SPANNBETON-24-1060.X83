@@ -1,0 +1,1393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <GAEB xmlns="http://www.gaeb.de/GAEB_DA_XML/200407">
+  <GAEBInfo>
+   <Version>3.1</Version>
+   <VersDate>2007-06</VersDate>
+   <Date>2024-05-08</Date>
+   <Time>15:45:31</Time>
+   <ProgSystem>BauSU fuer Windows</ProgSystem>
+   <ProgName>Version 50.0/852</ProgName>
+  </GAEBInfo>
+  <PrjInfo>
+   <NamePrj>2102084</NamePrj>
+   <LblPrj>Helmholtz -Zentrum CatLab
+Hahn-Meitner-Platz 1
+14109 Berli</LblPrj>
+   <Cur>€</Cur>
+   <CurLbl>Euro</CurLbl>
+  </PrjInfo>
+  <Award>
+   <DP>83</DP>
+   <AwardInfo>
+    <Cur>€</Cur>
+    <CurLbl>Euro</CurLbl>
+    <OpenDate>2024-05-16</OpenDate>
+    <CnstStart>2024-07-22</CnstStart>
+    <CnstEnd>2025-07-04</CnstEnd>
+   </AwardInfo>
+   <AddText>
+    <OutlineAddText>
+     <p>
+      <span>ALLGEMEIN TECHNISCHE VERTRAGSBEDINGUNGEN FÜR BAULEISTUNGEN</span>
+     </p>
+    </OutlineAddText>
+    <DetailAddText>
+     <p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">ALLGEMEIN TECHNISCHE VERTRAGSBEDINGUNGEN FÜR BAULEISTUNGEN (ATV)</span></p>
+    </DetailAddText>
+   </AddText>
+   <AddText>
+    <OutlineAddText>
+     <p>
+      <span>0.1 Angaben zur Baustelle</span>
+     </p>
+    </OutlineAddText>
+    <DetailAddText>
+     <p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.1.1 Lage der Baustelle</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Baugrundstück</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Magnusstraße 10,</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">12489 Berlin</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Bauherr</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Helmholtz-Zentrum Berlin</span><br/><span style="font-size:medium;">für Materialien und Energie GmbH</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Hahn-Meitner-Platz 1</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">14109 Berlin</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Das Helmholtz-Zentrum Berlin für Materialien und Energie GmbH (HZB) ist ein renommiertes Forschungsinstitut und Mitglied der Helmholtz-Gemeinschaft. Die Finanzierung des Institutes erfolgt zu 100 % ausöffentlichen Mitteln durch den Bund (90%) und das Land Berlin (10%).Das HZB erforscht komplexe Materialsysteme. Um Strukturen und Prozesse in Materialien zu untersuchen, betreibt das HZB die Synchrotronstrahlungsquelle BESSY II am Standort Berlin-Adlershof, die auch von rund 3.000 Messgästen aus aller Welt genutzt wird.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Nachhaltigkeit, BNB Zertifikat</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Das Gebäude soll nach dem BNB-Bewertungssystem für das nachhaltige Bauen Zertifiziert werden, es wird mindestens die Zertifizierungsstufe Silber angestrebt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Das Baufeld liegt im Bezirk Treptow-Köpenick von Berlin, Ortsteil Adlershof in der Nähe des S-Bahnhofes Adlershof und wird flankiert von der Magnusstraße und dem Ernst-Ruska-Ufer. In nord-westlicher Richtung schließt das Flurstück 5811 mit Bestandsbauten des HZB an, insbesondere der Teilchenbeschleuniger BESSY II.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Adresse des Neubaus befindet sich in der Magnusstraße 10.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Zur Gewährleistung eines kontinuierlichen und reibungslosen Bauablaufes wird von der Objektüberwachung ein Baulogistikkonzept erstellt. Dieses Regelwerk ist im Baulogistikhandbuch zusammengefasst und bildet einen verpflichtenen Vertragsbestandteil.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Baustelle auf der Liegenschaft muss über die öffentliche Straße Magnusstraße angefahren werden. Es handelt sich um eine ca. 6,50 m breite Straße, von der aus die Zu- und Ausfahrt auf das Grundstück des Instituts erfolgt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Nach Auftragserteilung erfolgen in Abstimmung mit der örtlichen Bauleitung verbindliche Angaben und Hinweise zur Nutzung der Baustellenzufahrt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Stellflächen für die Baustelleneinrichtugngen der Firmen werden auf dem Baustelleneinrichtungsplan ausgewiesen. Unterkünfte wie Schlafräume und Aufenthaltsräume für die Freizeit dürfen in der Liegenschaft, in der sich die Baustelle befindet, nicht eingerichtet werden.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Zur Überwachung der Baustelle werden durch den hausinternen Sicherheitsdienst des Bauherrn zwei 360° Kameras auf der Baustelle installiert.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.1.2 Besondere Belastungen aus Immissionen sowie besondere klimatische oder betriebliche Bedingungen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der Baubetrieb erfolgt unter zeitgleicher Nutzung der vorhandenen Infrastruktur des HZB.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Insbesondere bleiben die in unmittelbarer Nähe befindlichen Bestandsgebäude (Speicherringhalle und Schwerlasthalle) während der Baumaßnahme in Betrieb. Die Arbeiten sind deshalb so auszuführen, dass der laufende Betrieb des Forschungsinstituts nicht behindert wird.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Im Bauablauf entstehende Schnittstellen zwischen Bau- und laufendem Institutsbetrieb sind in Abstimmung mit der örtlichen Bauleitung eigenverantwortlich durch den AN zu berücksichtigen, zu organisieren und abzustimmen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Dazu gehören z.B.:</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Lieferverkehr für HZB</span></li>
+<li><span style="font-size:medium;">Müllabfuhr,</span></li>
+<li><span style="font-size:medium;">Anlieferung von Baumaterialien,</span></li>
+<li><span style="font-size:medium;">Schuttentsorgung,</span></li>
+<li><span style="font-size:medium;">Vermeidung von Staub und Lärm,</span></li>
+<li><span style="font-size:medium;">Vermeidung von Schäden am Bestand der Nachbarbebauung, usw.</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;">Aufgrund der direkten Nähe zum Teilchen Beschleuniger BESSY II sind bei allen Arbeiten Erschütterungen auf ein Minimum zu begrenzen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Schwingungsverursachende arbeiten wie Bohrungen, Abbruch, Verdichtungen, etc. sind auszuschließen bzw. nur in enger Abstimmung mit den Nutzern möglich. Es sind unbedingt Zeitfenster für alle den Betrieb störenden Maßnahmen (Lärm, Schwingung, Staub, Zufahrtseinschränkung, etc.) mit der Bauleitung abzustimmen.</span><br/><span style="font-size:medium;">In der Bauphase sind schwingungsverursachende Maßnahmen rechtzeitig wie folgt anzumelden:</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">größere und zeitlich längere Maßnahmen sind mit 2 Wochen Vorlauf anzuzeigen.</span></li>
+<li><span style="font-size:medium;">kleinere kurze Maßnahmen sind mit 2 Tagen Vorlauf anzuzeigen.</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;">Teile der Baustelleneinrichtung, wie Containeranlage, inklusive Sanitäranlagen, Besprechungsräume, Wertstoffhof und insbesondere die Baustraße werden zusammen mit der benachbarten Baustelle des VTII genutzt. Es ist stets darauf zu achten,dass die anderen am Bau beteiligten, sowohl im Bezug auf die Errichtung des CatLab als auch die des VTII in ihren Ausführung nicht behindert werden. Bei Konflikten oder Kollision ist ein proaktiv und lösungsorientiert zu handeln. Im Zweifelsfall ist zur Klärung die Bauleitung beider Bauvorhaben heran zu ziehen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der Bauzaun besteht zum Großteil aus einer Bestandsanlage des HZB, die mit einer erschütterungssensiblen Sensorik ausgestattet ist. Zur Vermeidung von Fehlalarmen ist die Anlage daher nicht durch z.B. angelehnte Materialen oder direkte Erschütterungen zu belasten oder anderweitig in ihrer Funktionalität einzuschränken.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.1.3 Art und Lage der baulichen Anlagen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die HZB beabsichtigt, in der Magnusstraße in Berlin-Adlershof ein neues Labor- und Bürogebäude zu errichten, welches die substantielle Stärkung der Forschung und Entwicklung im Bereich der Katalyse ermöglichen soll.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Im ersten Bauabschnitt soll ein innovatives Labor und Bürogebäude für die Katalyseforschung geschaffen werden.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Das Areal weist keine ausgeprägte Topografie auf und kann als eben bezeichnet werden. Die Geländehöhe befindet sich bei etwa 35,0 m ü. NHN</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Das Erdgeschoss liegt auf +- 0.00; dies entspricht 35,00m ü.DHHN92.</span><br/><span style="font-size:medium;"> </span><br/><span style="font-size:medium;">Vor Beginn der Erd- und Rohbauarbeiten wird eine Grobabsteckung sowie Höheneinmessung durch einen Vermesser durchgeführt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Bruttogeschossfläche (BGFr) beträgt ca. 6.789 m²</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der Bruttorauminhalt (BRI) beträgt ca.30.986 m³</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Das Gebäude fällt als ungeregelter Sonderbau in die Gebäudeklasse 5 nach §2 BauO Bln.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der polygonale Baukörper des CatLabs mit den Abmessungen von b/t/h ca. 57,5x28,7x20,0m (breiteste Stellen, Höhe = Traufhöhe Staffelgeschoss) besteht im Bereich der Büros aus 5 Geschossen (Erdgeschoss + 1. - 4. Obergeschoss), aufgrund der erforderlichen Raumhöhen im Bereich der Labore aus 4 Geschossen (Erdgeschoss überhöht aufgrund der EG-Labore + 2. - 4. Obergeschoss).</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Aufgrund der unterschiedlichen Geschosshöhen zwischen Büros (idR 3,78m) und Laboren (im EG 5,94m, in den OGs 4,50m) wird ein vor den Laboren vorgelagerter Laborsteg als Splitlevel ausgebildet.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Auf dem Dach befindet sich ein zurückversetztes Staffelgeschoss, in dem die Technikzentrale untergebracht ist (Traufhöhe TZ ca. 24,13mü. GOK, entspricht 59,13 m üNHN).</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Gründung</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Gründung des Gebäudes erfolgt über bis zu 1,50m dicke Flachgründungen als elastisch gebettete Bodenplatte in nichtschwimmender Ausführung (ohne unterseitiger Dämmung). Der sandige Baugrund wurde im Vorfeld über eine Bodenverdichtung in zwei Schritten: Herstellung einer Voraushubebene mit anschließendem Verdichtungsverfahren (Impulsverdichtung) verbessert.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Das Gebäude wird umseitig als schwarze Wanne in der Einwirkungsklasse W2.1-E abgedichtet.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Rohbau</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der gesamte Laborbau inklusive der beiden Treppenhäuser und den eingestellten Kernen (Aufzug sowie Technikkern zwischen Büros und Laboren) wird als Stahlbetonbau mit tragenden Wänden bzw. Stützen in Fassadenebene und Stahlbetonflachdecken ausgeführt. Für maximale Flexibilität im Ausbau ist eine Stützenfreiheit der Laborflächen vorgesehen. Dies erfolgt über eine Vorspannung der Decken.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Alle weiteren Bereiche werden in als Holz-Beton-Verbunddecken mit Sichtholzuntersicht sowie Holzstützen in Fassaden- und Flurwandebene ausgeführt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Alle Holzbauteile werden statisch nach den Anforderungen des Brandschutzes auf Abbrand berechnet und entsprechend ausgelegt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Technikzentrale auf dem Dach wird als Stahlkonstruktion mit einem Trapezblechdach ausgeführt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Fassade</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Das äußere Erscheinungsbild des CatLabs wird durch eine Faserzement-Fassade (Farbton ähnlich zu RAL 7015) mit vorgesetzten Holzlamellen geprägt. Die Lamellenstruktur gliedert das Gebäude und vereint die Funktionsbereiche. Außerdem ist die Fassade nachhaltig und stellt einen baulichen Vogel-Anprallschutz der Fensterflächen dar.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Des Weiteren ist aufgrund der vertikalen, feststehenden Lamellen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">durch die Verschattung der Fassade/Verglasungen ein positiver Effekt</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">hinsichtlich des sommerlichen Wärmeschutzes zu erwarten.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Als Sonnen- und Blendschutz werden außenliegende, raumweise</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">ansteuerbare Alulamellen in die Fassade integriert.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die eigentlichen Fassaden werden als vorgefertigte Holzrahmenelemente in den Rohbau / Holzbau eingestellt. Auf der Raumseite der</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Außenwandelemente wird eine Vorsatzschale zur Integration des</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Brüstungskanals (in Laboren ohne Kanal) hergestellt. Die ELT Anbindung erfolgt über die Decke und vor den Stützen in den</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Brüstungskanal.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Fenstereinteilung besteht in der Regel aus einem Nachtauskühlungsflügel, einer Festverglasung und einem Lüftungsflügel.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Fassade der zurückversetzten Technikzentrale wird als Metall-Sandwichpaneel-Fassade (Farbton ähnlich zu RAL 9006) ausgebildet.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Auf den West-, Süd- und Ostseiten der Technikzentralenfassade</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">werden zur Forschung Photovoltaikmodule installiert.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Ausbau</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Bis auf die Labor-Verfügungsflächen werden alle Bereiche aus schallschutztechnischen Gründen mit einem schwimmenden Bodenaufbau (im Bereich Foyer und Teeküchen als Heizestrich) ausgeführt. Zusätzlich werden die Holzdecken mit einer gebundenen Schüttung als Auflast beschwert. Konstruktiv verlaufen die Trennwände im Bürobereich nicht bis zur Oberkante der Rohdecke, sondern stehen auf dem Estrich auf.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Dachflächen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Dachflächen der Technikzentrale werden extensiv (Substrathöhe ca. 15cm) - in Teilen zu</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Forschungszwecken intensiv begrünt (Untersuchung der</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Auswirkungen auf die PV-Module, Substrathöhe ca. 25cm).</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die (Not-)Entwässerung erfolgt über eine Freispiegelentwässerung durch Ausbildung eines Gefälles (Gefälledämmung) in die Einlaufpunkte als innenliegende Entwässerung.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Im Bereich des Staffelgeschosses erfolgt die Entwässerung</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">außenliegend über in der Fassadenebene geführte Entwässerungsleitungen bzw. die Notentwässerung über Attikaspeier.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.1.4 Verkehrsverhältnisse auf der Baustelle, insbesondere Verkehrsbeschränkungen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Baustellenandienung erfolgt ausschließlich über die Baustellenzufahrt Magnusstraße. Die erforderlichen Schleppkurven sind eigenständig zu prüfen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Andienung des Neubaus erfolgt über die bestehenden befestigten Flächen aus Betonplatten sowie der anzulegenden Baustraße (s. Baustelleneinrichtungspläne)</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Parkplätze stehen auf dem Baustellengelände in begrenzter Anzahl zur Verfügung. Die Baustelle ist ausschließlich für Materialanlieferungen, zum Be- und Entladen sowie für Transporte zu befahren. Danach müssen Lieferfahrzeuge den Baustellenbereich verlassen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Privat-PKW dürfen nicht geparkt werden. Bei Be- und Entladevorgängen ist grundsätzlich der Motor abzustellen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.1.5 Für den Verkehr freizuhaltende Flächen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Alle Arbeiten, die das Risiko bergen, dass es zu Verkehrsbehinderungen im Bereich um die Baustelle kommen kann, wie z.B. Anlieferung Kran, Betonagearbeiten der Bodenplatte, sind so rechtzeitig anzuzeigen, dass die Abwicklung mit den Verantwortlichen im Vorfeld abgestimmt werden kann.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Außerhalb des ausgewiesenen Baugeländes dürfen weder Fahrzeuge abgestellt, noch andere Straßen oder Wege außer den oben beschriebenen Zufahrten ohne vorherige Genehmigung der Objektüberwachung des AG befahren werden. Dies gilt gleichermaßen für den öffentlichen Straßenraum sowie für die angrenzenden Grundstücke des HZB.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.1.6 Art, Lage, Maße und Nutzbarkeit von Transporteinrichtungen und Transportwegen, z. B. Montageöffnungen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Andienung des Neubaus erfolgt u.a. über die beschriebenen Leistungen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.1.7 Wasser, Energie und Abwasser</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Andienung des Neubaus erfolgt u.a. über die beschriebenen Leistungen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Leitungsführung der BE ist mit der Bauleitung des AG abzustimmen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Für die gesamte Bauzeit übernimmt der AG die innerhalb der Baustelle anfallenden Verbrauchskosten für Baustrom- und Bauwasser.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der Abgang für Baustrom und Bauwasser wird durch das HZB auf dem Institutsgelände zur Verfügung gestellt. Das Bauwasser kann auf dem Baufeld an zwei Entnahmestellen zwischen CatLab und Grundstückszaun mit zwei Abgängen mittelsDN32 Kugelhahn und Verteilerbalken entnommen werden.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.1.8 Für die Ausführung seiner Leistungen zur Benutzung oder Mitbenutzung überlassenen Flächen und Räume</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Baustelleneinrichtungsflächen und das Baufeld werden vollständig durch einen Bau- und Bestandszaun abgetrennt. Diese sind vom AN ständig geschlossen zu halten.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Während der gesamten Bauphase stehen dem AN keine Pausen-, Aufenthalts- oder Lagerräume innerhalb der Institutsgebäude zur Verfügung.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Baustellenzufahrten werden täglich nach Arbeitsende durch den Sicherheitsdienst des AG verschlossen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Vor Beginn der Arbeiten hat der AN dem Bauherren eine vollständige Liste seiner am Bau beteiligten Mitarbeiter inklusive Nennung eines Poliers zu übergeben.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Das Firmenlogo muss zur schnellen Zuordnung durch den Sicherheitsdienst sichtbar außen an der Kleidung getragen werden.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Alle für die Bauausführung notwendigen Gerätschaften, Fahrzeuge und Materialien dürfen ausschließlich innerhalb des Baufeldes gelagert und aufgestellt werden. Dies betrifft ebenso die notwendigen Containeranlagen. Außerhalb der ausgewiesenen BE-Fläche / Baufeld können keine Lagermöglichkeiten zur Verfügung gestellt werden. Lieferungen und Lagerungen sind auf diese Verhältnisse auszurichten.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Jegliche Art von Eigenwerbung, Firmenwerbung und Werbung im Allgemeinen ist untersagt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.1.9 Baustellenüberwachung</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Zur Dokumentation des Baufortschritts hat der Auftraggeber eine Webcam im Außenbereich angebracht. Die Webcam macht in periodischen Abständen Bildaufnahmen, jedoch keine Filmaufnahmen. Die Aufnahmen dienen zur Dokumentation der gesamten Bauzeit.</span></p>
+    </DetailAddText>
+   </AddText>
+   <AddText>
+    <OutlineAddText>
+     <p>
+      <span>0.2 Angaben zur Ausführung</span>
+     </p>
+    </OutlineAddText>
+    <DetailAddText>
+     <p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.1 Vorgesehene Arbeitsabschnitte, Abhängigkeit von Leistungen anderer</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Vor Aufnahme der Arbeiten ist es für jeden Unternehmer verpflichtend ein Baustartgespräch mit der Bauleitung des AG zu führen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Durch die Bauüberwachung des Auftraggebers werden wöchentlich, bei Bedarf aber auch öfter, zu einem mit dem Auftragnehmer abzustimmenden regelmäßigen Termin ("jour fixe") Baubesprechungen durchgeführt. Der Auftragnehmer ist verpflichtet, an diesen Baubesprechungen durch rechtsgeschäftlich für den Auftragnehmer vertretungsbefugte Mitglieder der Technischen Aufsicht teilzunehmen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der Auftragnehmer ist verpflichtet, für die gesamte Dauer seiner Tätigkeit auf der Baustelle eine der Art und dem Umfang seines Leistungsbereiches entsprechende sachverständige und deutschsprachige technische Aufsicht (Bauleiter, Montageleiter, Polier) zu stellen. Der verantwortliche Bauleiter ist schriftlich zu benennen und muss während der Arbeitszeit ständig verfügbar sein.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Das notwendige Planmaterial wird dem AN in digitaler Form auf einem gemeinsamen Planserver zur Verfügung gestellt. Die Nutzung sowie Kontrolle des aktuellen Planungsstandes sind verpflichtend. Kosten für Papierabzüge werden durch den AN getragen und sind entsprechend zu kalkulieren. Eine Übergabe in Papierform erfolgt nicht.</span><br/><span style="font-size:medium;">Der AN hat das zur Verfügung gestellte Planmaterial auf Vollständigkeit und dahingehend zu überprüfen, ob dieses eine geeignete Grundlage für die Ausführung der der Ausschreibung zugrunde liegenden Leistungen ist.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Es ist mit geschoss- und abschnittsweise unterteilter Leistungserbringung zu rechnen. Zudem sind technologische Abhängigkeiten zu anderen Gewerken und Festlegungen der Objektüberwachung des AG zu beachten. Dies kann zu in Abschnitte unterteilter Erbringung von in einer Position beschriebenen Leistungen führen (z.B. Herstellen der Unterkonstruktion, der Grundkonstruktion und von Anschlüssen an andere Bauteile jeweils in eigener Zeitfolge).</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Werden aufgrund von Ablaufplanungen des AN oder verspäteten Lieferungen Leistungsteile nach Abbau der Gerüste eingebaut, so sind für diese Leistungen Gerüste einzukalkulieren. Leistungen, die planmäßig nach dem Abbau der Gerüste zu erbringen sind, sind in den Positionstexten gesondert beschrieben.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Zeitpunkt und Umfang von einzelnen Teilleistungen sind mit der örtlichen Objektüberwachung abzustimmen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Benutzung der Baustraße sowie des Wertstoffhofes erfolgt gemeinsam mit der Baustelle des VTII. Gleiches gilt für die Abgänge von Bauwasser, Baustrom und die Containeranlage einschließlich der sanitären Anlagen. Bei der Koordination der gemeinsamen Nutzung ist stets eine lösungsorientiertes Handeln gefordert. Im Falle eines Konfliktes sind die Bauleitungen der verschiedenen Bauvorhaben hinzuzuziehen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der AN erhält zur weiteren Klärung der Abläufe auf der Baustelle ein Baulogistikhandbuch.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.2 Besondere Erschwernisse während der Ausführung</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Bei allen Bohrungen in Decken ist mit Behinderungen aufgrund des Bewehrungsgrades zu rechnen. Randabstände sind so vorzusehen, dass Abplatzungen ausgeschlossen sind.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Bohrungen im Bereich der der Labordecken sind nur nach Absprache in bestimmten Bereichen zulässig und bedürfen einer Freigabe durch die Bauleitung.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Zusätzlich sind geeignete Bohrverfahren (Feinschlagwerkmaschinen, Bohrfräser etc.) zu verwenden. Die Notwendigkeit von zusätzlichen, nicht geplanten, Kernbohrungen ist immer bei der Bauleitung des AG anzumelden. Kernbohrungen dürfen erst nach schriftlicher Freigabe ausgeführt werden. Eine Bearbeitungszeit von drei Werktagen für eine Genehmigung ist einzukalkulieren.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Heißarbeiten / Arbeiten mit Feuer /Trennschneidearbeiten dürfen im Baustellenbereich nur nach vorheriger Anmeldung (Schweißerlaubnisschein) beim AG, bzw. dessen Vertreter, erfolgen. Für Trennschneide- und Schweißarbeiten ist in der Regel ein umlaufend geschützter Arbeitsplatz einzurichten. Sofern Arbeiten nicht innerhalb eines solchen geschützten Bereichs ausgeführt werden können, sind Bauteile im umliegenden Bereich zu schützen. Es wird explizit auf den dabei notwendigen Schutz von Glasflächen hingewiesen. Einbrandschäden an Gläsern bedingen den Austausch zu Lasten des Verursachers.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die vorab beschriebenen Arbeiten dürfen aus Gründen des Brandschutzes nicht im Bereich des hölzernen Rohbaus ausgeführt werden. Es ist darauf zu achten, dass tragende Elemente aus Holz nur in der Deckenuntersicht sichtig verbaut sind.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.3 Vorgaben, die sich aus dem SiGe-Plan gemäß Baustellenverordnung ergeben</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Baumaßnahme unterliegt den Bestimmungen der Baustellenverordnung (BaustellV) vom 10. Juni 1998. Der AG hat einen SiGe-Koordinator beauftragt, der die Pflichten und Aufgaben des AG im Rahmen der BaustellV für den AG wahrnimmt. Die Verpflichtung des AN bezüglich des Sicherheits- und Gesundheitsschutzes bleiben hiervon unberührt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.4 Art und Umfang von Leistungen zur Unfallverhütung und zum Gesundheitsschutz</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">für Mitarbeiter anderer Unternehmen, z. B. trittsichere Abdeckungen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Alle Arbeiten sind generell so auszuführen, dass andere am Bau Beteiligte, auch die der benachbarten Baustelle des VTII nicht gestört oder in ihren Arbeiten behindert werden. Des Weiteren ist dafür Sorge zu tragen, dass die verbauten Materialien und (Ein-) Bauteile keine Gefahr darstellen. Es ist in diesem Zusammenhang für eine entsprechende Sicherung oder Abdeckung zu sorgen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.6 Besondere Anforderungen an die Baustelleneinrichtung</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Umfangreiche Anlieferungen und Großtransporte des AN sind beim AG in der Baubesprechung der vorhergehenden Woche anzumelden, mindestens jedoch mit 7 Tagen Vorlauf. Bei Sondertransporten ist ggf. auch auf die Nachtstunden auszuweichen. Entsprechende Genehmigungen sind im Vorfeld einzuholen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.7 Besondere Anforderungen an das Auf- und Abbauen sowie Vorhalten von Gerüsten.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Im Fall einer Kollision von Vorhaltezeit und abgesprochenem Zeitraum der Mitbenutzung eines Gerüstes durch andere Unternehmen ist vom Abbau abzusehen und die Bauleitung zur Koordination und Klärung heranzuziehen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.8 Mitbenutzung fremder Gerüste, Hebezeuge und Einrichtungen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Mitbenutzung von Fördereinrichtungen und sonstigen Hilfsmitteln anderer Unternehmer</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">ist vom Auftragnehmer mit diesen direkt zu vereinbaren.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Jeder Unternehmer, der Gerüste oder Teilbereiche benutzen lässt, trägt Verantwortung dafür, dass sich diese in einem ordnungsgemäßen Zustand befinden. Erfolgt die Gerüstbenutzung nicht unmittelbar nach der Prüfung und Freigabe durch den Gerüsthersteller, so hat er das Gerüst vor der ersten Benutzung auf dessen sichere Funktion durch eine befähigte Person noch einmal überprüfen zu lassen. Diese Überprüfung ist zu dokumentieren. Werden dabei Mängel festgestellt, so ist der AG, Bauleitung oder SiGeKo sofort zu informieren.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.12 Besondere Anforderungen an Art, Güte und Umweltverträglichkeit der Stoffe</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">und Bauteile, auch z. B. an die schnelle biologische Abbaubarkeit von Hilfsstoffen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Anforderungen an die zu verarbeitenden Baustoffe sind in den an das Leistungsverzeichnis angehängten Leitfäden des BNB dokumentiert und entsprechend zu erbringen und einzuhalten</span><span style="font-style:italic;">.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.13 Art und Umfang der vom Auftraggeber verlangten Eignungs- und Gütenachweise sowie mitgeltende Normen und Regeln</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der Nachweis darüber, dass sämtliche angebotenen Konstruktionen den, in der Leistungsbeschreibung definierten, notwendigen Leistungsmerkmalen entsprechen, ist über Vorlage bauaufsichtlicher Verwendbarkeitsnachweise entsprechend der zum Zeitpunkt der Abnahme der Leistung geltenden Gesetzeslage und Rechtsprechung zu führen. In diesem Zusammenhang sind insbesondere die Übergangsregelungen zur Bauproduktenverordnung (BauPVO) zu berücksichtigen. Spätestens 14 Tage nach Beauftragung sind für alle zur Ausführung kommenden Stoffe und Bauteile die Werksgarantien und Lieferscheine und Verarbeitungsrichtlinien der Hersteller sowie die notwendigen gültigen bauaufsichtlichen Zulassungen, Prüfbescheide, Nachweise zum Brandverhalten und sonstige erforderliche Qualitätsnachweise vorzulegen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die tatsächliche Ausführung der Konstruktion muss den Zulassungsbescheiden bzw. Prüfzeugnissen und den entsprechenden Vorschriften sowie a.R.d.T. der Herstellerwerke entsprechen; der AN haftet uneingeschränkt für die Einhaltung der geforderten Eigenschaften. Alle Prüfzeugnisse, Zulassungen, Errichtererklärungen, usw. sind vor der Ausführung vom AN, entsprechend der AG-Strukturvorgabe, auf den Projektserver des AG zu laden.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Freigabe der Bauleitung entbindet den AN nicht von seiner Verantwortung, zugelassene, geeignete und vertragskonforme Produkte bzw. Verfahren einzusetzen. Ohne Bestätigung durch den AG, vertreten durch die örtliche Bauleitung, dürfen entsprechende Arbeiten nicht begonnen werden. Für einen daraus resultierenden Rückbau und seine Folgen haftet der AN.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Anforderungen an die Dokumentation der zu verarbeitenden Baustoffe sind in den an das Leistungsverzeichnis angehängten Leitfäden des BNB dokumentiert.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.15 Art, Zusammensetzung und Menge der aus dem Bereich des Auftraggebers zu</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">entsorgenden Böden, Stoffe und Bauteile; Art der Verwertung oder bei Abfall die</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Entsorgungsanlage; Anforderungen an die Nachweise über Transporte, Entsorgung und</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">die vom Auftraggeber zu tragenden Entsorgungskosten.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Vorgaben des Kreislaufwirtschaftsgesetz (KrWG) in Verbindung mit dem Gewerbeabfallverordnung (GewAbfV) sind einzuhalten.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Entsorgung auf der Baustelle darf nur auf dem zentralen Wertstoffhof sortenrein und innerhalb der Öffnungszeiten erfolgen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.17 Geräte und Personal zum Abladen, Lagern und Transport von Stoffen und</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Bauteilen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Vom Auftraggeber werden keine Geräte oder Arbeitskräfte für das Abladen, Lagern oder den Transport von Stoffen oder Bauteilen zur Verfügung gestellt</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.2.22 Abrechnung nach bestimmten Zeichnungen oder Tabellen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Abrechnung hat auf Grundlage der übergebenen Pläne bzw. Aufmaßen vor Ort zu erfolgen. Die Vertretung des AG behält sich grundsätzlich vor ein gemeinsames Aufmaß einzufordern.</span></p>
+    </DetailAddText>
+   </AddText>
+   <AddText>
+    <OutlineAddText>
+     <p>
+      <span>0.3 Ergänzende Angaben zur Ausführung</span>
+     </p>
+    </OutlineAddText>
+    <DetailAddText>
+     <p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.3.1 Allgemein</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Alle Leistungspositionen enthalten, sofern nicht ausdrücklich etwas anderes angegeben ist, grundsätzlich auch die Lieferung bzw. Bereitstellung und Vorhaltung der zur vertragsgemäßen Ausführung erforderlichen Stoffe, Materialien und (Ein-) Bauteile frei Verwendungsstelle und die Abfuhr sowie die ordnungsgemäße Entsorgung aller durch die Leistungserfüllung nicht in das Eigentum des Auftraggebers übergehenden Teile einschl. der anfallenden Lade- und Lagerleistungen, Nebenarbeiten und Nebenleistungen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Bei Havariefällen von Bauwasser, Baustrom, Bauabwasser muss an Werktagen Montag-Freitag von 07:00-16:00 innerhalb von 3h ein Mitarbeiter der Baulogistik zur Beseitigung etwaiger Störungen und Instandsetzung auf der Baustelle verfügbar sein. Werkstags außerhalb der Arbeitszeiten sowie an Wochenenden und Feiertagen beträgt die maximale Zugriffszeit 6 Stunden.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Havariefälle sind umgehend dem zuständigen Mitarbeiter der Baustellenlogistik und der Bauleitung zu melden.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.3.2 Geräte</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Bei Betrieb von Verbrennungsmotoren und Maschinenbetrieb sind Maßnahmen zu treffen, die das Versickern von Öl und Treibstoffen in den Untergrund zuverlässig verhindern. Der Aufwand hierzu ist in die entsprechenden Einheitspreise einzurechnen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die vom AN bereitgestellten Geräte müssen in ihren Abmessungen und der Leistungsfähigkeit den örtlichen Gegebenheiten und der Geologie Rechnung tragen. Entsprechen die Geräte nicht den Anforderungen oder fallen sie aus, so sind sie durch den AN kostenfrei auszutauschen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.3.3 vorhandene Leitungsanlagen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die im Aushubbereich von Kabelgräben u.ä. befindlichen Anlagen werden vor Beginn der Aushubarbeiten soweit bekannt, erforderlich und möglich umverlegt oder stillgelegt und freigemeldet. Das Vorhandensein weiterer Anlagen kann jedoch nicht gänzlich ausgeschlossen werden. Das Auffinden oder die Beschädigung von Leitungen, bei denen Zweifel an deren Stilllegung besteht, sind umgehend zu melden. Die außerhalb der Aushubbereiche befindlichen Anlagen bleiben tlw. während der Bauzeit in Betrieb. Baustelleneinrichtungen auf Schächten sind daher nicht zulässig.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.3.4 Vermessungsleistungen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Von Bauherrenseite wird ein Vermessungsbüro mit folgenden Leistungen beauftragt:</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Grobabsteckung des Gebäudes</span></li>
+<li><span style="font-size:medium;">Herstellen von Höhenfestpunkten auf dem Baufeld</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.3.5 Toleranzen</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Für den Ausgleich von Bauunebenheiten im Rahmen der zulässigen Toleranzen erfolgt kein Zuschlag.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.3.6 Planungs- und Fertigungsunterlagen des AN</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Vom Auftragnehmer geforderte Fertigungsunterlagen und Werkstattzeichnungen sind so rechtzeitig anzufertigen, dass auch bei evtl. notwendiger technischer Klärung die Materialien rechtzeitig bestellt werden können. Der Zeitraum für die Durchsicht der Unterlagen des AN durch den AG beträgt, sofern in der jeweiligen Position nichts Abweichendes angegeben ist, 2 Wochen. Es darf nur nach zur Ausführung zugestimmten und entsprechend gekennzeichneten Plänen gearbeitet werden. Diese Zustimmung stellt keine Prüfungs- und Freigabeerklärung des AG dar. Aus den Zeichnungen müssen alle zur Beurteilung der Konstruktion notwendigen Einzelheiten wie z.B. Anschlüsse an das Bauwerk, usw. klar hervorgehen. Statisch relevante Werkstattzeichnungen sind durch den AN dem Prüfingenieur (2-fach als Papierpause) zur Prüfung und Freigabe vorzulegen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Alle vorgenannten Planungs- und Fertigungsunterlagen des AN, sowie Prüfzeugnisse, Zulassungen, Errichtererklärungen, usw. sind vor der Ausführung vom AN, entsprechend der AG-Strukturvorgabe, auf den AG-Server zu laden</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Sämtliche Planunterlagen werden digital über das Serversystem des AG zur Verfügung gestellt. Die Versorgung mit aktuellem Planmaterial vom Server ist Sache des AN.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.3.7 Mangelaufnahme und -verfolgung</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Durch die Objektüberwachung wird in der Leistungsphase 8 (Bauüberwachung) die Aufnahme von Aufgaben/ Mängeln und die Verfolgung der Bearbeitung und Erledigung von Aufgaben/ Mängeln über das so genannte PlanRadar-System abgewickelt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Für dieses digitale System hat die Objektüberwachung die Lizenz für das Bauvorhaben erworben. Der AN erhält per E-Mail eine Einladung, um in das PlanRadar-System aufgenommen zu werden. Dazu ist es lediglich erforderlich, einen verantwortlichen Bauleiter/ Polier des AN mit der entsprechenden E-Mail-Adresse zu benennen. Aufgaben/ Mängel werden so schon während der Bauphase unkompliziert und z.B. mit Verortung im Gebäudeplan angezeigt.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die Teilnahme an dem digitalen Bearbeitungssystem ist für den AN kostenlos und über mobile Endgeräte sowie Computer möglich. Bei Bedarf erfolgt eine kurze Einweisung.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der Vorteil für alle am System integrierten Beteiligten liegt in der schnellen Kommunikation, Übersichtlichkeit und Zeitersparnis bei der Bearbeitung der Aufgaben/ Mängel</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Der AN ist mit Auftragsannahme verpflichtet, die ihn betreffenden Aufgaben/Mängel im System zu bearbeiten. Hierzu gehören u.a.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Ändern des Bearbeitungsstatus (in Bearbeitung, Erledigt, Rückfrage, Abgelehnt)</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Dokumentation (z.B. Foto über abgestellten Mangel)</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">0.3.8 Abrechnungseinheiten</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Außer den vollen Monaten werden Teilzeiten nach Tagen zu 1/30 des Einheitspreises abgerechnet.</span></p>
+    </DetailAddText>
+   </AddText>
+   <AddText>
+    <OutlineAddText>
+     <p>
+      <span>Vorbemerkungen BNB</span>
+     </p>
+    </OutlineAddText>
+    <DetailAddText>
+     <p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Allgemeine Vorbemerkungen</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Das Projekt wird nach dem Standard des Bewertungssystems Nachhaltiges Bauen für Bundesgebäude (BNB) bearbeitet. Es wird der Silber Standard angestrebt.</span></li>
+<li><span style="font-size:medium;">Der Auftragnehmer verpflichtet sich zur Mitwirkung, um die umschriebe­nen BNB-Qualitätsanforderungen einzuhalten und die nötigen Informationen und Dokumentationen zur Verfügung zu stellen.</span></li>
+<li><span style="font-size:medium;">Die Erfüllung der Nachhaltigkeitsanforderungen ist verbindlich.</span></li>
+<li><span style="font-size:medium;">Die original Kriterien des BNB sind unter </span><span style="text-decoration:underline;">www.bnb-nachhaltigesbauen.de (www.bnb-nachhaltigesbauen.de)</span><span> verbindliche Rechtsgrundlage.</span></li>
+<li><span style="font-size:medium;">Der AN ist verpflichtet seine Mitarbeiter im Rahmen einer Schulung nachweislich auf die besonderen Anforderungen der BNB Zertifizierung im Silber Standard hinzuweisen. Die Teilnahme an dieser Schulung ist für jeden der angemeldeten Mitarbeiter verpflichtend. Die Teilnahme an der Schulung muss über das bereit gestellte Formular von jedem Mitarbeiter per Unterschrift bestätigt werden.</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Auswahl von Bauprodukten</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Zur Erreichung der Qualitäten muss der AN bei seiner Produktauswahl ein möglichst geringes Risiko für die lokale Umwelt berücksichtigen. Ziel ist die Vermeidung von Umweltgefährdungen durch Inhaltsstoffe, welche bei Einbau, Nutzung, Reparatur und Entsorgung dieser Produkte entstehen. Bauprodukte sollen bei der Verarbeitung, Nutzung und im Fall eines möglichen Rückbaus emissionsarm und geruchsfrei sein.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Um die Anforderungen an die Gesundheit und Umweltverträglichkeit der verwendeten Bauprodukte zu erfüllen, dürfen keine Bauprodukte verwendet werden, die das Qualitätsniveau 4 (QN4) der Anlage 1 BNB_BN2015_1.1.6 nicht einhalten.</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Besonderes Augenmerk liegt auf Schadstoffen wie:</span></li>
+<li><span style="font-size:medium;">gefährliche und besonders besorgniserregende Stoffe (SVHC)</span></li>
+<li><span style="font-size:medium;">gefährliche Stoffe, die ausgelaugt werden können</span></li>
+<li><span style="font-size:medium;">Schwermetalle</span></li>
+<li><span style="font-size:medium;">Flüchtige organische Verbindungen (VOC) inkl. organische Lösemittel</span></li>
+<li><span style="font-size:medium;">Halogenierte Kälte- und Treibmittel</span></li>
+<li><span style="font-size:medium;">Biozide</span></li>
+<li><span style="font-size:medium;">Bevorzugt zu verwenden sind Materialien mit</span></li>
+<li><span style="font-size:medium;">Umweltsiegel "Blauer Engel" (RAL) oder andere Produktkennzeichnungen wie z.B. GuT Teppichsiegel</span></li>
+<li><span style="font-size:medium;">GISCODEs-Kennzeichnung mit Produktinformation für Bauproduktgruppen gemäß GISBAU</span></li>
+<li><span style="font-size:medium;">EMICODE EC1 / EC1Plus für Verlegewerkstoffe, Oberflächenbeschichtung etc.</span></li>
+<li><span style="font-size:medium;">freiwilliger Umwelt- und Produktdeklaration (EPD), die Aussagen zu SVHC enthalten, Nachweis über die allgemeine bauaufsichtliche Zulassung (abZ), die bestimmte gefährliche Stoffe ausschließt oder begrenzt.</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;">Um die Förderung der nachhaltigen Gewinnung von Materialien sowie die Förderung der Biodiversität zu unterstützen</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Die Verwendung von Holzprodukten aus nachhaltiger Forstwirtschaft ist durch Vorlage eines anerkannten Zertifikates und des zugehörigen CoC-Zertifikates nachzuweisen.</span></li>
+<li><span style="font-size:medium;">Beispiele für Zertifikate</span></li>
+<li><span style="font-size:medium;">PEFC (Programme for the Endorsement of Forest Certification Schemes)</span></li>
+<li><span style="font-size:medium;">FSC (Forest Stewardship Council)</span></li>
+<li><span style="font-size:medium;">vergleichbare Zertifikate oder Einzelnachweise bei erbrachtem Nachweis, dass die für das jeweilige Herkunftsland geltenden Kriterien des FSC oder PEFC erfüllt werden.</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;">Bei der Kalkulation des Gesamtpreises sind Mögliche Mehrkosten durch die Einhaltung der BNB-Kriterien mit einzubeziehen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Dokumentation, Nachweis und Freigabe</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Der AN hat alle verwendeten Baustoffe und Produkte zu dokumentieren und speziell die Erfüllung der BNB-Produktanforderungen durch entsprechende Nachweise zu belegen.</span></li>
+<li><span style="font-size:medium;">Zum Einsatz auf der Baustelle sind nur deklarierte und den Anforderungen entsprechende Baustoffe zugelassen.</span></li>
+<li><span style="font-size:medium;">Für Abweichungen von Produkten oder Produktänderungen ist ein Nachweis der Gleichwertigkeit und Erfüllung der BNB-Anforderungen erforderlich [Über die Gleichwertigkeit im Sinne der Anforderungen nach BNB entscheidet ausschließlich der BNB-Koordinator des AG].</span></li>
+<li><span style="font-size:medium;">Es liegt in der Verantwortung des AN alle relevanten Bauprodukte vorzugsweise vor der Materialbestellung auf die Anforderungen gemäß Anlage 1 BNB_BN2015_1.1.6, die Anforderungen bzgl. BN B_LN2020 1.1. 7, Nachhaltige Materialgewinnung und die Anforderungen bzgl. BNB_LN2020 3.1.8, zu prüfen.</span></li>
+<li><span style="font-size:medium;">Die Verarbeitung des Produktes darf nur stattfinden, wenn die geforderte Dokumentation vorliegt und die Bauprodukte dem geforderten Qualitätsniveau entsprechen. </span><br/><span style="font-size:medium;">Die Verantwortung dafür liegt bei dem AN.</span></li>
+<li><span style="font-size:medium;">Alle Bauprodukte sind ausschließlich in durch den BNB-Koordinator bereitgestellten, digital auszufüllenden Excel-Tabelle per E-Mail an den AG bzw. an den vom AG beauftragten BNB-Koordinator zu senden. Die Tabelle darf nicht handschriftlich ausgefüllt werden. Weiterhin sind die geforderten Nachweise im PDF-Format (Benennung nach Vorgabe BNB-Koordinator) beim vom AG beauftragten BNB-Koordinator einzureichen.</span></li>
+<li><span style="font-size:medium;">Der BNB-Koordinator wird die Bauprodukte und Nachweisführung stichprobenartig zu prüfen. Hierfür hat der AN die im vorigen Punkt genannten Dokumentation vorzugsweise vor der Materialbestellung, spätestens jedoch 15 Arbeitstage vor Beginn der Verarbeitung an den AG/BNB-Koordinator zu erbringen.</span></li>
+<li><span style="font-size:medium;">Der Nachweis zur Mitarbeiterschulung ist von den einzelnen Teilnehmern unterschrieben in ausgedruckter Form zusammen mit der übrigen Dokumentation 15 Arbeitstage vor Aufnahme der Arbeiten einzureichen</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Auslüften / Rauchverbot</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Aufgrund der an die Fertigstellung anschließenden Raumluftmessung im Rahmen der BNB Zertifizierung sind folgende Maßnahmen zur Sicherung der Raumluftqualität unbedingt und verpflichtend einzuhalten:</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Auslüftungszeit: Emissionen aus den Baumaterialien und Reinigungsmitteln sind während des Ausbauens auszulüften.</span></li>
+<li><span style="font-size:medium;">mindestens 3x täglich Stoßlüften</span></li>
+<li><span style="font-size:medium;">keine Auskühlung durch Dauerlüften der Räume</span></li>
+<li><span style="font-size:medium;">keine Kippfenster</span></li>
+<li><span style="font-size:medium;">Der AN wird gebeten, während der gesamten Ausführung jeweils 15 Minuten quer zu lüften, z.B.:</span></li>
+<li><span style="font-size:medium;">1. vor Arbeitsbeginn, täglich</span></li>
+<li><span style="font-size:medium;">2. täglich nach der Mittagspause</span></li>
+<li><span style="font-size:medium;">3. vor Arbeitsende, täglich</span></li>
+</ol><p style="margin-left:1.38in;text-indent:-0.19in;"><span style="font-size:medium;">&#160;- Kontrolle durch AN / Bauleitung, z.B. gesamter Ausbauzeitraum / Lüftungszeiten protokollieren</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Im ganzen Haus wird nicht geraucht</span></li>
+<li><span style="font-size:medium;">Verbotsschilder für das Rauchen sind aufzuhängen.</span></li>
+<li><span style="font-size:medium;">Ausführende sind auf die Konsequenzen eines Verstoßes zu informieren </span><br/><span style="font-size:medium;">(Zigaretten enthalten Formaldehyd, nach Fertigstellung des Bauwerks wird auf </span><br/><span style="font-size:medium;">TVOC und Formaldehyd gemessen]</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;">Überschreitet der TVOC Gehalt eine Konzentration von 3mg/m³ bzw. der Formaldehydgehalt eine Konzentration von 0,10mg/m³ wird das Gebäude als hygienisch bedenklich eingestuft. Es entspricht somit nicht den geforderten Kriterien des BNB zur Zertifizierung. Es muss daher allen Planungs- und Bauausführungsbeauftragten bewusst sein, dass die Anforderungen der Emissionsbegrenzung bei TVOC und Formaldehyd grundsätzlich geprüft wird und Abweichungen von der Zielvorgabe zu erheblichen Schäden führen können. Bei unerwarteten Messergebnissen und Abweichung der verwendeten und freigegebenen Materialien von dem im Leistungsverzeichnisbeschriebenen Anforderungen werden die Verursacher ermittelt und zur Rechenschaft gezogen.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Rückbaufähigkeit</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Bei der Auswahl ist eine Recycling- und Demontagefreundlichkeit der Bauteile zu berücksichtigen. Falls der AN für einzelne Spezialprodukte die Einhaltung der Anforderung nicht eindeutig erkennen kann, so hat der gemäß seiner Hinweispflicht darauf aufmerksam zu machen. Auf diese Hinweise können Produktempfehlungen gewerkebezogen beigestellt werden.</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Die bauliche Substanz (KG300) ist mit Hinblick auf die Rückbaufähigkeit, Sortenreinheit und Verwertbarkeit auszuwählen. Die folgenden Punkte müssen hierfür berücksichtigt werden:</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Verwendung von recyclingfähigen Baustoffen und Bauteilen Einsatz abfallarmer Konstruktionen, die die Möglichkeit eines sortenreinen Rückbaus erlauben</span></li>
+<li><span style="font-size:medium;">Wiederverwendung von Bauteilen und Einbauten sowie die Verwendung von Recycling-Baustoffen</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Umweltverträglichkeit der Baustelle</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Um die Umweltverträglichkeit der Baustelle sicherzustellen sind die folgenden vier Anforderungen an die Baustelle gewerkübergreifend zu berücksichtigen:</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">1.Wertstoffoptimierte Baustelle</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Die gesetzlichen Vorschriften sind zu erfüllen. Gemäß dem des Kreislaufwirtschafts- und Abfallgesetz sollen Abfälle vermieden und erst in zweiter Linie verwertet werden.</span></li>
+<li><span style="font-size:medium;">Es muss der Trennung von Abfällen auf dem zentralen Wertstoffhof der Baustelle nachgekommen werden.</span></li>
+<li><span style="font-size:medium;">Die Baustoffe werden mindestens getrennt in:</span></li>
+<li><span style="font-size:medium;">Mineralische Abfälle</span></li>
+<li><span style="font-size:medium;">Wertstoffe</span></li>
+<li><span style="font-size:medium;">Gemischte Baustellenstoffe</span></li>
+<li><span style="font-size:medium;">Gefahrenstoffe</span></li>
+<li><span style="font-size:medium;">bei Bestandsmaßnahmen: asbesthaltige Stoffe</span></li>
+<li><span style="font-size:medium;">Durch den AN</span><span style="font-weight:bold;"> </span><span>wird die Einhaltung der Materialtrennung und die korrekte Nutzung &#160;</span><br/><span style="font-size:medium;">&#160;der zentralen Sammelstellen kontrolliert.</span></li>
+<li><span style="font-size:medium;">Die Umsetzung der beschriebenen Anforderung ist durch den AN zu dokumentieren </span><br/><span style="font-size:medium;">und mit Fertigstellung der Arbeiten zu bestätigen.</span></li>
+<li><span style="font-size:medium;">Dokumentationsanforderung: Auszüge aus Unterlagen, die die Kontrolle der </span><br/><span style="font-size:medium;">entsprechenden Abfallentsorgung nachweisen wie z. B. Bautagebuch, Baufotos, </span><br/><span style="font-size:medium;">Schriftverkehr Bauleitung/ausführendes Unternehmen</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;">2.Lärmarme Baustelle</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Nach dem Bundes-Immissionsschutzgesetz soll jede Baustelle so geplant, eingerichtet und betrieben werden, dass Geräusche verhindert werden, die nach dem Stand der Technik vermeidbar sind. Es müssen Vorkehrungen getroffen werden, welche die Ausbreitung unvermeidbarer Geräusche von Baustellen auf ein Mindestmaß reduzieren.</span></li>
+<li><span style="font-size:medium;">Gesetzliche Vorschriften [siehe auch BNB_LN2020_5.2.1] sind einzuhalten.</span></li>
+<li><span style="font-size:medium;">Dokumentationsanforderung: Auszüge aus entsprechenden Textstellen der Ausschreibungsunterlagen bzgl. Integration der Anforderungen an den Lärmschutz zur Einhaltung der gesetzlichen Vorschriften in Nachunternehmerausschreibungsunterlagen und/oder der Baustellenordnung</span></li>
+<li><span style="font-size:medium;">keine Wochenendarbeit</span></li>
+<li><span style="font-size:medium;">Fotos Lärmschutzmaßnahme</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;">3.Staubarme Baustelle</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Staubentwicklung ist möglichst zu verhindern oder möglichst geringzuhalten.</span></li>
+<li><span style="font-size:medium;">Auf den Schutz von Beschäftigen, anderen beteiligten Personen und der Umwelt ist zu achten.</span></li>
+<li><span style="font-size:medium;">Gesetzliche Vorschriften [siehe auch BNB_LN2020_5.2.1] sind einzuhalten.</span></li>
+<li><span style="font-size:medium;">Maschinen und Geräte sind mit einer wirksamen Absaugung zu versehen, Stäube sind an der Entstehungsstelle möglichst vollständig zu erfassen und gefahrlos zu entsorgen.</span></li>
+<li><span style="font-size:medium;">Die Ausbreitung des Staubs auf unbelastete Arbeitsbereiche wird, soweit technisch möglich, verhindert. Ablagerungen sind zu vermeiden.</span></li>
+<li><span style="font-size:medium;">Zur Beseitigung müssen Feucht- bzw. Nassverfahren oder saugende Verfahren durchgeführt werden. Einrichtungen zum Abscheiden, Erfassen von Stäuben müssen dem Stand der Technik entsprechen.</span></li>
+<li><span style="font-size:medium;">Der AN muss dafür sorgen, dass die Einrichtungen regelmäßig gewartet und geprüft werden und dokumentiert dies.</span></li>
+<li><span style="font-size:medium;">Dokumentationsanforderung: Auszüge aus den entsprechenden Textstellen der Ausschreibungsunterlagen bzgl. Integration der Anforderungen zum Staubschutz in Nachunternehmerausschreibungsunterlagen und /oder der Baustellenordnung</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;">4.Umweltschutz auf der Baustelle</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Gesetzliche Vorschriften [siehe auch BNB_LN2020 5.2.1] sind einzuhalten.</span></li>
+<li><span style="font-size:medium;">Boden, Vegetation und Grundwasser müssen vor chemischen Verunreinigungen geschützt werden.</span></li>
+<li><span style="font-size:medium;">Es wird sichergestellt, dass keine Stoffe der unterhalt aufgeführten H-Sätze mit der Umwelt in Kontakt kommen:</span></li>
+<li><span style="font-size:medium;">H400 Sehr giftig für Wasserorganismen</span></li>
+<li><span style="font-size:medium;">H410 Sehr giftig für Wasserorganismen mit langfristiger Wirkung</span></li>
+<li><span style="font-size:medium;">H411 Giftig für Wasserorganismen, mit langfristiger Wirkung</span></li>
+<li><span style="font-size:medium;">H412 Schädlich für Wasserorganismen, mit langfristiger Wirkung</span></li>
+<li><span style="font-size:medium;">H413 Kann für Wasserorganismen schädlich sein, mit langfristiger Wirkung</span></li>
+<li><span style="font-size:medium;">H420 Schädigt die öffentliche Gesundheit und die Umwelt durch Ozonabbau in der äußeren Atmosphäre</span></li>
+<li><span style="font-size:medium;">Es ist sicherzustellen, dass mit dem Gefahrensymbol Umweltgefährlich gekennzeichnete Stoffe nicht in Kontakt mit der Umwelt kommen.</span></li>
+<li><span style="font-size:medium;">Die Ausschreibungs- und Angebotsunterlagen bzgl. der Beauftragung von Nachunternehmern berücksichtigen den Bodenschutz ausdrücklich.</span></li>
+<li><span style="font-size:medium;">Kontaminierte Böden sind getrennt zu behandeln, so dass anderer Boden durch diesen nicht chemisch verunreinigt wird. Die Bundesbodenschutz- und Altlastenverordnung ist einzuhalten.</span></li>
+<li><span style="font-size:medium;">Durch eine Dokumentation des AN ist der Bodenschutz während der Bauphase zu bestätigen.</span></li>
+<li><span style="font-size:medium;">Dokumentationsanforderung: Auszüge aus entsprechenden Textstellen der Ausschreibungsunterlagen bzgl. Integration der Anforderungen zum Bodenschutz in Nachunternehmerausschreibungsunterlagen und/oder der Baustellenordnung; Auszüge aus Unterlagen, die die Kontrolle des Umgangs mit dem Bodenschutz bezgl. ehern. Verunreinigungen nachweisen, insbesondere durch Stoffe, die mit den benannten H-Sätze gekennzeichnet sind [z.B. Auszüge aus Bautagebuch, Baufotos].</span></li>
+</ol><p style="margin-left:0.97in;"><span style="font-size:medium;font-weight:bold;">Qualitätssicherung der Bauausführung</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Die verwendeten/ eingebauten Materialien wurden durch den AN dokumentiert.</span></li>
+<li><span style="font-size:medium;">Es liegen mind. für die in Kriterium 1.1.6 dokumentierten Materialien Sicherheitsdatenblätter und /oder alternative / zusätzliche Produktbeschreibungen (z.B. Labormessergebnisse, Produktdeklarationen, Produktdatenblätter) vor.</span></li>
+<li><span style="font-size:medium;">Dokumentationsanforderung: Auszüge aus dem Gebäudehandbuch oder ähnlicher Objektdokumentation</span></li>
+</ol><p><span>&#160;</span></p>
+    </DetailAddText>
+   </AddText>
+   <AddText>
+    <OutlineAddText>
+     <p>
+      <span>Plananlagen BNB</span>
+     </p>
+    </OutlineAddText>
+    <DetailAddText>
+     <p style="margin-left:0.97in;"><span style="font-size:medium;">Zur Überprüfung der Anforderungen an die beschriebenen Standarts des Bewertungssystems Bauen für Bundesgebäude liegen folgende Dokumente an:</span></p>
+<p style="margin-left:0.97in;"><span style="font-size:medium;">Übersichtstabelle aller Qualitätsanforderungen gemäß QN 1 bis 5 (sortiert nach Bauproduktgruppen) </span><br/><span style="font-size:medium;">&#160;&#160;&#160;BNB_BN2015_1.1.6</span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">Bewertungssystem BNB für Laborgebäude: Ökologische Qualität / Wirkungen auf die </span></li>
+<li><span style="font-size:medium;">globale und lokale Umwelt</span></li>
+<li><span style="font-size:medium;">Risiken für die lokale Umwelt:</span><br/><span style="font-size:medium;">BNB_LN2020_116.pdf</span></li>
+<li><span style="font-size:medium;">Nachhaltige Materialgewinnung / Holz:</span><br/><span style="font-size:medium;">BNB_LN2020_117.pdf</span></li>
+<li><span style="font-size:medium;">Bewertungssystem BNB für Laborgebäude:</span><br/><span style="font-size:medium;">Soziokulturelle Qualität / Gesundheit, Behaglichkeit und Nutzerzufriedenheit</span></li>
+<li><span style="font-size:medium;">Sicherheit:</span><br/><span style="font-size:medium;">BNB_LN2020_318.pdf</span></li>
+<li><span style="font-size:medium;">Bewertungssystem BNB für Laborgebäude:</span><br/><span style="font-size:medium;">Technische Qualität / Technische Ausführung</span></li>
+<li><span style="font-size:medium;">Reinigung und Instandhaltung</span><br/><span style="font-size:medium;">BNB_LN2020_413.pdf</span></li>
+<li><span style="font-size:medium;">Rückbau, Trennung und Verwertung</span><br/><span style="font-size:medium;">BNB_LN2020_414.pdf</span></li>
+<li><span style="font-size:medium;">Bedienungs- und Instandhaltungsfreundlichkeit TGA</span><br/><span style="font-size:medium;">BNB_LN2020_416.pdf</span></li>
+<li><span style="font-size:medium;">Bewertungssystem BNB für Laborgebäude:</span><br/><span style="font-size:medium;">Prozessqualität / Bauausführung</span></li>
+<li><span style="font-size:medium;">Baustelle / Bauprozess</span><br/><span style="font-size:medium;">BNB_LN2020_521.pdf</span></li>
+<li><span style="font-size:medium;">Qualitätssicherung der Bauausführung</span><br/><span style="font-size:medium;">BNB_LN2020_522.pdf</span></li>
+</ol><p><span>&#160;</span></p>
+    </DetailAddText>
+   </AddText>
+   <BoQ ID="id544">
+    <BoQInfo>
+     <Name>2102084</Name>
+     <LblBoQ>Helmholtz -Zentrum CatLab
+Hahn-Meitner-Platz 1
+14109 Berli</LblBoQ>
+     <OutlCompl>AllTxt</OutlCompl>
+     <BoQBkdn>
+      <Type>BoQLevel</Type>
+      <LblBoQBkdn>Bauteil</LblBoQBkdn>
+      <Length>2</Length>
+      <Num>No</Num>
+     </BoQBkdn>
+     <BoQBkdn>
+      <Type>BoQLevel</Type>
+      <LblBoQBkdn>Los</LblBoQBkdn>
+      <Length>2</Length>
+      <Num>No</Num>
+     </BoQBkdn>
+     <BoQBkdn>
+      <Type>BoQLevel</Type>
+      <LblBoQBkdn>Obertitel</LblBoQBkdn>
+      <Length>2</Length>
+      <Num>No</Num>
+     </BoQBkdn>
+     <BoQBkdn>
+      <Type>BoQLevel</Type>
+      <LblBoQBkdn>Titel</LblBoQBkdn>
+      <Length>2</Length>
+      <Num>No</Num>
+     </BoQBkdn>
+     <BoQBkdn>
+      <Type>Item</Type>
+      <Length>2</Length>
+      <Num>No</Num>
+     </BoQBkdn>
+    </BoQInfo>
+    <BoQBody>
+     <Remark ID="AMQV9YCX">
+      <Description>
+       <CompleteText>
+        <DetailTxt>
+         <Text>
+          <p><span style="font-size:medium;">Beton und Stahlbetonarbeiten</span></p>
+         </Text>
+        </DetailTxt>
+        <OutlineText>
+         <OutlTxt>
+          <TextOutlTxt>
+           <p>
+            <span>Beton und Stahlbetonarbeiten</span>
+           </p>
+          </TextOutlTxt>
+         </OutlTxt>
+        </OutlineText>
+       </CompleteText>
+      </Description>
+     </Remark>
+     <BoQCtgy ID="id850" RNoPart="3">
+      <LblTx>
+       <p>
+        <span>Beton und Stahlbetonarbeiten</span>
+       </p>
+      </LblTx>
+      <BoQBody>
+       <Remark ID="SX9T1DV4">
+        <Description>
+         <CompleteText>
+          <DetailTxt>
+           <Text>
+            <p><span style="font-size:medium;">Beton- und Stahlbetonarbeiten</span></p>
+           </Text>
+          </DetailTxt>
+          <OutlineText>
+           <OutlTxt>
+            <TextOutlTxt>
+             <p>
+              <span>Beton- und Stahlbetonarbeiten</span>
+             </p>
+            </TextOutlTxt>
+           </OutlTxt>
+          </OutlineText>
+         </CompleteText>
+        </Description>
+       </Remark>
+       <BoQCtgy ID="id858" RNoPart="2">
+        <LblTx>
+         <p>
+          <span>Beton- und Stahlbetonarbeiten</span>
+         </p>
+        </LblTx>
+        <BoQBody>
+         <Remark ID="H5ARCX7O">
+          <Description>
+           <CompleteText>
+            <DetailTxt>
+             <Text>
+              <p><span style="font-size:medium;">Decken</span></p>
+             </Text>
+            </DetailTxt>
+            <OutlineText>
+             <OutlTxt>
+              <TextOutlTxt>
+               <p>
+                <span>Decken</span>
+               </p>
+              </TextOutlTxt>
+             </OutlTxt>
+            </OutlineText>
+           </CompleteText>
+          </Description>
+         </Remark>
+         <BoQCtgy ID="id872" RNoPart="5">
+          <LblTx>
+           <p>
+            <span>Decken</span>
+           </p>
+          </LblTx>
+          <BoQBody>
+           <BoQCtgy ID="CG176PIM" RNoPart="0">
+            <LblTx>
+             <p>
+              <span>Decken</span>
+             </p>
+            </LblTx>
+            <BoQBody>
+             <Itemlist>
+              <Remark ID="id2068">
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Betondeckung Cnom in der Decke über 4. OG beachten: Bei Expositionsklasse XC3 gegen den Außenbereich ist eine Betondeckung von 3,5cm auszuführen. </span></p>
+<p><span style="font-size:medium;">Bei Expositionsklasse XC1 im Innenbereich 2,5cm.</span></p>
+<p><span style="font-size:medium;">Durch die verschiedenen Geschosshöhen der Labore und Büros ergeben sich verschiedene Geschossanzahlen.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Allgemeiner Hinweis Decken</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Remark>
+              <Remark ID="id2053">
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Die Anordnung der Spannglieder mit je 6 Monolitzen ist mit einem Abstand von mindestens 90cm vorgesehen. Die Vorspannung erfolgt einseitig (d.h. je Spannglied ein Festanker und ein Spannanker) mit teilweise mehreren Ankern innerhalb einer Spannkammer oder an einem freien Deckenrand.</span></p>
+<p><span style="font-size:medium;">Die durch den Tragwerksplaner des AG geplanten Bauteilvorspannungen und dem folgend, die Angaben in der Leistungsbeschreibung basieren auf den Anforderungen der Allgemeinen Bauaufsichtlichen Zulassung Z-13.2-124 für ein Monolitzenspannverfahren ohne Verbund nach DIN EN1992-1-1 und DIN EN 1992-2</span></p>
+<p><span style="font-size:medium;">Grundsätzlich dürfen nur Spannverfahren mit allgemeiner Bauaufsichtlicher Zulassung angewendet werden. </span></p>
+<p><span style="font-size:medium;">Bei Herstellung, Lagerung, Einbau und Spannen der Bauteile sind alle Vorgaben der Zulassung hinsichtlich </span></p>
+<ol style="padding:0px;list-style-type:circle;"><li><span style="font-size:medium;">werkseigener Produktionskontrolle</span></li>
+<li><span style="font-size:medium;">Fremdüberwachung</span></li>
+<li><span style="font-size:medium;">Anforderung an die Verantwortlichen auf der Baustelle</span></li>
+<li><span style="font-size:medium;">Einbauvorschriften</span></li>
+<li><span style="font-size:medium;">Korrosionsschutz</span></li>
+<li><span style="font-size:medium;">Materialprüfungen</span></li>
+<li><span style="font-size:medium;">Nachweis der Betonfestigkeiten vor dem Vorspannen</span></li>
+<li><span style="font-size:medium;">Dokumentation </span></li>
+</ol><p><span style="font-size:medium;">zu beachten.</span></p>
+<p><span style="font-size:medium;">Die erhöhte Anforderung an die Toleranz der Ebenenheit des Laborbodens wird in einer separaten Position vergütet.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Hinweis Spannbetondecke</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Remark>
+              <Item ID="id2051" RNoPart="1">
+               <RefDescr>Ref</RefDescr>
+               <Qty>1155.000</Qty>
+               <QU>m²</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Ortbeton der Deckenplatten aus Spannbeton bewehrt nach Statik. Bewehrung und Schalung siehe gesonderte Position. Größtkorn maximal 32 mm. Die Oberflächen der Decken sind glatt abzuziehen. Arbeitsfugen zwischen Wand und Decke sind rau auszuführen.</span></p>
+<p><span style="font-size:medium;">Deckendicke: &#160;40 cm</span></p>
+<p><span style="font-size:medium;">Geschosshöhe &#160;4,1m-5,5m bis UK Decke</span></p>
+<p><span style="font-size:medium;">Spannbetongute: C35/45</span></p>
+<p><span style="font-size:medium;">Einbauort: Laborbereich, Decke über EG, 1.OG, 2.OG</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Spannbeton der Labordecken als Ortbeton, C35/45, d=40 cm</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id2055" RNoPart="2">
+               <RefDescr>Rep</RefDescr>
+               <RefRNo IDRef="id2051"/>
+               <Qty>385.000</Qty>
+               <QU>m²</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Deckendicke: &#160;45 cm</span></p>
+<p><span style="font-size:medium;">Einbauort: Laborbereich, Decke über 3.OG</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Spannbeton der Labordecken als Ortbeton, C35/45, d=45 cm</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id2050" RNoPart="3">
+               <Qty>35.000</Qty>
+               <QU>m³</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Vergießen der Fuge zwischen Spannbetondecke und angrenzenden Wänden nach dem Vorspannen.</span></p>
+<p><span style="font-size:medium;">Die erhöhten Anforderungen und Toleranzen an die Labordecken gelten auch im Fugenbereich.</span><br/><span style="font-size:medium;"> </span><br/><span style="font-size:medium;">Inklusive Schalung und aller notwendigen Arbeitsmittel.</span></p>
+<p><span style="font-size:medium;">b=20cm</span></p>
+<p><span style="font-size:medium;">h=40-45cm</span></p>
+<p><span style="font-size:medium;">Güte: C35/45</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Verguss Spannbetonfuge b=20cm</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id4801" RNoPart="4">
+               <Qty>1167.300</Qty>
+               <QU>m²</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Erhöhte Anforderung an die Ebenheit der Spannbetondecke und die anschließenden Vergussfugen gemäß der DIN 18202"Toleranzen im Hochbau"</span></p>
+<p><span style="font-size:medium;">Die Oberseite der Spannbetondecke bildet den Untergrund für die finale Beschichtung, daher gelten hier für die Oberfläche die Grenzwerte für Ebenheitsabweichungen bei flächenfertigen Böden mit erhöhten Anforderungen. gem DIN 18202 wie folgt:</span></p>
+<p><span style="font-size:medium;">Stichmaß als Grenzwert in mm / Messpunktabstand in m</span></p>
+<p><span style="font-size:medium;">1mm &#160;/ bis 0,1m</span></p>
+<p><span style="font-size:medium;">3mm / 1m</span></p>
+<p><span style="font-size:medium;">9mm / 4m</span></p>
+<p><span style="font-size:medium;">12mm / 10m</span></p>
+<p><span style="font-size:medium;">15mm / 15m</span></p>
+<p><span style="font-size:medium;">Die Oberfläche ist mit einem Flügelglätter zu ebnen.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Zulage für erhöhte Anforderung des Laborbodens</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+             </Itemlist>
+            </BoQBody>
+           </BoQCtgy>
+          </BoQBody>
+         </BoQCtgy>
+         <Remark ID="P108ZZP3">
+          <Description>
+           <CompleteText>
+            <DetailTxt>
+             <Text>
+              <p><span style="font-size:medium;">Betonstahl und Einbauteile</span></p>
+             </Text>
+            </DetailTxt>
+            <OutlineText>
+             <OutlTxt>
+              <TextOutlTxt>
+               <p>
+                <span>Betonstahl und Einbauteile</span>
+               </p>
+              </TextOutlTxt>
+             </OutlTxt>
+            </OutlineText>
+           </CompleteText>
+          </Description>
+         </Remark>
+         <BoQCtgy ID="id878" RNoPart="8">
+          <LblTx>
+           <p>
+            <span>Betonstahl und Einbauteile</span>
+           </p>
+          </LblTx>
+          <BoQBody>
+           <Remark ID="A4JTXZQS">
+            <Description>
+             <CompleteText>
+              <DetailTxt>
+               <Text>
+                <p><span style="font-size:medium;">Einbauteile</span></p>
+               </Text>
+              </DetailTxt>
+              <OutlineText>
+               <OutlTxt>
+                <TextOutlTxt>
+                 <p>
+                  <span>Einbauteile</span>
+                 </p>
+                </TextOutlTxt>
+               </OutlTxt>
+              </OutlineText>
+             </CompleteText>
+            </Description>
+           </Remark>
+           <BoQCtgy ID="id4934" RNoPart="1">
+            <LblTx>
+             <p>
+              <span>Einbauteile</span>
+             </p>
+            </LblTx>
+            <BoQBody>
+             <Itemlist>
+              <Remark ID="id4935">
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span>&#160;</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Spannbeton</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Remark>
+              <Item ID="id4998" RNoPart="13">
+               <Qty>10100.000</Qty>
+               <QU>m</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Monolitzen als Spannstahllitzen</span></p>
+<p><span style="font-size:medium;">Verlegung in an- und absteigender Bewegung nach Vorgabe der Tragwerksplanung des AG.</span><br/><span style="font-size:medium;">Vorgaben der Zulassung zu Befestigungsart und -abständen sind einzuhalten.</span><br/><span style="font-size:medium;"> </span><br/><span style="font-size:medium;">Die Anordnung der Spannglieder erfolgt mit je 6 Monolitzen mit einem Abstand von 90cm.</span></p>
+<p><span style="font-size:medium;">Bei der angegebenen Spannlitzenlänge ist ein pauschaler</span></p>
+<p><span style="font-size:medium;">Wert für die Verankerung / Vorspannung von 1 m zusätzlicher</span></p>
+<p><span style="font-size:medium;">Spannlitzenlänge berücksichtigt.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Spannlitzen</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id5026" RNoPart="14">
+               <Qty>160.000</Qty>
+               <QU>St</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Festankerkörper aus Stahlguss für die Verankerung von 6 Einzel-Spannlitzen.</span></p>
+<p><span style="font-size:medium;">Inklusive Spiralwendel, Zusatzbewehrung, Abschalelement sowie lagegerechter Einbau im Zuge der Bewehrungsarbeiten der Decke nach Angaben der Tragwerksplanung des AG.</span></p>
+<p><span style="font-size:medium;">Inklusive aller zum Einfädeln der Litzen notwendigen Einbauteile und Aufwendungen.</span></p>
+<p><span style="font-size:medium;">Alle Teile sind vor dem Einbau mit Korrosionsschutz zu behandeln - Es gelten die Anforderungen des geltenden BNB Zertifizierung.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Festanker</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id5027" RNoPart="15">
+               <Qty>160.000</Qty>
+               <QU>St</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Spannanker aus Stahlguss für die Vorspannung der Einzel-Spannlitzen.</span></p>
+<p><span style="font-size:medium;">Inklusive Spiralwendel, Zusatzbewehrung, Abschalelement sowie lagegerechter Einbau im Zuge der Bewehrungsarbeiten der Decke nach Angaben der Tragwerksplanung des AG.</span></p>
+<p><span style="font-size:medium;">Inklusive aller zum Einfädeln der Litzen notwendigen Einbauteile und Aufwendungen.</span><br/><span style="font-size:medium;">Alle Teile sind vor dem Einbau mit Korrosionsschutz zu behandeln - Es gelten die Anforderungen des geltenden BNB Zertifizierung.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Spannanker</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id5028" RNoPart="16">
+               <Qty>160.000</Qty>
+               <QU>St</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Spannkammer am Deckenrand zum Vorspannen von mehreren nebeneinander liegenden Spanngliedern nach der Deckenbetonage herstellen und nach dem Vorspannen nach Angaben der Tragwerksplanung des AG.(s. separate Position) mit dem Deckenbeton C 35/45 verfüllen.</span></p>
+<p><span style="font-size:medium;">Einschließlich aller benötigten Materialien für Herstellung und Verfüllung, wie</span></p>
+<p><span style="font-size:medium;">- Schalkörper für die Aussparung (Deckenhöhe)</span></p>
+<p><span style="font-size:medium;">- Deckenbeton</span></p>
+<p><span style="font-size:medium;">Die Aussparung ist in der Größe herzustellen, die sich aus</span></p>
+<p><span style="font-size:medium;">den Vorgaben der Zulassung der verwendeten Spannglieder</span></p>
+<p><span style="font-size:medium;">ergibt. Abstandsvorgaben für die Lage der Spannglieder sind</span></p>
+<p><span style="font-size:medium;">zu beachten.</span></p>
+<p><span style="font-size:medium;">Abschalung ist als raue Fuge herzustellen</span></p>
+<p><span style="font-size:medium;">Die Tiefe ist so zu wählen, dass ein bewehrter Vorsatzbeton-</span></p>
+<p><span style="font-size:medium;">streifen als Schutz gegen Herausschießen der Spannglieder</span></p>
+<p><span style="font-size:medium;">bei Spannstahlbruch erstellt werden kann.</span><br/><span style="font-size:medium;"> </span><br/><span style="font-size:medium;">Abrechnung nach Anzahl der Spannglieder.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Spannkammer am Deckenrand</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id2902" RNoPart="17">
+               <Qty>160.000</Qty>
+               <QU>St</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Spannglieder aus je 6 Einzellitzen nach Erreichen der durch</span></p>
+<p><span style="font-size:medium;">die Zulassung vorgegebenen Deckenfestigkeit, frühestens</span></p>
+<p><span style="font-size:medium;">jedoch 10 Tage nach der Deckenbetonage, nach Angaben der Tragwerksplanung des AG. spannen.</span></p>
+<p><span style="font-size:medium;">Das Erreichen der ausreichenden Betonfestigkeit gem. Zulassung vor dem Spannvorgang ist durch Probewürfel (vgl. Zulassung) nachzuweisen.</span></p>
+<p><span style="font-size:medium;">Spannkraft am Spannankerkörper mit 6 Spannlitzen gem.</span></p>
+<p><span style="font-size:medium;">Zulassung und nach Angaben der Tragwerksplanung des AG.</span></p>
+<p><span style="font-size:medium;">Nach dem Spannen Litzenüberstände abtrennen,</span></p>
+<p><span style="font-size:medium;">Hohlräume im Ankerkörper dicht mit Korrosionsschutzmasse</span></p>
+<p><span style="font-size:medium;">verfüllen und PE-Schutzkappe aufbringen.</span></p>
+<p><span style="font-size:medium;">Ankerkörper im Zuge der Verfüllung der Spannkammer ein-</span></p>
+<p><span style="font-size:medium;">betonieren.</span></p>
+<p><span style="font-size:medium;">Es ist ein Spannprotokoll zu erstellen und dem Prüfingenieur</span></p>
+<p><span style="font-size:medium;">vorzulegen.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Spannglieder spannen</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id2903" RNoPart="18">
+               <Qty>10.000</Qty>
+               <QU>m³</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Monolithischer Verschluss der vorbeschriebenen Spannkammern mit Ortbeton, DIN EN 206, DIN 1045-2, Druckfestigkeitsklasse: C35/45, Expositionsklasse Bewehrungskorrosion, ausgelöst durch Karbonatisierung XC1</span></p>
+<p><span style="font-size:medium;">Feuchtigkeitsklasse: WF</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Spannkammer verfüllen</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id2904" RNoPart="19">
+               <Qty>1.000</Qty>
+               <QU>psch</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Kennzeichnung der Spanngliedlagen und Kernbohrungsbereiche an der Untersicht der Decken.</span></p>
+<p><span style="font-size:medium;">Die jeweilige Spanngliedlage ist dauerhaft auf der Unterkante der vorgespannten Stahlbetondecken durch Einlegen von</span></p>
+<p><span style="font-size:medium;">Fugenprofilen oder Flachstählen zu kennzeichnen, damit nachfolgende Unternehmen erkennen können, dass in diesen Bereichen keine tiefen Bohrungen/ Kernbohrungen erlaubt sind.</span><br/><span style="font-size:medium;">Kennzeichnung der Kernbohrungsbereiche ach Absprache mit AN.</span></p>
+<p><span style="font-size:medium;">Ein seitlicher Sicherheitsabstand von mind. 5 cm ist bei der Bereichskennzeichnung vorzusehen.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Kennzeichnung Deckenuntersicht</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+             </Itemlist>
+            </BoQBody>
+           </BoQCtgy>
+          </BoQBody>
+         </BoQCtgy>
+         <Remark ID="PB7WKBV8">
+          <Description>
+           <CompleteText>
+            <DetailTxt>
+             <Text>
+              <p><span style="font-size:medium;">Schalungen</span></p>
+             </Text>
+            </DetailTxt>
+            <OutlineText>
+             <OutlTxt>
+              <TextOutlTxt>
+               <p>
+                <span>Schalungen</span>
+               </p>
+              </TextOutlTxt>
+             </OutlTxt>
+            </OutlineText>
+           </CompleteText>
+          </Description>
+         </Remark>
+         <BoQCtgy ID="id1953" RNoPart="11">
+          <LblTx>
+           <p>
+            <span>Schalungen</span>
+           </p>
+          </LblTx>
+          <BoQBody>
+           <BoQCtgy ID="AXEDUHPC" RNoPart="0">
+            <LblTx>
+             <p>
+              <span>Schalungen</span>
+             </p>
+            </LblTx>
+            <BoQBody>
+             <Itemlist>
+              <Remark ID="id4880">
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span>&#160;</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>SCHALUNG SPANNBETONDECKE</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Remark>
+              <Item ID="id3769" RNoPart="22">
+               <Qty>1458.000</Qty>
+               <QU>m²</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Schalung der Spannbetondecken inkl. sämtlicher Abstandshalter. Betongrate sind sofort nach dem Ausschalen abzustoßen. Überschüssiges Schalöl ist zu entfernen.</span></p>
+<p><span style="font-size:medium;">Deckendicken: 40-45 cm</span></p>
+<p><span style="font-size:medium;">lichte Geschosshöhe &#160;bis 4,10 m</span></p>
+<p><span style="font-size:medium;">Deckenuntersicht: SB 2 mit gesondertem Schalbild</span></p>
+<p><span style="font-size:medium;">inkl. Traggerüsten sowie aller notwendigen Hilfsmittel</span></p>
+<p><span style="font-size:medium;">Hinweis: Die Schalungsflächen beinhalten auch die Flächen für den späteren Verguss der Spannbetonfuge.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Schalung Spannbetondecken, d=40-45cm, GH bis 4,10m, SB 2</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id2054" RNoPart="23">
+               <Qty>365.000</Qty>
+               <QU>m²</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Zulage für die Schalungshöhe der Spannbetondecke.</span></p>
+<p><span style="font-size:medium;">lichte Geschosshöhe &#160;5,55 m</span></p>
+<p><span style="font-size:medium;">Die Zulage beschränkt sich, wenn nicht in der Grundposition angegeben, auf die Ausführungshöhe. Die Schalung wird über die Grundposition abgerechnet.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Zulage Schalung Spannbetondecken GH 5,55m</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id2052" RNoPart="24">
+               <Qty>262.080</Qty>
+               <QU>m</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Schalung des Deckenplattenrandes im Bereich der zur Vorspannung notwendigen Fuge, inkl. sämtlicher Abstandshalter, in unterschiedlichen Deckenrandhöhen. Überschüssiges Schalöl ist zu entfernen.</span></p>
+<p><span style="font-size:medium;">Die Schalung ist auslaufsicher um die anschließende Bewehrung herum zu bauen.</span></p>
+<p><span style="font-size:medium;">Deckendicken: 40-45 cm</span></p>
+<p><span style="font-size:medium;">Schalungsebene: Decken im Laborbereich</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Schalung Deckenrand im Bereich der Vergussfuge, d=40-45 cm</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id2060" RNoPart="25">
+               <Qty>330.000</Qty>
+               <QU>m</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Schalung des Deckenplattenrandes inkl. sämtlicher Abstandshalter, in unterschiedlichen Deckenrandhöhen. Überschüssiges Schalöl ist zu entfernen.</span></p>
+<p><span style="font-size:medium;">Die Schalung ist auslaufsicher um die anschließende Bewehrung herum zu bauen.</span></p>
+<p><span style="font-size:medium;">Deckendicken: 30 cm</span></p>
+<p><span style="font-size:medium;">Schalungsebene: Decken im Kernbereich, , EG, 1.OG, 2.OG, 3.OG, 4.OG</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Schalung Deckenrand im Kernbereich, d=30 cm</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+             </Itemlist>
+            </BoQBody>
+           </BoQCtgy>
+          </BoQBody>
+         </BoQCtgy>
+        </BoQBody>
+       </BoQCtgy>
+       <Remark ID="UZOWIEJP">
+        <Description>
+         <CompleteText>
+          <DetailTxt>
+           <Text>
+            <p><span style="font-size:medium;">Bauunterstützungen</span></p>
+           </Text>
+          </DetailTxt>
+          <OutlineText>
+           <OutlTxt>
+            <TextOutlTxt>
+             <p>
+              <span>Bauunterstützungen</span>
+             </p>
+            </TextOutlTxt>
+           </OutlTxt>
+          </OutlineText>
+         </CompleteText>
+        </Description>
+       </Remark>
+       <BoQCtgy ID="id860" RNoPart="3">
+        <LblTx>
+         <p>
+          <span>Bauunterstützungen</span>
+         </p>
+        </LblTx>
+        <BoQBody>
+         <Remark ID="GD36VJKB">
+          <Description>
+           <CompleteText>
+            <DetailTxt>
+             <Text>
+              <p><span style="font-size:medium;">Traggerüste</span></p>
+             </Text>
+            </DetailTxt>
+            <OutlineText>
+             <OutlTxt>
+              <TextOutlTxt>
+               <p>
+                <span>Traggerüste</span>
+               </p>
+              </TextOutlTxt>
+             </OutlTxt>
+            </OutlineText>
+           </CompleteText>
+          </Description>
+         </Remark>
+         <BoQCtgy ID="id2895" RNoPart="1">
+          <LblTx>
+           <p>
+            <span>Traggerüste</span>
+           </p>
+          </LblTx>
+          <BoQBody>
+           <BoQCtgy ID="RSJN2F88" RNoPart="0">
+            <LblTx>
+             <p>
+              <span>Traggerüste</span>
+             </p>
+            </LblTx>
+            <BoQBody>
+             <Itemlist>
+              <Remark ID="id5024">
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Die Betoniergerüste zur Unterstützung der Spannbetondecken sind nur für deren Eigenlast auszulegen. </span></p>
+<p><span style="font-size:medium;">Lastangaben sind durch den AN bei der Technischen Bearbeitung Bauhelfe und Traggerüste verantwortlich zu ermitteln, überprüfen und zu verifizieren.</span></p>
+<p><span style="font-size:medium;">Auf Durchsteifungen über mind. 2 Geschosse zum "Abfangen" der Betonierlasten sei hingewiesen. Aus diesem Grund sind immer mind. 2 Geschosse lastenmäßig zu erfassen.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Raumgerüste für Spannbetondecken</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Remark>
+              <Item ID="id4920" RNoPart="1">
+               <RefDescr>Ref</RefDescr>
+               <Qty>4483.000</Qty>
+               <QU>m³</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">Aufbauen und Abbauen Traggerüst, auf ebener Stahlbetondecke, zur Herstellung von Spannbetondecken in allen Geschossen im Laborbereich,</span></p>
+<p><span style="font-size:medium;">aufbauen im Ganzen, abbauen im Ganzen, das Vorhalten während des Auf- und Abbauens wird gesondert vergütet.</span></p>
+<p><span style="font-size:medium;">Einbauhöhe Geschoss bis zu 5,53m</span><br/><span style="font-size:medium;"> </span><br/><span style="font-size:medium;">Die Lastannahme muss durch die Statik geprüft und bestätigt werden.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Traggerüste für Spannbetondecken, h&lt;/=5,53m</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+              <Item ID="id4965" RNoPart="2">
+               <RefDescr>Rep</RefDescr>
+               <RefRNo IDRef="id4920"/>
+               <Qty>62762.000</Qty>
+               <QU>m³W</QU>
+               <Description>
+                <CompleteText>
+                 <DetailTxt>
+                  <Text>
+                   <p><span style="font-size:medium;">vorhalten</span></p>
+<p><span style="font-size:medium;">Aufstellort: Laborbereich</span></p>
+<p><span style="font-size:medium;">Abrechnung nach Kubik je Woche.</span></p>
+                  </Text>
+                 </DetailTxt>
+                 <OutlineText>
+                  <OutlTxt>
+                   <TextOutlTxt>
+                    <p>
+                     <span>Traggerüste, h&lt;/= 5,53m, vorhalten</span>
+                    </p>
+                   </TextOutlTxt>
+                  </OutlTxt>
+                 </OutlineText>
+                </CompleteText>
+               </Description>
+              </Item>
+             </Itemlist>
+            </BoQBody>
+           </BoQCtgy>
+          </BoQBody>
+         </BoQCtgy>
+        </BoQBody>
+       </BoQCtgy>
+      </BoQBody>
+     </BoQCtgy>
+     <Remark ID="id6263">
+      <Description>
+       <CompleteText>
+        <DetailTxt>
+         <Text>
+          <p><span style="font-size:medium;">Die Leistungen sind gemäß den zum Zeitpunkt der</span></p>
+<p><span style="font-size:medium;">Ausführung gültigen und freigegebenen Ausführungsplänen</span></p>
+<p><span style="font-size:medium;">auszuführen.</span></p>
+<ol style="padding:0px;list-style-type:decimal;"><li><span style="font-size:medium;font-weight:bold;">Objektplanung</span></li>
+</ol><p><span style="font-size:medium;">Lageplan + BE</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_LP_DA_01001_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_HZB_3_A_BSE_L_00_0_g-M100.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_HZB_3_A_BSE_L_00_2_i-M100.PDF</span></p>
+<p><span style="font-size:medium;">Werkpläne</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_GR_00_02100_02_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_GR_00_02101_02_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_GR_02_02102_02_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_GR_03_02103_02_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_GR_04_02104_02_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_GR_DG_02105_02_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_GR_DA_02106_02_V.PDF</span></p>
+<p><span style="font-size:medium;">Schnitte</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_SN_AA_03101_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_SN_BB_03102_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_SN_CC_03103_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_SN_DD_03104_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_SN_DD_03105_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_SN_DD_03106_01_V.PDF</span></p>
+<p><span style="font-size:medium;">Ansichten</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_AN_NO_04101_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_AN_NO_04102_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_AN_SO_04103_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_AN_SO_04104_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ALL_AN_SO_04105_01_V.PDF</span></p>
+<p><span style="font-size:medium;">Treppenpläne</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_TR_XX_11110_03_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_TR_XX_11111_03_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_TR_XX_11120_03_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_TR_XX_11121_03_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_TR_XX_11130_03_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_TR_XX_11131_03_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_TR_XX_11140_03_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_TR_XX_11141_03_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_TR_XX_11154_03_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_TR_XX_11155_02_V.PDF</span></p>
+<p><span style="font-size:medium;">Aufzugsschacht</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_UE_XX_11501_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_UE_XX_11502_01_V.PDF</span></p>
+<p><span style="font-size:medium;">Übersicht Wandqualitäten</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_GR_00_11400_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_GR_01_11401_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_GR_02_11402_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_GR_03_11403_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_GR_03_11404_01_V.PDF</span></p>
+<p><span style="font-size:medium;">Schalbild Laborwand</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_UE_XX_11450_01_V.PDF</span></p>
+<p><span style="font-size:medium;">Baugrubenplan</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_GR_00_11302_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_SN_00_11303_01_V.PDF</span></p>
+<p><span style="font-size:medium;">Übersicht Bodenplatte</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_UE_00_11301_01_V:PDF</span></p>
+<p><span style="font-size:medium;">Isometrie Rohbau</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_3D_O-_11002_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_3D_W-_11001_01_V.PDF</span></p>
+<p><span style="font-size:medium;">Details</span></p>
+<p><span style="font-size:medium;">Gebäudeeinführungen</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_UE_XX_11201_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_UE_XX_11201_01_V.PDF</span></p>
+<p><span style="font-size:medium;">Holzbauanschlüsse</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_DS_00_12010_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_DX_XX_12110_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_DX_XX_12121_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_DX_XX_12124_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_DX_XX_12130_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_DX_XX_12135_01_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_ROH_DX_XX_12140_01_V.PDF</span></p>
+<p><span style="font-size:medium;">Schnittstelle Fassade + Sockel</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_HUL_UE_00_20111_02_V.PDF</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_ARC-_5_H_HUL_UE_XX_23101_01_V.PDF</span></p>
+<ol style="padding:0px;list-style-type:decimal;"><li><span style="font-size:medium;font-weight:bold;">Baugrund</span></li>
+</ol><p><span style="font-size:medium;">220816_HZB_Cat-Lab_Planumsherstellung.PDF</span></p>
+<p><span style="font-size:medium;">G21051-Rev2 Bln HZB CatLab ohne UG.PDF</span></p>
+<ol style="padding:0px;list-style-type:decimal;"><li><span style="font-size:medium;font-weight:bold;">BNB Koordination</span></li>
+</ol><p><span style="font-size:medium;">1544_27_30609_A01_BNB_Anforderungen_Materialien_Arbeitshilfe_V1.PDF</span></p>
+<p><span style="font-size:medium;">BNB_BN2015_116_A1_korr_28-09-17.PDF</span></p>
+<p><span style="font-size:medium;">BNB_LN2020_116.PDF</span></p>
+<p><span style="font-size:medium;">BNB_LN2020_117.PDF</span></p>
+<p><span style="font-size:medium;">BNB_LN2020_318.PDF</span></p>
+<p><span style="font-size:medium;">BNB_LN2020_413.PDF</span></p>
+<p><span style="font-size:medium;">BNB_LN2020_414.PDF</span></p>
+<p><span style="font-size:medium;">BNB_LN2020_416.PDF</span></p>
+<p><span style="font-size:medium;">BNB_LN2020_521.PDF</span></p>
+<p><span style="font-size:medium;">BNB_LN2020_522.PDF</span></p>
+<ol style="padding:0px;list-style-type:decimal;"><li><span style="font-size:medium;font-weight:bold;">Tragwerksplanung</span></li>
+</ol><p><span style="font-size:medium;">Schalpläne</span></p>
+<p><span style="font-size:medium;">Grundrisse</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_FU_00001_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_FU_00002_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_00_00001_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_00_00002_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_01_00001_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_01_00002_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_02_00001_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_02_00002_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_03_00001_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_03_00002_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_04_00001_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_04_00002_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_GR_DG_00000_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">Schnitte</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_SN_FU_00000_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">Treppenplan</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_TR_XX_00001_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_TR_XX_00002_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_TR_XX_00003_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_TR_XX_00004_0B_F.pdf</span></p>
+<p><span style="font-size:medium;">Übersichtsplan</span></p>
+<p><span style="font-size:medium;">WCRC_15.52_0793_TRWP_5_S_SAP_UE_XX_00000_0B_F.pdf</span></p>
+<p><span>&#160;</span></p>
+         </Text>
+        </DetailTxt>
+        <OutlineText>
+         <OutlTxt>
+          <TextOutlTxt>
+           <p>
+            <span>Plananlagen</span>
+           </p>
+          </TextOutlTxt>
+         </OutlTxt>
+        </OutlineText>
+       </CompleteText>
+      </Description>
+     </Remark>
+    </BoQBody>
+   </BoQ>
+  </Award>
+ </GAEB>

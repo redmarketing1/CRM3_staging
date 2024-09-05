@@ -20,10 +20,11 @@
                 <a class="nav-link" id="tab-{{ $statusCssName }}" href="#{{ $statusCssName }}" role="tab"
                     data-bs-toggle="tab" data-tabs-id="{{ $project->status }}" data-bs-placement="top"
                     title="{{ $project->status_data->name }}"
-                    style="background-color: {{ $project->backgroundColor }};">
+                    style="background-color: {{ $project->backgroundColor }}; color:{{ $project->status_data->font_color }};">
                     {{ $project->shortName }} <span>{{ $project->projectCount }}</span>
                 </a>
             </li>
+
         @endif
     @endforeach
 </ul>

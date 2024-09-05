@@ -192,4 +192,9 @@ class Project extends Model
         return $this->hasMany(ActivityLog::class, 'project_id', 'id')->latest();
     }
 
+    public function files()
+    {
+        return $this->hasMany('Modules\Taskly\Entities\ProjectFile', 'project_id', 'id');
+    }
+
 }
