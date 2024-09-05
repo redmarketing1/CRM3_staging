@@ -8,3 +8,4 @@ package-lock.json
 uploads/*
 tests/*
 node_modules/*
+/bootstrap/cache/*
