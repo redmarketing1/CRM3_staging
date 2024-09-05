@@ -8,5 +8,6 @@
     "ProductService": true,
     "Stripe": true,
     "Taskly": true,
-    "Project": true
+    "Project": true,
+    "Backup": true
 }

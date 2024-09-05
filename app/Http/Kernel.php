@@ -36,12 +36,12 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\SetLang::class
+            \App\Http\Middleware\SetLang::class,
         ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -54,22 +54,23 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $middlewareAliases = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
-        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-        'PlanModuleCheck' => \App\Http\Middleware\PlanModuleCheck::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'auth'             => \App\Http\Middleware\Authenticate::class,
+        'auth.basic'       => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.session'     => \Illuminate\Session\Middleware\AuthenticateSession::class,
+        'SuperAdmin'       => \App\Http\Middleware\SuperAdmin::class,
+        'cache.headers'    => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'PlanModuleCheck'  => \App\Http\Middleware\PlanModuleCheck::class,
+        'can'              => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'            => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-        'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
-        'signed' => \App\Http\Middleware\ValidateSignature::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        '2fa' => \PragmaRX\Google2FALaravel\Middleware::class,
-        'studentAuth' => \Modules\LMS\Http\Middleware\StudentAuth::class,
-        'CustomerAuth' => \Modules\TVStudio\Http\Middleware\CustomerAuth::class,
-        'domain-check' => \App\Http\Middleware\DomainCheck::class,
-        'jwt.api.auth' => \App\Http\Middleware\CustomApiAuth::class
+        'precognitive'     => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
+        'signed'           => \App\Http\Middleware\ValidateSignature::class,
+        'throttle'         => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified'         => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        '2fa'              => \PragmaRX\Google2FALaravel\Middleware::class,
+        // 'studentAuth'      => \Modules\LMS\Http\Middleware\StudentAuth::class,
+        // 'CustomerAuth'     => \Modules\TVStudio\Http\Middleware\CustomerAuth::class,
+        'domain-check'     => \App\Http\Middleware\DomainCheck::class,
+        'jwt.api.auth'     => \App\Http\Middleware\CustomApiAuth::class,
     ];
 }

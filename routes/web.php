@@ -52,7 +52,7 @@ use App\Http\Controllers\ReferralProgramController;
 
 
 // Auth::routes();
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // custom domain code
 Route::middleware('domain-check')->group(function () {
@@ -68,36 +68,33 @@ Route::middleware('domain-check')->group(function () {
     Route::get('pages', [HomeController::class, 'CustomPage'])->name('custompage');
     Route::get('/', [HomeController::class, 'index'])->name('start');
 
-	//crons
-	Route::get('cron/execute-queues', [CronController::class, 'run_all_queues']);
+    //crons
+    Route::get('cron/execute-queues', [CronController::class, 'run_all_queues']);
 });
-Route::middleware(['auth','verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     //Role & Permission
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
 
     //dashbord
-    if(module_is_active('GoogleAuthentication'))
-    {
-        Route::get('/dashboard', [HomeController::class,'Dashboard'])->name('dashboard')->middleware(
+    if (module_is_active('GoogleAuthentication')) {
+        Route::get('/dashboard', [HomeController::class, 'Dashboard'])->name('dashboard')->middleware(
             [
                 '2fa',
-            ]
+            ],
         );
-        Route::get('/home', [HomeController::class,'Dashboard'])->name('home')->middleware(
+        Route::get('/home', [HomeController::class, 'Dashboard'])->name('home')->middleware(
             [
                 '2fa',
-            ]
+            ],
         );
-    }
-    else
-    {
-        Route::get('/dashboard', [HomeController::class,'Dashboard'])->name('dashboard');
-        Route::get('/home', [HomeController::class,'Dashboard'])->name('home');
+    } else {
+        Route::get('/dashboard', [HomeController::class, 'Dashboard'])->name('dashboard');
+        Route::get('/home', [HomeController::class, 'Dashboard'])->name('home');
     }
 
-     // settings
+    // settings
     Route::resource('settings', SettingsController::class);
     Route::post('settings-save', [CompanySettingsController::class, 'store'])->name('settings.save');
     Route::post('company/settings-save', [CompanySettingsController::class, 'store'])->name('company.settings.save');
@@ -106,12 +103,12 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('company/system-settings-save', [CompanySettingsController::class, 'SystemStore'])->name('company.system.setting.store');
     Route::post('company-setting-save', [CompanySettingsController::class, 'companySettingStore'])->name('company.setting.save');
     Route::post('comapny-currency-settings', [CompanySettingsController::class, 'saveCompanyCurrencySettings'])->name('company.setting.currency.settings');
-    Route::post('company/update-note-value', [SuperAdminSettingsController::class,'updateNoteValue'])->name('company.update.note.value');
+    Route::post('company/update-note-value', [SuperAdminSettingsController::class, 'updateNoteValue'])->name('company.update.note.value');
 
     Route::post('email-settings-save', [SettingsController::class, 'mailStore'])->name('email.setting.store');
     Route::post('test-mail', [SettingsController::class, 'testMail'])->name('test.mail');
     Route::post('test-mail-send', [SettingsController::class, 'sendTestMail'])->name('test.mail.send');
-    Route::post('email/getfields',[SettingsController::class,'getfields'])->name('get.emailfields');
+    Route::post('email/getfields', [SettingsController::class, 'getfields'])->name('get.emailfields');
     Route::post('email-notification-settings-save', [SettingsController::class, 'mailNotificationStore'])->name('email.notification.setting.store');
 
     Route::post('cookie-settings-save', [SuperAdminSettingsController::class, 'CookieSetting'])->name('cookie.setting.store');
@@ -120,9 +117,9 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('storage-settings-save', [SuperAdminSettingsController::class, 'storageStore'])->name('storage.setting.store');
     Route::post('ai/key/setting/save', [SuperAdminSettingsController::class, 'aiKeySettingSave'])->name('ai.key.setting.save');
     Route::post('currency-settings', [SuperAdminSettingsController::class, 'saveCurrencySettings'])->name('super.admin.currency.settings');
-    Route::post('/update-note-value', [SuperAdminSettingsController::class,'updateNoteValue'])->name('admin.update.note.value');
+    Route::post('/update-note-value', [SuperAdminSettingsController::class, 'updateNoteValue'])->name('admin.update.note.value');
 
-    Route::get('/setting/section/{module}/{methord?}', [SettingsController::class,'getSettingSection'])->name('setting.section.get');
+    Route::get('/setting/section/{module}/{methord?}', [SettingsController::class, 'getSettingSection'])->name('setting.section.get');
 
     // bank-transfer
     Route::resource('bank-transfer-request', BanktransferController::class);
@@ -133,9 +130,9 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('invoice-bank-request/{id}', [BanktransferController::class, 'invoiceBankRequestEdit'])->name('invoice.bank.request.edit');
     Route::post('bank-transfer-request-edit/{id}', [BanktransferController::class, 'invoiceBankRequestupdate'])->name('invoice.bank.request.update');
 
-     // domain Request Module
-     Route::resource('custom_domain_request', CustomDomainRequestController::class);
-     Route::get('custom_domain_request/{id}/{response}', [CustomDomainRequestController::class, 'acceptRequest'])->name('custom_domain_request.request');
+    // domain Request Module
+    Route::resource('custom_domain_request', CustomDomainRequestController::class);
+    Route::get('custom_domain_request/{id}/{response}', [CustomDomainRequestController::class, 'acceptRequest'])->name('custom_domain_request.request');
 
     //users
     Route::resource('users', UserController::class);
@@ -149,50 +146,52 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('users/{id}/login-with-company', [UserController::class, 'LoginWithCompany'])->name('login.with.company');
     Route::get('company-info/{id}', [UserController::class, 'CompnayInfo'])->name('company.info');
     Route::post('user-unable', [UserController::class, 'UserUnable'])->name('user.unable');
-	Route::get('users/{id}/setup', [UserController::class, 'setup'])->name('users.setup');
-	Route::get('user/setup', [UserController::class, 'setup'])->name('user.setup');
-	Route::post('users/{id}/commit', [UserController::class, 'commit'])->name('users.commit');
-	Route::post('users/{id}/files', [UserController::class, 'all_files'])->name('users.all_files');
-	Route::post('users/{id}/file', [UserController::class, 'fileStore'])->name('users.file.store');
+    Route::get('users/{id}/setup', [UserController::class, 'setup'])->name('users.setup');
+    Route::get('user/setup', [UserController::class, 'setup'])->name('user.setup');
+    Route::post('users/{id}/commit', [UserController::class, 'commit'])->name('users.commit');
+    Route::post('users/{id}/files', [UserController::class, 'all_files'])->name('users.all_files');
+    Route::post('users/{id}/file', [UserController::class, 'fileStore'])->name('users.file.store');
     Route::post('users/{id}/delete-files', [UserController::class, 'delete_files'])->name('users.files.delete');
-	Route::post('users/{id}/send-access', [UserController::class, 'send_access'])->name('users.send_access');
-	Route::post('users/get-user', [UserController::class, 'get_user'])->name('users.get_user');
+    Route::post('users/{id}/send-access', [UserController::class, 'send_access'])->name('users.send_access');
+    Route::post('users/get-user', [UserController::class, 'get_user'])->name('users.get_user');
 
     //User Log
     Route::get('users/logs/history', [UserController::class, 'UserLogHistory'])->name('users.userlog.history');
     Route::get('users/logs/{id}', [UserController::class, 'UserLogView'])->name('users.userlog.view');
     Route::delete('users/logs/destroy/{id}', [UserController::class, 'UserLogDestroy'])->name('users.userlog.destroy');
 
-	//ai-templates
+    //ai-templates
     Route::resource('ai-templates', AiTemplatesController::class);
-	Route::get('ai-templates/{id?}/{lang?}/', [AiTemplatesController::class, 'index'])->name('ai-templates.index');
+    Route::get('ai-templates/{id?}/{lang?}/', [AiTemplatesController::class, 'index'])->name('ai-templates.index');
 
-	//general-templates
+    //general-templates
     Route::resource('general-templates', GeneralTemplatesController::class);
-	Route::get('general-templates/{id?}/{lang?}/', [GeneralTemplatesController::class, 'index'])->name('general-templates.index');
+    Route::get('general-templates/create', [GeneralTemplatesController::class, 'create'])->name('general-templates.create');
+    Route::post('general-templates/create', [GeneralTemplatesController::class, 'store'])->name('general-templates.create');
+    Route::get('general-templates/{id?}/{lang?}/', [GeneralTemplatesController::class, 'index'])->name('general-templates.index');
 
-	//smart-templates
+    //smart-templates
     Route::resource('smart-templates', SmartTemplateController::class);
-	Route::post('smart-template/all-data', [SmartTemplateController::class, 'all_data'])->name('smart-template.all_data');
-	Route::get('smart-template/setup/{id}', [SmartTemplateController::class, 'setup'])->name('smart-template.edit');
-	Route::get('smart-template/setup', [SmartTemplateController::class, 'setup'])->name('smart-template.setup');
-	Route::post('smart-template/get-smart-block', [SmartTemplateController::class, 'getSmartBlock'])->name('smart-template.get-smart-block');
-	Route::post('smart-template/create', [SmartTemplateController::class, 'store'])->name('smart-template.create');
-	Route::delete('smart-template/{id}', [SmartTemplateController::class, 'destroy'])->name('smart-template.destroy')->middleware(['auth', 'XSS']);
+    Route::post('smart-template/all-data', [SmartTemplateController::class, 'all_data'])->name('smart-template.all_data');
+    Route::get('smart-template/setup/{id}', [SmartTemplateController::class, 'setup'])->name('smart-template.edit');
+    Route::get('smart-template/setup', [SmartTemplateController::class, 'setup'])->name('smart-template.setup');
+    Route::post('smart-template/get-smart-block', [SmartTemplateController::class, 'getSmartBlock'])->name('smart-template.get-smart-block');
+    Route::post('smart-template/create', [SmartTemplateController::class, 'store'])->name('smart-template.create');
+    Route::delete('smart-template/{id}', [SmartTemplateController::class, 'destroy'])->name('smart-template.destroy')->middleware(['auth', 'XSS']);
 
-	//chatbot
-	Route::post('get_all_conversations', [ConversationsController::class, 'get_all_conversations'])->name('get_all_conversations');
-	Route::post('rename_conversation', [ConversationsController::class, 'rename_conversation'])->name('rename_conversation');
-	Route::post('delete_conversation', [ConversationsController::class, 'delete_conversation'])->name('delete_conversation');
-	Route::get('chat/{conversation_id}/file_upload_modal', [ConversationsController::class, 'file_upload_modal'])->name('chat.file_upload_modal');
-	Route::post('get_chat', [ConversationsController::class, 'get_chat'])->name('get_chat');
-	Route::post('chat_request', [ConversationsController::class, 'chat_request'])->name('chat_request');
-	Route::post('get_latest_chat', [ConversationsController::class, 'get_latest_chat'])->name('get_latest_chat');
-	Route::post('get_prompt_data', [ConversationsController::class, 'get_prompt_data'])->name('get_prompt_data');
-	Route::post('chat_request_action', [ConversationsController::class, 'chat_request_action'])->name('chat_request_action');
-	Route::post('edit_chat', [ConversationsController::class, 'edit_chat'])->name('edit_chat');
-	Route::post('delete_chat', [ConversationsController::class, 'delete_chat'])->name('delete_chat');
-	Route::post('chat_response_action', [ConversationsController::class, 'chat_response_action'])->name('chat_response_action');
+    //chatbot
+    Route::post('get_all_conversations', [ConversationsController::class, 'get_all_conversations'])->name('get_all_conversations');
+    Route::post('rename_conversation', [ConversationsController::class, 'rename_conversation'])->name('rename_conversation');
+    Route::post('delete_conversation', [ConversationsController::class, 'delete_conversation'])->name('delete_conversation');
+    Route::get('chat/{conversation_id}/file_upload_modal', [ConversationsController::class, 'file_upload_modal'])->name('chat.file_upload_modal');
+    Route::post('get_chat', [ConversationsController::class, 'get_chat'])->name('get_chat');
+    Route::post('chat_request', [ConversationsController::class, 'chat_request'])->name('chat_request');
+    Route::post('get_latest_chat', [ConversationsController::class, 'get_latest_chat'])->name('get_latest_chat');
+    Route::post('get_prompt_data', [ConversationsController::class, 'get_prompt_data'])->name('get_prompt_data');
+    Route::post('chat_request_action', [ConversationsController::class, 'chat_request_action'])->name('chat_request_action');
+    Route::post('edit_chat', [ConversationsController::class, 'edit_chat'])->name('edit_chat');
+    Route::post('delete_chat', [ConversationsController::class, 'delete_chat'])->name('delete_chat');
+    Route::post('chat_response_action', [ConversationsController::class, 'chat_response_action'])->name('chat_response_action');
 
     // users import
     Route::get('users/import/export', [UserController::class, 'fileImportExport'])->name('users.file.import');
@@ -209,7 +208,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('langmanage/{lang?}/{module?}', [LanguageController::class, 'index'])->name('lang.index');
     Route::get('create-language', [LanguageController::class, 'create'])->name('create.language');
     Route::post('langs/{lang?}/{module?}', [LanguageController::class, 'storeData'])->name('lang.store.data');
-    Route::post('disable-language',[LanguageController::class,'disableLang'])->name('disablelanguage');
+    Route::post('disable-language', [LanguageController::class, 'disableLang'])->name('disablelanguage');
     Route::any('store-language', [LanguageController::class, 'store'])->name('store.language');
     Route::delete('/lang/{id}', [LanguageController::class, 'destroy'])->name('lang.destroy');
     // End Language
@@ -227,10 +226,10 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('plan/list', [PlanController::class, 'PlanList'])->name('plan.list');
     Route::post('plan/store', [PlanController::class, 'PlanStore'])->name('plan.store');
     Route::get('plan/active', [PlanController::class, 'ActivePlans'])->name('active.plans');
-    Route::get('upgrade-plan/{id}',[PlanController::class,'upgradePlan'])->name('upgrade.plan');
-    Route::get('plan/buy/{plan_id}/{user_id}',[PlanController::class,'planDetail'])->name('plan.details');
-    Route::get('modules/buy/{user_id}',[PlanController::class,'moduleBuy'])->name('module.buy');
-    Route::post('direct-assign-plan-to-user/{plan_id}/{user_id}',[PlanController::class,'directAssignPlanToUser'])->name('assign.plan.user');
+    Route::get('upgrade-plan/{id}', [PlanController::class, 'upgradePlan'])->name('upgrade.plan');
+    Route::get('plan/buy/{plan_id}/{user_id}', [PlanController::class, 'planDetail'])->name('plan.details');
+    Route::get('modules/buy/{user_id}', [PlanController::class, 'moduleBuy'])->name('module.buy');
+    Route::post('direct-assign-plan-to-user/{plan_id}/{user_id}', [PlanController::class, 'directAssignPlanToUser'])->name('assign.plan.user');
     Route::any('plan/package-data', [PlanController::class, 'PackageData'])->name('package.data');
     Route::get('plan/plan-buy/{id}', [PlanController::class, 'PlanBuy'])->name('plan.buy');
     Route::get('plan/plan-trial/{id}', [PlanController::class, 'PlanTrial'])->name('plan.trial');
@@ -277,8 +276,7 @@ Route::middleware(['auth','verified'])->group(function () {
     // End helpdesk
 
 
-    Route::group(['middleware' => 'PlanModuleCheck:Account-Taskly'], function ()
-    {
+    Route::group(['middleware' => 'PlanModuleCheck:Account-Taskly'], function () {
         // invoice
         Route::post('invoice/customer', [InvoiceController::class, 'customer'])->name('invoice.customer');
         Route::post('invoice-attechment/{id}', [InvoiceController::class, 'invoiceAttechment'])->name('invoice.file.upload');
@@ -300,11 +298,11 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::post('invoice/{id}/payment', [InvoiceController::class, 'createPayment'])->name('invoice.payment');
         Route::post('invoice/{id}/payment/{pid}/', [InvoiceController::class, 'paymentDestroy'])->name('invoice.payment.destroy');
         Route::get('invoice/{id}/send', [InvoiceController::class, 'customerInvoiceSend'])->name('invoice.send');
-        Route::post('invoice/{id}/send/mail', [InvoiceController::class,'customerInvoiceSendMail'])->name('invoice.send.mail');
+        Route::post('invoice/{id}/send/mail', [InvoiceController::class, 'customerInvoiceSendMail'])->name('invoice.send.mail');
         Route::post('invoice/section/type', [InvoiceController::class, 'InvoiceSectionGet'])->name('invoice.section.type');
         Route::get('delivery-form/pdf/{id}', [InvoiceController::class, 'pdf'])->name('delivery-form.pdf');
 
-        Route::post('/get-invoice-customers', [InvoiceController::class,'getInvoiceCustomers'])->name('invoice.customers');
+        Route::post('/get-invoice-customers', [InvoiceController::class, 'getInvoiceCustomers'])->name('invoice.customers');
 
         Route::post('invoice-item-detail', [InvoiceController::class, 'getInvoicItemeDetail'])->name('newspaper.invoice.item.details');
 
@@ -348,47 +346,47 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('purchases/{id}/debit-note', [PurchaseDebitNoteController::class, 'create'])->name('purchases.debit.note')->middleware(
             [
                 'auth',
-            ]
+            ],
         );
         Route::post('purchases/{id}/debit-note', [PurchaseDebitNoteController::class, 'store'])->name('purchases.debit.note')->middleware(
             [
                 'auth',
-            ]
+            ],
         );
         Route::get('purchases/{id}/debit-note/edit/{cn_id}', [PurchaseDebitNoteController::class, 'edit'])->name('purchases.edit.debit.note')->middleware(
             [
                 'auth',
-            ]
+            ],
         );
         Route::post('purchases/{id}/debit-note/edit/{cn_id}', [PurchaseDebitNoteController::class, 'update'])->name('purchases.edit.debit.note')->middleware(
             [
                 'auth',
-            ]
+            ],
         );
         Route::delete('purchases/{id}/debit-note/delete/{cn_id}', [PurchaseDebitNoteController::class, 'destroy'])->name('purchases.delete.debit.note')->middleware(
             [
                 'auth',
-            ]
+            ],
         );
 
-        Route::post('purchase/{id}/file',[PurchaseController::class, 'fileUpload'])->name('purchases.files.upload')->middleware(['auth']);
+        Route::post('purchase/{id}/file', [PurchaseController::class, 'fileUpload'])->name('purchases.files.upload')->middleware(['auth']);
         Route::delete("purchase/{id}/destroy", [PurchaseController::class, 'fileUploadDestroy'])->name("purchases.attachment.destroy")->middleware(['auth']);
         //warehouse
 
-          Route::resource('warehouses', WarehouseController::class)->middleware(['auth',]);
+        Route::resource('warehouses', WarehouseController::class)->middleware(['auth',]);
 
-          //warehouse import
-          Route::get('warehouses/import/export', [WarehouseController::class, 'fileImportExport'])->name('warehouses.file.import')->middleware(['auth']);
-          Route::post('warehouses/import', [WarehouseController::class, 'fileImport'])->name('warehouses.import')->middleware(['auth']);
-          Route::get('warehouses/import/modal', [WarehouseController::class, 'fileImportModal'])->name('warehouses.import.modal')->middleware(['auth']);
-          Route::post('warehouses/data/import/', [WarehouseController::class, 'warehouseImportdata'])->name('warehouses.import.data')->middleware(['auth']);
+        //warehouse import
+        Route::get('warehouses/import/export', [WarehouseController::class, 'fileImportExport'])->name('warehouses.file.import')->middleware(['auth']);
+        Route::post('warehouses/import', [WarehouseController::class, 'fileImport'])->name('warehouses.import')->middleware(['auth']);
+        Route::get('warehouses/import/modal', [WarehouseController::class, 'fileImportModal'])->name('warehouses.import.modal')->middleware(['auth']);
+        Route::post('warehouses/data/import/', [WarehouseController::class, 'warehouseImportdata'])->name('warehouses.import.data')->middleware(['auth']);
 
-          Route::get('productservice/{id}/detail', [WarehouseController::class, 'warehouseDetail'])->name('productservices.detail');
+        Route::get('productservice/{id}/detail', [WarehouseController::class, 'warehouseDetail'])->name('productservices.detail');
 
-         //warehouse-transfer
-         Route::resource('warehouses-transfer', WarehouseTransferController::class)->middleware(['auth']);
-         Route::post('warehouses-transfer/getproduct', [WarehouseTransferController::class, 'getproduct'])->name('warehouses-transfer.getproduct')->middleware(['auth']);
-         Route::post('warehouses-transfer/getquantity', [WarehouseTransferController::class, 'getquantity'])->name('warehouses-transfer.getquantity')->middleware(['auth']);
+        //warehouse-transfer
+        Route::resource('warehouses-transfer', WarehouseTransferController::class)->middleware(['auth']);
+        Route::post('warehouses-transfer/getproduct', [WarehouseTransferController::class, 'getproduct'])->name('warehouses-transfer.getproduct')->middleware(['auth']);
+        Route::post('warehouses-transfer/getquantity', [WarehouseTransferController::class, 'getquantity'])->name('warehouses-transfer.getquantity')->middleware(['auth']);
 
         //Reports
         Route::get('reports-warehouses', [ReportController::class, 'warehouseReport'])->name('reports.warehouse')->middleware(['auth']);
@@ -415,7 +413,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('notification-template/{pid}', [NotificationController::class, 'storeNotificationLang'])->name('store.notification.language');
 
     // Referral Program
-    Route::resource('referral-program',ReferralProgramController::class);
+    Route::resource('referral-program', ReferralProgramController::class);
     Route::get('referral-program-company', [ReferralProgramController::class, 'companyIndex'])->name('referral-program.company');
     Route::get('request-amount-sent/{id}', [ReferralProgramController::class, 'requestedAmountSent'])->name('request.amount.sent');
     Route::post('request-amount-store/{id}', [ReferralProgramController::class, 'requestedAmountStore'])->name('request.amount.store');
@@ -429,8 +427,7 @@ Route::post('guest/module/selection', [ModuleController::class, 'GuestModuleSele
 Route::get('cookie/consent', [SuperAdminSettingsController::class, 'CookieConsent'])->name('cookie.consent');
 
 // cache
-Route::get('/config-cache', function()
-{
+Route::get('/config-cache', function () {
     Artisan::call('cache:clear');
     Artisan::call('route:clear');
     Artisan::call('view:clear');
@@ -457,4 +454,3 @@ Route::get('proposal/pdf/{id}', [ProposalController::class, 'proposal'])->name('
 Route::get('/vendor/purchases/{id}', [PurchaseController::class, 'purchaseLink'])->name('purchases.link.copy');
 Route::get('/vend0r/bill/{id}/', [PurchaseController::class, 'invoiceLink'])->name('bill.link.copy')->middleware(['auth']);
 Route::get('purchases/pdf/{id}', [PurchaseController::class, 'purchase'])->name('purchases.pdf');
-

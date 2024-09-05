@@ -23,10 +23,8 @@ class ProjectCommentController extends Controller
     public function index($projectID)
     {
 
-        $project = Project::find($projectID);
-
-        $templateItems = Content::where('is_ai', 0)->get();
-
+        $project       = Project::find($projectID);
+        $templateItems = Content::with(['contentTemplate'])->get();
 
         if (empty($project)) {
             return self::notfound();

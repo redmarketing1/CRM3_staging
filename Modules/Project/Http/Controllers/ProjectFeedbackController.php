@@ -2,6 +2,7 @@
 
 namespace Modules\Project\Http\Controllers;
 
+use App\Models\Content;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Taskly\Entities\Project;
@@ -17,16 +18,15 @@ class ProjectFeedbackController extends Controller
      */
     public function index($projectID)
     {
-        $currentWorkspace = getActiveWorkSpace();
-        $project          = Project::find($projectID);
+        $project       = Project::find($projectID);
+        $templateItems = Content::with(['contentTemplate'])->get();
 
-
-        if (empty($project) && ! empty($currentWorkspace)) {
+        if (empty($project)) {
             return self::notfound();
         }
 
         return view('project::project.popup.add_feedback',
-            compact('currentWorkspace', 'project'),
+            compact('project', 'templateItems'),
         );
     }
 

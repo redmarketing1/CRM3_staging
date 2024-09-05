@@ -658,16 +658,6 @@ span.badge {
     background-position: center;
 }
 
-.fullsize-link {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
 td.project-thumbnail.custom-thumbnail {
     height: 50px !important;
 }
@@ -6216,6 +6206,13 @@ table#estimation_list {
     width: 100% !important;
 }
 
+table#estimation_list.table>thead {
+    position: sticky;
+    top: -26px;
+    transition: 1s;
+    z-index: 1000;
+}
+
 .totalrow {
     display: flex;
     justify-content: space-between;
@@ -7898,7 +7895,6 @@ span.select2-selection.select2-selection--multiple {
     z-index: 99;
     padding-left: 2px;
     display: none;
-    ;
 }
 
 .dz-preview.dz-complete.dz-image-preview:hover>div:last-child {
@@ -7952,4 +7948,31 @@ span.select2-selection.select2-selection--multiple {
 
 .badge.bg.Close {
     background-color: #f6225a !important;
+}
+
+#estimation-edit-table .dropdown-menu.show {
+    position: absolute !important;
+    bottom: 10px !important;
+    top: unset !important;
+    left: unset !important;
+    right: 25px !important;
+    transform: unset !important;
+}
+
+.dropdown-menu .dropdown-item {
+    text-wrap: wrap;
+    padding-left: 43px;
+}
+
+.dropdown-menu .dropdown-item input,
+.dropdown-menu .dropdown-item i {
+    position: absolute;
+    margin-left: -25px;
+    margin-top: 2px;
+}
+
+.dropdown-menu .dropdown-item i {
+    position: absolute;
+    margin-left: -30px;
+    margin-top: 2px;
 }
