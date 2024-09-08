@@ -894,6 +894,33 @@ class ProjectController extends Controller
         return redirect()->back()->with('success', __('Users Invited Successfully!') . ((! empty($smtp_error) && $smtp_error['is_success'] == false && ! empty($smtp_error['error'])) ? '<br> <span class="text-danger">' . $smtp_error['error'] . '</span>' : ''));
     }
 
+    // Add Update Project Team Member
+    public function addProjectTeamMember(Request $request, $id)
+    {
+        // Check if users were selected
+        if (isset($request->users) && !empty($request->users)) {
+            // Use sync() to update the relationship, which will automatically add/remove members
+            $project = Project::findOrFail($id);
+            $project->users()->sync($request->users);
+            $count = $project->users()->count();
+            return response()->json([
+                'is_success' => true,
+                'count' => $count,
+                'message' => __('Project members updated successfully.')
+            ]);
+        } else {
+            // If no users were selected, remove all project members
+            UserProject::where('project_id', $id)->delete();
+            $project = Project::findOrFail($id);
+            $count = $project->users()->count();
+            return response()->json([
+                'is_success' => true,
+                'count' => $count,
+                'message' => __('All project members removed successfully.')
+            ]);
+        }
+    }
+
     public function sharePopup($projectID)
     {
         $objUser          = Auth::user();
@@ -2680,10 +2707,11 @@ class ProjectController extends Controller
                 $form_field = $field;
             }
             $clients = genericGetContacts();
-
-
+            
             $project_estimations = ProjectEstimation::where('project_id', $projectID)->where('init_status', 1)->pluck('id');
+           
             $estimation_quotes   = array();
+            
             if (count($project_estimations) > 0) {
                 $estimation_quotes = EstimateQuote::whereIn('project_estimation_id', $project_estimations)->get();
             }
@@ -2695,6 +2723,7 @@ class ProjectController extends Controller
 
     public function update_details(Request $request, $project_id, $form_field = "")
     {
+       
         $request['country'] = (isset($request->country) && ! empty($request->country)) ? $request->country : null;
 
         if (Auth::user()->type == 'company') {
@@ -2723,6 +2752,7 @@ class ProjectController extends Controller
                     'message'    => $messages->first(),
                 ]);
             }
+            
             $projectID = isset($project_id) ? $project_id : 0;
 
             $project_details = Project::find($projectID);
@@ -2845,6 +2875,7 @@ class ProjectController extends Controller
                     'longitude'    => $request->construction_longitude,
                 );
                 $user_id  = 0;
+                
                 if (isset($request->client_type1) && $request->client_type1 == 'new') {
                     $return = $this->userService->genericCreateFunc('client', 'new', null, $new_data, true);
                     if ($return['status'] == true) {
@@ -2859,7 +2890,7 @@ class ProjectController extends Controller
                         ]);
                     }
                 } else {
-                    $return = $this->userService->genericCreateFunc($request->client_type, $request->client_type, $request->construction_user_id, $new_data, true);
+                    $return = $this->userService->genericCreateFunc($request->client_type1, $request->client_type1, $request->construction_user_id, $new_data, true);
                     if ($return['status'] == true) {
                         $user_id = $request->construction_user_id;
                     } else {

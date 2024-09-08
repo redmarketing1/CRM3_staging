@@ -76,9 +76,9 @@ class Project extends Model
         return $this->status_data->background_color ?? '#eeeeee';
     }
 
-    public function getColorAttribute()
+    public function getFontColorAttribute()
     {
-        return $this->status_data->color ?? '#777777';
+        return $this->status_data->font_color ?? '#777777';
     }
 
     public function getProjectCountAttribute()

@@ -18,7 +18,7 @@
  @if (Route::currentRouteName() !== 'chatify')
      <div id="commonModal" class="modal" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-modal="true"
          role="dialog" data-keyboard="false" data-backdrop="static">
-         <div class="modal-dialog" role="document">
+         <div class="modal-dialog modal-dialog-scrollable" role="document">
              <div class="modal-content">
                  <div class="modal-header">
                      <h5 class="modal-title" id="exampleModalLongTitle"></h5>

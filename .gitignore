@@ -2,6 +2,7 @@
 .editorconfig
 package-lock.json
 /public/storage 
+/public/uploads 
 /vendor
 *.lock
 *.log

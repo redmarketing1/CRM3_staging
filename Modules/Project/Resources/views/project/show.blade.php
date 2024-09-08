@@ -222,6 +222,8 @@
 
                 var url = '{{ route('users.get_user') }}';
 
+                init_tiny_mce('.client-company_notes');
+
                 // Get the selected values
                 if (this.value) {
                     axios.post(url, {
@@ -531,7 +533,47 @@
                     return data.text;
                 }
             });
+
+            //Team member select2
+            $('.member_select2').select2({
+                placeholder: "Nutzer wählen",
+				tags: true,
+                allowHtml: true,
+                templateResult: formatState,
+                templateSelection: function(data, container) {
+                    $(container).css("background-color", $(data.element).data("background_color"));
+                    if (data.element) {
+                        $(container).css("color", $(data.element).data("font_color"));
+                    }
+                    return data.text;
+                }
+			});
         });
+
+        //Team Member Ajax
+        function save_project_member_details(event){
+            var user_ids = $(event).val();  
+            $.ajax({
+                url: '{{ route('project.member.add', $project->id) }}',
+                type: "POST",
+                data: {
+                    users: user_ids,  // Send the selected user IDs as an array (changed 'user' to 'users')
+                    "_token": $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    console.log(data);
+                    if (data.is_success) {
+                        $('.projectteamcount').html(data.count);
+                        toastrs('Success', data.message, 'success');
+                    } else {
+                        toastrs('Error', data.message, 'error');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    toastrs('Error', 'Something went wrong: ' + textStatus, 'error');
+                }
+            });
+        }
 
         function store_to_project_data(field, event) {
             if (field != "") {
@@ -807,7 +849,7 @@
             // Call the default addedfile event handler
             myDropzone.emit("addedfile", mockFile);
             // And optionally show the thumbnail of the file:
-            myDropzone.emit("thumbnail", mockFile, "{{ get_file($file->file_path) }}");
+            myDropzone.emit("thumbnail", mockFile, "{{ $thumbnail_url }}");
             myDropzone.emit("complete", mockFile);
 
             dropzoneBtn(mockFile, {

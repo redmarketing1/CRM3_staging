@@ -72,7 +72,7 @@
         "xendit/xendit-php": "^2.19"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.9",
+        "barryvdh/laravel-debugbar": "^3.13",
         "fakerphp/faker": "^1.9.1",
         "laravel/breeze": "^1.25",
         "laravel/pint": "^1.0",

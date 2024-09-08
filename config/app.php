@@ -179,7 +179,8 @@ return [
         Paytabscom\Laravel_paytabs\PaypageServiceProvider::class,
         PragmaRX\Google2FALaravel\ServiceProvider::class,
         Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
-		JanDrda\LaravelGoogleCustomSearchEngine\LaravelGoogleCustomSearchEngineProvider::class
+		JanDrda\LaravelGoogleCustomSearchEngine\LaravelGoogleCustomSearchEngineProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
     ])->toArray(),
 
     /*
