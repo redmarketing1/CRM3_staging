@@ -149,6 +149,11 @@
         if (\Auth::user()->hasRole('company') && $project->status == env('PROJECT_STATUS_CLIENT')) {
             $display_other_tabs = true;
         }
+        if ($project->type == 'project') {
+            $name = 'Project';
+        } else {
+            $name = 'Project Template';
+        }
     @endphp
     <div class="row">
         <!-- [ sample-page ] start -->

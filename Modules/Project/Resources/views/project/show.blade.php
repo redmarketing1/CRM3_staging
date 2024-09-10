@@ -12,7 +12,6 @@
     }
 @endphp
 
-
 @section('page-title')
     {{ __('Project Detail') }}
 @endsection
