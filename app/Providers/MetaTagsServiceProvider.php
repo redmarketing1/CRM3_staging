@@ -75,6 +75,12 @@ class MetaTagsServiceProvider extends ServiceProvider
         $cssFiles = $this->app['config']['meta_tags']['css'] ?? [];
 
         foreach ($cssFiles as $css) {
+
+            if (! preg_match('/^(http|https):\/\//', $css['url'])) {
+                // If not a full URL, wrap with the asset() function
+                $css['url'] = asset($css['url']);
+            }
+
             $meta->addStyle($css['name'], $css['url'], $css['attribues'] ?? []);
         }
 
