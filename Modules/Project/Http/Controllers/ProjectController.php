@@ -74,6 +74,7 @@ class ProjectController extends Controller
             ->get();
 
         $estimationStatus = ProjectEstimation::$statues;
+        $statuesColor     = ProjectEstimation::$statuesColor;
         $projectLabel     = Label::get_project_dropdowns();
        
         $workspace_users = User::where('created_by', '=', creatorId())
@@ -87,7 +88,8 @@ class ProjectController extends Controller
             'project_estimations',
             'estimationStatus',
             'projectLabel',
-            'workspace_users'
+            'workspace_users',
+            'statuesColor'
         ));
     }
 

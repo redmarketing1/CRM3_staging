@@ -103,6 +103,16 @@ class Project extends Model
         })->count();
     }
 
+    public function client_final_quote()
+    {
+        return $this->hasOne(EstimateQuote::class, 'project_id', 'id')->where('final_for_client', 1);;
+    }
+
+    public function sub_contractor_final_quote()
+    {
+        return $this->hasOne(EstimateQuote::class, 'project_id', 'id')->where('final_for_sub_contractor', 1);
+    }
+
     /**
      * Return project URL
      * @return string
