@@ -25,8 +25,8 @@
         "php.format.rules.alignConsecutiveAssignments": true,
         "php.format.rules.alignConstants": true,
         //Theme & Icon Setup
-        "workbench.colorTheme": "Dark Material Dracula",
-        "workbench.iconTheme": "material-icon-theme",
+        "workbench.colorTheme": "Default Dark Modern",
+        "workbench.iconTheme": "vs-seti",
         "files.watcherExclude": {
             "**/build/**": true,
             "**/dist/**": true,
