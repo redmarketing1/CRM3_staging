@@ -193,7 +193,7 @@
 								<div class="form-group">
 									<label for="client_company_notes" class="form-label">{{ __('Notes') }}</label>
 									<!-- <input class="form-control" placeholder="{{ __('Notes') }}" id="client-company_notes" name="notes" type="text"> -->
-									<textarea rows="3" id="client-company_notes" class="form-control border-0 resize-none client-company_notes" name="notes" placeholder="{{ __('Notes') }}" ></textarea>
+									<textarea rows="3" id="client-company_notes" class="form-control border-0 resize-none" name="notes" placeholder="{{ __('Notes') }}" ></textarea>
 								</div>
 							</div>
 						</div>
@@ -238,7 +238,6 @@
 						@endforeach
 					</select>
 				</div>
-				
 				<div class="col-md-12">
 					@php
 						$checked = "checked";

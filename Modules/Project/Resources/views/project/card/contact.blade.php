@@ -8,7 +8,7 @@
              @if (\Auth::user()->hasRole('company'))
                  <div class="float-end">
                      <p class="text-muted d-none d-sm-flex align-items-center mb-0">
-                         <a href="javascript:;" class="btn btn-sm btn-primary" data-ajax-popup="true"
+                         <a href="#" class="btn btn-sm btn-primary" data-ajax-popup="true"
                              data-title="{{ __('Contact Details') }}" data-toggle="tooltip"
                              title="{{ __('Contact Details') }}" data-size="lg"
                              data-url="{{ route('projects.edit_form', [$project->id, 'ConstructionDetails']) }}"><i

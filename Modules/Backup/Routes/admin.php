@@ -14,3 +14,5 @@ use Modules\Backup\Http\Controllers\BackupController;
 */
 
 Route::resource('backup', BackupController::class);
+Route::post('/start-backup', [BackupController::class, 'startBackup']);
+Route::get('/check-backup-status/{id}', [BackupController::class, 'checkBackupStatus']);

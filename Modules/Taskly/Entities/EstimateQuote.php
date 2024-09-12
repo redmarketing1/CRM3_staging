@@ -56,11 +56,4 @@ class EstimateQuote extends Model
 	{
 		return $this->hasMany(ProjectEstimationProduct::class, 'estimate_quote_id', 'id');
 	}
-
-	public function subContractor()
-    {
-    //   return $this->hasOne(SubContractor::class,'id','sub_contractor_id');
-	   return $this->hasOne(User::class,'id','user_id');
-    }
-
 }

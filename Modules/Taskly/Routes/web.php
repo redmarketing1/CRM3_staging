@@ -108,8 +108,6 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
 
 
     Route::post('projects/invite/{id}/update', [ProjectController::class, 'invite'])->name('projects.invite.update')->middleware(['auth']);
-    //Update Team Members
-    Route::post('project/{project}/member', [ProjectController::class, 'addProjectTeamMember'])->name('project.member.add');
 
     Route::resource('bugstages', 'BugStageController')->middleware(['auth']);
 

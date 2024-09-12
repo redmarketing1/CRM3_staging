@@ -1809,43 +1809,28 @@ if (! function_exists('second_to_time')) {
 if (! function_exists('genericGetContacts')) {
     function genericGetContacts()
     {
-        $user = Auth::user();
-
+        $user             = Auth::user();
         $existingContacts = User::where('created_by', '=', $user->id)
             ->get()
             ->map(function ($contact) {
-                // Concatenate first_name and last_name, and trim any extra spaces
-                $name = trim($contact?->first_name . " " . $contact?->last_name);
+                $name = $contact->name;
 
-                // If the concatenated name is empty, use the contact's 'name'
-                if (empty($name)) {
-                    $name = $contact->name;
-                }
-
-                // Get address_1 if available
+                // $companyName = $contact->company_name ?? null;
                 $address_1 = $contact->address_1 ?? null;
 
-                // Concatenate name with address_1 if available
+                // Concatenate the name and company_name if available
                 $displayName = $address_1 ? "$name ($address_1)" : $name;
+                if ($displayName != '' && ! empty($displayName)) {
 
-                // Only return valid contacts with non-empty displayName
-                if (!empty(trim($displayName))) {
                     return [
                         'id'   => $contact->id,
                         'name' => $displayName,
-                        'type' => $contact->type
+                        'type' => $contact->type,
                     ];
                 }
-
-                // Return nothing explicitly if invalid
-                return null;
-            })
-            // Remove null values by filtering out strictly null entries
-            ->filter(function ($contact) {
-                return !is_null($contact);  // Filter out any null entries
             });
 
-        return $existingContacts->values(); // Re-index the filtered collection
+        return $existingContacts;
     }
 }
 
