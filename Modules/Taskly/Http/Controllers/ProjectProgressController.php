@@ -62,7 +62,7 @@ class ProjectProgressController extends Controller
                                 </div>';
 
 			$action = '<div class="action_btn">';
-			$action .= '<div class=""><a href="' . route('progress.finalize', \Crypt::encrypt($item->id)) . '" class="mx-3 btn btn-sm d-inline-flex align-items-center" target="_blank" data-bs-whatever="' . __('View Progress') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Progress') . '"> <span class="text-white"> <i class="ti ti-eye"></i></span></a></div>';
+			$action .= '<div class=""><a href="' . route('progress.finalize', \Crypt::encrypt($item->id)) . '" class="" target="_blank" data-bs-whatever="' . __('View Progress') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Progress') . '"> <span class=""> <i class="ti ti-eye"></i></span></a></div>';
 			$action .= '</div>';
 			$row['id'] 			        = $item->id;
 			$row['client_name'] 		= $item->name;
@@ -89,7 +89,7 @@ class ProjectProgressController extends Controller
 		$main_progress_id 		= $id;
 		$progress_main_details 	= ProjectProgressMain::where('id', $id)->first();
 		$estimation 			= ProjectEstimation::whereId($progress_main_details->estimation_id)->first();
-		$quote 					= EstimateQuote::with("quoteItem")->where("project_estimation_id", $progress_main_details->estimation_id)->where("is_final", 1)->first();
+		$quote 					= EstimateQuote::with("quoteItem")->where("project_estimation_id", $progress_main_details->estimation_id)->where("final_for_client", 1)->first();
 		$project_estimation 	= ProjectEstimationProduct::where("project_estimation_id", $progress_main_details->estimation_id)->where("type", "item");
 		$items 					= $project_estimation->get();
 

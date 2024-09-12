@@ -2,6 +2,7 @@
 
 namespace Modules\Project\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Modules\Lead\Entities\Label;
 use Modules\Taskly\Entities\Task;
@@ -73,8 +74,12 @@ class ProjectController extends Controller
             ->get();
 
         $estimationStatus = ProjectEstimation::$statues;
-        $statuesColor     = ProjectEstimation::$statuesColor;
         $projectLabel     = Label::get_project_dropdowns();
+       
+        $workspace_users = User::where('created_by', '=', creatorId())
+            ->emp()
+            ->where('workspace_id', getActiveWorkSpace())
+            ->get(); 
 
         return view('project::project.show', compact(
             'project',
@@ -82,8 +87,7 @@ class ProjectController extends Controller
             'project_estimations',
             'estimationStatus',
             'projectLabel',
-            'workspace_users',
-            'statuesColor'
+            'workspace_users'
         ));
     }
 

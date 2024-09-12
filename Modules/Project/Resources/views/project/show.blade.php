@@ -12,7 +12,6 @@
     }
 @endphp
 
-
 @section('page-title')
     {{ __('Project Detail') }}
 @endsection
@@ -65,50 +64,12 @@
 
         $(document).ready(function() {
 
-
             /** call ajaxComplete after open data-popup **/
             $(document).ajaxComplete(function() {
                 tinymce.remove();
                 document.querySelectorAll('.tinyMCE').forEach(function(editor) {
                     init_tiny_mce('#' + editor.id);
                 });
-
-                //Project Progress popup & Signature JS
-                if ($('#signaturePad').length && $('#signatureCanvas').length) {
-
-                    loadScript("{{ asset('assets/js/plugins/signature_pad/signature_pad.min.js') }}")
-                        .then(function(url) {
-                            initializeSignaturePad()
-                        })
-                        .catch(function(error) {
-                            console.error(error);
-                        });
-
-                    function initializeSignaturePad() {
-                        var canvas = document.getElementById('signatureCanvas');
-                        const signaturePad = new SignaturePad(canvas);
-
-                        document.getElementById('signatureCanvasClear').addEventListener('click',
-                            function() {
-                                signaturePad.clear();
-                            });
-
-                        document.getElementById('progressForm').addEventListener('submit', function(e) {
-                            e.preventDefault();
-                            if (!signaturePad.isEmpty()) {
-                                var signatureData = signaturePad.toDataURL('image/png');
-                                document.getElementById('signatureImage').value = signatureData;
-                                setTimeout(() => {
-                                    e.target.submit();
-                                }, 500);
-                            } else {
-                                toastrs('Error', 'Please provide signature confirmation.', 'error');
-                                e.preventDefault();
-                            }
-                        });
-                    }
-                }
-
 
 
                 const dropdownItems = document.querySelectorAll(
@@ -144,10 +105,7 @@
 
             init_tiny_mce('.tinyMCE');
             set_construction_address();
-
-            if ($('#progressContainer').length) {
-                getProgressTableData();
-            }
+            getItems(active_estimation_id);
 
             $(document).on("click", ".projectusers img", function() {
                 var csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -262,6 +220,8 @@
                 var url;
 
                 var url = '{{ route('users.get_user') }}';
+
+                init_tiny_mce('.client-company_notes');
 
                 // Get the selected values
                 if (this.value) {
@@ -572,7 +532,47 @@
                     return data.text;
                 }
             });
+
+            //Team member select2
+            $('.member_select2').select2({
+                placeholder: "Nutzer wählen",
+				tags: true,
+                allowHtml: true,
+                templateResult: formatState,
+                templateSelection: function(data, container) {
+                    $(container).css("background-color", $(data.element).data("background_color"));
+                    if (data.element) {
+                        $(container).css("color", $(data.element).data("font_color"));
+                    }
+                    return data.text;
+                }
+			});
         });
+
+        //Team Member Ajax
+        function save_project_member_details(event){
+            var user_ids = $(event).val();  
+            $.ajax({
+                url: '{{ route('project.member.add', $project->id) }}',
+                type: "POST",
+                data: {
+                    users: user_ids,  // Send the selected user IDs as an array (changed 'user' to 'users')
+                    "_token": $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    console.log(data);
+                    if (data.is_success) {
+                        $('.projectteamcount').html(data.count);
+                        toastrs('Success', data.message, 'success');
+                    } else {
+                        toastrs('Error', data.message, 'error');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    toastrs('Error', 'Something went wrong: ' + textStatus, 'error');
+                }
+            });
+        }
 
         function store_to_project_data(field, event) {
             if (field != "") {
@@ -651,7 +651,10 @@
 
         }
 
-        function getProgressTableData() {
+        function getItems(estimation_id) {
+            let project_id = '{{ $project->id }}';
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
             $('#progress-table').DataTable({
                 "lengthMenu": [
                     [10, 25, 50, 100, 200, -1],
@@ -672,6 +675,10 @@
                 "ajax": {
                     "url": '{{ route('progress.list') }}',
                     "type": "POST",
+                    data: {
+                        project_id: project_id,
+                        _token: csrfToken
+                    },
                 },
                 "columns": [{
                         "data": "id",
@@ -758,6 +765,25 @@
             download.setAttribute('title', "{{ __('Download') }}");
             download.innerHTML = "<i class='ti ti-download'> </i>";
             html.appendChild(download);
+			
+			var lightboxLink = document.createElement('a');
+			lightboxLink.setAttribute('href', response.download);
+			lightboxLink.setAttribute('data-lightbox', "gallery");
+			lightboxLink.setAttribute('data-title', file.name);
+			lightboxLink.style.display = 'none'; 
+			file.previewTemplate.appendChild(lightboxLink);
+
+			file.previewTemplate.querySelector('img').addEventListener('click', function() {
+				lightboxLink.click();  // Trigger the hidden lightbox link
+			});
+			
+			var view = document.createElement('a');
+			view.setAttribute('href', response.download); 
+			view.setAttribute('class', "action-btn btn-secondary mx-1 btn btn-sm d-inline-flex align-items-center");
+			view.setAttribute('target', "_blank"); 
+			view.setAttribute('title', "{{ __('View') }}");
+			view.innerHTML = "<i class='ti ti-crosshair'></i>";
+			html.appendChild(view);
 
             @if (isset($permisions) && in_array('show uploading', $permisions))
             @else
@@ -803,10 +829,17 @@
             file.previewTemplate.appendChild(html);
         }
 
-        {{-- @php($files = $project->files)
+        @php($files = $project->files)
         @foreach ($files as $file)
 
             @php($storage_file = get_base_file($file->file_path))
+            @php($file_extension = pathinfo($file->file_name, PATHINFO_EXTENSION))
+            @php($thumbnail_url = match ($file_extension) {
+                'pdf' => asset('assets/images/pdf_icon.png'),
+                'docx' => asset('assets/images/doc_icon.png'),
+                'xlsx', 'csv' => asset('assets/images/csv_icon.png'),
+                default => get_file($file->file_path)
+            })
             // Create the mock file:
             var mockFile = {
                 name: "{{ $file->file_name }}",
@@ -815,14 +848,14 @@
             // Call the default addedfile event handler
             myDropzone.emit("addedfile", mockFile);
             // And optionally show the thumbnail of the file:
-            myDropzone.emit("thumbnail", mockFile, "{{ get_file($file->file_path) }}");
+            myDropzone.emit("thumbnail", mockFile, "{{ $thumbnail_url }}");
             myDropzone.emit("complete", mockFile);
 
             dropzoneBtn(mockFile, {
                 download: "{{ get_file($file->file_path) }}",
                 delete: "{{ route('projects.file.delete', [$project->id, $file->id]) }}"
             });
-        @endforeach --}}
+        @endforeach
     </script>
     <script>
         (function() {

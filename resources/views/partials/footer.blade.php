@@ -18,7 +18,7 @@
  @if (Route::currentRouteName() !== 'chatify')
      <div id="commonModal" class="modal" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-modal="true"
          role="dialog" data-keyboard="false" data-backdrop="static">
-         <div class="modal-dialog" role="document">
+         <div class="modal-dialog modal-dialog-scrollable" role="document">
              <div class="modal-content">
                  <div class="modal-header">
                      <h5 class="modal-title" id="exampleModalLongTitle"></h5>
@@ -56,7 +56,37 @@
      </div>
  </div>
 
- {!! Meta::footer() !!}
+ <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>
+ <script src="{{ asset('js/letter.avatar.js') }}"></script>
+ <script src="{{ asset('Modules/Taskly/Resources/assets/js/dropzone.min.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/select2.min.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/datatable/dataTables.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/datatable/intl.js') }}"></script>
+ <script type="text/javascript"
+     src="https://maps.google.com/maps/api/js?key=AIzaSyBbTqlUNbqPssvetzvRl4n65HB2g_-o9tE&libraries=places"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"
+     integrity="sha512-b94Z6431JyXY14iSXwgzeZurHHRNkLt9d6bAHt7BZT38eqV+GyngIi/tVye4jBKPYQ2lBdRs0glww4fmpuLRwA=="
+     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
+
+ <script src="{{ asset('assets/js/plugins/popper.min.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/simplebar.min.js') }}"></script>
+ <script src="{{ asset('assets/js/dash.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/simple-datatables.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/bootstrap-switch-button.min.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/sweetalert2.all.min.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/datepicker-full.min.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/flatpickr.min.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
+ <script src="{{ asset('Modules/Taskly/Resources/assets/js/tinymce/tinymce.min.js') }}"></script>
+ <script src="{{ asset('js/jquery.form.js') }}"></script>
+ @if (!empty($company_settings['category_wise_sidemenu']) && $company_settings['category_wise_sidemenu'] == 'on')
+     <script src="{{ asset('assets/js/layout-tab.js') }}"></script>
+ @endif
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 
 
  <script>
@@ -71,6 +101,7 @@
  </script>
 
 
+ <script src="{{ asset('js/custom.js') }}"></script>
  @if ($message = Session::get('success'))
      <script>
          toastrs('Success', '{!! $message !!}', 'success');
@@ -82,9 +113,7 @@
      </script>
  @endif
  @stack('scripts')
-
- {{-- @include('Chatify::layouts.footerLinks') --}}
-
+ @include('Chatify::layouts.footerLinks')
  @if (isset($admin_settings['enable_cookie']) && $admin_settings['enable_cookie'] == 'on')
      @include('layouts.cookie_consent')
  @endif

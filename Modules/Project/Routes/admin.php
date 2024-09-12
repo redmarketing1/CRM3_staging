@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Taskly\Http\Controllers\ProjectProgressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,12 +22,6 @@ Route::prefix('project')->group(function () {
 
     Route::resource('{id}/comment', 'ProjectCommentController')
         ->names('project.comment');
-
-    Route::get('{project}/progress', 'ProjectProgressController@index')
-        ->name('project.progress');
-
-    Route::post('{project}/progress/store', 'ProjectProgressController@store')
-        ->name('project.progress.store');
 
 });
 

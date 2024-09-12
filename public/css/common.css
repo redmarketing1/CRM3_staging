@@ -6743,6 +6743,10 @@ ul.basic-plan-ul li,
     margin-top: 1px;
 }
 
+table td .btn-sm i {
+    color: #FFF !important;
+}
+
 .icons-div {
     display: flex;
     display: inline-flex;

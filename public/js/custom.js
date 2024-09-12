@@ -18,33 +18,6 @@ $.ajaxSetup({
     },
 });
 
-function loadScript(url, location = 'head') {
-    return new Promise(function (resolve, reject) {
-        var script = document.createElement('script');
-        script.src = url;
-        script.type = 'text/javascript';
-        script.async = true;
-
-        // When the script is loaded successfully, resolve the promise
-        script.onload = function () {
-            resolve(url);  // Resolves when the script has been loaded
-        };
-
-        // If there is an error in loading the script, reject the promise
-        script.onerror = function () {
-            reject(new Error('Failed to load script ' + url));
-        };
-
-        // Append the script to head or footer (body)
-        if (location === 'footer') {
-            document.body.appendChild(script);  // Append to the body (footer)
-        } else {
-            document.head.appendChild(script);  // Default: Append to the head
-        }
-    });
-}
-
-
 $(function () {
     if ($('.custom-scroll').length) {
         $(".custom-scroll").niceScroll();

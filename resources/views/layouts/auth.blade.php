@@ -3,7 +3,7 @@
     $temp_lang = \App::getLocale('lang');
     if($temp_lang == 'ar' || $temp_lang == 'he'){
         $rtl = 'on';
-    } 
+    }
     else {
         $rtl = isset($admin_settings['site_rtl']) ? $admin_settings['site_rtl'] : 'off';
     }

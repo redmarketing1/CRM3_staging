@@ -91,22 +91,16 @@ class Project extends Model
         return $this->status_data->background_color ?? '#eeeeee';
     }
 
+    public function getFontColorAttribute()
+    {
+        return $this->status_data->font_color ?? '#777777';
+    }
+
     public function getProjectCountAttribute()
     {
         return self::whereHas('status_data', function ($query) {
             $query->where('name', $this->status_data->name);
         })->count();
-    }
-
-    public function client_final_quote()
-    {
-        return $this->hasOne(EstimateQuote::class, 'project_id', 'id')->where('final_for_client', 1);;
-    }
-
-    //sub contractor
-    public function sub_contractor_final_quote()
-    {
-        return $this->hasOne(EstimateQuote::class, 'project_id', 'id')->where('final_for_sub_contractor', 1);
     }
 
     /**
@@ -201,6 +195,11 @@ class Project extends Model
     public function activities()
     {
         return $this->hasMany(ActivityLog::class, 'project_id', 'id')->latest();
+    }
+
+    public function files()
+    {
+        return $this->hasMany('Modules\Taskly\Entities\ProjectFile', 'project_id', 'id');
     }
 
 }

@@ -20,20 +20,32 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (Auth::check()) {
+        if(Auth::check())
+        {
             return redirect('dashboard');
-        } else {
-            if (! file_exists(storage_path() . "/installed")) {
+        }
+        else
+        {
+            if(!file_exists(storage_path() . "/installed"))
+            {
                 header('location:install');
                 die;
-            } else {
-                if (admin_setting('landing_page') == 'on') {
-                    if (module_is_active('LandingPage')) {
+            }
+            else
+            {
+                if(admin_setting('landing_page') == 'on')
+                {
+                    if(module_is_active('LandingPage'))
+                    {
                         return view('landingpage::layouts.landingpage');
-                    } else {
+                    }
+                    else
+                    {
                         return view('marketplace.landing');
                     }
-                } else {
+                }
+                else
+                {
                     return redirect('login');
                 }
             }
@@ -42,45 +54,52 @@ class HomeController extends Controller
 
     public function Dashboard()
     {
-        if (Auth::check()) {
-            if (Auth::user()->type == 'super admin') {
+        if(Auth::check())
+        {
+            if(Auth::user()->type == 'super admin')
+            {
                 $user                       = Auth::user();
                 $user['total_user']         = $user->countCompany();
                 $user['total_paid_user']    = $user->countPaidCompany();
                 $user['total_orders']       = Order::total_orders();
                 $user['total_orders_price'] = Order::total_orders_price();
                 $chartData                  = $this->getOrderChart(['duration' => 'week']);
-                $user['total_plans']        = Plan::all()->count();
+                $user['total_plans'] = Plan::all()->count();
 
                 $popular_plan = DB::table('orders')
-                    ->select('orders.plan_id', 'plans.*', DB::raw('count(*) as count'))
-                    ->join('plans', 'orders.plan_id', '=', 'plans.id')
-                    ->groupBy('orders.plan_id')
-                    ->orderByDesc('count')
-                    ->first();
+                ->select('orders.plan_id', 'plans.*', DB::raw('count(*) as count'))
+                ->join('plans', 'orders.plan_id', '=', 'plans.id')
+                ->groupBy('orders.plan_id')
+                ->orderByDesc('count')
+                ->first();
 
                 $user['popular_plan'] = $popular_plan;
 
                 return view('dashboard.dashboard', compact('user', 'chartData'));
-            } else {
+            }
+            else
+            {
                 $user = auth()->user();
 
                 $menu = new \App\Classes\Menu($user);
                 event(new \App\Events\CompanyMenuEvent($menu));
-                $menu_items    = $menu->menu;
+                $menu_items = $menu->menu;
                 $dashboardItem = collect($menu_items)->first(function ($item) {
                     return $item['parent'] === 'dashboard';
                 });
 
                 if ($dashboardItem) {
                     $route = isset($dashboardItem['route']) ? $dashboardItem['route'] : null;
-                    if ($route) {
+                    if($route)
+                    {
                         return redirect()->route($route);
                     }
                 }
                 return view('dashboard');
             }
-        } else {
+        }
+        else
+        {
             return redirect()->route('start');
         }
     }
@@ -88,10 +107,13 @@ class HomeController extends Controller
     public function getOrderChart($arrParam)
     {
         $arrDuration = [];
-        if ($arrParam['duration']) {
-            if ($arrParam['duration'] == 'week') {
+        if($arrParam['duration'])
+        {
+            if($arrParam['duration'] == 'week')
+            {
                 $previous_week = strtotime("-2 week +1 day");
-                for ($i = 0; $i < 14; $i++) {
+                for($i = 0; $i < 14; $i++)
+                {
                     $arrDuration[date('Y-m-d', $previous_week)] = date('d-M', $previous_week);
                     $previous_week                              = strtotime(date('Y-m-d', $previous_week) . " +1 day");
                 }
@@ -112,9 +134,9 @@ class HomeController extends Controller
         $dates = array_keys($arrDuration);
 
         $orders = Order::select(
-            DB::raw('DATE(created_at) as date'),
-            DB::raw('count(*) as total'),
-        )
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('count(*) as total')
+            )
             ->whereIn(DB::raw('DATE(created_at)'), $dates)
             ->groupBy(DB::raw('DATE(created_at)'))
             ->get();
@@ -133,30 +155,35 @@ class HomeController extends Controller
             }
 
             $arrTask['label'][] = $label;
-            $arrTask['data'][]  = $total;
+            $arrTask['data'][] = $total;
         }
         return $arrTask;
     }
     public function SoftwareDetails($slug)
     {
         $modules_all = Module::getByStatus(1);
-        $modules     = [];
-        if (count($modules_all) > 0) {
+        $modules = [];
+        if(count($modules_all) > 0)
+        {
             $modules = array_intersect_key(
                 $modules_all,  // the array with all keys
-                array_flip(array_rand($modules_all, (count($modules_all) < 6) ? count($modules_all) : 6)) // keys to be extracted
+                array_flip(array_rand($modules_all,(count($modules_all) <  6) ? count($modules_all) : 6 )) // keys to be extracted
             );
         }
-        $plan  = Plan::first();
-        $addon = AddOn::where('name', $slug)->first();
-        if (! empty($addon) && ! empty($addon->module)) {
+        $plan = Plan::first();
+        $addon = AddOn::where('name',$slug)->first();
+        if(!empty($addon) && !empty($addon->module))
+        {
             $module = Module::find($addon->module);
-            if (! empty($module)) {
+            if(!empty($module))
+            {
                 try {
-                    if (module_is_active('LandingPage')) {
-                        return view('landingpage::marketplace.index', compact('modules', 'module', 'plan'));
-                    } else {
-                        return view($module->getLowerName() . '::marketplace.index', compact('modules', 'module', 'plan'));
+                    if(module_is_active('LandingPage'))
+                    {
+                        return view('landingpage::marketplace.index',compact('modules','module','plan'));
+                    }
+                    else{
+                        return view($module->getLowerName().'::marketplace.index',compact('modules','module','plan'));
                     }
                 } catch (\Throwable $th) {
 
@@ -170,7 +197,7 @@ class HomeController extends Controller
             $layout = 'marketplace.marketplace';
         }
 
-        return view('marketplace.detail_not_found', compact('modules', 'layout'));
+        return view('marketplace.detail_not_found',compact('modules','layout'));
 
     }
 
@@ -201,29 +228,36 @@ class HomeController extends Controller
     public function Pricing()
     {
         $admin_settings = getAdminAllSetting();
-        if (module_is_active('GoogleCaptcha') && (isset($admin_settings['google_recaptcha_is_on']) ? $admin_settings['google_recaptcha_is_on'] : 'off') == 'on') {
+        if(module_is_active('GoogleCaptcha') && (isset($admin_settings['google_recaptcha_is_on']) ? $admin_settings['google_recaptcha_is_on'] : 'off') == 'on' )
+        {
             config(['captcha.secret' => isset($admin_settings['google_recaptcha_secret']) ? $admin_settings['google_recaptcha_secret'] : '']);
             config(['captcha.sitekey' => isset($admin_settings['google_recaptcha_key']) ? $admin_settings['google_recaptcha_key'] : '']);
         }
-        if (Auth::check()) {
-            if (Auth::user()->type == 'company') {
+        if(Auth::check())
+        {
+            if(Auth::user()->type == 'company')
+            {
                 return redirect('plans');
-            } else {
+            }
+            else
+            {
                 return redirect('dashboard');
             }
-        } else {
-            $plan    = Plan::first();
+        }
+        else
+        {
+            $plan = Plan::first();
             $modules = Module::getByStatus(1);
 
             if (module_is_active('LandingPage')) {
                 $layout = 'landingpage::layouts.marketplace';
-                return view('landingpage::layouts.pricing', compact('modules', 'plan', 'layout'));
+                return view('landingpage::layouts.pricing',compact('modules','plan','layout'));
 
             } else {
                 $layout = 'marketplace.marketplace';
             }
 
-            return view('marketplace.pricing', compact('modules', 'plan', 'layout'));
+            return view('marketplace.pricing',compact('modules','plan','layout'));
         }
     }
 
@@ -236,10 +270,13 @@ class HomeController extends Controller
         } else {
             $layout = 'marketplace.marketplace';
         }
-        if ($request['page'] == 'terms_and_conditions' || $request['page'] == 'privacy_policy') {
-            return view('custompage.' . $request['page'], compact('modules', 'layout'));
-        } else {
-            return view('marketplace.detail_not_found', compact('modules', 'layout'));
+        if($request['page'] == 'terms_and_conditions' || $request['page'] == 'privacy_policy')
+        {
+            return view('custompage.'.$request['page'],compact('modules','layout'));
+        }
+        else
+        {
+            return view('marketplace.detail_not_found',compact('modules','layout'));
         }
 
     }

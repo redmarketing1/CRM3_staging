@@ -1,6 +1,6 @@
 @permission('estimation manage')
     <div class="col-md-12">
-        <div class="card estimation-card table-card estimations">
+        <div class="card estimation-card table-card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -106,12 +106,10 @@
                             </tbody>
                         </table>
                     @else
-                        
                         @php
                             $client_final_estimation_id = isset($project->client_final_quote->project_estimation_id)
                                 ? $project->client_final_quote->project_estimation_id
                                 : '';
-                            
                             $sub_contractor_final_estimation_id = isset(
                                 $project->sub_contractor_final_quote->project_estimation_id,
                             )
@@ -123,16 +121,11 @@
                             }
                         @endphp
                         @if (isset($project->client_final_quote->project_estimation_id))
-                            {{-- <div class="row mb-2">
+                            <div class="row mb-2">
                                 <div class="col-md-12">
-                                    <h6>{{ __('Final Estimations') }} Asad</h6>
+                                    <h6>{{ __('Final Estimations') }}</h6>
                                 </div>
-                            </div> --}}
-                            <table>
-                                <tr>
-                                    <td><h6>{{ __('Final Estimations') }}</h6></td>
-                                </tr>
-                            </table>
+                            </div>
                         @endif
                         <table class="table table-bordered estimation-list px-2" id="{{-- estimation-table --}}">
                             <thead>
@@ -185,17 +178,11 @@
                                         $client_gross = isset($client_final_quote->gross)
                                             ? $client_final_quote->gross
                                             : 0;
-                                        $client_gross_with_discount = isset(
-                                            $client_final_quote->gross_with_discount,
-                                        )
+                                        $client_gross_with_discount = isset($client_final_quote->gross_with_discount)
                                             ? $client_final_quote->gross_with_discount
                                             : 0;
-                                        $client_net = isset($client_final_quote->net)
-                                            ? $client_final_quote->net
-                                            : 0;
-                                        $client_net_with_discount = isset(
-                                            $client_final_quote->net_with_discount,
-                                        )
+                                        $client_net = isset($client_final_quote->net) ? $client_final_quote->net : 0;
+                                        $client_net_with_discount = isset($client_final_quote->net_with_discount)
                                             ? $client_final_quote->net_with_discount
                                             : 0;
                                         $client_discount = isset($client_final_quote->discount)
@@ -205,19 +192,17 @@
                                     <tr class="client_final_quote">
                                         <td>
                                             <div class="form-check form-switch">
-                                                <input type="checkbox" class="estimation_selection"
-                                                    id="estimation_check_0"
+                                                <input type="checkbox" class="estimation_selection" id="estimation_check_0"
                                                     value="{{ Crypt::encrypt($estimation->id) }}"
                                                     onchange="selected_estimations()">
-                                                <label class="custom-control-label"
-                                                    for="estimation_check_0"></label>
+                                                <label class="custom-control-label" for="estimation_check_0"></label>
                                             </div>
                                         </td>
                                         <td>
                                             <span
                                                 class="badge fix_badges client-final-badge rounded">{{ __('Client Final Quote') }}</span>
                                             <span
-                                                class="badge fix_badges bg-{{ $statuesColor[$estimationStatus[$estimation->status]] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
+                                                class="badge fix_badges bg {{ $estimationStatus[$estimation->status] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
                                         </td>
                                         <td style="font-weight:600;">
                                             @if ($estimation->status > 1)
@@ -235,8 +220,7 @@
                                                 @foreach ($queues_result['estimation_queues_list'] as $qrow)
                                                     @if ($qrow['completed_percentage'] >= 0)
                                                         <div class="progress">
-                                                            <div class="progress-bar bg-success"
-                                                                role="progressbar"
+                                                            <div class="progress-bar bg-success" role="progressbar"
                                                                 style="width: {{ $qrow['completed_percentage'] }}%"
                                                                 aria-valuenow="{{ $qrow['completed_percentage'] }}"
                                                                 aria-valuemin="0" aria-valuemax="100">
@@ -274,15 +258,13 @@
                                                     @permission('estimation delete')
                                                         <form id="delete-form2-{{ $estimation->id }}"
                                                             action="{{ route('estimations.deleteEstimation', [$estimation->id]) }}"
-                                                            method="POST" style="display: none;"
-                                                            class="d-inline-flex">
+                                                            method="POST" style="display: none;" class="d-inline-flex">
                                                             <a href="#"
                                                                 class="action-btn btn-danger mx-1  btn btn-sm d-inline-flex align-items-center bs-pass-para show_confirm"
                                                                 data-confirm="{{ __('Are You Sure?') }}"
                                                                 data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
                                                                 data-confirm-yes="delete-form2-{{ $estimation->id }}"
-                                                                data-toggle="tooltip"
-                                                                title="{{ __('Delete') }}"><i
+                                                                data-toggle="tooltip" title="{{ __('Delete') }}"><i
                                                                     class="ti ti-trash"></i></a>
                                                             @csrf
                                                             @method('DELETE')
@@ -294,8 +276,7 @@
                                                                 data-ajax-popup="true" data-size="md"
                                                                 data-title="{{ __('Add User') }}"
                                                                 data-url="{{ route('estimation.allowedUsers', ['estimation_id' => $estimation->id]) }}"
-                                                                data-toggle="tooltip"
-                                                                title="{{ __('Invite User') }}"><i
+                                                                data-toggle="tooltip" title="{{ __('Invite User') }}"><i
                                                                     class="ti ti-plus text-white"></i></a>
                                                         </div>
                                                     @endpermission
@@ -307,9 +288,7 @@
                                                                 $quote_status = '';
                                                                 if ($row->is_display == 1) {
                                                                     $border_color = '#6FD943';
-                                                                    $quote_status = __(
-                                                                        'Quote Submitted',
-                                                                    );
+                                                                    $quote_status = __('Quote Submitted');
                                                                 } else {
                                                                     $border_color = '';
                                                                     $quote_status = __('Invited');
@@ -329,13 +308,10 @@
                                 @endif
                                 @if (isset($project->sub_contractor_final_quote->id) && isset($project->sub_contractor_final_quote->estimation))
                                     @php
-                                        $sub_contractor_final_quote =
-                                            $project->sub_contractor_final_quote;
+                                        $sub_contractor_final_quote = $project->sub_contractor_final_quote;
                                         $estimation = $project->sub_contractor_final_quote->estimation;
                                         array_push($final_quote_list, $estimation->id);
-                                        $sub_contractor_gross = isset(
-                                            $sub_contractor_final_quote->gross,
-                                        )
+                                        $sub_contractor_gross = isset($sub_contractor_final_quote->gross)
                                             ? $sub_contractor_final_quote->gross
                                             : 0;
                                         $sub_contractor_gross_with_discount = isset(
@@ -351,9 +327,7 @@
                                         )
                                             ? $sub_contractor_final_quote->net_with_discount
                                             : 0;
-                                        $sub_contractor_discount = isset(
-                                            $sub_contractor_final_quote->discount,
-                                        )
+                                        $sub_contractor_discount = isset($sub_contractor_final_quote->discount)
                                             ? $sub_contractor_final_quote->discount
                                             : 0;
                                     @endphp
@@ -361,18 +335,16 @@
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input type="checkbox" class="estimation_selection"
-                                                    id="estimation_check_0"
-                                                    value="{{ Crypt::encrypt($estimation->id) }}"
+                                                    id="estimation_check_0" value="{{ Crypt::encrypt($estimation->id) }}"
                                                     onchange="selected_estimations()">
-                                                <label class="custom-control-label"
-                                                    for="estimation_check_0"></label>
+                                                <label class="custom-control-label" for="estimation_check_0"></label>
                                             </div>
                                         </td>
                                         <td>
                                             <span
                                                 class="badge fix_badges sc-final-badge rounded">{{ __('Subcontractor Final Quote') }}</span>
                                             <span
-                                                class="badge fix_badges bg-{{ $statuesColor[$estimationStatus[$estimation->status]] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
+                                                class="badge fix_badges bg {{ $estimationStatus[$estimation->status] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
                                         </td>
                                         <td style="font-weight:600;">
                                             @if ($estimation->status > 1)
@@ -415,15 +387,13 @@
                                                     @permission('estimation delete')
                                                         <form id="delete-form2-{{ $estimation->id }}"
                                                             action="{{ route('estimations.deleteEstimation', [$estimation->id]) }}"
-                                                            method="POST" style="display: none;"
-                                                            class="d-inline-flex">
+                                                            method="POST" style="display: none;" class="d-inline-flex">
                                                             <a href="#"
                                                                 class="action-btn btn-danger mx-1  btn btn-sm d-inline-flex align-items-center bs-pass-para show_confirm"
                                                                 data-confirm="{{ __('Are You Sure?') }}"
                                                                 data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
                                                                 data-confirm-yes="delete-form2-{{ $estimation->id }}"
-                                                                data-toggle="tooltip"
-                                                                title="{{ __('Delete') }}"><i
+                                                                data-toggle="tooltip" title="{{ __('Delete') }}"><i
                                                                     class="ti ti-trash"></i></a>
                                                             @csrf
                                                             @method('DELETE')
@@ -435,8 +405,7 @@
                                                                 data-ajax-popup="true" data-size="md"
                                                                 data-title="{{ __('Add User') }}"
                                                                 data-url="{{ route('estimation.allowedUsers', ['estimation_id' => $estimation->id]) }}"
-                                                                data-toggle="tooltip"
-                                                                title="{{ __('Invite User') }}"><i
+                                                                data-toggle="tooltip" title="{{ __('Invite User') }}"><i
                                                                     class="ti ti-plus text-white"></i></a>
                                                         </div>
                                                     @endpermission
@@ -468,19 +437,16 @@
                                 @endif
                                 <tr class="only_final_quotes_profit">
                                     @php
-                                        $profit_gross =
-                                            floatval($client_gross) - floatval($sub_contractor_gross);
+                                        $profit_gross = floatval($client_gross) - floatval($sub_contractor_gross);
                                         $profit_gross_with_discount =
                                             floatval($client_gross_with_discount) -
                                             floatval($sub_contractor_gross_with_discount);
-                                        $profit_net =
-                                            floatval($client_net) - floatval($sub_contractor_net);
+                                        $profit_net = floatval($client_net) - floatval($sub_contractor_net);
                                         $profit_net_with_discount =
                                             floatval($client_net_with_discount) -
                                             floatval($sub_contractor_net_with_discount);
                                         $profit_discount =
-                                            floatval($client_discount) -
-                                            floatval($sub_contractor_discount);
+                                            floatval($client_discount) - floatval($sub_contractor_discount);
                                     @endphp
                                     <th colspan="2"></th>
                                     <th><b>{{ __('Profit') }}:</b></th>
@@ -513,15 +479,10 @@
                                                 ) {
                                                     $bg_color = 'bg-success';
                                                 } else {
-                                                    if (
-                                                        $client_final_estimation_id == $estimation->id
-                                                    ) {
+                                                    if ($client_final_estimation_id == $estimation->id) {
                                                         $bg_color = 'bg-info';
                                                     }
-                                                    if (
-                                                        $sub_contractor_final_estimation_id ==
-                                                        $estimation->id
-                                                    ) {
+                                                    if ($sub_contractor_final_estimation_id == $estimation->id) {
                                                         $bg_color = 'bg-warning';
                                                     }
                                                 }
@@ -544,7 +505,7 @@
                                                 </td>
                                                 <td>
                                                     <span
-                                                        class="badge fix_badges bg-{{ $statuesColor[$estimationStatus[$estimation->status]] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
+                                                        class="badge fix_badges bg {{ $estimationStatus[$estimation->status] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
                                                     @if (!empty($queues_result))
                                                         @foreach ($queues_result['estimation_queues_list'] as $qrow)
                                                             @if ($qrow['completed_percentage'] >= 0)
@@ -633,8 +594,7 @@
                                                                         data-confirm="{{ __('Are You Sure?') }}"
                                                                         data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
                                                                         data-confirm-yes="delete-form2-{{ $estimation->id }}"
-                                                                        data-toggle="tooltip"
-                                                                        title="{{ __('Delete') }}"><i
+                                                                        data-toggle="tooltip" title="{{ __('Delete') }}"><i
                                                                             class="ti ti-trash"></i></a>
                                                                     @csrf
                                                                     @method('DELETE')
@@ -658,9 +618,7 @@
                                                                     $quote_status = '';
                                                                     if ($row->is_display == 1) {
                                                                         $border_color = '#6FD943';
-                                                                        $quote_status = __(
-                                                                            'Quote Submitted',
-                                                                        );
+                                                                        $quote_status = __('Quote Submitted');
                                                                     } else {
                                                                         $border_color = '';
                                                                         $quote_status = __('Invited');

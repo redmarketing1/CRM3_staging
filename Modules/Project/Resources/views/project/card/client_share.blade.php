@@ -7,7 +7,7 @@
               </div>
               <div class="float-end">
                   <p class="text-muted d-none d-sm-flex align-items-center mb-0">
-                      <a href="#" class="btn btn-sm btn-primary" data-ajax-popup="true"
+                      <a href="javascript:;" class="btn btn-sm btn-primary" data-ajax-popup="true"
                           data-title="{{ __('Share to Client') }}" data-toggle="tooltip"
                           title="{{ __('Share to Client') }}"
                           data-url="{{ route('projects.share.popup', [$project->id]) }}"><i class="ti ti-share"></i></a>
