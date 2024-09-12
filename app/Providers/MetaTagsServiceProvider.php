@@ -112,10 +112,16 @@ class MetaTagsServiceProvider extends ServiceProvider
      */
     private function addScriptJS($meta)
     {
-        $cssFiles = $this->app['config']['meta_tags']['js'] ?? [];
+        $jsFiles = $this->app['config']['meta_tags']['js'] ?? [];
 
-        foreach ($cssFiles as $css) {
-            $meta->addScript($css['name'], $css['url'], $css['attribues'] ?? [], $css['placement'] ?? '');
+        foreach ($jsFiles as $js) {
+
+            if (! preg_match('/^(http|https):\/\//', $js['url'])) {
+                // If not a full URL, wrap with the asset() function
+                $js['url'] = asset($js['url']);
+            }
+
+            $meta->addScript($js['name'], $js['url'], $js['attribues'] ?? [], $js['placement'] ?? '');
         }
 
         $companySettings = $this->app['config']['company_settings'];
