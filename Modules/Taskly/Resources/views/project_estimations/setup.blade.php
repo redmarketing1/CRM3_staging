@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="{{ asset('Modules/Taskly/Resources/assets/css/custom.css') }}" type="text/css" />
 @endpush
 @section('page-breadcrumb')
-<a href="{{route('projects.index')}}">{{ __('All Project') }}</a>,<a href="{{route('project.show', [$estimation->project_id])}}">{{$estimation->getProjectDetail->name }}</a>,{{ __('Edit') }}
+<a href="{{route('projects.index')}}">{{ __('All Project') }}</a>,<a href="{{route('projects.show', [$estimation->project_id])}}">{{$estimation->getProjectDetail->name }}</a>,{{ __('Edit') }}
 @endsection
 
 @section('page-action')

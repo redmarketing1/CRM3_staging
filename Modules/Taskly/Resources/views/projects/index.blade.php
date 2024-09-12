@@ -799,9 +799,9 @@
 
                 var project_table_filter = $('#project_table_filter').val();
                 $('#pc-dt-simple-project').DataTable({
-                    "language": {
-                        "url": datatable_language_path
-                    },
+                    // "language": {
+                    //     "url": datatable_language_path
+                    // },
                     "lengthMenu": [
                         [10, 25, 50, 100, 200, -1],
                         [10, 25, 50, 100, 200, "All"]

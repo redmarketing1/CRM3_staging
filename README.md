@@ -1,4 +1,4 @@
-<p align="center"><a href="https://blanee.com/" target="_blank"><img src="https://neu-west.com/wp-content/uploads/2022/07/Neuwest-Bauunternehmen-3-t.png" width="400"></a></p>
+<p align="center"><img src="https://neu-west.com/wp-content/uploads/2022/07/Neuwest-Bauunternehmen-3-t.png" width="450"></p>
 
 ## About neu-west.com CRM Web Application
 
@@ -48,7 +48,6 @@ You can try increasing post buffer size using
 ```
 git config --global http.postBuffer 157286400
 ```
-
 
 *You can force git using http version 1.1*
 

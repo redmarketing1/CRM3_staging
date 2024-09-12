@@ -111,7 +111,7 @@
 						@endif
 
 						@if(isset($project->construction_detail->notes) && !empty($project->construction_detail->notes))
-							<span>{!! $project->construction_detail->notes !!}</span>
+							<span>{{$project->construction_detail->notes}}</span>
 						@endif
 					</div>
 				@endif

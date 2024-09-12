@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class UserService
 {
     public function genericCreateFunc($modelName, $predefinedModelname = null, $predefinedModelId = null, $data = null, $ajax_request = false) {
-    
+
         $return         = array('status' => true);
         $is_new         = false;
         $need_delete    = false;

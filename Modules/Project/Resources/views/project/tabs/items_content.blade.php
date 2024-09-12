@@ -24,7 +24,7 @@
                 @foreach ($projects as $project)
                     <li class="tab-item">
                         <a class="tab-link" href="{{ $project->url() }}">
-                            <span style="background-color: {{ $project->backgroundColor }}; color:{{ $project->fontColor }}!important">
+                            <span style="background-color: {{ $project->backgroundColor }};">
                                 {{ $project->shortName }}
                             </span>
                             {{ $project->name }}
