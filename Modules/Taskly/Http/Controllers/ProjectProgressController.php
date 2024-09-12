@@ -62,7 +62,7 @@ class ProjectProgressController extends Controller
                                 </div>';
 
 			$action = '<div class="action_btn">';
-			$action .= '<div class=""><a href="' . route('progress.finalize', \Crypt::encrypt($item->id)) . '" class="" target="_blank" data-bs-whatever="' . __('View Progress') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Progress') . '"> <span class=""> <i class="ti ti-eye"></i></span></a></div>';
+			$action .= '<div class=""><a href="' . route('progress.finalize', \Crypt::encrypt($item->id)) . '" class="mx-3 btn btn-sm d-inline-flex align-items-center" target="_blank" data-bs-whatever="' . __('View Progress') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Progress') . '"> <span class="text-white"> <i class="ti ti-eye"></i></span></a></div>';
 			$action .= '</div>';
 			$row['id'] 			        = $item->id;
 			$row['client_name'] 		= $item->name;

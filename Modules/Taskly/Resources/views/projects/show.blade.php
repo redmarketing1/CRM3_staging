@@ -149,11 +149,6 @@
         if (\Auth::user()->hasRole('company') && $project->status == env('PROJECT_STATUS_CLIENT')) {
             $display_other_tabs = true;
         }
-        if ($project->type == 'project') {
-            $name = 'Project';
-        } else {
-            $name = 'Project Template';
-        }
     @endphp
     <div class="row">
         <!-- [ sample-page ] start -->
@@ -2138,7 +2133,7 @@
         }
     </script>
 
-    {{-- <script>
+    <script>
         Dropzone.autoDiscover = false;
         myDropzone = new Dropzone("#dropzonewidget", {
             maxFiles: 20,
@@ -2250,7 +2245,7 @@
                 delete: "{{ route('projects.file.delete', [$project->id, $file->id]) }}"
             });
         @endforeach
-    </script> --}}
+    </script>
     <script>
         (function() {
             var options = {

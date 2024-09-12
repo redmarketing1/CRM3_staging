@@ -211,7 +211,6 @@ class ProjectEstimationController extends Controller
 
 	public function setup($id)
 	{
-        
 		$user	= Auth::user();
 		if ($user->isAbleTo('estimation edit')) {
 			$encryptId              = $id;

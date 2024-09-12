@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name'            => env('APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env'             => env('APP_ENV', 'production'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug'           => (bool) env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -55,9 +55,9 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url'             => env('APP_URL', 'http://localhost'),
 
-    'asset_url' => env('ASSET_URL'),
+    'asset_url'       => env('ASSET_URL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone'        => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale'          => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -109,7 +109,7 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale'    => 'en_US',
 
     /*
     |--------------------------------------------------------------------------
@@ -122,9 +122,9 @@ return [
     |
     */
 
-    'key' => env('APP_KEY'),
+    'key'             => env('APP_KEY'),
 
-    'cipher' => 'AES-256-CBC',
+    'cipher'          => 'AES-256-CBC',
 
     /*
     |--------------------------------------------------------------------------
@@ -139,7 +139,7 @@ return [
     |
     */
 
-    'maintenance' => [
+    'maintenance'     => [
         'driver' => 'file',
         // 'store'  => 'redis',
     ],
@@ -155,7 +155,7 @@ return [
     |
     */
 
-    'providers' => ServiceProvider::defaultProviders()->merge([
+    'providers'       => ServiceProvider::defaultProviders()->merge([
         /*
          * Package Service Providers...
          */
@@ -179,8 +179,8 @@ return [
         Paytabscom\Laravel_paytabs\PaypageServiceProvider::class,
         PragmaRX\Google2FALaravel\ServiceProvider::class,
         Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
-		JanDrda\LaravelGoogleCustomSearchEngine\LaravelGoogleCustomSearchEngineProvider::class,
-        Barryvdh\Debugbar\ServiceProvider::class,
+        JanDrda\LaravelGoogleCustomSearchEngine\LaravelGoogleCustomSearchEngineProvider::class,
+        App\Providers\MetaTagsServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -194,19 +194,19 @@ return [
     |
     */
 
-    'aliases' => Facade::defaultAliases()->merge([
+    'aliases'         => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
-        'Form' => Collective\Html\FormFacade::class,
-        'Html' => Collective\Html\HtmlFacade::class,
-        'Debugbar' => Barryvdh\Debugbar\Facades\Debugbar::class,
-        'Chatify' => Chatify\Facades\ChatifyMessenger::class,
-        'Menu'      => Lavary\Menu\Facade::class,
-        'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
-		'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
-        'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
-        'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
-		'GoogleCseSearch' => JanDrda\LaravelGoogleCustomSearchEngine\LaravelGoogleCustomSearchEngineProvider::class,
-		'Batch' => Mavinoo\Batch\BatchFacade::class,
+        'Form'            => Collective\Html\FormFacade::class,
+        'Html'            => Collective\Html\HtmlFacade::class,
+        'Debugbar'        => Barryvdh\Debugbar\Facades\Debugbar::class,
+        'Chatify'         => Chatify\Facades\ChatifyMessenger::class,
+        // 'Menu'            => Lavary\Menu\Facade::class,
+        'DNS1D'           => Milon\Barcode\Facades\DNS1DFacade::class,
+        'DNS2D'           => Milon\Barcode\Facades\DNS2DFacade::class,
+        'Google2FA'       => PragmaRX\Google2FALaravel\Facade::class,
+        'NoCaptcha'       => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
+        'GoogleCseSearch' => JanDrda\LaravelGoogleCustomSearchEngine\LaravelGoogleCustomSearchEngineProvider::class,
+        'Batch'           => Mavinoo\Batch\BatchFacade::class,
 
     ])->toArray(),
 

@@ -78,7 +78,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapAdminRoutes()
     {
-        Route::middleware(['SuperAdmin'])
+        Route::middleware(['SuperAdmin', 'web', 'auth', 'verified'])
             ->namespace($this->moduleNamespace)
             ->group(module_path('Backup', '/Routes/admin.php'));
     }

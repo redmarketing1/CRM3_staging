@@ -91,11 +91,6 @@ class Project extends Model
         return $this->status_data->background_color ?? '#eeeeee';
     }
 
-    public function getFontColorAttribute()
-    {
-        return $this->status_data->font_color ?? '#777777';
-    }
-
     public function getProjectCountAttribute()
     {
         return self::whereHas('status_data', function ($query) {
@@ -206,11 +201,6 @@ class Project extends Model
     public function activities()
     {
         return $this->hasMany(ActivityLog::class, 'project_id', 'id')->latest();
-    }
-
-    public function files()
-    {
-        return $this->hasMany('Modules\Taskly\Entities\ProjectFile', 'project_id', 'id');
     }
 
 }
