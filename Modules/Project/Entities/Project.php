@@ -202,4 +202,14 @@ class Project extends Model
         return $this->hasMany('Modules\Taskly\Entities\ProjectFile', 'project_id', 'id');
     }
 
+    public function client_final_quote()
+    {
+        return $this->hasOne(EstimateQuote::class, 'project_id', 'id')->where('final_for_client', 1);
+    }
+
+    public function sub_contractor_final_quote()
+    {
+        return $this->hasOne(EstimateQuote::class, 'project_id', 'id')->where('final_for_sub_contractor', 1);
+    }
+
 }

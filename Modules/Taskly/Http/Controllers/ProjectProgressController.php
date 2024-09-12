@@ -89,7 +89,7 @@ class ProjectProgressController extends Controller
 		$main_progress_id 		= $id;
 		$progress_main_details 	= ProjectProgressMain::where('id', $id)->first();
 		$estimation 			= ProjectEstimation::whereId($progress_main_details->estimation_id)->first();
-		$quote 					= EstimateQuote::with("quoteItem")->where("project_estimation_id", $progress_main_details->estimation_id)->where("final_for_client", 1)->first();
+		$quote 					= EstimateQuote::with("quoteItem")->where("project_estimation_id", $progress_main_details->estimation_id)->where("is_final", 1)->first();
 		$project_estimation 	= ProjectEstimationProduct::where("project_estimation_id", $progress_main_details->estimation_id)->where("type", "item");
 		$items 					= $project_estimation->get();
 
