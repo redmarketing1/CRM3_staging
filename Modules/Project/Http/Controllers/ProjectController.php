@@ -13,6 +13,8 @@ use Modules\Project\Entities\Project;
 use Modules\Taskly\Entities\EstimateQuote;
 use Modules\Taskly\Entities\ProjectComment;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\ProjectEstimation;
 use Modules\Taskly\Entities\ProjectClientFeedback;
 
@@ -157,5 +159,73 @@ class ProjectController extends Controller
         $arrTask['stages'] = $stagesQuery;
         $arrTask['color']  = $stages->pluck('color')->toArray();
         return $arrTask;
+    }
+
+    //Project Delays
+    public function addProjectDelay($id)
+    {
+        return view('project::project.delayAdd', compact('id'));
+    }
+
+    // Project Delay Store
+    public function delayAnnouncement(Request $request, $id)
+    {
+       
+        try {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'new_deadline' => 'required',
+                    'reason' => 'required',
+                    'delay_in_weeks' => 'required',
+                    'internal_comment' => 'required',
+                ]
+            );
+
+            if ($validator->fails()) {
+                $messages = $validator->getMessageBag();
+
+                return redirect()->route('project.show',$id)->with('error', $messages->first());
+            }
+
+            $inputs = $request->only([
+                'new_deadline',
+                'reason',
+                'delay_in_weeks',
+                'internal_comment',
+            ]);
+
+            $extra_files = [];
+            if ($request->hasFile('media')) {
+                foreach ($request->file('media') as $key => $file) {
+                    $path = 'delays';
+                    $fileName         = $id . time() . "_" . $file->getClientOriginalName();
+                    
+                    $save = Storage::disk()->putFileAs(
+                        $path,
+                        $file,
+                        $fileName
+                    );
+                    // $upload = upload_file($request, 'media', $fileName, 'delays', []);
+                
+                    
+                    $extra_files[] = 'uploads/' . $save;
+                }
+            }
+
+            $inputs['media'] = json_encode($extra_files);
+            $inputs['project_id'] = $id;
+
+            $projectDelay = \auth()->user()->projectDelays()->create($inputs);
+            if (!empty($projectDelay)) {
+                $project = Project::find($id);
+                $project->end_date = $inputs['new_deadline'];
+                $project->save();
+            }
+            return redirect()->route('project.show', $id)->with('success', __('Project Delay added successfully'));
+
+        } catch (\Throwable $th) {
+            dd($th);
+        }
     }
 }

@@ -212,4 +212,9 @@ class Project extends Model
         return $this->hasOne(EstimateQuote::class, 'project_id', 'id')->where('final_for_sub_contractor', 1);
     }
 
+    public function delays()
+    {
+        return $this->hasMany(ProjectDelay::class, 'project_id', 'id');
+    }
+
 }

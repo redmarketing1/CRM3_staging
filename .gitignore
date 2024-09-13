@@ -1,5 +1,10 @@
 .env
 .editorconfig
+/bootstrap
+/public/*
+public/*
+/bootstrap/*
+/bootstrap/cache/*
 package-lock.json
 /public/storage 
 /public/uploads 
@@ -9,7 +14,6 @@ package-lock.json
 uploads/*
 tests/*
 node_modules/*
-/bootstrap/cache/*
 .htaccess-old
 .htaccess 
 public/*

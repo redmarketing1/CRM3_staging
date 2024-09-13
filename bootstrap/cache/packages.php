@@ -44,6 +44,18 @@
       'PDF' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
     ),
   ),
+  'butschster/meta-tags' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Butschster\\Head\\Providers\\MetaTagsServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Meta' => 'Butschster\\Head\\Facades\\Meta',
+      'PackageManager' => 'Butschster\\Head\\Facades\\PackageManager',
+    ),
+  ),
   'dcblogdev/laravel-box' => 
   array (
     'providers' => 

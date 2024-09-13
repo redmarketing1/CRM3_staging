@@ -49,6 +49,8 @@
 
                 @include('project::project.section.project_progress')
 
+                @includeWhen($display_other_tabs, 'project::project.section.project_delay')
+
                 @include('project::project.utility.activity_log')
 
             </div>
