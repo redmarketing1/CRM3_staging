@@ -66,12 +66,15 @@
 
             /** call ajaxComplete after open data-popup **/
             $(document).ajaxComplete(function() {
-                tinymce.remove();
-                document.querySelectorAll('.tinyMCE').forEach(function(editor) {
-                    init_tiny_mce('#' + editor.id);
-                });
 
+                dropdownItemsToSetPreMessageContent();
 
+            });
+
+            function dropdownItemsToSetPreMessageContent() {
+                /**
+                 * Set pre message tempate inside feedback & comment box in popup modal
+                 * */
                 const dropdownItems = document.querySelectorAll(
                     '.dropdown-premsg .dropdown-menu .dropdown-item');
                 const dropdownTriggerText = document.querySelector(
@@ -86,15 +89,17 @@
                         const templateName = this.textContent.trim();
 
                         // Set the content in the TinyMCE editor
-                        // tinymce.get('premsg').setContent(content);
-                        $('#premsg').val(content);
+                        if (tinymce.get('premsg')) {
+                            tinymce.get('premsg').setContent(content);
+                        } else {
+                            $('#premsg').val(content);
+                        }
 
                         // Update the dropdown trigger text with the selected template name
                         dropdownTriggerText.textContent = templateName;
                     });
                 });
-
-            });
+            }
 
             var type = '{{ $project->type }}';
             if (type == 'template') {
@@ -103,7 +108,6 @@
                 $('.pro_type').removeClass('d-none');
             }
 
-            init_tiny_mce('.tinyMCE');
             set_construction_address();
             getItems(active_estimation_id);
 
@@ -536,7 +540,7 @@
             //Team member select2
             $('.member_select2').select2({
                 placeholder: "Nutzer wählen",
-				tags: true,
+                tags: true,
                 allowHtml: true,
                 templateResult: formatState,
                 templateSelection: function(data, container) {
@@ -546,17 +550,17 @@
                     }
                     return data.text;
                 }
-			});
+            });
         });
 
         //Team Member Ajax
-        function save_project_member_details(event){
-            var user_ids = $(event).val();  
+        function save_project_member_details(event) {
+            var user_ids = $(event).val();
             $.ajax({
                 url: '{{ route('project.member.add', $project->id) }}',
                 type: "POST",
                 data: {
-                    users: user_ids,  // Send the selected user IDs as an array (changed 'user' to 'users')
+                    users: user_ids, // Send the selected user IDs as an array (changed 'user' to 'users')
                     "_token": $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(data) {
@@ -765,25 +769,25 @@
             download.setAttribute('title', "{{ __('Download') }}");
             download.innerHTML = "<i class='ti ti-download'> </i>";
             html.appendChild(download);
-			
-			var lightboxLink = document.createElement('a');
-			lightboxLink.setAttribute('href', response.download);
-			lightboxLink.setAttribute('data-lightbox', "gallery");
-			lightboxLink.setAttribute('data-title', file.name);
-			lightboxLink.style.display = 'none'; 
-			file.previewTemplate.appendChild(lightboxLink);
 
-			file.previewTemplate.querySelector('img').addEventListener('click', function() {
-				lightboxLink.click();  // Trigger the hidden lightbox link
-			});
-			
-			var view = document.createElement('a');
-			view.setAttribute('href', response.download); 
-			view.setAttribute('class', "action-btn btn-secondary mx-1 btn btn-sm d-inline-flex align-items-center");
-			view.setAttribute('target', "_blank"); 
-			view.setAttribute('title', "{{ __('View') }}");
-			view.innerHTML = "<i class='ti ti-crosshair'></i>";
-			html.appendChild(view);
+            var lightboxLink = document.createElement('a');
+            lightboxLink.setAttribute('href', response.download);
+            lightboxLink.setAttribute('data-lightbox', "gallery");
+            lightboxLink.setAttribute('data-title', file.name);
+            lightboxLink.style.display = 'none';
+            file.previewTemplate.appendChild(lightboxLink);
+
+            file.previewTemplate.querySelector('img').addEventListener('click', function() {
+                lightboxLink.click(); // Trigger the hidden lightbox link
+            });
+
+            var view = document.createElement('a');
+            view.setAttribute('href', response.download);
+            view.setAttribute('class', "action-btn btn-secondary mx-1 btn btn-sm d-inline-flex align-items-center");
+            view.setAttribute('target', "_blank");
+            view.setAttribute('title', "{{ __('View') }}");
+            view.innerHTML = "<i class='ti ti-crosshair'></i>";
+            html.appendChild(view);
 
             @if (isset($permisions) && in_array('show uploading', $permisions))
             @else
@@ -829,28 +833,38 @@
             file.previewTemplate.appendChild(html);
         }
 
-        @php($files = $project->files)
-        @foreach ($files as $file)
+        @php
+            $files = $project->files;
+        @endphp
 
-            @php($storage_file = get_base_file($file->file_path))
-            @php($file_extension = pathinfo($file->file_name, PATHINFO_EXTENSION))
-            @php($thumbnail_url = match ($file_extension) {
-                'pdf' => asset('assets/images/pdf_icon.png'),
-                'docx' => asset('assets/images/doc_icon.png'),
-                'xlsx', 'csv' => asset('assets/images/csv_icon.png'),
-                default => get_file($file->file_path)
-            })
-            // Create the mock file:
+        @foreach ($files as $file)
+            @php
+                $storage_file = get_base_file($file->file_path);
+                $file_extension = pathinfo($file->file_name, PATHINFO_EXTENSION);
+                $thumbnail_url = match ($file_extension) {
+                    'pdf' => asset('assets/images/pdf_icon.png'),
+                    'docx' => asset('assets/images/doc_icon.png'),
+                    'xlsx', 'csv' => asset('assets/images/csv_icon.png'),
+                    default => get_file($file->file_path),
+                };
+            @endphp
+
+            // Create the mock file
             var mockFile = {
                 name: "{{ $file->file_name }}",
                 size: "{{ get_size(get_file($file->file_path)) }}"
             };
+
             // Call the default addedfile event handler
             myDropzone.emit("addedfile", mockFile);
-            // And optionally show the thumbnail of the file:
+
+            // Show the thumbnail of the file
             myDropzone.emit("thumbnail", mockFile, "{{ $thumbnail_url }}");
+
+            // Complete the file upload
             myDropzone.emit("complete", mockFile);
 
+            // Add buttons for download and delete actions
             dropzoneBtn(mockFile, {
                 download: "{{ get_file($file->file_path) }}",
                 delete: "{{ route('projects.file.delete', [$project->id, $file->id]) }}"
