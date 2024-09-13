@@ -10,18 +10,18 @@
     <div class="card-body">
         <div class="row mt-2">
             <div class="col-md-6 form-group">
-                @include('project::project.card.labels.construction_type')
+                @include('project::project.show.card.labels.construction_type')
             </div>
             <div class="col-md-6 form-group">
-                @include('project::project.card.labels.propert_type')
+                @include('project::project.show.card.labels.propert_type')
             </div>
         </div>
         <div class="row">
             <div class="col-md-6 form-group">
-                @include('project::project.card.labels.project_type')
+                @include('project::project.show.card.labels.project_type')
             </div>
             <div class="col-md-6 form-group">
-                @include('project::project.card.labels.priority_type')
+                @include('project::project.show.card.labels.priority_type')
             </div>
         </div>
     </div>

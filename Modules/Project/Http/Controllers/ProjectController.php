@@ -2,19 +2,16 @@
 
 namespace Modules\Project\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\User; 
 use Modules\Lead\Entities\Label;
 use Modules\Taskly\Entities\Task;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Stage;
 use Modules\Project\Entities\Project;
-use Modules\Taskly\Entities\EstimateQuote;
-use Modules\Taskly\Entities\ProjectComment;
+use Modules\Taskly\Entities\EstimateQuote; 
 use Illuminate\Contracts\Support\Renderable;
-use Modules\Taskly\Entities\ProjectEstimation;
-use Modules\Taskly\Entities\ProjectClientFeedback;
+use Modules\Taskly\Entities\ProjectEstimation; 
 
 class ProjectController extends Controller
 {
@@ -25,26 +22,7 @@ class ProjectController extends Controller
     public function index()
     {
         return view('project::index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
-    {
-        return view('project::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    } 
 
     /**
      * Show the specified resource.
@@ -81,7 +59,7 @@ class ProjectController extends Controller
             ->where('workspace_id', getActiveWorkSpace())
             ->get(); 
 
-        return view('project::project.show', compact(
+        return view('project::project.show.show', compact(
             'project',
             'chartData',
             'project_estimations',
@@ -89,38 +67,7 @@ class ProjectController extends Controller
             'projectLabel',
             'workspace_users'
         ));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('project::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    } 
 
     public function getProjectChart($arrParam)
     {
