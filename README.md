@@ -10,6 +10,7 @@ version : 0.2
 
 **Newly arrived :**
 
+* [X] TinyMCE editor fixed feedback & comment section
 * [X] Added Project Progress
 * [X] Added Backup with Google Drive
 
