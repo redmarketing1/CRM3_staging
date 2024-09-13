@@ -11,8 +11,8 @@ tests/*
 node_modules/*
 /bootstrap/cache/*
 .htaccess-old
-.htaccess
-/public/css/common.css
+.htaccess 
 public/*
 /storage/*
 storage/*
+public/css/common.css
