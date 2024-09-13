@@ -26,7 +26,11 @@ class MainLayoutComposer
     {
         // Pass the variables to the main view
         $view->with([
+<<<<<<< HEAD
             'bodyClasses' => $this->getBodyClasses(),
+=======
+            'bodyClasses'  => $this->getBodyClasses(),
+>>>>>>> f8043efb1b11c425650b927b9536f3d7ecc1c733
             'isRTLVersion' => $this->isRTL(),
         ]);
     }

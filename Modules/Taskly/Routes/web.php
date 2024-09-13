@@ -11,11 +11,38 @@
 |
 */
 use Illuminate\Support\Facades\Route;
+use Modules\Project\Entities\Project;
+use Modules\Taskly\Entities\EstimateQuote;
 use Modules\Taskly\Http\Controllers\ProjectController;
 use Modules\Taskly\Http\Controllers\DashboardController;
 use Modules\Taskly\Http\Controllers\ProjectReportController;
 use Modules\Taskly\Http\Controllers\ProjectProgressController;
 use Modules\Taskly\Http\Controllers\ProjectEstimationController;
+
+Route::get('/asadc', function(){
+    $projectsc = Project::whereNotNull('client_final_quote_id')->get();
+    foreach ($projectsc as $c){
+        $id = $c->client_final_quote_id;
+        $e = EstimateQuote::where('id',$id)->first();
+        $e->final_for_client = 1;
+        $e->save();
+    }
+
+    return 'success';
+});
+
+Route::get('/asadp', function(){
+    $projectsc = Project::whereNotNull('sub_contractor_final_quote_id')->get();
+   
+    foreach ($projectsc as $c){
+        $id = $c->sub_contractor_final_quote_id;
+        $e = EstimateQuote::where('id',$id)->first();
+        $e->final_for_sub_contractor = 1;
+        $e->save();
+    }
+
+    return 'success';
+});
 
 Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::get('dashboard/taskly', [DashboardController::class, 'index'])->name('taskly.dashboard')->middleware(['auth']);
