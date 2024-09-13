@@ -1,6 +1,4 @@
 {
-<<<<<<< Updated upstream
-=======
     "php.suggest.basic": false,
     "editor.formatOnSave": true,
     "editor.formatOnType": false,
@@ -33,7 +31,6 @@
     "editor.quickSuggestions": {
         "strings": "on"
     },
->>>>>>> Stashed changes
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -42,9 +39,4 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true
     },
-<<<<<<< Updated upstream
-    "hide-files.files": [],
-    "php.version": "8.4"
-=======
->>>>>>> Stashed changes
 }
