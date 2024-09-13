@@ -93,8 +93,7 @@
                                  {!! $activity->getRemark() !!}
                              </td>
                              <td class="text-end notification_time_main text-right">
-                                 <p class="">{{ $activity->created_at->diffForHumans() }}
-                                 </p>
+                                 <p class="">{{ $activity->created_at->diffForHumans() }}</p>
                              </td>
                          </tr>
                      @endforeach
