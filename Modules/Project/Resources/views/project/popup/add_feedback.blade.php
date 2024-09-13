@@ -28,7 +28,7 @@
           </div>
 
           {{ Form::label('feedback', __('Your feedback'), ['class' => 'form-label text-lg mb-2']) }}
-          {{ Form::textarea('feedback', null, ['class' => 'form-control tinyMCES', 'required' => 'required', 'rows' => 5, 'id' => 'premsg']) }}
+          {{ Form::textarea('feedback', null, ['class' => 'form-control tinyMCE', 'rows' => 5, 'id' => 'premsg']) }}
 
           {{ Form::file('file', ['class' => 'form-control text-lg mt-4', 'id' => 'file']) }}
       </div>
