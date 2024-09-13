@@ -6,7 +6,6 @@
         "formulahendry.auto-close-tag",
         "formulahendry.auto-rename-tag",
         "mikestead.dotenv",
-        "dracula-theme.theme-dracula",
         "zignd.html-css-class-completion",
         "ryannaddy.laravel-artisan",
         "tiansin.vscode-laravel-assist",
