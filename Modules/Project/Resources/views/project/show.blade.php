@@ -47,7 +47,7 @@
                 @include('project::project.section.files')
                 @include('project::project.section.estimations')
 
-                @includeWhen($display_other_tabs, 'project::project.section.project_progress')
+                @include('project::project.section.project_progress')
 
                 @include('project::project.utility.activity_log')
 
