@@ -22,6 +22,7 @@ use Laravel\Paddle\Billable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Modules\MusicInstitute\Entities\MusicStudent;
 use Modules\MusicInstitute\Entities\MusicTeacher;
+use Modules\Project\Entities\ProjectDelay;
 
 class User extends Authenticatable implements LaratrustUser,MustVerifyEmail,JWTSubject
 {
@@ -641,4 +642,9 @@ public function assignPlan($plan_id = null,$duration = null,$modules = null,$cou
 	{
 		return $this->hasMany(Email::class, 'recipient_id');
 	}
+
+    public function projectDelays()
+    {
+        return $this->morphMany(ProjectDelay::class,'creator');
+    }
 }
