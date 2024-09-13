@@ -1,0 +1,37 @@
+{
+    "recommendations": [
+        "calebporzio.better-phpunit",
+        "mrmlnc.vscode-duplicate",
+        "editorconfig.editorconfig",
+        "formulahendry.auto-close-tag",
+        "formulahendry.auto-rename-tag",
+        "mikestead.dotenv",
+        "dracula-theme.theme-dracula",
+        "zignd.html-css-class-completion",
+        "ryannaddy.laravel-artisan",
+        "tiansin.vscode-laravel-assist",
+        "shufo.vscode-blade-formatter",
+        "onecentlin.laravel-blade",
+        "austenc.laravel-blade-spacer",
+        "onecentlin.laravel-extension-pack",
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "mrchetan.laravel-goto-config",
+        "codingyu.laravel-goto-view",
+        "rafa-acioly.laravel-helpers",
+        "mohamedbenhida.laravel-intellisense",
+        "mahmoudshahin.laravel-routes",
+        "onecentlin.laravel5-snippets",
+        "naoray.laravel-goto-components",
+        "pgl.laravel-jump-controller",
+        "davidanson.vscode-markdownlint",
+        "pkief.material-icon-theme",
+        "mehedidracula.php-constructor",
+        "neilbrayfield.php-docblocker",
+        "bmewburn.vscode-intelephense-client", // Using Intelephense for PHP IntelliSense
+        "esbenp.prettier-vscode",
+        "blade.timetracker",
+        "donjayamanne.githistory",
+        "pranaygp.vscode-css-peek",
+        "carloshenrique.dark-material-dracula"
+    ]
+}
