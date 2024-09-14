@@ -10,6 +10,10 @@
             {{ Form::label('description', __('Description'),['class'=>'form-label']) }}
             {{ Form::textarea('description', null, array('class' => 'form-control tinyMCE','rows'=>3,'required'=>'required','id'=>"description",'placeholder'=> __('Add Description'))) }}
         </div>
+        <div class="form-group col-md-12">
+            {{ Form::label('technical_description', __('Technical Description'),['class'=>'form-label']) }}
+            {{ Form::textarea('technical_description', null, array('class' => 'form-control tinyMCE','rows'=>3,'required'=>'required','id'=>"technical-description",'placeholder'=> __('Add Technical Description'))) }}
+        </div>
         @if($project->type == 'project')
             <div class="form-group col-md-6">
                 {{ Form::label('start_date', __('Start Date'),['class'=>'form-label']) }}

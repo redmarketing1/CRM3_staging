@@ -37,7 +37,7 @@
                              <a href="javascript:void(0)" class="" data-size="lg"
                                  data-url="{{ route('projects.edit', [$project->id]) }}" data-ajax-popup="true"
                                  data-toggle="tooltip" title="{{ __('Edit Project') }}">
-                                 <i class="ti ti-pencil"> </i>
+                                 <i class="ti ti-pencil"></i>
                              </a>
                          </div>
                      @endpermission
