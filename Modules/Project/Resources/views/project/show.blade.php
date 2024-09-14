@@ -719,7 +719,64 @@
             });
         }
     </script>
+    <script>
+        (function() {
+            var options = {
+                chart: {
+                    height: 135,
+                    type: 'line',
+                    toolbar: {
+                        show: false,
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: 2,
+                    curve: 'smooth'
+                },
+                series: [
+                    @foreach ($chartData['stages'] as $id => $name)
+                        {
+                            name: "{{ __($name) }}",
+                            // data:
+                            data: {!! json_encode($chartData[$id]) !!},
+                        },
+                    @endforeach
+                ],
+                xaxis: {
+                    categories: {!! json_encode($chartData['label']) !!},
+                },
+                colors: {!! json_encode($chartData['color']) !!},
 
+                grid: {
+                    strokeDashArray: 4,
+                },
+                legend: {
+                    show: false,
+                },
+
+                yaxis: {
+                    tickAmount: 5,
+                    min: 1,
+                    max: 40,
+                },
+            };
+            var chart = new ApexCharts(document.querySelector("#task-chart"), options);
+            chart.render();
+        })();
+
+        $('.cp_link').on('click', function() {
+            var value = $(this).attr('data-link');
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(value).select();
+            document.execCommand("copy");
+            $temp.remove();
+            toastrs('success', '{{ __('Link Copy on Clipboard') }}', 'success')
+        });
+    </script>
     <script>
         Dropzone.autoDiscover = false;
         myDropzone = new Dropzone("#dropzonewidget", {
@@ -858,63 +915,5 @@
                 delete: "{{ route('projects.file.delete', [$project->id, $file->id]) }}"
             });
         @endforeach
-    </script>
-    <script>
-        (function() {
-            var options = {
-                chart: {
-                    height: 135,
-                    type: 'line',
-                    toolbar: {
-                        show: false,
-                    },
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    width: 2,
-                    curve: 'smooth'
-                },
-                series: [
-                    @foreach ($chartData['stages'] as $id => $name)
-                        {
-                            name: "{{ __($name) }}",
-                            // data:
-                            data: {!! json_encode($chartData[$id]) !!},
-                        },
-                    @endforeach
-                ],
-                xaxis: {
-                    categories: {!! json_encode($chartData['label']) !!},
-                },
-                colors: {!! json_encode($chartData['color']) !!},
-
-                grid: {
-                    strokeDashArray: 4,
-                },
-                legend: {
-                    show: false,
-                },
-
-                yaxis: {
-                    tickAmount: 5,
-                    min: 1,
-                    max: 40,
-                },
-            };
-            var chart = new ApexCharts(document.querySelector("#task-chart"), options);
-            chart.render();
-        })();
-
-        $('.cp_link').on('click', function() {
-            var value = $(this).attr('data-link');
-            var $temp = $("<input>");
-            $("body").append($temp);
-            $temp.val(value).select();
-            document.execCommand("copy");
-            $temp.remove();
-            toastrs('success', '{{ __('Link Copy on Clipboard') }}', 'success')
-        });
     </script>
 @endpush
