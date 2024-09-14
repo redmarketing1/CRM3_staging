@@ -15,9 +15,8 @@ uploads/*
 tests/*
 node_modules/*
 .htaccess-old
-.htaccess
-/public/css/common.css
+.htaccess 
+public/*
 /storage/*
 storage/*
-
-
+public/css/common.css

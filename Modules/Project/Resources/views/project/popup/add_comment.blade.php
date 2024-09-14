@@ -29,7 +29,7 @@
 
 
          {{ Form::label('comment', __('Your comment'), ['class' => 'form-label text-lg mb-2', 'id' => 'commentTextarea']) }}
-         {{ Form::textarea('comment', null, ['class' => 'form-control tinyMCES', 'required' => 'required', 'rows' => 5, 'id' => 'premsg']) }}
+         {{ Form::textarea('comment', null, ['class' => 'form-control tinyMCE', 'rows' => 5, 'id' => 'premsg']) }}
 
          {{ Form::file('file', ['class' => 'form-control text-lg mt-4', 'id' => 'file']) }}
      </div>

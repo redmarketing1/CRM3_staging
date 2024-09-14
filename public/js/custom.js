@@ -821,6 +821,19 @@ function init_mini_colors(selector_id) {
     });
 }
 
+/** call ajaxComplete after open data-popup **/
+$(document).ajaxComplete(function () {
+    tinymce.remove();
+    document.querySelectorAll('.tinyMCE').forEach(function (editor) {
+        init_tiny_mce('#' + editor.id);
+    });
+});
+
+document.querySelectorAll('.tinyMCE').forEach(function (editor) {
+    tinymce.remove();
+    init_tiny_mce('#' + editor.id);
+});
+
 function init_tiny_mce(selector_id) {
     tinymce.init({
         selector: selector_id,

@@ -5,7 +5,7 @@
                 <h5 class="mb-0">{{ __('Appointments') }}
                 </h5>
             </div>
-            @if (\Auth::user()->hasRole('company'))
+            {{-- @if (\Auth::user()->hasRole('company'))
                 <div class="float-end">
                     <p class="text-muted d-sm-flex align-items-center mb-0">
                         <a class="btn btn-sm btn-primary" data-size="lg" data-ajax-popup="true"
@@ -13,7 +13,7 @@
                             title="{{ __('Create') }}"><i class="ti ti-plus"></i></a>
                     </p>
                 </div>
-            @endif
+            @endif --}}
         </div>
     </div>
     <div class="card-body">
