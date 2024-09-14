@@ -21,7 +21,6 @@
         "onecentlin.laravel5-snippets",
         "naoray.laravel-goto-components",
         "pgl.laravel-jump-controller",
-        "davidanson.vscode-markdownlint",
         "pkief.material-icon-theme",
         "mehedidracula.php-constructor",
         "neilbrayfield.php-docblocker",
@@ -30,6 +29,9 @@
         "blade.timetracker",
         "donjayamanne.githistory",
         "pranaygp.vscode-css-peek",
-        "carloshenrique.dark-material-dracula"
+        "carloshenrique.dark-material-dracula",
+        "cweijan.vscode-office",
+        "mehedidracula.php-namespace-resolver",
+        "devsense.phptools-vscode"
     ]
 }

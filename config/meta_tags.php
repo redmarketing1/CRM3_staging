@@ -8,7 +8,7 @@ return [
      */
     'title'       => [
         'default'    => env('APP_NAME', 'NEU WEST'),
-        'separator'  => '-',
+        'separator'  => '|',
         'max_length' => 255,
     ],
 

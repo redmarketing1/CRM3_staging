@@ -181,6 +181,7 @@ return [
         Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
 		JanDrda\LaravelGoogleCustomSearchEngine\LaravelGoogleCustomSearchEngineProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        App\Providers\MetaTagsServiceProvider::class,
     ])->toArray(),
 
     /*

@@ -10,6 +10,7 @@ version : 0.2
 
 **Newly arrived :**
 
+* [X] common.css issues updated
 * [X] TinyMCE editor fixed feedback & comment section
 * [X] Added Project Progress
 * [X] Added Backup with Google Drive
@@ -17,10 +18,6 @@ version : 0.2
 **Outdated feature :**
 
 * Added OpenAI (For chatGPT)
-
-**Admin feature :**
-
-* coming...
 
 ## Clone private Github Repo to cPanel Server
 

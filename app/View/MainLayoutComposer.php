@@ -5,18 +5,20 @@ namespace App\View;
 class MainLayoutComposer
 {
     private $themeColor;
+    private $themeColorCode;
     private $bodyClassArray = [];
 
     public function __construct()
     {
-        // Fetch company settings
+        $admin_settings   = getAdminAllSetting();
         $company_settings = getCompanyAllSetting(creatorId());
 
-        // Determine the theme color
-        $color            = ! empty($company_settings['color']) ? $company_settings['color'] : 'theme-1';
-        $this->themeColor = (isset($company_settings['color_flag']) && $company_settings['color_flag'] === 'true')
-            ? 'custom-color'
-            : $color;
+        // Determine the theme color style
+
+        $this->themeColor = (isset($company_settings['color_flag']) && $company_settings['color_flag'] === 'true') ? 'custom-color' : '';
+
+        $this->themeColorCode = $company_settings['color'] ?? 'theme-1';
+
 
         // Determine body classes
         $this->setBodyClasses();
@@ -26,12 +28,11 @@ class MainLayoutComposer
     {
         // Pass the variables to the main view
         $view->with([
-<<<<<<< HEAD
-            'bodyClasses' => $this->getBodyClasses(),
-=======
-            'bodyClasses'  => $this->getBodyClasses(),
->>>>>>> f8043efb1b11c425650b927b9536f3d7ecc1c733
-            'isRTLVersion' => $this->isRTL(),
+            'bodyClasses'    => $this->getBodyClasses(),
+            'isRTLVersion'   => $this->isRTL(),
+            'themeColor'     => $this->themeColor,
+            'themeColorCode' => $this->themeColorCode,
+            'style'          => $this->setStyle(),
         ]);
     }
 
@@ -66,5 +67,14 @@ class MainLayoutComposer
     private function isRTL()
     {
         return ($company_settings['site_rtl'] ?? 'off') === 'on' ? 'rtl' : '';
+    }
+
+    private function setStyle()
+    {
+        $style = [];
+
+        $style[] = '--color-customColor:' . $this->themeColorCode;
+
+        return implode(' ', $style);
     }
 }

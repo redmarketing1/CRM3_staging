@@ -2,16 +2,17 @@
 
 namespace Modules\Project\Http\Controllers;
 
-use App\Models\User; 
+use App\Models\User;
 use Modules\Lead\Entities\Label;
+use Butschster\Head\Facades\Meta;
 use Modules\Taskly\Entities\Task;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Stage;
 use Modules\Project\Entities\Project;
-use Modules\Taskly\Entities\EstimateQuote; 
+use Modules\Taskly\Entities\EstimateQuote;
 use Illuminate\Contracts\Support\Renderable;
-use Modules\Taskly\Entities\ProjectEstimation; 
+use Modules\Taskly\Entities\ProjectEstimation;
 
 class ProjectController extends Controller
 {
@@ -22,11 +23,11 @@ class ProjectController extends Controller
     public function index()
     {
         return view('project::index');
-    } 
+    }
 
     /**
      * Show the specified resource.
-     * @param int $id 
+     * @param int $project 
      */
     public function show(Project $project)
     {
@@ -53,11 +54,14 @@ class ProjectController extends Controller
 
         $estimationStatus = ProjectEstimation::$statues;
         $projectLabel     = Label::get_project_dropdowns();
-       
+
         $workspace_users = User::where('created_by', '=', creatorId())
             ->emp()
             ->where('workspace_id', getActiveWorkSpace())
-            ->get(); 
+            ->get();
+
+
+        Meta::prependTitle($project->name)->setTitle('Project Detail');
 
         return view('project::project.show.show', compact(
             'project',
@@ -65,9 +69,9 @@ class ProjectController extends Controller
             'project_estimations',
             'estimationStatus',
             'projectLabel',
-            'workspace_users'
+            'workspace_users',
         ));
-    } 
+    }
 
     public function getProjectChart($arrParam)
     {
