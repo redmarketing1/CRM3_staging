@@ -12,8 +12,3 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-Route::middleware(['auth'])->group(function () {
-    require module_path('Project', 'Routes/admin.php');
-});

@@ -7,18 +7,18 @@
             "email": "fxcjahid3@gmail.com"
         }
     ],
-    "require": {
-        "spatie/laravel-backup": "^9.0"
-    },
     "extra": {
         "laravel": {
             "providers": [],
             "aliases": {}
         }
     },
+    "require": {
+        "fxcjahid/laravel-assets-manager": "1"
+    },
     "autoload": {
         "psr-4": {
-            "Modules\\Backup\\": ""
+            "Modules\\Core\\": ""
         }
     }
 }

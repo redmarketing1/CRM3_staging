@@ -1,24 +1,20 @@
 <?php
 
-namespace Modules\Project\Providers;
+namespace Modules\Core\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Fxcjahid\LaravelAssetsManager\Traits\AddsAsset;
 
-
-class ProjectServiceProvider extends ServiceProvider
+class CoreServiceProvider extends ServiceProvider
 {
-    use AddsAsset;
-
     /**
      * @var string $moduleName
      */
-    protected $moduleName = 'Project';
+    protected $moduleName = 'Core';
 
     /**
      * @var string $moduleNameLower
      */
-    protected $moduleNameLower = 'project';
+    protected $moduleNameLower = 'core';
 
     /**
      * Boot the application events.
@@ -31,8 +27,6 @@ class ProjectServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
-
-        $this->addAssets('project.index', ['project.index.css', 'project.index.js']);
     }
 
     /**
@@ -43,7 +37,7 @@ class ProjectServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
-        $this->app->register(EventServiceProvider::class);
+        // $this->app->register(EventServiceProvider::class);
     }
 
     /**
@@ -62,7 +56,7 @@ class ProjectServiceProvider extends ServiceProvider
         );
 
         $this->mergeConfigFrom(
-            module_path($this->moduleName, 'Config/assets.php'), $this->moduleNameLower,
+            module_path($this->moduleName, 'Config/permissions.php'), $this->moduleNameLower,
         );
     }
 

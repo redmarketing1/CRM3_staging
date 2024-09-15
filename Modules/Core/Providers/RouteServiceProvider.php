@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Project\Providers;
+namespace Modules\Core\Providers;
 
 use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
@@ -12,7 +13,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $moduleNamespace = 'Modules\Project\Http\Controllers';
+    protected $moduleNamespace = 'Modules\Core\Http\Controllers';
 
     /**
      * Called before routes are registered.
@@ -51,7 +52,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware('web')
             ->namespace($this->moduleNamespace)
-            ->group(module_path('Project', '/Routes/web.php'));
+            ->group(module_path('Core', '/Routes/web.php'));
     }
 
     /**
@@ -66,7 +67,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->moduleNamespace)
-            ->group(module_path('Project', '/Routes/api.php'));
+            ->group(module_path('Core', '/Routes/api.php'));
     }
 
     /**
@@ -78,8 +79,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapAdminRoutes()
     {
-        Route::middleware(['SuperAdmin', 'auth', 'web'])
+        Route::middleware(['SuperAdmin'])
             ->namespace($this->moduleNamespace)
-            ->group(module_path('Project', '/Routes/admin.php'));
+            ->group(module_path('Core', '/Routes/admin.php'));
     }
 }
