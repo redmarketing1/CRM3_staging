@@ -75,6 +75,8 @@ class ProjectController extends Controller
         $city             = array_unique($city);
         $state            = array_unique($state);
 
+        $dataTables = $this->dataTables();
+
         return view('project::project.index.index', compact(
             'projects',
             'project_dropdown',
@@ -84,7 +86,28 @@ class ProjectController extends Controller
             'state',
             'projectUser',
             'projectmaxprice',
+            'dataTables',
         ));
+    }
+
+    public function dataTables()
+    {
+        $user = Auth::user();
+
+        if ($user->type == 'company') {
+            $projects = Project::where('projects.created_by', '=', $user->id);
+        } else {
+            $projects = Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
+                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id');
+
+            $projects->where(function ($query) use ($user) {
+                $query->where('client_projects.client_id', $user->id)
+                    ->orWhere('estimate_quotes.user_id', $user->id);
+            });
+        }
+
+        return $projects->get();
+
     }
 
     /**

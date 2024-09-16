@@ -39,153 +39,16 @@
     </div>
 @endsection
 
-@php
-    //$profile = \App\Models\Utility::get_file('uploads/avatar/');
-    $projectmaxprice = isset($projectmaxprice) && $projectmaxprice > 100 ? $projectmaxprice : 100;
-    $half_price = 50;
-    if ($projectmaxprice > 100) {
-        $half_price = $projectmaxprice / 2;
-    }
-@endphp
-
-@push('css')
-    <style>
-        .filter-wrapper {
-            margin-bottom: 20px;
-        }
-
-        .filter-wrapper select,
-        .filter-wrapper input {
-            margin-right: 10px;
-            padding: 5px;
-        }
-
-        th,
-        td {
-            text-align: center;
-        }
-
-        .image-column img {
-            width: 50px;
-            height: 50px;
-        }
-    </style>
-@endpush
-
-
-
 @section('content')
     <div class="row">
         @include('project::project.index.utility.tabs_filter_button')
-
-        @include('project::project.index.utility.tables')
-
-
-        <div class="filter-wrapper">
-            <select id="country-filter">
-                <option value="">Select Country</option>
-                <option value="USA">USA</option>
-                <option value="Canada">Canada</option>
-            </select>
-
-            <select id="state-filter">
-                <option value="">Select State</option>
-                <option value="California">California</option>
-                <option value="Texas">Texas</option>
-            </select>
-
-            <select id="city-filter">
-                <option value="">Select City</option>
-                <option value="Los Angeles">Los Angeles</option>
-                <option value="Houston">Houston</option>
-            </select>
-
-            <select id="archive-filter">
-                <option value="">All Projects</option>
-                <option value="Not Archived">Not Archived</option>
-            </select>
+        <div class="col-xl-12">
+            <div class="card projectsTableContainter">
+                <div class="card-body table-border-style">
+                    @include('project::project.index.utility.table_filter')
+                    @include('project::project.index.utility.table')
+                </div>
+            </div>
         </div>
-
-        <table id="projectsTable" class="display" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Status</th>
-                    <th>Name</th>
-                    <th>Comments</th>
-                    <th>Priority</th>
-                    <th>Construction</th>
-                    <th>Project Net</th>
-                    <th>Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Active</td>
-                    <td>Project Alpha</td>
-                    <td>Initial phase completed</td>
-                    <td>High</td>
-                    <td>Building A</td>
-                    <td>50000</td>
-                    <td>2023-07-15</td>
-                    <td><button>View</button></td>
-                </tr>
-                <tr>
-                    <td>Inactive</td>
-                    <td>Project Beta</td>
-                    <td>Awaiting approval</td>
-                    <td>Medium</td>
-                    <td>Building B</td>
-                    <td>75000</td>
-                    <td>2023-08-20</td>
-                    <td><button>View</button></td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-        </table>
-
-
     </div>
 @endsection
-
-
-@push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            var table = $('#projectsTable').DataTable();
-
-            // Custom filtering function for external filters
-            $.fn.dataTable.ext.search.push(
-                function(settings, data, dataIndex) {
-                    var country = $('#country-filter').val();
-                    var state = $('#state-filter').val();
-                    var city = $('#city-filter').val();
-                    var archive = $('#archive-filter').val();
-
-                    var projectCountry = data[6]; // Country column (Example: "USA")
-                    var projectState = data[6]; // State column (Example: "California")
-                    var projectCity = data[6]; // City column (Example: "Los Angeles")
-                    var projectArchive = data[1]; // Status column (Active/Inactive)
-
-                    if (
-                        (country === "" || projectCountry.includes(country)) &&
-                        (state === "" || projectState.includes(state)) &&
-                        (city === "" || projectCity.includes(city)) &&
-                        (archive === "" || (archive === "Not Archived" && projectArchive === "Active"))
-                    ) {
-                        return true;
-                    }
-                    return false;
-                }
-            );
-
-            // Event listeners for the filters
-            $('#country-filter, #state-filter, #city-filter, #archive-filter').on('change', function() {
-                table.draw();
-            });
-        });
-    </script>
-@endpush

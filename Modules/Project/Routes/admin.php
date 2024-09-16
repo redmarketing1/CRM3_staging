@@ -23,6 +23,8 @@ Route::prefix('project')->group(function () {
     Route::resource('{id}/comment', 'ProjectCommentController')
         ->names('project.comment');
 
+    Route::get('tables', 'ProjectController@dataTables');
+
 });
 
 Route::resource('project', 'ProjectController');
