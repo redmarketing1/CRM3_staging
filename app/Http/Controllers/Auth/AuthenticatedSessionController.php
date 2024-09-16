@@ -55,6 +55,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        
         $validation = [];
         $redirect = false;
         if (module_is_active('GoogleCaptcha') && admin_setting('google_recaptcha_is_on') == 'on') {
@@ -114,7 +115,7 @@ class AuthenticatedSessionController extends Controller
             $login_detail->workspace = getActiveWorkSpace();
             $login_detail->save();
         }
-
+        
         // custom domain code
         if(Auth::user()->type != 'super admin')
         {
@@ -125,6 +126,7 @@ class AuthenticatedSessionController extends Controller
             $local = parse_url(config('app.url'))['host'];
             // Get the request host
             $remote = request()->getHost();
+            
             if($local != $remote)
             {
                 $remote = str_replace('www.', '', $remote);
@@ -191,7 +193,7 @@ class AuthenticatedSessionController extends Controller
             }
 
         }
-
+        
         if($redirect)
         {
             return redirect()->away('http://'.$remote.'/dashboard');

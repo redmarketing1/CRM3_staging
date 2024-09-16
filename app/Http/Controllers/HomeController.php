@@ -87,7 +87,7 @@ class HomeController extends Controller
                 $dashboardItem = collect($menu_items)->first(function ($item) {
                     return $item['parent'] === 'dashboard';
                 });
-
+                
                 if ($dashboardItem) {
                     $route = isset($dashboardItem['route']) ? $dashboardItem['route'] : null;
                     if($route)

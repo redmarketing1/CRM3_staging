@@ -16,6 +16,7 @@ class CompanyMenuEvent
      */
     public function __construct($menu)
     {
+       
         $this->menu = $menu;
     }
 }
