@@ -3,54 +3,118 @@
 namespace Modules\Project\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Country;
 use Illuminate\Http\Request;
 use Modules\Lead\Entities\Label;
+use Butschster\Head\Facades\Meta;
 use Modules\Taskly\Entities\Task;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Stage;
+use Nwidart\Modules\Facades\Module;
+use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
 use Modules\Taskly\Entities\EstimateQuote;
-use Modules\Taskly\Entities\ProjectComment;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\ProjectEstimation;
-use Modules\Taskly\Entities\ProjectClientFeedback;
 
 class ProjectController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     * @return Renderable
+     * Display a listing of the resource. 
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('project::index');
+        if (! Auth::user()->isAbleTo('project manage')) {
+            return redirect()
+                ->back()
+                ->with('error', __('Permission Denied.'));
+        }
+
+        $objUser     = Auth::user();
+        $projectUser = array();
+        $city        = array();
+        $state       = array();
+
+        if (Auth::user()->hasRole('client')) {
+            $projects = Project::select('projects.*')->join('client_projects', 'projects.id', '=', 'client_projects.project_id')->projectonly()->where('client_projects.client_id', '=', Auth::user()->id)->where('projects.workspace', '=', getActiveWorkSpace());
+        } else {
+            $projects = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->projectonly()->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', getActiveWorkSpace());
+        }
+        if ($request->start_date) {
+            $projects->where('start_date', $request->start_date);
+        }
+        if ($request->end_date) {
+            $projects->where('end_date', $request->end_date);
+        }
+        $projects = $projects->get();
+
+        foreach ($projects as $project) {
+            if (isset($project->clients)) {
+                foreach ($project->clients as $user) {
+                    $projectUser[] = $user;
+                }
+            }
+
+            if (isset($project->construction_detail->city) && ($project->construction_detail->city != '')) {
+                $city[] = ucfirst($project->construction_detail->city);
+            }
+            if (isset($project->construction_detail->state) && ($project->construction_detail->state != '')) {
+                $state[] = ucfirst($project->construction_detail->state);
+            }
+
+        }
+
+        $filters_request['order_by'] = array('field' => 'projects.created_at', 'order' => 'DESC');
+        $project_record              = Project::get_all($filters_request);
+        $all_projects                = isset($project_record['records']) ? $project_record['records'] : array();
+
+        $project_dropdown = Label::get_project_dropdowns();
+        $projectmaxprice  = EstimateQuote::max('net');
+        $countries        = Country::select(['id', 'name', 'iso'])->get();
+        $city             = array_unique($city);
+        $state            = array_unique($state);
+
+        $dataTables = $this->dataTables();
+
+        return view('project::project.index.index', compact(
+            'projects',
+            'project_dropdown',
+            'all_projects',
+            'countries',
+            'city',
+            'state',
+            'projectUser',
+            'projectmaxprice',
+            'dataTables',
+        ));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
+    public function dataTables()
     {
-        return view('project::create');
-    }
+        $user = Auth::user();
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
-    {
-        //
+        if ($user->type == 'company') {
+            $projects = Project::where('projects.created_by', '=', $user->id);
+        } else {
+            $projects = Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
+                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id');
+
+            $projects->where(function ($query) use ($user) {
+                $query->where('client_projects.client_id', $user->id)
+                    ->orWhere('estimate_quotes.user_id', $user->id);
+            });
+        }
+
+        return $projects->get();
+
     }
 
     /**
      * Show the specified resource.
-     * @param int $id 
+     * @param int $project 
      */
     public function show(Project $project)
     {
@@ -77,53 +141,24 @@ class ProjectController extends Controller
 
         $estimationStatus = ProjectEstimation::$statues;
         $projectLabel     = Label::get_project_dropdowns();
-       
+
         $workspace_users = User::where('created_by', '=', creatorId())
             ->emp()
             ->where('workspace_id', getActiveWorkSpace())
-            ->get(); 
+            ->get();
 
-        return view('project::project.show', compact(
+
+        Meta::prependTitle($project->name)->setTitle('Project Detail');
+
+        return view('project::project.show.show', compact(
             'project',
             'chartData',
             'project_estimations',
             'estimationStatus',
             'projectLabel',
-            'workspace_users'
+            'workspace_users',
         ));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('project::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
     public function getProjectChart($arrParam)
     {
         $arrDuration = [];

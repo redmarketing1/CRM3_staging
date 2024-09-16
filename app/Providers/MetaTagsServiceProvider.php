@@ -102,6 +102,10 @@ class MetaTagsServiceProvider extends ServiceProvider
             $meta->addStyle('style.css', asset('assets/css/style.css'), ['id' => 'main-style-link']);
         }
 
+        foreach (app('asset-manager')->allCss() as $name => $url) {
+            $meta->addStyle($name, $url);
+        }
+
 
         return $meta;
     }
@@ -128,6 +132,11 @@ class MetaTagsServiceProvider extends ServiceProvider
 
         if (! empty($companySettings['category_wise_sidemenu']) && $companySettings['category_wise_sidemenu'] == 'on') {
             $meta->addScript("layout-tab", asset('assets/js/layout-tab.js'));
+        }
+
+
+        foreach (app('asset-manager')->allJs() as $name => $url) {
+            $meta->addScript($name, $url);
         }
 
         return $meta;

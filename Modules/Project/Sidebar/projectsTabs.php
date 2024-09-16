@@ -97,7 +97,7 @@ class projectsTabs
         $groupedProjects = $allProjects->unique('status_data.name');
 
         // Combine the generated menu with the existing tab items
-        $html = view('project::project.tabs.items_button', compact('groupedProjects'))->render();
+        $html = view('project::project.show.tabs.items_button', compact('groupedProjects'))->render();
 
         return $html;
     }
@@ -107,7 +107,7 @@ class projectsTabs
         $allProjects     = Project::with('status_data')->get();
         $groupedProjects = $allProjects->groupBy('status_data.name');
 
-        $html = view('project::project.tabs.items_content', compact('groupedProjects', 'allProjects'))->render();
+        $html = view('project::project.show.tabs.items_content', compact('groupedProjects', 'allProjects'))->render();
 
         return $html . $this->renderHtmlMenu();
     }

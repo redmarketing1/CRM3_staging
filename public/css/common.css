@@ -7760,9 +7760,11 @@ td.project-budget {
     align-item: center;
     margin-bottom: 10px !important;
 }
+
 .files-card .card-body {
     padding: 0 !important;
 }
+
 .dropzone {
     border: none !important;
     /* box-shadow: 0 0 0 3px #FFF; */
@@ -7773,7 +7775,7 @@ td.project-budget {
     column-gap: 0;
     display: block !important;
     flex: none !important;
-    margin:0; 
+    margin: 0;
     width: auto !important;
     border-radius: 0 0 10px 10px !important;
 }
@@ -7784,7 +7786,7 @@ td.project-budget {
     }
 }
 
-@media (min-width: 500px) and (max-width: 799px)  {
+@media (min-width: 500px) and (max-width: 799px) {
     .dropzone {
         column-count: 4;
     }
@@ -7807,12 +7809,14 @@ td.project-budget {
         column-count: 7;
     }
 }
+
 /* .dropzone:hover {
     background: #5ab18217;
 } */
 .dropzone .dz-preview.dz-image-preview img {
     cursor: pointer;
 }
+
 .dropzone .dz-preview {
     margin: 0;
     display: grid;
@@ -7826,9 +7830,9 @@ td.project-budget {
     border-color: #333333;
     background-color: #f8f8f8;
 }
-.dropzone .dz-preview .dz-image img:hover 
-{
-cursor: pointer;
+
+.dropzone .dz-preview .dz-image img:hover {
+    cursor: pointer;
 }
 
 .dz-message {
@@ -7851,10 +7855,12 @@ cursor: pointer;
     height: auto;
     border: 5px solid #FFF;
 }
+
 .files-card .dropzone .dz-preview .dz-image:hover {
     border: 5px solid #94c1d3;
     transition: 0.2s ease-in-out;
 }
+
 .gm-style-iw-chr button {
     position: absolute !important;
     right: -5px;
@@ -7984,7 +7990,7 @@ span.select2-selection.select2-selection--multiple {
 
 .badge.bg.Close {
     background-color: #f6225a !important;
-} 
+}
 
 #estimation-edit-table .dropdown-menu.show {
     position: absolute !important;

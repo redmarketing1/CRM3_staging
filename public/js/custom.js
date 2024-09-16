@@ -493,7 +493,21 @@ $(document).ready(function () {
             }
         });
     });
-});
+
+    /** call ajaxComplete after open data-popup **/
+    $(document).ajaxComplete(function () {
+        tinymce.remove();
+        document.querySelectorAll('.tinyMCE').forEach(function (editor) {
+            init_tiny_mce('#' + editor.id);
+        });
+    });
+
+    document.querySelectorAll('.tinyMCE').forEach(function (editor) {
+        tinymce.remove();
+        init_tiny_mce('#' + editor.id);
+    });
+
+}); //end document ready function
 
 function load_conversatios() {
     $.ajax({
@@ -820,19 +834,6 @@ function init_mini_colors(selector_id) {
         theme: 'bootstrap'
     });
 }
-
-/** call ajaxComplete after open data-popup **/
-$(document).ajaxComplete(function () {
-    tinymce.remove();
-    document.querySelectorAll('.tinyMCE').forEach(function (editor) {
-        init_tiny_mce('#' + editor.id);
-    });
-});
-
-document.querySelectorAll('.tinyMCE').forEach(function (editor) {
-    tinymce.remove();
-    init_tiny_mce('#' + editor.id);
-});
 
 function init_tiny_mce(selector_id) {
     tinymce.init({

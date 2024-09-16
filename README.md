@@ -10,30 +10,27 @@ version : 0.2
 
 **Newly arrived :**
 
-* [X] TinyMCE editor fixed feedback & comment section
-* [X] Added Project Progress
-* [X] Added Backup with Google Drive
-
-**Outdated feature :**
-
-* Added OpenAI (For chatGPT)
-
-**Admin feature :**
-
-* coming...
+- [x] Optimize main blade files
+- [x] Optimize footer code
+- [x] Optimize Project view code
+- [x] Project browser title updated
+- [x] common.css issues updated
+- [x] TinyMCE editor fixed feedback & comment section
+- [x] Added Project Progress
+- [x] Added Backup with Google Drive
 
 ## Clone private Github Repo to cPanel Server
 
-* Youtube ( [https://youtu.be/3-6wQIDj-yE]() )
-* Web article ( [read](https://dashboard.webhostingmagic.com/knowledgebase/242/How-To-Clone-A-Private-Github-Repo-To-A-cPanel-Server.html "view website") )
+- Youtube ( [https://youtu.be/3-6wQIDj-yE]() )
+- Web article ( [read](https://dashboard.webhostingmagic.com/knowledgebase/242/How-To-Clone-A-Private-Github-Repo-To-A-cPanel-Server.html "view website") )
 
 ## Create your Google Drive API keys
 
 Detailed information on how to obtain your API ID, secret and refresh token:
 
-* [Getting your Client ID and Secret](https://github.com/ivanvermeyen/laravel-google-drive-demo/blob/master/README/1-getting-your-dlient-id-and-secret.md)
-* [Getting your Refresh Token](https://github.com/ivanvermeyen/laravel-google-drive-demo/blob/master/README/2-getting-your-refresh-token.md)
-* [Getting your Root Folder ID](https://github.com/ivanvermeyen/laravel-google-drive-demo/blob/master/README/3-getting-your-root-folder-id.md)
+- [Getting your Client ID and Secret](https://github.com/ivanvermeyen/laravel-google-drive-demo/blob/master/README/1-getting-your-dlient-id-and-secret.md)
+- [Getting your Refresh Token](https://github.com/ivanvermeyen/laravel-google-drive-demo/blob/master/README/2-getting-your-refresh-token.md)
+- [Getting your Root Folder ID](https://github.com/ivanvermeyen/laravel-google-drive-demo/blob/master/README/3-getting-your-root-folder-id.md)
 
 ## The tools maybe help you
 
@@ -51,7 +48,7 @@ You can try increasing post buffer size using
 git config --global http.postBuffer 157286400
 ```
 
-*You can force git using http version 1.1*
+_You can force git using http version 1.1_
 
 ```
 git config --global http.version HTTP/1.1
