@@ -103,6 +103,24 @@ class Project extends Model
         })->count();
     }
 
+    public function getStatusAttribute($status)
+    {
+        $labelOfProject = Label::get_project_dropdowns();
+
+        $projectStatus = collect($labelOfProject['project_status']);
+
+        return $projectStatus->where('id', $status)->first();
+    }
+
+    public function getPriorityAttribute($priority)
+    {
+        $labelOfProject = Label::get_project_dropdowns();
+
+        $projectStatus = collect($labelOfProject['priority']);
+
+        return $projectStatus->where('id', $priority)->first();
+    }
+
     /**
      * Return project URL
      * @return string

@@ -185,7 +185,7 @@ class ProjectController extends Controller
         foreach ($record as $key => $value) {
             $image       = '<img class="default-thumbnail" width="100%" src="' . URL('assets/images/default_thumbnail3.png') . '">';
             $latest_file = $value->project_default_file;
-            
+
             //dd($latest_file);
             //	dd($latest_file);
             if (isset($latest_file->file_name)) {
@@ -898,25 +898,25 @@ class ProjectController extends Controller
     public function addProjectTeamMember(Request $request, $id)
     {
         // Check if users were selected
-        if (isset($request->users) && !empty($request->users)) {
+        if (isset($request->users) && ! empty($request->users)) {
             // Use sync() to update the relationship, which will automatically add/remove members
             $project = Project::findOrFail($id);
             $project->users()->sync($request->users);
             $count = $project->users()->count();
             return response()->json([
                 'is_success' => true,
-                'count' => $count,
-                'message' => __('Project members updated successfully.')
+                'count'      => $count,
+                'message'    => __('Project members updated successfully.'),
             ]);
         } else {
             // If no users were selected, remove all project members
             UserProject::where('project_id', $id)->delete();
             $project = Project::findOrFail($id);
-            $count = $project->users()->count();
+            $count   = $project->users()->count();
             return response()->json([
                 'is_success' => true,
-                'count' => $count,
-                'message' => __('All project members removed successfully.')
+                'count'      => $count,
+                'message'    => __('All project members removed successfully.'),
             ]);
         }
     }
@@ -2707,11 +2707,11 @@ class ProjectController extends Controller
                 $form_field = $field;
             }
             $clients = genericGetContacts();
-            
+
             $project_estimations = ProjectEstimation::where('project_id', $projectID)->where('init_status', 1)->pluck('id');
-           
-            $estimation_quotes   = array();
-            
+
+            $estimation_quotes = array();
+
             if (count($project_estimations) > 0) {
                 $estimation_quotes = EstimateQuote::whereIn('project_estimation_id', $project_estimations)->get();
             }
@@ -2723,7 +2723,7 @@ class ProjectController extends Controller
 
     public function update_details(Request $request, $project_id, $form_field = "")
     {
-       
+
         $request['country'] = (isset($request->country) && ! empty($request->country)) ? $request->country : null;
 
         if (Auth::user()->type == 'company') {
@@ -2752,7 +2752,7 @@ class ProjectController extends Controller
                     'message'    => $messages->first(),
                 ]);
             }
-            
+
             $projectID = isset($project_id) ? $project_id : 0;
 
             $project_details = Project::find($projectID);
@@ -2875,7 +2875,7 @@ class ProjectController extends Controller
                     'longitude'    => $request->construction_longitude,
                 );
                 $user_id  = 0;
-                
+
                 if (isset($request->client_type1) && $request->client_type1 == 'new') {
                     $return = $this->userService->genericCreateFunc('client', 'new', null, $new_data, true);
                     if ($return['status'] == true) {
