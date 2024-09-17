@@ -13,8 +13,8 @@
     </thead>
     <tbody>
         @foreach ($projects as $project)
-            <tr id="project-items" data-project-backgroundColor="{{ $project->status->background_color }}"
-                data-project-fontColor="{{ $project->status->font_color }}">
+            <tr id="project-items" data-project-backgroundColor="{{ $project->status->background_color ?? '#c3c3c3' }}"
+                data-project-fontColor="{{ $project->status->font_color ?? '#000' }}">
                 <td>
                     <div class="data-thubmnail">
                         <img src="{{ asset('assets/images/default_thumbnail3.png') }}">
@@ -25,7 +25,7 @@
                         <a href="{{ route('project.show', $project->id) }}" target="__blank">
                             <h2 class="data-name font-medium text-xl">{{ $project->name }}</h2>
                         </a>
-                        <div class="d-flex data-sub-name flex-column font-normal">
+                        {{-- <div class="d-flex data-sub-name flex-column font-normal">
                             <span class="construction-client-name">
                                 <a href="#" class="text-sm text-black">
                                     Markus Hartwig
@@ -34,12 +34,13 @@
                             <span class="text-sm text-black">
                                 Steinfurter Allee, 44
                             </span>
-                        </div>
+                        </div> --}}
                     </div>
                 </td>
                 <td>
-                    <span class="data-project-status" data-backgroundColor="{{ $project->status->background_color }}"
-                        data-fontColor="{{ $project->status->font_color }}">{{ $project->status->name }}</span>
+                    <span class="data-project-status"
+                        data-backgroundColor="{{ $project->status->background_color ?? '#c3c3c3' }}"
+                        data-fontColor="{{ $project->status->font_color ?? '#000' }}">{{ $project->status->name ?? 'N/A' }}</span>
                 </td>
                 <td>{{ $project->comments ?? 'N/A' }}</td>
                 <td data-fontColor="{{ $project->priority->background_color ?? '#c3c3c3' }}">
