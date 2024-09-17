@@ -12,18 +12,19 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($dataTables as $data)
-            <tr id="project-items" data-project-backgroundColor="{{ $data->status->background_color }}"
-                data-project-fontColor="{{ $data->status->font_color }}">
+        @foreach ($projects as $project)
+            <tr id="project-items" data-project-backgroundColor="{{ $project->status->background_color }}"
+                data-project-fontColor="{{ $project->status->font_color }}">
                 <td>
                     <div class="data-thubmnail">
-                        <img src="https://neu-west.com/crm3_staging/assets/images/default_thumbnail3.png" alt=""
-                            srcset="">
+                        <img src="{{ asset('assets/images/default_thumbnail3.png') }}">
                     </div>
                 </td>
                 <td>
                     <div class="d-flex flex-column text-left">
-                        <h2 class="data-name font-medium text-xl">{{ $data->name }}</h2>
+                        <a href="{{ route('project.show', $project->id) }}" target="__blank">
+                            <h2 class="data-name font-medium text-xl">{{ $project->name }}</h2>
+                        </a>
                         {{-- <div class="d-flex data-sub-name flex-column font-normal">
                             <span class="construction-client-name">
                                 <a href="#" class="text-sm text-black">
@@ -37,18 +38,35 @@
                     </div>
                 </td>
                 <td>
-                    <div class="data-project-status">
-                        {{ $data->status->name }}
-                    </div>
+                    <span class="data-project-status" data-backgroundColor="{{ $project->status->background_color }}"
+                        data-fontColor="{{ $project->status->font_color }}">{{ $project->status->name }}</span>
                 </td>
-                {{-- <td>{{ $data->comments ?? 'N/A' }}</td> --}}
-                <td data-fontColor="{{ $data->priority->background_color ?? '#c3c3c3' }}">
-                    {{ $data->priority->name ?? 'N/A' }}
+                {{-- <td>{{ $project->comments ?? 'N/A' }}</td> --}}
+                <td data-fontColor="{{ $project->priority->background_color ?? '#c3c3c3' }}">
+                    {{ $project->priority->name ?? 'N/A' }}
                 </td>
                 <td>Building A</td>
-                <td>{{ currency_format_with_sym($data->budget) }}</td>
-                <td>{{ company_datetime_formate($data->created_at) }}</td>
-                <td><button>View</button></td>
+                <td>{{ currency_format_with_sym($project->budget) }}</td>
+                <td>{{ company_datetime_formate($project->created_at) }}</td>
+                <td>
+                    <div class="actions">
+                        <div class="action-btn bg-primary ms-2">
+                            <a data-size="lg" data-url="{{ route('projects.edit', [$project->id]) }}"
+                                class="btn btn-sm d-inline-flex align-items-center text-white " data-ajax-popup="true"
+                                data-bs-toggle="tooltip" data-title="{{ trans('Edit Project') }}"
+                                title="{{ trans('Edit Project') }}">
+                                <i class="ti ti-pencil"></i>
+                            </a>
+                        </div>
+                        <div class="action-btn bg-warning ms-2">
+                            <a href="{{ route('project.show', $project->id) }}" target="__blank"
+                                data-bs-toggle="tooltip" title="View Project Details" data-title="View Project Details"
+                                class="mx-3 btn btn-sm d-inline-flex align-items-center text-white ">
+                                <i class="ti ti-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                </td>
             </tr>
         @endforeach
     </tbody>

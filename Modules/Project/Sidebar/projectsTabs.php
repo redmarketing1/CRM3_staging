@@ -96,7 +96,6 @@ class projectsTabs
         $allProjects     = Project::with('status_data')->get();
         $groupedProjects = $allProjects->unique('status_data.name');
 
-        // Combine the generated menu with the existing tab items
         $html = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
 
         return $html;

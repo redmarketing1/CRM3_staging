@@ -21,93 +21,49 @@ use Modules\Taskly\Entities\ProjectEstimation;
 class ProjectController extends Controller
 {
     /**
-     * Display a listing of the resource. 
+     * Display for projects table 
      */
-    public function index(Request $request)
+    public function index()
     {
+
         if (! Auth::user()->isAbleTo('project manage')) {
             return redirect()
                 ->back()
                 ->with('error', __('Permission Denied.'));
         }
 
-        $objUser     = Auth::user();
-        $projectUser = array();
-        $city        = array();
-        $state       = array();
+        $user      = Auth::user();
+        $workspace = getActiveWorkSpace();
 
-        if (Auth::user()->hasRole('client')) {
-            $projects = Project::select('projects.*')->join('client_projects', 'projects.id', '=', 'client_projects.project_id')->projectonly()->where('client_projects.client_id', '=', Auth::user()->id)->where('projects.workspace', '=', getActiveWorkSpace());
+        if ($user->hasRole('client')) {
+            $projects = Project::forClient($user->id, $workspace)->get();
         } else {
-            $projects = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->projectonly()->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', getActiveWorkSpace());
-        }
-        if ($request->start_date) {
-            $projects->where('start_date', $request->start_date);
-        }
-        if ($request->end_date) {
-            $projects->where('end_date', $request->end_date);
-        }
-        $projects = $projects->get();
-
-        foreach ($projects as $project) {
-            if (isset($project->clients)) {
-                foreach ($project->clients as $user) {
-                    $projectUser[] = $user;
-                }
-            }
-
-            if (isset($project->construction_detail->city) && ($project->construction_detail->city != '')) {
-                $city[] = ucfirst($project->construction_detail->city);
-            }
-            if (isset($project->construction_detail->state) && ($project->construction_detail->state != '')) {
-                $state[] = ucfirst($project->construction_detail->state);
-            }
-
+            $projects = Project::forUser($user->id, $workspace)->get();
         }
 
-        $filters_request['order_by'] = array('field' => 'projects.created_at', 'order' => 'DESC');
-        $project_record              = Project::get_all($filters_request);
-        $all_projects                = isset($project_record['records']) ? $project_record['records'] : array();
+        $groupedProjects = $this->groupProjectsByStatus($projects);
 
-        $project_dropdown = Label::get_project_dropdowns();
-        $projectmaxprice  = EstimateQuote::max('net');
-        $countries        = Country::select(['id', 'name', 'iso'])->get();
-        $city             = array_unique($city);
-        $state            = array_unique($state);
-
-        $dataTables = $this->dataTables();
-
-        return view('project::project.index.index', compact(
-            'projects',
-            'project_dropdown',
-            'all_projects',
-            'countries',
-            'city',
-            'state',
-            'projectUser',
-            'projectmaxprice',
-            'dataTables',
-        ));
+        return view('project::project.index.index', [
+            'projects'        => $projects,
+            'groupedProjects' => $groupedProjects,
+        ]);
     }
 
-    public function dataTables()
+    /**
+     * Group projects by their status and count them.
+     *
+     * @param \Illuminate\Support\Collection $projects
+     * @return \Illuminate\Support\Collection
+     */
+    protected function groupProjectsByStatus($projects)
     {
-        $user = Auth::user();
-
-        if ($user->type == 'company') {
-            $projects = Project::where('projects.created_by', '=', $user->id);
-        } else {
-            $projects = Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
-                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id');
-
-            $projects->where(function ($query) use ($user) {
-                $query->where('client_projects.client_id', $user->id)
-                    ->orWhere('estimate_quotes.user_id', $user->id);
+        return $projects->filter(function ($project) {
+            return ! empty($project->status->name);
+        })->groupBy('status.name')
+            ->map(function ($group) {
+                $status = $group->first()->status->toArray();
+                return (object) array_merge(['total' => $group->count()], $status);
             });
-        }
-
-        return $projects->get();
-
     }
 
     /**
