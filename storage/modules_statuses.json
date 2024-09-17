@@ -9,5 +9,6 @@
     "Stripe": true,
     "Taskly": true,
     "Project": true,
-    "Backup": true
+    "Backup": true,
+    "Core": true
 }

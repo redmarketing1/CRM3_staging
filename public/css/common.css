@@ -1208,7 +1208,7 @@ table td {
 button {
     font-size: 18px;
     margin: 10px 1px;
-    padding: 10px 15px;
+    padding: 10px 5px;
     font-weight: bold;
     border: none;
     border-radius: 3px;
@@ -3994,7 +3994,7 @@ span.feedback-preview {
 }
 
 .other-estimations-row {
-    border-top: 100px solid #FFF !important;
+    border-top: 50px solid #FFF !important;
 }
 
 .other-estimations-row td {
@@ -6754,10 +6754,21 @@ table td .btn-sm i {
 
 .card-container {
     column-count: 3;
-    column-gap: 25px;
-    display: block !important;
-    flex: none !important;
-    padding-bottom: 25px;
+    column-gap: 16px;
+}
+
+.card {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 16px;
+    break-inside: avoid;
+    border-radius: 8px;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.card.wide {
+    column-span: all;
 }
 
 .cc1 {
@@ -6784,21 +6795,13 @@ table td .btn-sm i {
     column-count: 6;
 }
 
-.card-container .card {
-    margin: 0;
-    display: grid;
-    grid-template-rows: 1fr auto;
-    margin-bottom: 15px;
-    break-inside: avoid;
-    height: unset;
-}
 
 .deta-card {
     height: auto !important
 }
 
 .table-card .card-body {
-    max-height: 500px;
+    max-height: 700px;
     overflow: auto;
     border-radius: 20px;
     /* padding-bottom: 0 !important;
@@ -7760,9 +7763,11 @@ td.project-budget {
     align-item: center;
     margin-bottom: 10px !important;
 }
+
 .files-card .card-body {
     padding: 0 !important;
 }
+
 .dropzone {
     border: none !important;
     /* box-shadow: 0 0 0 3px #FFF; */
@@ -7773,7 +7778,7 @@ td.project-budget {
     column-gap: 0;
     display: block !important;
     flex: none !important;
-    margin:0; 
+    margin: 0;
     width: auto !important;
     border-radius: 0 0 10px 10px !important;
 }
@@ -7784,7 +7789,7 @@ td.project-budget {
     }
 }
 
-@media (min-width: 500px) and (max-width: 799px)  {
+@media (min-width: 500px) and (max-width: 799px) {
     .dropzone {
         column-count: 4;
     }
@@ -7807,12 +7812,14 @@ td.project-budget {
         column-count: 7;
     }
 }
+
 /* .dropzone:hover {
     background: #5ab18217;
 } */
 .dropzone .dz-preview.dz-image-preview img {
     cursor: pointer;
 }
+
 .dropzone .dz-preview {
     margin: 0;
     display: grid;
@@ -7826,9 +7833,9 @@ td.project-budget {
     border-color: #333333;
     background-color: #f8f8f8;
 }
-.dropzone .dz-preview .dz-image img:hover 
-{
-cursor: pointer;
+
+.dropzone .dz-preview .dz-image img:hover {
+    cursor: pointer;
 }
 
 .dz-message {
@@ -7851,10 +7858,12 @@ cursor: pointer;
     height: auto;
     border: 5px solid #FFF;
 }
+
 .files-card .dropzone .dz-preview .dz-image:hover {
     border: 5px solid #94c1d3;
     transition: 0.2s ease-in-out;
 }
+
 .gm-style-iw-chr button {
     position: absolute !important;
     right: -5px;
@@ -7984,7 +7993,7 @@ span.select2-selection.select2-selection--multiple {
 
 .badge.bg.Close {
     background-color: #f6225a !important;
-} 
+}
 
 #estimation-edit-table .dropdown-menu.show {
     position: absolute !important;
@@ -8011,4 +8020,41 @@ span.select2-selection.select2-selection--multiple {
     position: absolute;
     margin-left: -30px;
     margin-top: 2px;
+}
+
+.invoice_address2 {
+    border-left: 1px solid #f1f1f1;
+    padding-left: 20px !important;
+}
+
+.project-detail-dashboard .btn {
+    background: #ffffff14;
+    border: none;
+}
+
+.project-detail-dashboard .btn:hover {
+    background: #00000030;
+}
+
+.project-detail-dashboard .btn i {
+    color: #FFF;
+}
+
+.project-detail-dashboard {
+    position: sticky !important;
+    top: 10px;
+    z-index: 99;
+}
+
+body.project .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.d-sm-flex {
+    column-gap: 4px;
+}
+
+.dropzone .dz-preview:hover {
+    z-index: 9 !important;
 }

@@ -25,7 +25,7 @@ class ProjectFeedbackController extends Controller
             return self::notfound();
         }
 
-        return view('project::project.popup.add_feedback',
+        return view('project::project.show.popup.add_feedback',
             compact('project', 'templateItems'),
         );
     }
@@ -161,6 +161,6 @@ class ProjectFeedbackController extends Controller
 
     protected function notfound()
     {
-        return view('project::project.popup.404');
+        return view('project::project.show.popup.404');
     }
 }

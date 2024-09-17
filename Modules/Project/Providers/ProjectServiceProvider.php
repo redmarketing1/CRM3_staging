@@ -3,10 +3,13 @@
 namespace Modules\Project\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Fxcjahid\LaravelAssetsManager\Traits\AddsAsset;
 
 
 class ProjectServiceProvider extends ServiceProvider
 {
+    use AddsAsset;
+
     /**
      * @var string $moduleName
      */
@@ -28,6 +31,8 @@ class ProjectServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+
+        $this->addAssets('project.index', ['project.index.css', 'project.index.js']);
     }
 
     /**
@@ -51,8 +56,13 @@ class ProjectServiceProvider extends ServiceProvider
         $this->publishes([
             module_path($this->moduleName, 'Config/config.php') => config_path($this->moduleNameLower . '.php'),
         ], 'config');
+
         $this->mergeConfigFrom(
-            module_path($this->moduleName, 'Config/config.php'), $this->moduleNameLower
+            module_path($this->moduleName, 'Config/config.php'), $this->moduleNameLower,
+        );
+
+        $this->mergeConfigFrom(
+            module_path($this->moduleName, 'Config/assets.php'), $this->moduleNameLower,
         );
     }
 
@@ -68,7 +78,7 @@ class ProjectServiceProvider extends ServiceProvider
         $sourcePath = module_path($this->moduleName, 'Resources/views');
 
         $this->publishes([
-            $sourcePath => $viewPath
+            $sourcePath => $viewPath,
         ], ['views', $this->moduleNameLower . '-module-views']);
 
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->moduleNameLower);
@@ -102,7 +112,7 @@ class ProjectServiceProvider extends ServiceProvider
         return [];
     }
 
-    private function getPublishableViewPaths(): array
+    private function getPublishableViewPaths() : array
     {
         $paths = [];
         foreach (config('view.paths') as $path) {

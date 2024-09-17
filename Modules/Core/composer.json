@@ -1,0 +1,24 @@
+{
+    "name": "fxcjahid/backup",
+    "description": "",
+    "authors": [
+        {
+            "name": "Fxcjahid",
+            "email": "fxcjahid3@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "require": {
+        "fxcjahid/laravel-assets-manager": "1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Core\\": ""
+        }
+    }
+}

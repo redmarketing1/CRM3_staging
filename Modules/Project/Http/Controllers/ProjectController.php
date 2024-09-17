@@ -3,54 +3,74 @@
 namespace Modules\Project\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Country;
 use Illuminate\Http\Request;
 use Modules\Lead\Entities\Label;
+use Butschster\Head\Facades\Meta;
 use Modules\Taskly\Entities\Task;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Stage;
+use Nwidart\Modules\Facades\Module;
+use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
 use Modules\Taskly\Entities\EstimateQuote;
-use Modules\Taskly\Entities\ProjectComment;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\ProjectEstimation;
-use Modules\Taskly\Entities\ProjectClientFeedback;
 
 class ProjectController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     * @return Renderable
+     * Display for projects table 
      */
     public function index()
     {
-        return view('project::index');
+
+        if (! Auth::user()->isAbleTo('project manage')) {
+            return redirect()
+                ->back()
+                ->with('error', __('Permission Denied.'));
+        }
+
+        $user      = Auth::user();
+        $workspace = getActiveWorkSpace();
+
+        if ($user->hasRole('client')) {
+            $projects = Project::forClient($user->id, $workspace)->get();
+        } else {
+            $projects = Project::forUser($user->id, $workspace)->get();
+        }
+
+        $groupedProjects = $this->groupProjectsByStatus($projects);
+
+        return view('project::project.index.index', [
+            'projects'        => $projects,
+            'groupedProjects' => $groupedProjects,
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     * @return Renderable
+     * Group projects by their status and count them.
+     *
+     * @param \Illuminate\Support\Collection $projects
+     * @return \Illuminate\Support\Collection
      */
-    public function create()
+    protected function groupProjectsByStatus($projects)
     {
-        return view('project::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
-    {
-        //
+        return $projects->filter(function ($project) {
+            return ! empty($project->status->name);
+        })->groupBy('status.name')
+            ->map(function ($group) {
+                $status = $group->first()->status->toArray();
+                return (object) array_merge(['total' => $group->count()], $status);
+            });
     }
 
     /**
      * Show the specified resource.
-     * @param int $id 
+     * @param int $project 
      */
     public function show(Project $project)
     {
@@ -77,53 +97,24 @@ class ProjectController extends Controller
 
         $estimationStatus = ProjectEstimation::$statues;
         $projectLabel     = Label::get_project_dropdowns();
-       
+
         $workspace_users = User::where('created_by', '=', creatorId())
             ->emp()
             ->where('workspace_id', getActiveWorkSpace())
-            ->get(); 
+            ->get();
 
-        return view('project::project.show', compact(
+
+        Meta::prependTitle($project->name)->setTitle('Project Detail');
+
+        return view('project::project.show.show', compact(
             'project',
             'chartData',
             'project_estimations',
             'estimationStatus',
             'projectLabel',
-            'workspace_users'
+            'workspace_users',
         ));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('project::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
     public function getProjectChart($arrParam)
     {
         $arrDuration = [];
@@ -170,22 +161,22 @@ class ProjectController extends Controller
     // Project Delay Store
     public function delayAnnouncement(Request $request, $id)
     {
-       
+
         try {
             $validator = Validator::make(
                 $request->all(),
                 [
-                    'new_deadline' => 'required',
-                    'reason' => 'required',
-                    'delay_in_weeks' => 'required',
+                    'new_deadline'     => 'required',
+                    'reason'           => 'required',
+                    'delay_in_weeks'   => 'required',
                     'internal_comment' => 'required',
-                ]
+                ],
             );
 
             if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
 
-                return redirect()->route('project.show',$id)->with('error', $messages->first());
+                return redirect()->route('project.show', $id)->with('error', $messages->first());
             }
 
             $inputs = $request->only([
@@ -198,27 +189,27 @@ class ProjectController extends Controller
             $extra_files = [];
             if ($request->hasFile('media')) {
                 foreach ($request->file('media') as $key => $file) {
-                    $path = 'delays';
-                    $fileName         = $id . time() . "_" . $file->getClientOriginalName();
-                    
+                    $path     = 'delays';
+                    $fileName = $id . time() . "_" . $file->getClientOriginalName();
+
                     $save = Storage::disk()->putFileAs(
                         $path,
                         $file,
-                        $fileName
+                        $fileName,
                     );
                     // $upload = upload_file($request, 'media', $fileName, 'delays', []);
-                
-                    
+
+
                     $extra_files[] = 'uploads/' . $save;
                 }
             }
 
-            $inputs['media'] = json_encode($extra_files);
+            $inputs['media']      = json_encode($extra_files);
             $inputs['project_id'] = $id;
 
             $projectDelay = \auth()->user()->projectDelays()->create($inputs);
-            if (!empty($projectDelay)) {
-                $project = Project::find($id);
+            if (! empty($projectDelay)) {
+                $project           = Project::find($id);
                 $project->end_date = $inputs['new_deadline'];
                 $project->save();
             }

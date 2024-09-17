@@ -30,7 +30,7 @@ class ProjectCommentController extends Controller
             return self::notfound();
         }
 
-        return view('project::project.popup.add_comment',
+        return view('project::project.show.popup.add_comment',
             compact('project', 'templateItems'),
         );
     }
@@ -179,7 +179,7 @@ class ProjectCommentController extends Controller
 
     protected function notfound()
     {
-        return view('project::project.popup.404');
+        return view('project::project.show.popup.404');
     }
 
 }

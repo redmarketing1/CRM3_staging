@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Project\Http\Controllers\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,9 @@ Route::prefix('project')->group(function () {
 
     Route::resource('{id}/comment', 'ProjectCommentController')
         ->names('project.comment');
+
+    Route::get('{project}/add/delay', [ProjectController::class, 'addProjectDelay'])->name('project.addProjectDelay');
+    Route::post('{id}/delay/announcement', [ProjectController::class, 'delayAnnouncement'])->name('project.delay.announcement.store');
 
 });
 
