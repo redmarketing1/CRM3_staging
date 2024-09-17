@@ -1,47 +1,22 @@
 @extends('layouts.main')
-@php
-    $name = $project->type == 'project' ? 'Project' : 'Project Template';
-@endphp
 
-@section('page-title')
-    {{ __('Project Detail') }}
-@endsection
-
-@section('page-breadcrumb')
-    {{ __('Project Detail') }}
-@endsection
-
-@section('page-action')
-    @include('project::project.show.utility.top_tools')
-@endsection
 
 @section('content')
     <div class="row">
         <div class="col-sm-12">
             <div class="row">
-                <div class="col-xxl-12">
-                    <div class="row">
-                        <div class="col-xxl-8">
-                            @include('project::project.show.utility.header')
-                            @include('project::project.show.utility.dashboard')
-                        </div>
-
-                        <div class="col-xxl-4">
-                            @include('project::project.show.utility.progress_task')
-                        </div>
-                    </div>
-                </div>
+                @include('project::project.show.utility.header')
+                @include('project::project.show.utility.dashboard')
 
                 @includeWhen($project->type == 'project', 'project::project.show.utility.if_project_types')
 
-                @include('project::project.show.section.milestone')
                 @include('project::project.show.section.files')
                 @include('project::project.show.section.estimations')
 
                 @include('project::project.show.section.project_progress')
+                {{-- @include('project::project.show.section.project_delay') --}}
 
-                @include('project::project.show.utility.activity_log')
-
+                @include('project::project.show.section.milestone')
             </div>
         </div>
     </div>
