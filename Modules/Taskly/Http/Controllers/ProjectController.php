@@ -599,6 +599,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
+       
         if (Auth::user()->isAbleTo('project edit')) {
             if (module_is_active('CustomField')) {
                 $project->customField = \Modules\CustomField\Entities\CustomField::getData($project, 'taskly', 'projects');

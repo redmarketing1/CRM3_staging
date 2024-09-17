@@ -410,4 +410,9 @@ class Project extends Model
     // }
 
 
+    public function delays()
+    {
+        return $this->hasMany(ProjectDelay::class, 'project_id', 'id');
+    }
+
 }

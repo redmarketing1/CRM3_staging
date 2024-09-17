@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
 use Modules\Taskly\Entities\EstimateQuote;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\ProjectEstimation;
 
 class ProjectController extends Controller
@@ -149,7 +151,6 @@ class ProjectController extends Controller
         $arrTask['color']  = $stages->pluck('color')->toArray();
         return $arrTask;
     }
-
 
     //Project Delays
     public function addProjectDelay($id)
