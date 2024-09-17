@@ -3,7 +3,7 @@
         <tr>
             <th colspan="2" data-orderable="true">Project Name</th>
             <th data-orderable="true">Status</th>
-            {{-- <th data-orderable="false">Comments</th> --}}
+            <th data-orderable="false">Comments</th>
             <th data-orderable="true">Priority</th>
             <th data-orderable="false">Construction</th>
             <th data-orderable="true">Project Net</th>
@@ -25,7 +25,7 @@
                         <a href="{{ route('project.show', $project->id) }}" target="__blank">
                             <h2 class="data-name font-medium text-xl">{{ $project->name }}</h2>
                         </a>
-                        {{-- <div class="d-flex data-sub-name flex-column font-normal">
+                        <div class="d-flex data-sub-name flex-column font-normal">
                             <span class="construction-client-name">
                                 <a href="#" class="text-sm text-black">
                                     Markus Hartwig
@@ -34,14 +34,14 @@
                             <span class="text-sm text-black">
                                 Steinfurter Allee, 44
                             </span>
-                        </div> --}}
+                        </div>
                     </div>
                 </td>
                 <td>
                     <span class="data-project-status" data-backgroundColor="{{ $project->status->background_color }}"
                         data-fontColor="{{ $project->status->font_color }}">{{ $project->status->name }}</span>
                 </td>
-                {{-- <td>{{ $project->comments ?? 'N/A' }}</td> --}}
+                <td>{{ $project->comments ?? 'N/A' }}</td>
                 <td data-fontColor="{{ $project->priority->background_color ?? '#c3c3c3' }}">
                     {{ $project->priority->name ?? 'N/A' }}
                 </td>

@@ -10,6 +10,8 @@
 
                 @includeWhen($project->type == 'project', 'project::project.show.utility.if_project_types')
 
+                @include('project::project.show.utility.activity_log')
+
                 @include('project::project.show.section.files')
                 @include('project::project.show.section.estimations')
 
