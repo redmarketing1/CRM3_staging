@@ -16,7 +16,7 @@
                 @include('project::project.show.section.estimations')
 
                 @include('project::project.show.section.project_progress')
-                {{-- @include('project::project.show.section.project_delay') --}}
+                @include('project::project.show.section.project_delay')
 
                 @include('project::project.show.section.milestone')
             </div>
@@ -34,15 +34,12 @@
 
             /** call ajaxComplete after open data-popup **/
             $(document).ajaxComplete(function() {
+                tinymce.remove();
+                document.querySelectorAll('.tinyMCE').forEach(function(editor) {
+                    init_tiny_mce('#' + editor.id);
+                });
 
-                dropdownItemsToSetPreMessageContent();
 
-            });
-
-            function dropdownItemsToSetPreMessageContent() {
-                /**
-                 * Set pre message tempate inside feedback & comment box in popup modal
-                 * */
                 const dropdownItems = document.querySelectorAll(
                     '.dropdown-premsg .dropdown-menu .dropdown-item');
                 const dropdownTriggerText = document.querySelector(
@@ -57,17 +54,15 @@
                         const templateName = this.textContent.trim();
 
                         // Set the content in the TinyMCE editor
-                        if (tinymce.get('premsg')) {
-                            tinymce.get('premsg').setContent(content);
-                        } else {
-                            $('#premsg').val(content);
-                        }
+                        // tinymce.get('premsg').setContent(content);
+                        $('#premsg').val(content);
 
                         // Update the dropdown trigger text with the selected template name
                         dropdownTriggerText.textContent = templateName;
                     });
                 });
-            }
+
+            });
 
             var type = '{{ $project->type }}';
             if (type == 'template') {
@@ -76,6 +71,7 @@
                 $('.pro_type').removeClass('d-none');
             }
 
+            init_tiny_mce('.tinyMCE');
             set_construction_address();
             getItems(active_estimation_id);
 
@@ -693,53 +689,58 @@
 
 @push('scripts')
     <script>
-        //Section: Progress (Last Week Tasks) 
-        (function() {
-            var options = {
-                chart: {
-                    height: 135,
-                    type: 'line',
-                    toolbar: {
+        << << << < HEAD: Modules / Project / Resources / views / project / show / show.blade.php
+            //Section: Progress (Last Week Tasks) 
+            ===
+            ===
+            = >>>
+            >>>
+            > origin / main: Modules / Project / Resources / views / project / show.blade.php(function() {
+                var options = {
+                    chart: {
+                        height: 135,
+                        type: 'line',
+                        toolbar: {
+                            show: false,
+                        },
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    stroke: {
+                        width: 2,
+                        curve: 'smooth'
+                    },
+                    series: [
+                        @foreach ($chartData['stages'] as $id => $name)
+                            {
+                                name: "{{ __($name) }}", // Use Laravel translation helper
+                                data: {!! json_encode($chartData[$id]) !!}, // Safely convert to JSON
+                            },
+                        @endforeach
+                    ],
+                    xaxis: {
+                        categories: {!! json_encode($chartData['label']) !!}, // Safely convert to JSON
+                    },
+                    colors: {!! json_encode($chartData['color']) !!}, // Safely convert to JSON
+
+                    grid: {
+                        strokeDashArray: 4,
+                    },
+                    legend: {
                         show: false,
                     },
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    width: 2,
-                    curve: 'smooth'
-                },
-                series: [
-                    @foreach ($chartData['stages'] as $id => $name)
-                        {
-                            name: "{{ __($name) }}", // Use Laravel translation helper
-                            data: {!! json_encode($chartData[$id]) !!}, // Safely convert to JSON
-                        },
-                    @endforeach
-                ],
-                xaxis: {
-                    categories: {!! json_encode($chartData['label']) !!}, // Safely convert to JSON
-                },
-                colors: {!! json_encode($chartData['color']) !!}, // Safely convert to JSON
 
-                grid: {
-                    strokeDashArray: 4,
-                },
-                legend: {
-                    show: false,
-                },
+                    yaxis: {
+                        tickAmount: 5,
+                        min: 1,
+                        max: 40,
+                    },
+                };
 
-                yaxis: {
-                    tickAmount: 5,
-                    min: 1,
-                    max: 40,
-                },
-            };
-
-            var chart = new ApexCharts(document.querySelector("#task-chart"), options);
-            chart.render();
-        })();
+                var chart = new ApexCharts(document.querySelector("#task-chart"), options);
+                chart.render();
+            })();
 
         // Copy link to clipboard
         $('.cp_link').on('click', function() {
@@ -753,6 +754,149 @@
             // Show toastr notification on success
             toastrs('success', '{{ __('Link Copy on Clipboard') }}', 'success');
         });
+    </script>
+    <script src="https://cdn.rawgit.com/exif-js/exif-js/master/exif.js"></script>
+    <script>
+        Dropzone.autoDiscover = false;
+        myDropzone = new Dropzone("#dropzonewidget", {
+            maxFiles: 20,
+            maxFilesize: 20,
+            parallelUploads: 1,
+            acceptedFiles: ".jpeg,.jpg,.png,.pdf,.doc,.txt",
+            url: "{{ route('projects.file.upload', [$project->id]) }}",
+            success: function(file, response) {
+                if (response.is_success) {
+                    dropzoneBtn(file, response);
+                    toastrs('{{ __('Success') }}', 'File Successfully Uploaded', 'success');
+                } else {
+                    myDropzone.removeFile(response.error);
+                    toastrs('Error', response.error, 'error');
+                }
+            },
+            error: function(file, response) {
+                myDropzone.removeFile(file);
+                if (response.error) {
+                    toastrs('Error', response.error, 'error');
+                } else {
+                    toastrs('Error', response, 'error');
+                }
+            }
+        });
+        myDropzone.on("sending", function(file, xhr, formData) {
+            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
+            formData.append("project_id", {{ $project->id }});
+        });
+
+        @if (isset($permisions) && in_array('show uploading', $permisions))
+            $(".dz-hidden-input").prop("disabled", true);
+            myDropzone.removeEventListeners();
+        @endif
+
+        function dropzoneBtn(file, response) {
+
+            var html = document.createElement('div');
+            var download = document.createElement('a');
+            download.setAttribute('href', response.download);
+            download.setAttribute('class', "action-btn btn-primary mx-1  btn btn-sm d-inline-flex align-items-center");
+            download.setAttribute('data-toggle', "tooltip");
+            download.setAttribute('download', file.name);
+            download.setAttribute('title', "{{ __('Download') }}");
+            download.innerHTML = "<i class='ti ti-download'> </i>";
+            html.appendChild(download);
+
+
+            var lightboxLink = document.createElement('a');
+            lightboxLink.setAttribute('href', response.download);
+            lightboxLink.setAttribute('data-lightbox', "gallery");
+            lightboxLink.setAttribute('data-title', file.name + ' - ' + (EXIF.getTag(this, "DateTimeOriginal") || ''));
+            lightboxLink.style.display = 'none';
+            file.previewTemplate.appendChild(lightboxLink);
+
+            file.previewTemplate.querySelector('img').addEventListener('click', function() {
+                lightboxLink.click(); // Trigger the hidden lightbox link
+            });
+
+            var view = document.createElement('a');
+            view.setAttribute('href', response.download);
+            view.setAttribute('class', "action-btn btn-secondary mx-1 btn btn-sm d-inline-flex align-items-center");
+            view.setAttribute('target', "_blank");
+            view.setAttribute('title', "{{ __('View') }}");
+            view.innerHTML = "<i class='ti ti-crosshair'></i>";
+            html.appendChild(view);
+
+            @if (isset($permisions) && in_array('show uploading', $permisions))
+            @else
+                var del = document.createElement('a');
+                del.setAttribute('href', response.delete);
+                del.setAttribute('class', "action-btn btn-danger mx-1  btn btn-sm d-inline-flex align-items-center");
+                del.setAttribute('data-toggle', "popover");
+                del.setAttribute('title', "{{ __('Delete') }}");
+                del.innerHTML = "<i class='ti ti-trash '></i>";
+
+                del.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (confirm("Are you sure ?")) {
+                        var btn = $(this);
+                        $.ajax({
+                            url: btn.attr('href'),
+                            type: 'DELETE',
+                            success: function(response) {
+                                if (response.is_success) {
+                                    btn.closest('.dz-image-preview').remove();
+                                    toastrs('{{ __('Success') }}', 'File Successfully Deleted',
+                                        'success');
+                                } else {
+                                    toastrs('{{ __('Error') }}', 'Something Wents Wrong.', 'error');
+                                }
+                            },
+                            error: function(response) {
+                                response = response.responseJSON;
+                                if (response.is_success) {
+                                    toastrs('{{ __('Error') }}', 'Something Wents Wrong.', 'error');
+                                } else {
+                                    toastrs('{{ __('Error') }}', 'Something Wents Wrong.', 'error');
+                                }
+                            }
+                        })
+                    }
+                });
+
+                html.appendChild(del);
+            @endif
+
+            file.previewTemplate.appendChild(html);
+        }
+
+        @php($files = $project->files)
+        @foreach ($files as $file)
+
+            @php($storage_file = get_base_file($file->file_path))
+            @php($file_extension = pathinfo($file->file_name, PATHINFO_EXTENSION))
+            @php(
+    $thumbnail_url = match ($file_extension) {
+        'pdf' => asset('assets/images/pdf_icon.png'),
+        'docx' => asset('assets/images/doc_icon.png'),
+        'xlsx', 'csv' => asset('assets/images/csv_icon.png'),
+        default => get_file($file->file_path),
+    },
+)
+            // Create the mock file:
+            var mockFile = {
+                name: "{{ $file->file_name }}",
+                size: "{{ get_size(get_file($file->file_path)) }}"
+            };
+            // Call the default addedfile event handler
+            myDropzone.emit("addedfile", mockFile);
+            // And optionally show the thumbnail of the file:
+            myDropzone.emit("thumbnail", mockFile, "{{ $thumbnail_url }}");
+            myDropzone.emit("complete", mockFile);
+
+            dropzoneBtn(mockFile, {
+                download: "{{ get_file($file->file_path) }}",
+                delete: "{{ route('projects.file.delete', [$project->id, $file->id]) }}"
+            });
+        @endforeach
     </script>
 @endpush
 
