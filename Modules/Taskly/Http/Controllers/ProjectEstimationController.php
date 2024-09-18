@@ -133,7 +133,7 @@ class ProjectEstimationController extends Controller
 
             $row                    	= array();
             $row['status']           	= '<span class="badge fix_badges bg-'. $statuesColor[$estimationStatus[$estimation->status]].' p-2 px-3 rounded">'. $estimationStatus[$estimation->status].'</span>';
-            $row['project_title']       = '<a href="'. route('projects.show',[$estimation->project_id]) .'">'. $estimation->getProjectDetail->name .'</a>';
+            $row['project_title']       = '<a href="'. route('project.show',[$estimation->project_id]) .'">'. $estimation->getProjectDetail->name .'</a>';
 			$row['estimation_title'] 	= '<a href="'. route('estimations.setup.estimate',\Crypt::encrypt($estimation->id)) .'">'. $estimation->title .'</a>';
             $row['net_inc_discount']  	= currency_format_with_sym((isset($estimation->final_quote->net_with_discount) ? $estimation->final_quote->net_with_discount : 0));
             $row['gross_inc_discount'] 	= currency_format_with_sym((isset($estimation->final_quote->gross_with_discount) ? $estimation->final_quote->gross_with_discount : 0));
