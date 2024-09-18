@@ -283,7 +283,14 @@ class Project extends Model
 
             Project::whereCreatedBy($user->id)
                 ->orderByDesc('created_at')
-                ->get()->take(50)
+                ->get([
+                    'id',
+                    'name',
+                    'status',
+                    'budget',
+                    'description',
+                ])
+                ->take(50)
 
             : Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
                 ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')

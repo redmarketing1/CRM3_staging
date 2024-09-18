@@ -34,6 +34,9 @@ class ProjectsTable extends DataTables
             ->editColumn('budget', function ($project) {
                 return currency_format_with_sym($project->budget);
             })
+            ->editColumn('description', function ($project) {
+                return 'description';
+            })
             ->addColumn('comments', 'N/A')
             ->addColumn('construction', 'N/A')
             ->addColumn('action', function ($project) {
