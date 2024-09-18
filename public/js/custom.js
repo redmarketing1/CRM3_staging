@@ -1861,4 +1861,23 @@ tabs.forEach((tab, index) => {
     if (index > 0) {
         tab.classList.remove('show', 'active');
     }
-}); 
+});
+
+function hexToRgb(hex, percentage = 1) {
+    hex = hex.replace(/^#/, '');
+    let bigint = parseInt(hex, 16);
+    let r = (bigint >> 16) & 255;
+    let g = (bigint >> 8) & 255;
+    let b = bigint & 255;
+    return `rgb(${r} ${g} ${b} / ${percentage})`;
+}
+
+$('[data-backgroundColor], [data-fontColor]').each(function () {
+    let backgroundColor = $(this).data('backgroundcolor');
+    let fontColor = $(this).data('fontcolor');
+
+    $(this).css({
+        'background-color': backgroundColor,
+        'color': fontColor,
+    });
+});

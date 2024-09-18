@@ -14,18 +14,19 @@ use Modules\Taskly\Entities\Stage;
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
+use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\EstimateQuote;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\ProjectEstimation;
 
 class ProjectController extends Controller
 {
     /**
-     * Display a listing of the resource. 
+     * Display for projects table 
      */
-    public function index(Request $request)
+    public function index(Request $request, Project $projects)
     {
         if (! Auth::user()->isAbleTo('project manage')) {
             return redirect()
@@ -33,83 +34,55 @@ class ProjectController extends Controller
                 ->with('error', __('Permission Denied.'));
         }
 
-        $objUser     = Auth::user();
-        $projectUser = array();
-        $city        = array();
-        $state       = array();
-
-        if (Auth::user()->hasRole('client')) {
-            $projects = Project::select('projects.*')->join('client_projects', 'projects.id', '=', 'client_projects.project_id')->projectonly()->where('client_projects.client_id', '=', Auth::user()->id)->where('projects.workspace', '=', getActiveWorkSpace());
-        } else {
-            $projects = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->projectonly()->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', getActiveWorkSpace());
-        }
-        if ($request->start_date) {
-            $projects->where('start_date', $request->start_date);
-        }
-        if ($request->end_date) {
-            $projects->where('end_date', $request->end_date);
-        }
-        $projects = $projects->get();
-
-        foreach ($projects as $project) {
-            if (isset($project->clients)) {
-                foreach ($project->clients as $user) {
-                    $projectUser[] = $user;
-                }
-            }
-
-            if (isset($project->construction_detail->city) && ($project->construction_detail->city != '')) {
-                $city[] = ucfirst($project->construction_detail->city);
-            }
-            if (isset($project->construction_detail->state) && ($project->construction_detail->state != '')) {
-                $state[] = ucfirst($project->construction_detail->state);
-            }
-
+        if ($request->has('table')) {
+            return $projects->table($request);
         }
 
-        $filters_request['order_by'] = array('field' => 'projects.created_at', 'order' => 'DESC');
-        $project_record              = Project::get_all($filters_request);
-        $all_projects                = isset($project_record['records']) ? $project_record['records'] : array();
+        $projects = $this->dataTables();
 
-        $project_dropdown = Label::get_project_dropdowns();
-        $projectmaxprice  = EstimateQuote::max('net');
-        $countries        = Country::select(['id', 'name', 'iso'])->get();
-        $city             = array_unique($city);
-        $state            = array_unique($state);
+        $groupedProjects = $this->groupProjectsByStatus($projects);
 
-        $dataTables = $this->dataTables();
-
-        return view('project::project.index.index', compact(
-            'projects',
-            'project_dropdown',
-            'all_projects',
-            'countries',
-            'city',
-            'state',
-            'projectUser',
-            'projectmaxprice',
-            'dataTables',
-        ));
+        return view('project::project.index.index', [
+            'projects'        => $projects,
+            'groupedProjects' => $groupedProjects ?? [],
+        ]);
     }
 
-    public function dataTables()
+    public function dataTables($filters = null)
     {
         $user = Auth::user();
 
-        if ($user->type == 'company') {
-            $projects = Project::where('projects.created_by', '=', $user->id);
-        } else {
-            $projects = Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
-                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id');
+        return ($user->type == 'company') ?
 
-            $projects->where(function ($query) use ($user) {
-                $query->where('client_projects.client_id', $user->id)
-                    ->orWhere('estimate_quotes.user_id', $user->id);
+            Project::whereCreatedBy($user->id)
+                ->orderByDesc('created_at')
+                ->get()
+
+            : Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
+                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
+                ->where(function ($query) use ($user) {
+                    $query->where('client_projects.client_id', $user->id)
+                        ->orWhere('estimate_quotes.user_id', $user->id);
+                })
+                ->orderByDesc('created_at')
+                ->get();
+    }
+
+    /**
+     * Group projects by their status and count them.
+     *
+     * @param \Illuminate\Support\Collection $projects
+     * @return \Illuminate\Support\Collection
+     */
+    protected function groupProjectsByStatus($projects)
+    {
+        return $projects->filter(function ($project) {
+            return ! empty($project->status->name);
+        })->groupBy('status.name')
+            ->map(function ($group) {
+                $status = $group->first()->status->toArray();
+                return (object) array_merge(['total' => $group->count()], $status);
             });
-        }
-
-        return $projects->get();
-
     }
 
     /**
@@ -205,22 +178,22 @@ class ProjectController extends Controller
     // Project Delay Store
     public function delayAnnouncement(Request $request, $id)
     {
-       
+
         try {
             $validator = Validator::make(
                 $request->all(),
                 [
-                    'new_deadline' => 'required',
-                    'reason' => 'required',
-                    'delay_in_weeks' => 'required',
+                    'new_deadline'     => 'required',
+                    'reason'           => 'required',
+                    'delay_in_weeks'   => 'required',
                     'internal_comment' => 'required',
-                ]
+                ],
             );
 
             if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
 
-                return redirect()->route('project.show',$id)->with('error', $messages->first());
+                return redirect()->route('project.show', $id)->with('error', $messages->first());
             }
 
             $inputs = $request->only([
@@ -233,27 +206,27 @@ class ProjectController extends Controller
             $extra_files = [];
             if ($request->hasFile('media')) {
                 foreach ($request->file('media') as $key => $file) {
-                    $path = 'delays';
-                    $fileName         = $id . time() . "_" . $file->getClientOriginalName();
-                    
+                    $path     = 'delays';
+                    $fileName = $id . time() . "_" . $file->getClientOriginalName();
+
                     $save = Storage::disk()->putFileAs(
                         $path,
                         $file,
-                        $fileName
+                        $fileName,
                     );
                     // $upload = upload_file($request, 'media', $fileName, 'delays', []);
-                
-                    
+
+
                     $extra_files[] = 'uploads/' . $save;
                 }
             }
 
-            $inputs['media'] = json_encode($extra_files);
+            $inputs['media']      = json_encode($extra_files);
             $inputs['project_id'] = $id;
 
             $projectDelay = \auth()->user()->projectDelays()->create($inputs);
-            if (!empty($projectDelay)) {
-                $project = Project::find($id);
+            if (! empty($projectDelay)) {
+                $project           = Project::find($id);
                 $project->end_date = $inputs['new_deadline'];
                 $project->save();
             }

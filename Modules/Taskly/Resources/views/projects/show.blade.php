@@ -1516,7 +1516,7 @@
                 @endif
 
 
-                @include('taskly::projects.utility.activity_log')
+                @include('project::projects.utility.activity_log')
 
 
                 <div class="col-md-12">

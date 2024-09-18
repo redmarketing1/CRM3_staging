@@ -129,7 +129,7 @@ if (! function_exists('generateSubMenu')) {
 
             $html .= '</a>'; // Close anchor tag
 
-            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('projects') || request()->is('project/*'))) {
+            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('project') || request()->is('project/*'))) {
                 $projectTabs = new projectsTabs();
                 $html .= $projectTabs->render();
 
@@ -1831,11 +1831,11 @@ if (! function_exists('genericGetContacts')) {
                 $displayName = $address_1 ? "$name ($address_1)" : $name;
 
                 // Only return valid contacts with non-empty displayName
-                if (!empty(trim($displayName))) {
+                if (! empty(trim($displayName))) {
                     return [
                         'id'   => $contact->id,
                         'name' => $displayName,
-                        'type' => $contact->type
+                        'type' => $contact->type,
                     ];
                 }
 
@@ -1844,7 +1844,7 @@ if (! function_exists('genericGetContacts')) {
             })
             // Remove null values by filtering out strictly null entries
             ->filter(function ($contact) {
-                return !is_null($contact);  // Filter out any null entries
+                return ! is_null($contact);  // Filter out any null entries
             });
 
         return $existingContacts->values(); // Re-index the filtered collection
