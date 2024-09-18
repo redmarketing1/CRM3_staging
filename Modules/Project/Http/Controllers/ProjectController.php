@@ -14,10 +14,11 @@ use Modules\Taskly\Entities\Stage;
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
+use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\EstimateQuote;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\ProjectEstimation;
 
 class ProjectController extends Controller
@@ -25,30 +26,46 @@ class ProjectController extends Controller
     /**
      * Display for projects table 
      */
-    public function index()
+    public function index(Request $request, Project $projects)
     {
-
         if (! Auth::user()->isAbleTo('project manage')) {
             return redirect()
                 ->back()
                 ->with('error', __('Permission Denied.'));
         }
 
-        $user      = Auth::user();
-        $workspace = getActiveWorkSpace();
-
-        if ($user->hasRole('client')) {
-            $projects = Project::forClient($user->id, $workspace)->get();
-        } else {
-            $projects = Project::forUser($user->id, $workspace)->get();
+        if ($request->has('table')) {
+            return $projects->table($request);
         }
+
+        $projects = $this->dataTables();
 
         $groupedProjects = $this->groupProjectsByStatus($projects);
 
         return view('project::project.index.index', [
             'projects'        => $projects,
-            'groupedProjects' => $groupedProjects,
+            'groupedProjects' => $groupedProjects ?? [],
         ]);
+    }
+
+    public function dataTables($filters = null)
+    {
+        $user = Auth::user();
+
+        return ($user->type == 'company') ?
+
+            Project::whereCreatedBy($user->id)
+                ->orderByDesc('created_at')
+                ->get()
+
+            : Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
+                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
+                ->where(function ($query) use ($user) {
+                    $query->where('client_projects.client_id', $user->id)
+                        ->orWhere('estimate_quotes.user_id', $user->id);
+                })
+                ->orderByDesc('created_at')
+                ->get();
     }
 
     /**
