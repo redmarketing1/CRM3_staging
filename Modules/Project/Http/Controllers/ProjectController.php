@@ -38,12 +38,12 @@ class ProjectController extends Controller
             return $projects->table($request);
         }
 
-        $projects = $this->dataTables();
 
-        $groupedProjects = $this->groupProjectsByStatus($projects);
+        // $projects = $this->dataTables();
+
+        // $groupedProjects = $this->groupProjectsByStatus($projects);
 
         return view('project::project.index.index', [
-            'projects'        => $projects,
             'groupedProjects' => $groupedProjects ?? [],
         ]);
     }

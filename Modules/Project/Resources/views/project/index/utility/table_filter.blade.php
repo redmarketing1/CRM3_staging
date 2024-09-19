@@ -1,5 +1,5 @@
-<div class="filter-wrapper hide">
-    {{-- <div class="d-flex">
+{{-- <div class="filter-wrapper hide">
+    <div class="d-flex">
         <select name="country" class="form-control" id="country-filter" data-placeholder="{{ __('Select Country') }}">
             <option value="" data-iso="">{{ __('Select Country') }}</option>
             @foreach ($countries as $country)
@@ -26,7 +26,7 @@
             <option value="">All Projects</option>
             <option value="Not Archived">Not Archived</option>
         </select>
-    </div> --}}
+    </div>
     <div class="search-table">
         <div class="form-group mb-5 w-50">
             <label for="search_project_name" class="form-label text-2xl mb-1">Search Project</label>
@@ -34,4 +34,30 @@
                 id="search_project_name" />
         </div>
     </div>
-</div>
+</div> --}}
+
+<tr class="form-group mb-5" role="row">
+    <th colspan="2">
+        <div class="search-table">
+            <input type="search" class="form-control text-xl" placeholder="Search project name" name="searchByProjectName"
+                id="searchByProjectName" />
+        </div>
+    </th>
+    <th>
+        <div class="status-table">
+            <select class="form-control" id="exampleFormControlSelect2">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+        </div>
+    </th>
+    <th></th>
+    <th>d</th>
+    <th>con</th>
+    <th>con</th>
+    <th>con</th>
+    <th>con</th>
+</tr>
