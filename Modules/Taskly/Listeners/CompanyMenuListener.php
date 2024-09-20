@@ -11,35 +11,6 @@ class CompanyMenuListener
      */
     public function handle(CompanyMenuEvent $event) : void
     {
-        $module = 'Taskly';
-        $menu   = $event->menu;
-        $menu->add([
-            'category'   => 'General',
-            'title'      => __('Project Dashboard'),
-            'icon'       => '',
-            'name'       => 'taskly-dashboards',
-            'parent'     => 'dashboard',
-            'order'      => 10,
-            'ignore_if'  => [],
-            'depend_on'  => [],
-            'route'      => 'taskly.dashboard',
-            'module'     => $module,
-            'permission' => 'taskly dashboard manage',
-        ]);
-
-        $menu->add([
-            'category'   => 'Productivity',
-            'title'      => __('Projects'),
-            'icon'       => 'square-check',
-            'name'       => 'projects',
-            'parent'     => null,
-            'order'      => 300,
-            'ignore_if'  => [],
-            'depend_on'  => ['tabs'],
-            'route'      => 'projects.index',
-            'module'     => $module,
-            'permission' => 'project manage',
-        ]);
         /**
          * Outdated Version 
          * Afer version  0.1 

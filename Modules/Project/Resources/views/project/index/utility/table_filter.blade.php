@@ -1,4 +1,4 @@
-<tr class="form-group mb-5" role="row">
+<tr class="form-group mb-5 hide" role="row">
     <th colspan="2">
         <div class="search-table">
             <input type="search" class="form-control text-xl" placeholder="Search project name" name="searchByProjectName"

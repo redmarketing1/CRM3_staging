@@ -1,36 +1,24 @@
 @extends('layouts.main')
 
-@section('page-action')
-    @include('project::project.show.utility.top_tools')
-@endsection
 
 @section('content')
     <div class="row">
         <div class="col-sm-12">
             <div class="row">
-                <div class="col-xxl-12">
-                    <div class="row">
-                        <div class="col-xxl-8">
-                            @include('project::project.show.utility.header')
-                            @include('project::project.show.utility.dashboard')
-                        </div>
-
-                        <div class="col-xxl-4">
-                            @include('project::project.show.utility.progress_task')
-                        </div>
-                    </div>
-                </div>
+                @include('project::project.show.utility.header')
+                @include('project::project.show.utility.dashboard')
 
                 @includeWhen($project->type == 'project', 'project::project.show.utility.if_project_types')
 
-                @include('project::project.show.section.milestone')
+                @include('project::project.show.utility.activity_log')
+
                 @include('project::project.show.section.files')
                 @include('project::project.show.section.estimations')
 
                 @include('project::project.show.section.project_progress')
+                {{-- @include('project::project.show.section.project_delay') --}}
 
-                @include('project::project.show.utility.activity_log')
-
+                @include('project::project.show.section.milestone')
             </div>
         </div>
     </div>
@@ -701,157 +689,11 @@
             });
         }
     </script>
+@endpush
 
+@push('scripts')
     <script>
-        Dropzone.autoDiscover = false;
-        myDropzone = new Dropzone("#dropzonewidget", {
-            maxFiles: 20,
-            maxFilesize: 20,
-            parallelUploads: 1,
-            acceptedFiles: ".jpeg,.jpg,.png,.pdf,.doc,.txt",
-            url: "{{ route('projects.file.upload', [$project->id]) }}",
-            success: function(file, response) {
-                if (response.is_success) {
-                    dropzoneBtn(file, response);
-                    toastrs('{{ __('Success') }}', 'File Successfully Uploaded', 'success');
-                } else {
-                    myDropzone.removeFile(response.error);
-                    toastrs('Error', response.error, 'error');
-                }
-            },
-            error: function(file, response) {
-                myDropzone.removeFile(file);
-                if (response.error) {
-                    toastrs('Error', response.error, 'error');
-                } else {
-                    toastrs('Error', response, 'error');
-                }
-            }
-        });
-        myDropzone.on("sending", function(file, xhr, formData) {
-            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
-            formData.append("project_id", {{ $project->id }});
-        });
-
-        @if (isset($permisions) && in_array('show uploading', $permisions))
-            $(".dz-hidden-input").prop("disabled", true);
-            myDropzone.removeEventListeners();
-        @endif
-
-        function dropzoneBtn(file, response) {
-
-            var html = document.createElement('div');
-            var download = document.createElement('a');
-            download.setAttribute('href', response.download);
-            download.setAttribute('class', "action-btn btn-primary mx-1  btn btn-sm d-inline-flex align-items-center");
-            download.setAttribute('data-toggle', "tooltip");
-            download.setAttribute('download', file.name);
-            download.setAttribute('title', "{{ __('Download') }}");
-            download.innerHTML = "<i class='ti ti-download'> </i>";
-            html.appendChild(download);
-
-            var lightboxLink = document.createElement('a');
-            lightboxLink.setAttribute('href', response.download);
-            lightboxLink.setAttribute('data-lightbox', "gallery");
-            lightboxLink.setAttribute('data-title', file.name);
-            lightboxLink.style.display = 'none';
-            file.previewTemplate.appendChild(lightboxLink);
-
-            file.previewTemplate.querySelector('img').addEventListener('click', function() {
-                lightboxLink.click(); // Trigger the hidden lightbox link
-            });
-
-            var view = document.createElement('a');
-            view.setAttribute('href', response.download);
-            view.setAttribute('class', "action-btn btn-secondary mx-1 btn btn-sm d-inline-flex align-items-center");
-            view.setAttribute('target', "_blank");
-            view.setAttribute('title', "{{ __('View') }}");
-            view.innerHTML = "<i class='ti ti-crosshair'></i>";
-            html.appendChild(view);
-
-            @if (isset($permisions) && in_array('show uploading', $permisions))
-            @else
-                var del = document.createElement('a');
-                del.setAttribute('href', response.delete);
-                del.setAttribute('class', "action-btn btn-danger mx-1  btn btn-sm d-inline-flex align-items-center");
-                del.setAttribute('data-toggle', "popover");
-                del.setAttribute('title', "{{ __('Delete') }}");
-                del.innerHTML = "<i class='ti ti-trash '></i>";
-
-                del.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (confirm("Are you sure ?")) {
-                        var btn = $(this);
-                        $.ajax({
-                            url: btn.attr('href'),
-                            type: 'DELETE',
-                            success: function(response) {
-                                if (response.is_success) {
-                                    btn.closest('.dz-image-preview').remove();
-                                    toastrs('{{ __('Success') }}', 'File Successfully Deleted',
-                                        'success');
-                                } else {
-                                    toastrs('{{ __('Error') }}', 'Something Wents Wrong.', 'error');
-                                }
-                            },
-                            error: function(response) {
-                                response = response.responseJSON;
-                                if (response.is_success) {
-                                    toastrs('{{ __('Error') }}', 'Something Wents Wrong.', 'error');
-                                } else {
-                                    toastrs('{{ __('Error') }}', 'Something Wents Wrong.', 'error');
-                                }
-                            }
-                        })
-                    }
-                });
-
-                html.appendChild(del);
-            @endif
-
-            file.previewTemplate.appendChild(html);
-        }
-
-        @php
-            $files = $project->files;
-        @endphp
-
-        @foreach ($files as $file)
-            @php
-                $storage_file = get_base_file($file->file_path);
-                $file_extension = pathinfo($file->file_name, PATHINFO_EXTENSION);
-                $thumbnail_url = match ($file_extension) {
-                    'pdf' => asset('assets/images/pdf_icon.png'),
-                    'docx' => asset('assets/images/doc_icon.png'),
-                    'xlsx', 'csv' => asset('assets/images/csv_icon.png'),
-                    default => get_file($file->file_path),
-                };
-            @endphp
-
-            // Create the mock file
-            var mockFile = {
-                name: "{{ $file->file_name }}",
-                size: "{{ get_size(get_file($file->file_path)) }}"
-            };
-
-            // Call the default addedfile event handler
-            myDropzone.emit("addedfile", mockFile);
-
-            // Show the thumbnail of the file
-            myDropzone.emit("thumbnail", mockFile, "{{ $thumbnail_url }}");
-
-            // Complete the file upload
-            myDropzone.emit("complete", mockFile);
-
-            // Add buttons for download and delete actions
-            dropzoneBtn(mockFile, {
-                download: "{{ get_file($file->file_path) }}",
-                delete: "{{ route('projects.file.delete', [$project->id, $file->id]) }}"
-            });
-        @endforeach
-    </script>
-    <script>
+        //Section: Progress (Last Week Tasks) 
         (function() {
             var options = {
                 chart: {
@@ -871,16 +713,15 @@
                 series: [
                     @foreach ($chartData['stages'] as $id => $name)
                         {
-                            name: "{{ __($name) }}",
-                            // data:
-                            data: {!! json_encode($chartData[$id]) !!},
+                            name: "{{ __($name) }}", // Use Laravel translation helper
+                            data: {!! json_encode($chartData[$id]) !!}, // Safely convert to JSON
                         },
                     @endforeach
                 ],
                 xaxis: {
-                    categories: {!! json_encode($chartData['label']) !!},
+                    categories: {!! json_encode($chartData['label']) !!}, // Safely convert to JSON
                 },
-                colors: {!! json_encode($chartData['color']) !!},
+                colors: {!! json_encode($chartData['color']) !!}, // Safely convert to JSON
 
                 grid: {
                     strokeDashArray: 4,
@@ -895,10 +736,12 @@
                     max: 40,
                 },
             };
+
             var chart = new ApexCharts(document.querySelector("#task-chart"), options);
             chart.render();
         })();
 
+        // Copy link to clipboard
         $('.cp_link').on('click', function() {
             var value = $(this).attr('data-link');
             var $temp = $("<input>");
@@ -906,7 +749,108 @@
             $temp.val(value).select();
             document.execCommand("copy");
             $temp.remove();
-            toastrs('success', '{{ __('Link Copy on Clipboard') }}', 'success')
+
+            // Show toastr notification on success
+            toastrs('success', '{{ __('Link Copy on Clipboard') }}', 'success');
         });
+    </script>
+@endpush
+
+@push('scripts')
+    <script>
+        Dropzone.autoDiscover = false;
+        var myDropzone = new Dropzone("#dropzonewidget", {
+            maxFiles: 20,
+            maxFilesize: 20, // In MB
+            parallelUploads: 1,
+            acceptedFiles: ".jpeg,.jpg,.png,.pdf,.doc,.txt",
+            url: "{{ route('projects.file.upload', [$project->id]) }}",
+            success: function(file, response) {
+                if (response.is_success) {
+                    dropzoneBtn(file, response);
+                    toastrs('{{ __('Success') }}', 'File Successfully Uploaded', 'success');
+                } else {
+                    myDropzone.removeFile(file);
+                    toastrs('Error', response.error, 'error');
+                }
+            },
+            error: function(file, response) {
+                myDropzone.removeFile(file);
+                toastrs('Error', response.error || response, 'error');
+            }
+        });
+
+        myDropzone.on("sending", function(file, xhr, formData) {
+            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
+            formData.append("project_id", {{ $project->id }});
+        });
+
+
+        function dropzoneBtn(file, response) {
+            var html = document.createElement('div');
+
+            var download = document.createElement('a');
+            download.setAttribute('href', response.download);
+            download.setAttribute('class', "action-btn btn-primary mx-1 btn btn-sm d-inline-flex align-items-center");
+            download.setAttribute('data-toggle', "tooltip");
+            download.setAttribute('download', file.name);
+            download.setAttribute('title', "{{ __('Download') }}");
+            download.innerHTML = "<i class='ti ti-download'></i>";
+            html.appendChild(download);
+
+            var lightboxLink = document.createElement('a');
+            lightboxLink.setAttribute('href', response.download);
+            lightboxLink.setAttribute('data-lightbox', "gallery");
+            lightboxLink.setAttribute('data-title', file.name);
+            lightboxLink.style.display = 'none';
+            file.previewTemplate.appendChild(lightboxLink);
+
+            file.previewTemplate.querySelector('img').addEventListener('click', function() {
+                lightboxLink.click();
+            });
+
+            var view = document.createElement('a');
+            view.setAttribute('href', response.download);
+            view.setAttribute('class', "action-btn btn-secondary mx-1 btn btn-sm d-inline-flex align-items-center");
+            view.setAttribute('target', "_blank");
+            view.setAttribute('title', "{{ __('View') }}");
+            view.innerHTML = "<i class='ti ti-crosshair'></i>";
+            html.appendChild(view);
+
+
+            var del = document.createElement('a');
+            del.setAttribute('href', response.delete);
+            del.setAttribute('class', "action-btn btn-danger mx-1 btn btn-sm d-inline-flex align-items-center");
+            del.setAttribute('data-toggle', "popover");
+            del.setAttribute('title', "{{ __('Delete') }}");
+            del.innerHTML = "<i class='ti ti-trash'></i>";
+
+            del.addEventListener("click", function(e) {
+                e.preventDefault();
+                if (confirm("Are you sure?")) {
+                    $.ajax({
+                        url: del.getAttribute('href'),
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response.is_success) {
+                                del.closest('.dz-image-preview').remove();
+                                toastrs('{{ __('Success') }}', 'File Successfully Deleted',
+                                    'success');
+                            } else {
+                                toastrs('{{ __('Error') }}', 'Something went wrong.', 'error');
+                            }
+                        },
+                        error: function() {
+                            toastrs('{{ __('Error') }}', 'Something went wrong.', 'error');
+                        }
+                    });
+                }
+            });
+
+            html.appendChild(del);
+
+
+            file.previewTemplate.appendChild(html);
+        }
     </script>
 @endpush

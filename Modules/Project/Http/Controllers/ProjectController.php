@@ -2,7 +2,9 @@
 
 namespace Modules\Project\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Modules\Lead\Entities\Label;
 use Butschster\Head\Facades\Meta;
@@ -30,7 +32,7 @@ class ProjectController extends Controller
                 ->with('error', __('Permission Denied.'));
         }
 
-        if ($request->has('table')) {
+        if (request()->ajax()) {
             return $projects->table($request);
         }
 
@@ -46,6 +48,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+
         $chartData = $this->getProjectChart([
             'workspace_id' => getActiveWorkSpace(),
             'project_id'   => $project->id,
@@ -53,6 +56,8 @@ class ProjectController extends Controller
         ]);
 
         $user = auth()->user();
+
+
 
         $project_estimations = ProjectEstimation::with('all_quotes_list')
             ->where('project_id', $project->id)
@@ -66,6 +71,7 @@ class ProjectController extends Controller
                 return $query->whereIn('id', $estimationIds);
             })
             ->get();
+
 
         $estimationStatus = ProjectEstimation::$statues;
         $projectLabel     = Label::get_project_dropdowns();
@@ -87,11 +93,32 @@ class ProjectController extends Controller
             'workspace_users',
         ));
     }
+
+    private function getFirstSeventhWeekDay($week)
+    {
+        $first_day = $seventh_day = null;
+
+        if (isset($week)) {
+            $first_day   = Carbon::now()->addWeeks($week)->startOfWeek();
+            $seventh_day = Carbon::now()->addWeeks($week)->endOfWeek();
+        }
+
+        $dateCollection['first_day']   = $first_day;
+        $dateCollection['seventh_day'] = $seventh_day;
+
+        $period = CarbonPeriod::create($first_day, $seventh_day);
+
+        foreach ($period as $key => $dateobj) {
+            $dateCollection['datePeriod'][$key] = $dateobj;
+        }
+
+        return $dateCollection;
+    }
     public function getProjectChart($arrParam)
     {
         $arrDuration = [];
         if ($arrParam['duration'] && $arrParam['duration'] == 'week') {
-            $previous_week = Project::getFirstSeventhWeekDay(-1);
+            $previous_week = $this->getFirstSeventhWeekDay(-1);
             foreach ($previous_week['datePeriod'] as $dateObject) {
                 $arrDuration[$dateObject->format('Y-m-d')] = $dateObject->format('D');
             }
