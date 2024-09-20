@@ -4,7 +4,6 @@ namespace Modules\Project\Entities;
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Modules\Lead\Entities\Label;
 use Modules\Project\Traits\Scope;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Traits\Attribute;
@@ -39,15 +38,6 @@ class Project extends Model
         'is_active',
         'is_archive',
     ];
-
-    // public function getPriorityAttribute($priority)
-    // {
-    //     $labelOfProject = Label::get_project_dropdowns();
-
-    //     $projectStatus = collect($labelOfProject['priority']);
-
-    //     return $projectStatus->where('id', $priority)->first();
-    // }
 
     /**
      * Return project URL
@@ -90,15 +80,16 @@ class Project extends Model
 
         $query = ($user->type == 'company') ?
 
-            Project::whereCreatedBy($user->id)
-                ->with(['statusData'])
+            self::whereCreatedBy($user->id)
+                ->with(['statusData', 'priorityData', 'thumbnail'])
 
-            : Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
+            : self::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
                 ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
                 ->where(function ($query) use ($user) {
                     $query->where('client_projects.client_id', $user->id)
                         ->orWhere('estimate_quotes.user_id', $user->id);
-                });
+                })
+                ->with(['statusData', 'priorityData']);
 
         return new ProjectsTable($query);
     }

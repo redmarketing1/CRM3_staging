@@ -19,7 +19,7 @@ class DataTables implements Responsable
      * @var array
      */
     protected $defaultRawColumns = [
-        'created',
+        'created_at',
     ];
 
     /**

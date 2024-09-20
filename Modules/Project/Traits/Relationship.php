@@ -7,6 +7,7 @@ use Modules\Taskly\Entities\Task;
 use Illuminate\Support\Facades\Auth;
 use Modules\Taskly\Entities\Timesheet;
 use Modules\Taskly\Entities\ActivityLog;
+use Modules\Taskly\Entities\ProjectFile;
 use Modules\Taskly\Entities\EstimateQuote;
 
 trait Relationship
@@ -66,6 +67,15 @@ trait Relationship
     }
 
     /**
+     * Get project priority data
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function priorityData()
+    {
+        return $this->hasOne(Label::class, 'id', 'priority');
+    }
+
+    /**
      * Get project status data
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -81,7 +91,12 @@ trait Relationship
 
     public function files()
     {
-        return $this->hasMany('Modules\Taskly\Entities\ProjectFile', 'project_id', 'id');
+        return $this->hasMany(ProjectFile::class, 'project_id', 'id');
+    }
+
+    public function thumbnail()
+    {
+        return $this->hasOne(ProjectFile::class, 'project_id', 'id')->where('is_default', true);
     }
 
     public function client_final_quote()
