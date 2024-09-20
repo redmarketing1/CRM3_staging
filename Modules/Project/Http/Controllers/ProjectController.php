@@ -3,7 +3,6 @@
 namespace Modules\Project\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Country;
 use Illuminate\Http\Request;
 use Modules\Lead\Entities\Label;
 use Butschster\Head\Facades\Meta;
@@ -11,14 +10,11 @@ use Modules\Taskly\Entities\Task;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Stage;
-use Nwidart\Modules\Facades\Module;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
 use Illuminate\Support\Facades\Storage;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\EstimateQuote;
-use Illuminate\Contracts\Support\Renderable;
 use Modules\Taskly\Entities\ProjectEstimation;
 
 class ProjectController extends Controller
@@ -38,52 +34,11 @@ class ProjectController extends Controller
             return $projects->table($request);
         }
 
-        $projects = $this->dataTables();
+        Meta::prependTitle(trans('Manage Projects'));
 
-        $groupedProjects = $this->groupProjectsByStatus($projects);
-
-        return view('project::project.index.index', [
-            'projects'        => $projects,
-            'groupedProjects' => $groupedProjects ?? [],
-        ]);
+        return view('project::project.index.index');
     }
 
-    public function dataTables($filters = null)
-    {
-        $user = Auth::user();
-
-        return ($user->type == 'company') ?
-
-            Project::whereCreatedBy($user->id)
-                ->orderByDesc('created_at')
-                ->get()
-
-            : Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
-                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
-                ->where(function ($query) use ($user) {
-                    $query->where('client_projects.client_id', $user->id)
-                        ->orWhere('estimate_quotes.user_id', $user->id);
-                })
-                ->orderByDesc('created_at')
-                ->get();
-    }
-
-    /**
-     * Group projects by their status and count them.
-     *
-     * @param \Illuminate\Support\Collection $projects
-     * @return \Illuminate\Support\Collection
-     */
-    protected function groupProjectsByStatus($projects)
-    {
-        return $projects->filter(function ($project) {
-            return ! empty($project->status->name);
-        })->groupBy('status.name')
-            ->map(function ($group) {
-                $status = $group->first()->status->toArray();
-                return (object) array_merge(['total' => $group->count()], $status);
-            });
-    }
 
     /**
      * Show the specified resource.

@@ -4,10 +4,10 @@
          {{ __('All') }}
      </a>
 
-     @foreach ($groupedProjects as $item)
+     @foreach ($statusLists as $item)
          <a class="nav-item nav-link project_status_link" data-toggle="tab" role="tab"
              data-status-name="{{ $item->name }}" href="javascript:void()"
-             data-backgroundColor="{{ $item->background_color }}" data-fontColor="{{ $item->font_color }}">
+             style="background-color: {{ $item->background_color }};color: {{ $item->font_color }};">
              {{ trans($item->name) }}
              <span class="project_item_count">
                  {{ $item->total }}

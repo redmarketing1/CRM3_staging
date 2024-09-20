@@ -181,8 +181,8 @@ class ProjectController extends Controller
         $profile      = '';
         $money_format = site_money_format();
         $update_data  = array();
-
         foreach ($record as $key => $value) {
+            dd($value->project_default_file);
             $image       = '<img class="default-thumbnail" width="100%" src="' . URL('assets/images/default_thumbnail3.png') . '">';
             $latest_file = $value->project_default_file;
 
@@ -599,7 +599,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-       
+
         if (Auth::user()->isAbleTo('project edit')) {
             if (module_is_active('CustomField')) {
                 $project->customField = \Modules\CustomField\Entities\CustomField::getData($project, 'taskly', 'projects');

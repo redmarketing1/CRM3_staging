@@ -41,11 +41,9 @@
 
 @section('content')
     <div class="row">
-        @include('project::project.index.utility.tabs_filter_button')
         <div class="col-xl-12">
             <div class="card projectsTableContainter">
                 <div class="card-body table-border-style">
-                    @include('project::project.index.utility.table_filter')
                     @include('project::project.index.utility.table')
                 </div>
             </div>
