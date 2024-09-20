@@ -7,9 +7,9 @@ return [
     | These assets are registered on the asset manager.
     |--------------------------------------------------------------------------
     */
-    'all_assets' => [
-        'project.index.css' => ['module' => 'project:assets/css/index.css'],
-        'project.index.js'  => ['module' => 'project:assets/js/index.js'],
-    ],
+    // 'all_assets' => [
+    //     'project.index.css' => ['module' => 'project:assets/css/index.css'],
+    //     'project.index.js'  => ['module' => 'project:assets/js/index.js'],
+    // ],
 
 ];
