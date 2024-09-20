@@ -164,11 +164,24 @@ th {
     padding: 10px !important;
 }
 
+.projectsTableContainter table#projectsTable .filterable-budget-net-table .input-items {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.projectsTableContainter table#projectsTable .filterable-budget-net-table .input-items .field,
+.projectsTableContainter table#projectsTable .filterable-budget-net-table .input-items .field input {
+    width: 100px;
+}
+
+
 .projectsTableContainter table#projectsTable .select2-container {
     background: transparent !important;
 }
 
-.projectsTableContainter table#projectsTable .select2-container--default .select2-selection--single .select2-selection__rendered {
+.projectsTableContainter table#projectsTable .select2-container--default .select2-selection--single .select2-selection__rendered,
+.projectsTableContainter table#projectsTable .daterange {
     font-size: 1.125rem !important;
     font-weight: 400;
     color: #293240;

@@ -77,20 +77,31 @@ $(document).ready(function () {
             $('#projectsTable colgroup').remove();
             $('#projectsTable tr:first-child.hide').fadeIn();
 
-            setTimeout(function () {
-                $('.daterange').daterangepicker({
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'This Week': [moment().subtract(6, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment()
-                            .subtract(1, 'month').endOf('month')
-                        ]
-                    }
-                });
-            }, 600)
+            $('.daterange').daterangepicker({
+                autoUpdateInput: false,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'This Week': [moment().subtract(6, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment()
+                        .subtract(1, 'month').endOf('month')
+                    ]
+                }
+            });
+
+            $('.daterange').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+                console.log(picker);
+
+                table.draw();  // Trigger table redraw
+            });
+
+            $('.daterange').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+                table.draw();  // Trigger table redraw
+            });
         }
     });
 
@@ -135,19 +146,35 @@ $(document).ready(function () {
         table.draw();
     });
 
-    $('#filterableStatusDropdown, #filterablePriorityDropdown').on('change', function () {
+    $('#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange').on('change', function () {
         table.draw();
     });
+
 
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         var selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
         var selectedDropdownStatus = removeWhitespace($('#filterableStatusDropdown').val()).toLowerCase();
         var selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val()).toLowerCase();
+        var selectedDateRange = $('#filterableDaterange').val();  // Get selected date range
+
         var projectStatus = removeWhitespace(data[2]).toLowerCase();
         var projectPriority = removeWhitespace(data[4]).toLowerCase();
+        var projectName = removeWhitespace(data[1]).toLowerCase();
+        var projectCreatedAt = data[7];  // Assuming 'created_at' is in the 8th column (index 7)
 
         var searchByProjectName = removeWhitespace($('#searchByProjectName').val()).toLowerCase();
-        var projectName = removeWhitespace(data[1]).toLowerCase();
+
+        // Date Range Filter
+        if (selectedDateRange) {
+            var dateRange = selectedDateRange.split(' - ');
+            var startDate = moment(dateRange[0], 'MM/DD/YYYY');
+            var endDate = moment(dateRange[1], 'MM/DD/YYYY');
+            var projectDate = moment(projectCreatedAt, 'DD-MM-YYYY HH:mm');  // Adjusted to your format: "28-06-2023 05:15"
+
+            if (!projectDate.isBetween(startDate, endDate, undefined, '[]')) {
+                return false;
+            }
+        }
 
         if (
             (!selectedStatus || projectStatus === selectedStatus) &&
@@ -158,8 +185,7 @@ $(document).ready(function () {
             return true;
         }
         return false;
-
-
     });
+
 
 });
