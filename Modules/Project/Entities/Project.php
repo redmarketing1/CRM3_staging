@@ -2,8 +2,6 @@
 
 namespace Modules\Project\Entities;
 
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Modules\Project\Traits\Scope;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Traits\Attribute;
@@ -46,27 +44,6 @@ class Project extends Model
     public function url()
     {
         return route('project.show', [$this->id]);
-    }
-
-    public static function getFirstSeventhWeekDay($week)
-    {
-        $first_day = $seventh_day = null;
-
-        if (isset($week)) {
-            $first_day   = Carbon::now()->addWeeks($week)->startOfWeek();
-            $seventh_day = Carbon::now()->addWeeks($week)->endOfWeek();
-        }
-
-        $dateCollection['first_day']   = $first_day;
-        $dateCollection['seventh_day'] = $seventh_day;
-
-        $period = CarbonPeriod::create($first_day, $seventh_day);
-
-        foreach ($period as $key => $dateobj) {
-            $dateCollection['datePeriod'][$key] = $dateobj;
-        }
-
-        return $dateCollection;
     }
 
     /**
