@@ -5,6 +5,7 @@
                 id="searchByProjectName" />
         </div>
     </th>
+    <th>archive</th>
     <th class="filterable-status-table">
         <div class="status-table">
             <select class="form-control" id="filterableStatusDropdown">
