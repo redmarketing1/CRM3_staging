@@ -182,12 +182,9 @@ class ProjectController extends Controller
         $money_format = site_money_format();
         $update_data  = array();
         foreach ($record as $key => $value) {
-            dd($value->project_default_file);
             $image       = '<img class="default-thumbnail" width="100%" src="' . URL('assets/images/default_thumbnail3.png') . '">';
             $latest_file = $value->project_default_file;
 
-            //dd($latest_file);
-            //	dd($latest_file);
             if (isset($latest_file->file_name)) {
                 //    $on_error   = 'onerror="this.onerror=null; this.src="'. URL('assets/images/default_thumbnail3.png') .'";"';
 
@@ -547,7 +544,6 @@ class ProjectController extends Controller
             $construction_types = isset($project_dropdowns['construction_type']) ? $project_dropdowns['construction_type'] : array();
             $properties         = isset($project_dropdowns['property']) ? $project_dropdowns['property'] : array();
 
-            //	dd($project->status_data);
 
             return view('taskly::projects.show', compact('project', 'daysleft', 'chartData', 'project_estimations', 'estimationStatus', 'statuesColor', 'site_money_format', 'active_estimation', 'feedbacks', 'comments', 'projectStatus', 'status_labels', 'priorities', 'construction_types', 'properties'));
         } else {
@@ -1004,7 +1000,6 @@ class ProjectController extends Controller
 
     public function sharePopupVenderStore($projectID, Request $request)
     {
-        // dd($projectID, $request );
         $project = Project::find($projectID);
         foreach ($request->vendors as $vender_id) {
             $client = User::where('type', 'vendor')->where('id', $vender_id)->first();
