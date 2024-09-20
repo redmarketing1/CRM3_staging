@@ -75,7 +75,22 @@ $(document).ready(function () {
             }
 
             $('#projectsTable colgroup').remove();
-            $('#projectsTable tr:first-child.hide').fadeIn()
+            $('#projectsTable tr:first-child.hide').fadeIn();
+
+            setTimeout(function () {
+                $('.daterange').daterangepicker({
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'This Week': [moment().subtract(6, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment()
+                            .subtract(1, 'month').endOf('month')
+                        ]
+                    }
+                });
+            }, 600)
         }
     });
 
@@ -134,8 +149,6 @@ $(document).ready(function () {
         var searchByProjectName = removeWhitespace($('#searchByProjectName').val()).toLowerCase();
         var projectName = removeWhitespace(data[1]).toLowerCase();
 
-        console.log(projectPriority);
-
         if (
             (!selectedStatus || projectStatus === selectedStatus) &&
             (!selectedDropdownStatus || projectStatus === selectedDropdownStatus) &&
@@ -148,6 +161,5 @@ $(document).ready(function () {
 
 
     });
-
 
 });
