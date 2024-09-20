@@ -61,7 +61,7 @@ class AppServiceProvider extends ServiceProvider
     private function addAssets($assets)
     {
         // Add all assets to the AssetManager
-        foreach ($assets['all_assets'] as $assetName => $assetPath) {
+        foreach ($assets['all_assets'] ?? [] as $assetName => $assetPath) {
             $url = $this->app[AssetFactory::class]->make($assetPath)->url();
 
             $this->app[AssetManager::class]->addAsset($assetName, $url);
