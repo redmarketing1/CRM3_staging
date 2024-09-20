@@ -8,11 +8,11 @@ return [
     |--------------------------------------------------------------------------
     */
     'all_assets'      => [
-        'admin.work.css'    => ['Cdn' => 'project:admin/css/media.css'],
-        'admin.invoice.css' => ['Cdn' => 'project:admin/css/media.css'],
+        'project.index.css' => ['module' => 'project:assets/css/index.css'],
+        'project.index.js'  => ['module' => 'project:assets/js/index.js'],
     ],
 
-    /*
+    /* 
     |--------------------------------------------------------------------------
     | Define which default assets will always be included in all pages
     | through the asset pipeline.
