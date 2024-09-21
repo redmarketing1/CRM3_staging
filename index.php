@@ -7,7 +7,7 @@
  * @author   Taylor Otwell <taylor@laravel.com>
  */
 
-$uriIIIIDSSSSS = urldecode(
+$uriIIII = urldecode(
     parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),
 );
 
