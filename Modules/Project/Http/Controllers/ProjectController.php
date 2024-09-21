@@ -2,8 +2,9 @@
 
 namespace Modules\Project\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Country;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Modules\Lead\Entities\Label;
 use Butschster\Head\Facades\Meta;
@@ -11,14 +12,11 @@ use Modules\Taskly\Entities\Task;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Stage;
-use Nwidart\Modules\Facades\Module;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
 use Illuminate\Support\Facades\Storage;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\EstimateQuote;
-use Illuminate\Contracts\Support\Renderable;
 use Modules\Taskly\Entities\ProjectEstimation;
 
 class ProjectController extends Controller
@@ -34,56 +32,15 @@ class ProjectController extends Controller
                 ->with('error', __('Permission Denied.'));
         }
 
-        if ($request->has('table')) {
+        if (request()->ajax()) {
             return $projects->table($request);
         }
 
-        $projects = $this->dataTables();
+        Meta::prependTitle(trans('Manage Projects'));
 
-        $groupedProjects = $this->groupProjectsByStatus($projects);
-
-        return view('project::project.index.index', [
-            'projects'        => $projects,
-            'groupedProjects' => $groupedProjects ?? [],
-        ]);
+        return view('project::project.index.index');
     }
 
-    public function dataTables($filters = null)
-    {
-        $user = Auth::user();
-
-        return ($user->type == 'company') ?
-
-            Project::whereCreatedBy($user->id)
-                ->orderByDesc('created_at')
-                ->get()
-
-            : Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
-                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
-                ->where(function ($query) use ($user) {
-                    $query->where('client_projects.client_id', $user->id)
-                        ->orWhere('estimate_quotes.user_id', $user->id);
-                })
-                ->orderByDesc('created_at')
-                ->get();
-    }
-
-    /**
-     * Group projects by their status and count them.
-     *
-     * @param \Illuminate\Support\Collection $projects
-     * @return \Illuminate\Support\Collection
-     */
-    protected function groupProjectsByStatus($projects)
-    {
-        return $projects->filter(function ($project) {
-            return ! empty($project->status->name);
-        })->groupBy('status.name')
-            ->map(function ($group) {
-                $status = $group->first()->status->toArray();
-                return (object) array_merge(['total' => $group->count()], $status);
-            });
-    }
 
     /**
      * Show the specified resource.
@@ -112,6 +69,7 @@ class ProjectController extends Controller
             })
             ->get();
 
+
         $estimationStatus = ProjectEstimation::$statues;
         $projectLabel     = Label::get_project_dropdowns();
 
@@ -132,11 +90,32 @@ class ProjectController extends Controller
             'workspace_users',
         ));
     }
+
+    private function getFirstSeventhWeekDay($week)
+    {
+        $first_day = $seventh_day = null;
+
+        if (isset($week)) {
+            $first_day   = Carbon::now()->addWeeks($week)->startOfWeek();
+            $seventh_day = Carbon::now()->addWeeks($week)->endOfWeek();
+        }
+
+        $dateCollection['first_day']   = $first_day;
+        $dateCollection['seventh_day'] = $seventh_day;
+
+        $period = CarbonPeriod::create($first_day, $seventh_day);
+
+        foreach ($period as $key => $dateobj) {
+            $dateCollection['datePeriod'][$key] = $dateobj;
+        }
+
+        return $dateCollection;
+    }
     public function getProjectChart($arrParam)
     {
         $arrDuration = [];
         if ($arrParam['duration'] && $arrParam['duration'] == 'week') {
-            $previous_week = Project::getFirstSeventhWeekDay(-1);
+            $previous_week = $this->getFirstSeventhWeekDay(-1);
             foreach ($previous_week['datePeriod'] as $dateObject) {
                 $arrDuration[$dateObject->format('Y-m-d')] = $dateObject->format('D');
             }
@@ -235,5 +214,41 @@ class ProjectController extends Controller
         } catch (\Throwable $th) {
             dd($th);
         }
+    }
+
+    /**
+     * Update project by given ids.
+     *  
+     */
+    public function update(Request $request)
+    {
+        return self::{$request->type}($request->ids);
+    }
+
+    /**
+     * Delete project by id
+     * @param mixed $ids
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    protected function delete($ids)
+    {
+        Project::whereIn('id', $ids)
+            ->delete();
+
+        return response()->json(['success' => 'Items has been delete successfully.']);
+    }
+
+    /**
+     * Move to archive project by id
+     * @param mixed $ids
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    protected function archive($ids)
+    {
+        Project::whereIn('id', $ids)->update([
+            'is_archive' => 1,
+        ]);
+
+        return response()->json(['success' => 'Items has been archive successfully.']);
     }
 }

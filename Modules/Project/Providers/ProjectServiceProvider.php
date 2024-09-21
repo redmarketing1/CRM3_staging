@@ -32,7 +32,14 @@ class ProjectServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
 
-        $this->addAssets('project.index', ['project.index.css', 'project.index.js']);
+        $this->addAssets('project.index', [
+            'project.index.css',
+            'project.index.daterangepicker.css',
+
+            'project.index.moment.js',
+            'project.index.daterangepicker.js',
+            'project.index.js',
+        ]);
     }
 
     /**

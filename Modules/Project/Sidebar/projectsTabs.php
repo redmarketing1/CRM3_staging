@@ -3,6 +3,7 @@
 namespace Modules\Project\Sidebar;
 
 use Modules\Taskly\Entities\Project;
+use Illuminate\Support\Facades\Cache;
 
 class projectsTabs
 {
@@ -27,7 +28,13 @@ class projectsTabs
      */
     public function render()
     {
-        return $this->renderTabItems() . $this->renderProjectList();
+        /**
+         * Cache::remember for 60 * 60 = 1 hours
+         * after expired cache it will again fetch new data 
+         */
+        return Cache::remember('projectSubmenu-' . auth()->id(), 60 * 60, function () {
+            return $this->renderTabItems() . $this->renderProjectList();
+        });
     }
 
     /**

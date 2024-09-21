@@ -19,7 +19,7 @@ class DataTables implements Responsable
      * @var array
      */
     protected $defaultRawColumns = [
-        'created',
+        'created_at',
     ];
 
     /**
@@ -58,14 +58,6 @@ class DataTables implements Responsable
     public function newTable()
     {
         return datatables($this->source)
-            // ->addColumn('checkbox', function ($entity) {
-            //     return view('core::partials.table.checkbox', compact('entity'));
-            // })
-            // ->editColumn('status', function ($entity) {
-            //     return $entity->is_active
-            //         ? '<span class="dot green"></span>'
-            //         : '<span class="dot red"></span>';
-            // })
             ->editColumn('created_at', function ($entity) {
                 return view('core::partials.table.date')->with('date', $entity->created_at);
             })
