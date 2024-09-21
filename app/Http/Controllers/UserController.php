@@ -28,24 +28,28 @@ use Illuminate\Validation\Rule;
 use Illuminate\Auth\Events\Registered;
 use Lab404\Impersonate\Impersonate;
 use App\Services\UserService;
+use Butschster\Head\Facades\Meta;
 
 use function GuzzleHttp\Promise\all;
 
 class UserController extends Controller
 {
 	protected $userService;
-
+    
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
+
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+    //User Index Page Default Grid Style List
     public function index(Request $request)
     {
+        if (Auth::user()->type == 'super admin') {
+            Meta::setTitle(__('Customers'));
+        } else {
+            Meta::setTitle(__('Users'));  
+        }
 
         if(Auth::user()->isAbleTo('user manage'))
         {
@@ -398,7 +402,8 @@ class UserController extends Controller
         if(Auth::user()->isAbleTo('user delete'))
         {
             $user = User::findOrFail($id);
-
+            $roles = $user->roles->pluck('id')->toArray();
+            $user->removeRoles($roles);
              // first parameter user
              event(new DestroyUser($user));
 
@@ -415,6 +420,7 @@ class UserController extends Controller
                     }
                 }
                 ReferralTransaction::where('company_id' , $id)->delete();
+               
                 $user->delete();
             }
             catch (\Exception $e)
@@ -422,7 +428,7 @@ class UserController extends Controller
                 return redirect()->back()->with('error', __($e->getMessage()));
             }
 
-            return redirect()->route('users.index')->with('success', __('User successfully deleted.'));
+            return redirect()->back()->with('success', __('User successfully deleted.'));
         }
         else
         {
@@ -625,7 +631,7 @@ class UserController extends Controller
                                 ])->save();
             }
 
-            return redirect()->route('users.index')->with(
+            return redirect()->back()->with(
                 'success', 'User Password successfully updated.'
             );
         }
@@ -644,13 +650,13 @@ class UserController extends Controller
             {
                 $user->is_enable_login = 0;
                 $user->save();
-                return redirect()->route('users.index')->with('success', 'User login disable successfully.');
+                return redirect()->back()->with('success', 'User login disable successfully.');
             }
             else
             {
                 $user->is_enable_login = 1;
                 $user->save();
-                return redirect()->route('users.index')->with('success', 'User login enable successfully.');
+                return redirect()->back()->with('success', 'User login enable successfully.');
             }
 
         }
@@ -1058,6 +1064,7 @@ class UserController extends Controller
     }
 	
 	public function setup(Request $request, $id = null) {
+        
 		if(Auth::user()->isAbleTo('user edit'))
         {
 			$user_id    = isset($id) ? Crypt::decrypt($id) : 0;
@@ -1163,6 +1170,7 @@ class UserController extends Controller
         {
 			if ($request->roles != '') {
 				$role = Role::find($request->roles);
+                
                 $return = $this->userService->genericCreateFunc($role->name, $role->name, $request->user_id, $request->all());
                 if ($return['status'] == true) {
                     return redirect()->route('users.index')->with('success', __('Contact save successfully'));

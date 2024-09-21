@@ -85,6 +85,14 @@
       0 => 'Dipesh79\\LaravelPhonePe\\LaravelPhonePeServiceProvider',
     ),
   ),
+  'fxcjahid/laravel-assets-manager' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Fxcjahid\\LaravelAssetsManager\\Providers\\AssetsManagerServiceProvider',
+      1 => 'Fxcjahid\\LaravelAssetsManager\\Providers\\AssetsBladeServiceProvider',
+    ),
+  ),
   'google-gemini-php/laravel' => 
   array (
     'providers' => 
