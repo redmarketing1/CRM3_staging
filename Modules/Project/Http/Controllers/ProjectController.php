@@ -48,7 +48,6 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-
         $chartData = $this->getProjectChart([
             'workspace_id' => getActiveWorkSpace(),
             'project_id'   => $project->id,
@@ -56,8 +55,6 @@ class ProjectController extends Controller
         ]);
 
         $user = auth()->user();
-
-
 
         $project_estimations = ProjectEstimation::with('all_quotes_list')
             ->where('project_id', $project->id)
@@ -217,5 +214,41 @@ class ProjectController extends Controller
         } catch (\Throwable $th) {
             dd($th);
         }
+    }
+
+    /**
+     * Update project by given ids.
+     *  
+     */
+    public function update(Request $request)
+    {
+        return self::{$request->type}($request->ids);
+    }
+
+    /**
+     * Delete project by id
+     * @param mixed $ids
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    protected function delete($ids)
+    {
+        Project::whereIn('id', $ids)
+            ->delete();
+
+        return response()->json(['success' => 'Items has been delete successfully.']);
+    }
+
+    /**
+     * Move to archive project by id
+     * @param mixed $ids
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    protected function archive($ids)
+    {
+        Project::whereIn('id', $ids)->update([
+            'is_archive' => 1,
+        ]);
+
+        return response()->json(['success' => 'Items has been archive successfully.']);
     }
 }
