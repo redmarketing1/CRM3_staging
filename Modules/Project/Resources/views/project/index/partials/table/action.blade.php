@@ -1,8 +1,8 @@
 <div class="actions">
     <div class="action-btn bg-primary ms-2">
-        <a data-size="lg" data-url="{{ $project->url() }}" class="btn btn-sm d-inline-flex align-items-center text-white "
-            data-ajax-popup="true" data-bs-toggle="tooltip" data-title="{{ trans('Edit Project') }}"
-            title="{{ trans('Edit Project') }}">
+        <a data-size="lg" data-url="{{ route('projects.edit', [$project->id]) }}"
+            class="btn btn-sm d-inline-flex align-items-center text-white " data-ajax-popup="true" data-bs-toggle="tooltip"
+            data-title="{{ trans('Edit Project') }}" title="{{ trans('Edit Project') }}">
             <i class="ti ti-pencil"></i>
         </a>
     </div>
