@@ -1,5 +1,5 @@
 <tr class="form-group mb-5 hide" role="row">
-    <th colspan="2">
+    <th colspan="3">
         <div class="search-table">
             <input type="search" class="form-control text-xl" placeholder="Search project name" name="searchByProjectName"
                 id="searchByProjectName" />
@@ -43,5 +43,5 @@
         <input type='text' class="form-control daterange form_filter_field" placeholder="{{ __('Date') }}"
             id="filterableDaterange" />
     </th>
-    <th colspan="1"><!--- construction, project net, date, action ---></th>
+    <th><!--- action ---></th>
 </tr>
