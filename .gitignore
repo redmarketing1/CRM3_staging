@@ -8,7 +8,7 @@ uploads/*
 tests/*
 node_modules/*
 .htaccess-old
-.htaccess 
+.htaccess
 /storage/*
 storage/*
 public/css/common.css
