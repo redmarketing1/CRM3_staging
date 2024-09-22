@@ -2155,12 +2155,16 @@ a#grammarCheck {
 }
 
 table thead th {
-    background: #f5f5f5 !important;
+    background: #f7f7f7 !important;
     text-transform: none;
     padding: 10px 10px !important;
     font-weight: 600;
 }
-
+.project.index table thead .theader th {
+    /* background: #f0f0f0 !important; */
+    border-top: 2px solid #FFF !important;
+    background: #f7f7f7 !important;
+}
 .select2-container--default .select2-selection--multiple {
     background: transparent;
 }
@@ -3110,7 +3114,7 @@ div#status-tabs {
 }
 
 div#status-tabs a.active {
-    background: #ebebeb;
+    background: #FFF;
     border: none;
     /* box-shadow: 0 0px 7px rgba(0,0,0,0.2); */
     opacity: 1 !important;
@@ -6763,8 +6767,12 @@ table td .btn-sm i {
     margin-bottom: 16px;
     break-inside: avoid;
     border-radius: 8px;
-    padding: 16px;
     box-sizing: border-box;
+}
+.card .card-header {
+    border-bottom: 1px solid #f1f1f1;
+    background: #f7f7f7;
+    border: 1px solid #FFF !important;
 }
 
 .card.wide {
@@ -7782,7 +7790,17 @@ td.project-budget {
     width: auto !important;
     border-radius: 0 0 10px 10px !important;
 }
+.dropzone .dz-message {
+    font-size: 20px;
+    background: #f6f6f6;
+    margin: 0 !important;
+    padding: 30px;
+    border-radius: 10px;
+}
 
+.dropzone.browse-file {
+    column-count: unset;
+}
 @media (max-width: 499px) {
     .dropzone {
         column-count: 2;
@@ -8058,3 +8076,135 @@ body.project .row {
 .dropzone .dz-preview:hover {
     z-index: 9 !important;
 }
+.projectsTableContainter>.card-body {
+    padding: 0 !important;
+    overflow: auto !important;
+}
+nav.dash-sidebar .dash-item-tabs .nav-item .nav-link {
+    padding: 4px 16px 4px 10px;
+    width: auto;
+    height: auto;
+}
+
+nav.dash-sidebar .dash-item-tabs {
+    gap: 4px;
+    margin: 10px 0 0 20px !important;
+    padding: 0 !important;
+}
+ 
+
+
+
+
+
+/* PROJECTS.CSS */
+
+#projectsTable .data-thubmnail {
+    width: 100px;
+    height: 70px;
+    overflow: hidden;
+    border-radius: 70px;
+    background: #f9f9f9;
+}
+#projectsTable .data-thubmnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.project.index div.dt-container div.dt-layout-cell
+{padding: 0}
+
+table#projectsTable  > thead > tr > th, 
+table#projectsTable  > thead > tr > td
+{border: none;}
+
+.card.projectsTableContainter
+{
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #FFF;
+    overflow:visible;
+}
+table#projectsTable
+{
+    width: 100% !important;
+}
+table#projectsTable  > thead
+{
+
+}
+
+.project.index  div#status-tabs
+{margin:0 20px 7px 20px !important}
+
+
+tr.theader th {
+    background: #0000000f !important;
+}
+
+table#projectsTable input, table#projectsTable select {
+    padding: 5px 10px;
+    font-size: 14px !important;
+    border-radius: 5px;
+}
+table#projectsTable thead input, table#projectsTable thead input::placeholder, table#projectsTable thead select, table#projectsTable thead .select2 .select2-selection {
+    padding: 5px;
+    font-size: 14px !important;
+    border-radius: 5px;
+    font-weight: 500;
+    color: #999 !important;
+    border: none !important;
+    height: auto;
+}
+table#projectsTable .select2 .select2-selection .select2-selection__rendered {
+    padding: 0 17px 0 5px;
+    line-height:20px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #999 !important;
+}
+table#projectsTable span.data-project-status,
+table#projectsTable span.data-project-priority {
+    padding: 5px;
+    border-radius: 5px;
+}
+table#projectsTable .select2.select2-container--default 
+{
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 5px;
+}
+
+.project.index .dt-length select {
+    position: absolute;
+    right: 13px;
+    width: 70px;
+    top: 39px;
+    background: #FFF;
+    border: none !important;
+    color: #999;
+}
+
+/*.project.index .dt-length label {
+    display: none;
+}
+.project.index .dt-length select {
+    position: absolute;
+    right: 13px;
+    width: 70px;
+    top: 19px;
+    background: #FFF;
+    border: none !important;
+    color: #999;
+}*/
+
+
+ 
+
+
+
+
+/* PROJECTS.CSS END */
+
+

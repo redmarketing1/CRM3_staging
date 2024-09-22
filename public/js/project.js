@@ -1,11 +1,8 @@
 $(document).ready(function () {
+
     var table = $('#projectsTable').DataTable({
-        lengthMenu: [
-            [10, 25, 50, 100, 200, -1],
-        ],
-        pageLength: 10,
         lengthChange: false,
-        ordering: true,
+        ordering: false,
         searching: true,
         layout: {
             topEnd: null
@@ -20,7 +17,7 @@ $(document).ready(function () {
         processing: false,
         serverSide: false,
         ajax: {
-            url: 'https://neu-west.com/crm3_staging/project?table',
+            url: 'project?table',
             type: 'GET',
             dataType: 'json',
         },
@@ -35,24 +32,80 @@ $(document).ready(function () {
             { data: 'created_at', name: 'created_at', orderable: true },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
-        createdRow: function (row, data, dataIndex) {
-            $(row).attr('id', 'project-items');
-            $(row).attr('data-id', data.id);
-            $(row).attr('project-backgroundColor', data.projectBackgroundColor);
-            $(row).attr('project-fontColor', data.projectFontColor);
+        initComplete: function (settings, { filterableStatusList, filterablePriorityList }) {
 
-            let backgroundColorOfRGB = hexToRgb(data.projectBackgroundColor, 0.05);
+            if (filterableStatusList.html) {
+                var htmlContent = $.parseHTML(filterableStatusList.html);
+                $('#projectsTable')
+                    .parents('.projectsTableContainter')
+                    .parents('div.col-xl-12')
+                    .before(htmlContent)
+            }
 
-            $(row).css({
-                '--background-color': data.projectBackgroundColor,
-                '--font-color': data.projectFontColor,
-                '--hover-background-color': backgroundColorOfRGB
-            });
-        },
-        initComplete: function (settings, json) {
+            if (filterableStatusList.data) {
+                const selectData = $.map(filterableStatusList.data, function (value, key) {
+                    return {
+                        id: value.name,
+                        text: value.name,
+                        backgroundColor: value.background_color,
+                        fontColor: value.font_color
+                    };
+                });
+
+                $('#filterableStatusDropdown').select2({
+                    data: selectData,
+                    // templateResult: formatOption,
+                    // templateSelection: formatSelection
+                });
+            }
+
+            if (filterablePriorityList) {
+                const selectData = $.map(filterablePriorityList, function (value, key) {
+                    return {
+                        id: value.name,
+                        text: value.name,
+                        backgroundColor: value.background_color,
+                        fontColor: value.font_color
+                    };
+                });
+
+                $('#filterablePriorityDropdown').select2({
+                    data: selectData
+                });
+            }
+
             $('#projectsTable colgroup').remove();
+            $('#projectsTable tr:first-child.hide').fadeIn()
         }
     });
+
+    // Custom format for dropdown options
+    function formatOption(option) {
+        if (!option.id) {
+            return option.text;
+        }
+        return $('<span>').css({
+            'background-color': option.backgroundColor,
+            'color': option.fontColor,
+            'padding': '5px',
+            'border-radius': '4px',
+            'display': 'block'
+        }).text(option.text);
+    }
+
+    // Custom format for selected option
+    function formatSelection(option) {
+        if (!option.id) {
+            return option.text;
+        }
+        return $('<span>').css({
+            'background-color': option.backgroundColor,
+            'color': option.fontColor,
+            'padding': '5px',
+            'border-radius': '4px',
+            'display': 'block'
+        }).text(option.text);
+    }
 
     $(document).on('click', '#status-tabs a', function (e) {
         e.preventDefault();
@@ -63,32 +116,38 @@ $(document).ready(function () {
         table.draw();
     });
 
+    $(document).on('input', '#searchByProjectName', function (e) {
+        table.draw();
+    });
+
+    $('#filterableStatusDropdown, #filterablePriorityDropdown').on('change', function () {
+        table.draw();
+    });
+
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-        var selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name'));
-        var projectStatus = removeWhitespace(data[2]);
+        var selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
+        var selectedDropdownStatus = removeWhitespace($('#filterableStatusDropdown').val()).toLowerCase();
+        var selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val()).toLowerCase();
+        var projectStatus = removeWhitespace(data[2]).toLowerCase();
+        var projectPriority = removeWhitespace(data[4]).toLowerCase();
 
-        console.log(selectedStatus);
-        console.log(projectStatus);
+        var searchByProjectName = removeWhitespace($('#searchByProjectName').val()).toLowerCase();
+        var projectName = removeWhitespace(data[1]).toLowerCase();
 
+        console.log(projectPriority);
 
-        if (!selectedStatus || projectStatus == selectedStatus) {
+        if (
+            (!selectedStatus || projectStatus === selectedStatus) &&
+            (!selectedDropdownStatus || projectStatus === selectedDropdownStatus) &&
+            (!selectedDropdownPriority || projectPriority === selectedDropdownPriority) &&
+            (searchByProjectName === '' || projectName.indexOf(searchByProjectName) !== -1)
+        ) {
             return true;
         }
-
         return false;
+
+
     });
 
-    /** Toggle to table filter option */
-    $('.toggle_filter').on('click', function () {
-        $('.filter-wrapper').slideToggle("slow");
-
-        $(this).find('.arrow_icon')
-            .toggleClass('fa-arrow-up')
-            .toggleClass('fa-arrow-down');
-    });
-
-    function removeWhitespace(str) {
-        return str ? str.replace(/\s+/g, '') : '';
-    }
 
 });
