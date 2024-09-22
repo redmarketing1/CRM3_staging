@@ -1,64 +1,52 @@
-const mix = require('laravel-mix');
+const glob = require("glob");
+const mix = require("laravel-mix");
+const { execSync } = require('child_process');
 
-mix.css('resources/css/app.css', 'public/css');
+// ----------------------------------
+// Mix Global (App-Wide) Resource Files
+// ----------------------------------
 
+// JS and CSS files located in `resources/`
+mix.js('resources/js/app.js', 'public/js')
+    .sass('resources/sass/app.scss', 'public/css')
+    .version(); // Optional: cache-busting
 
-// const glob = require("glob");
-// const mix = require("laravel-mix");
-// const execSync = require("child_process").execSync;
+// ----------------------------------
+// Mix Module-Specific Assets Dynamically
+// ----------------------------------
 
-// require("laravel-mix-merge-manifest");
+// Dynamically load the webpack.mix.js from each module
+let configs = glob.sync("./Modules/*/webpack.mix.js");
 
-// // compile admin and theme assets
-// let configs = glob.sync(
-//     "{./Modules/*/webpack.mix.js,./Themes/*/webpack.mix.js}"
-// );
+// If the module is set in the environment variable, load only that module's webpack.mix.js
+if (process.env.module !== undefined) {
+    let module = process.env.module.charAt(0).toUpperCase() + process.env.module.slice(1);
+    configs = [`./Modules/${module}/webpack.mix.js`];
+}
 
-// // compile admin assets only
-// // let configs = glob.sync("./Modules/*/webpack.mix.js");
+// Loop through each module's Mix file and require it
+configs.forEach(config => {
+    require(config);
 
-// // compile theme assets only
-// // let configs = glob.sync("./Themes/*/webpack.mix.js");
+    // Extract the module name using regex
+    let module = config.match(/Modules\/(\w+?)\//);
 
-// if (process.env.module !== undefined) {
-//     let module =
-//         process.env.module.charAt(0).toUpperCase() +
-//         process.env.module.slice(1);
+    if (module !== null) {
+        let moduleName = module[1];
 
-//     configs = [`./Modules/${module}/webpack.mix.js`];
-// }
+        // Automatically publish the module's assets after compilation
+        mix.after(() => {
+            execSync(`php artisan module:publish ${moduleName}`);
+        });
+    }
+});
 
-// if (process.env.theme !== undefined) {
-//     let theme =
-//         process.env.theme.charAt(0).toUpperCase() + process.env.theme.slice(1);
+// ----------------------------------
+// Additional Options
+// ----------------------------------
 
-//     configs = [`./Themes/${theme}/webpack.mix.js`];
-// }
+// Enable source maps (for debugging)
+mix.sourceMaps();
 
-// mix.setPublicPath("./")
-//     .options({ processCssUrls: false })
-//     .sourceMaps(false, "eval-source-map")
-//     .mergeManifest();
-
-// let commands = [];
-
-// configs.forEach((config) => {
-//     require(config);
-
-//     let module = config.match(/Modules\/(\w+?)\//);
-//     let theme = config.match(/Themes\/(\w+?)\//);
-
-//     if (module !== null) {
-//         commands.push(`php artisan module:publish ${module[1]}`);
-//     }
-
-//     if (theme !== null) {
-//         commands.push(`php artisan stylist:publish ${theme[1]}`);
-//     }
-// });
-
-// mix.after(() => {
-//     commands.map((command) => {
-//         execSync(command);
-//     });
-// });
+// Enable BrowserSync for live reloading
+mix.browserSync('localhost:8000'); // Update with your local dev URL
