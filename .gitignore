@@ -1,7 +1,6 @@
 .env
 .editorconfig
 /bootstrap/cache/*
-/public
 /vendor
 *.lock
 *.log
@@ -10,9 +9,10 @@ tests/*
 node_modules/*
 .htaccess-old
 .htaccess 
-public/*
 /storage/*
 storage/*
 public/css/common.css
+public/uploads/
+public/uploads/*
 .vscode/*
 node_modules/*
