@@ -38,7 +38,7 @@
 										if(!\Auth::user()->isAbleTo('estimation edit')) {
 											$setup_url = 'javascript:void(0)';
 										}
-										$project_url = route('projects.show',[$estimation->project_id]);
+										$project_url = route('project.show',[$estimation->project_id]);
 										if(!\Auth::user()->isAbleTo('project manage')) {
 											$project_url = 'javascript:void(0)';
 										}

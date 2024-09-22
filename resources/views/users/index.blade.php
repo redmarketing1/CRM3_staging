@@ -90,7 +90,7 @@
                                                 <i class="ti ti-replace"></i>
                                                 <span> {{ __('Login As Company') }}</span>
                                             </a>
-                                            <a href="#!" data-url="{{ route('upgrade.plan',$user->id) }}"
+                                            <a href="javascript:;" data-url="{{ route('upgrade.plan',$user->id) }}"
                                                 data-ajax-popup="true" data-size="xl" class="dropdown-item"
                                                 data-title="{{ __('Upgrade Plan') }}"
                                                 data-bs-original-title="{{ __('Upgrade Plan') }}">
@@ -99,7 +99,7 @@
                                             </a>
                                         @endif
                                         @permission('user reset password')
-                                            <a href="#!" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}"
+                                            <a href="javascript:;" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}"
                                                 data-ajax-popup="true" data-size="md" class="dropdown-item"
                                                 data-title="{{ __('Reset Password') }}"
                                                 data-bs-original-title="{{ __('Reset Password') }}">
@@ -115,7 +115,7 @@
                                                     <span class="text-danger"> {{ __('Login Disable') }}</span>
                                                 </a>
                                             @elseif ($user->is_enable_login == 0 && $user->password == null)
-                                                <a href="#" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}"
+                                                <a href="javascript:;" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}"
                                                     data-ajax-popup="true" data-size="md" class="dropdown-item login_enable"
                                                     data-title="{{ __('New Password') }}" class="dropdown-item">
                                                     <i class="ti ti-road-sign"></i>
@@ -146,7 +146,7 @@
                                         <span class="d-block font-bold mb-0">{{!empty($user->plan) ? (!empty($user->plan->name) ? $user->plan->name :'Basic Plan'):'Plan Not Activated'}}</span>
                                     </div>
                                     <div class="col-6 text-center Id ">
-                                        <a href="#" data-url="{{route('company.info', $user->id)}}" data-size="lg" data-ajax-popup="true" class="btn btn-outline-primary" data-title="{{__('Company Info')}}">{{__('AdminHub')}}</a>
+                                        <a href="javascript:;" data-url="{{route('company.info', $user->id)}}" data-size="lg" data-ajax-popup="true" class="btn btn-outline-primary" data-title="{{__('Company Info')}}">{{__('AdminHub')}}</a>
                                     </div>
                                     <div class="col-12">
                                         <hr class="my-3">

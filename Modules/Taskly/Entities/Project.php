@@ -329,13 +329,16 @@ class Project extends Model
         if (isset($filters_request['user'])) {
             $user = $filters_request['user'];
         }
-
+        
         if ($user->type == 'company') {
             $projects = Project::where('projects.created_by', '=', $user->id);
         } else {
-            $projects = Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id');
+            $projects = Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
+                                ->leftjoin('user_projects', 'user_projects.project_id', 'projects.id')
+                                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id');
             $projects->where(function ($query) use ($user) {
                 $query->where('client_projects.client_id', $user->id)
+                    ->orWhere('user_projects.user_id', $user->id)
                     ->orWhere('estimate_quotes.user_id', $user->id);
             });
         }
@@ -347,7 +350,7 @@ class Project extends Model
         }
 
         $projects->with(['users'])->select('projects.*');
-
+      
         $filter_count = $total_count = $projects->distinct()->count('projects.id');
 
         if (isset($search) && $search['value'] != "") {

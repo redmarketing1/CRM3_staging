@@ -12,7 +12,10 @@
 */
 use Illuminate\Support\Facades\Route;
 use Modules\Project\Entities\Project;
+use Modules\Taskly\Entities\ActivityLog;
 use Modules\Taskly\Entities\EstimateQuote;
+use Modules\Taskly\Entities\ProjectClientFeedback;
+use Modules\Taskly\Entities\ProjectComment;
 use Modules\Taskly\Http\Controllers\ProjectController;
 use Modules\Taskly\Http\Controllers\DashboardController;
 use Modules\Taskly\Http\Controllers\ProjectReportController;
@@ -39,6 +42,44 @@ Route::get('/asadp', function(){
         $e = EstimateQuote::where('id',$id)->first();
         $e->final_for_sub_contractor = 1;
         $e->save();
+    }
+
+    return 'success';
+});
+
+Route::get('/asadfeed', function(){
+    $feedbacks = ProjectClientFeedback::whereNotNull('project_id')->get();
+   
+    foreach ($feedbacks as $c){
+
+        ActivityLog::updateOrCreate([
+            'user_id'    => creatorId(),
+            'user_type'  => get_class(auth()->user()),
+            'project_id' => $c->project_id,
+            'log_type'   => 'Feedback Create',
+            'remark'     => json_encode(['title' => 'Project feedback created.', 'feedback_id' => $c->id]),
+            'created_at' => $c->created_at,
+            'updated_at' => $c->updated_at,
+        ]);
+    }
+
+    return 'success';
+});
+
+Route::get('/asadcment', function(){
+    $comments = ProjectComment::whereNotNull('project_id')->get();
+   
+    foreach ($comments as $c){
+
+        ActivityLog::create([
+            'user_id'    => creatorId(),
+            'user_type'  => get_class(auth()->user()),
+            'project_id' => $c->project_id,
+            'log_type'   => 'Comment Create',
+            'remark'     => json_encode(['title' => 'Project comment posted.', 'project_comment_id' => $c->id]),
+            'created_at' => $c->created_at,
+            'updated_at' => $c->updated_at,
+        ]);
     }
 
     return 'success';
