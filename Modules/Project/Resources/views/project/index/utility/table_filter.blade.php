@@ -1,8 +1,19 @@
 <tr class="form-group mb-5 hide" role="row">
-    <th colspan="3">
+    <th colspan="2" class="filterable-bulk-action">
+        <select name="action" id="bulk-action-selector" class="hide">
+            <option>Bulk actions</option>
+            <option value="delete" data-title="Are you sure delete ?"
+                data-text="This action can not be undone. Do you want to delete?" data-type="delete">Delete Projects
+            </option>
+            <option value="archive" data-title="Are you sure archive ?"
+                data-text="The project will move to archive. You can revert it later" data-type="archive">Move To
+                Archive</option>
+        </select>
+    </th>
+    <th>
         <div class="search-table">
-            <input type="search" class="form-control text-xl" placeholder="Search project name" name="searchByProjectName"
-                id="searchByProjectName" />
+            <input type="search" class="form-control text-xl" placeholder="Search project name"
+                name="searchByProjectName" id="searchByProjectName" />
         </div>
     </th>
     <th>archive</th>
