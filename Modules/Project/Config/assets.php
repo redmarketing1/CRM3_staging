@@ -8,12 +8,12 @@ return [
     |--------------------------------------------------------------------------
     */
     'all_assets'      => [
-        'project.index.css'                 => ['module' => 'project:assets/css/index.css'],
+        'project.index.css'                 => ['public' => 'assets/css/project.index.css'],
         'project.index.daterangepicker.css' => ['Cdn' => 'https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css'],
 
         'project.index.moment.js'           => ['Cdn' => 'https://cdn.jsdelivr.net/momentjs/latest/moment.min.js'],
         'project.index.daterangepicker.js'  => ['Cdn' => 'https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js'],
-        'project.index.js'                  => ['module' => 'project:assets/js/index.js'],
+        'project.index.js'                  => ['public' => 'assets/js/project.index.js'],
     ],
 
     /* 

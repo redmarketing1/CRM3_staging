@@ -108,6 +108,10 @@ return [
             'name' => 'Lightbox',
         ],
         [
+            'url'  => 'css/common.css',
+            'name' => 'common.css',
+        ],
+        [
             'url'  => 'css/custome-main.css',
             'name' => 'custome-main',
         ],
