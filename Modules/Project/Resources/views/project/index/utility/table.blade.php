@@ -2,7 +2,7 @@
     <thead>
         @include('project::project.index.utility.table_filter')
         <tr class="theader">
-            <th><input type="checkbox"></th> <!-- Checkbox Column -->
+            <th><input id="select-all" type="checkbox"></th> <!-- Checkbox Column -->
             <th colspan="2" data-orderable="true">Project Name</th>
             <th style="display: none">Archive</th>
             <th data-orderable="false">Status</th>
