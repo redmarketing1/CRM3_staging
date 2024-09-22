@@ -1,13 +1,7 @@
 .env
 .editorconfig
-/bootstrap
-/public/*
-public/*
-/bootstrap/*
 /bootstrap/cache/*
-package-lock.json
-/public/storage 
-/public/uploads 
+/public
 /vendor
 *.lock
 *.log
@@ -21,3 +15,4 @@ public/*
 storage/*
 public/css/common.css
 .vscode/*
+node_modules/*
