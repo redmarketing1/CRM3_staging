@@ -8142,7 +8142,7 @@ body.project .row {
 .range-input .range-output-value::before {
     position: absolute;
     top: 8px;
-    left: -7px;
+    left: -6px;
     width: 0;
     height: 0;
     border-top: 7px solid transparent;

@@ -10,7 +10,7 @@
 $(document).ready(function () {
   var table = $('#projectsTable').DataTable({
     lengthChange: false,
-    ordering: true,
+    ordering: false,
     searching: true,
     layout: {
       topEnd: null
@@ -120,6 +120,16 @@ $(document).ready(function () {
           data: _selectData
         });
       }
+      var maxBudget = 0;
+      table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+        var data = this.data();
+        var projectBudget = parseFloat(data.budget);
+        if (!isNaN(projectBudget) && projectBudget > maxBudget) {
+          maxBudget = projectBudget;
+        }
+      });
+      $('.range-input-selector,#filter_budget_from,#filter_budget_to').attr('max', maxBudget);
+      $('.range-input-selector,#filter_budget_to').val(maxBudget);
       $('#projectsTable tr:first-child.hide').fadeIn();
       $('.daterange').daterangepicker({
         autoUpdateInput: false,
@@ -196,7 +206,7 @@ $(document).ready(function () {
     $(this).addClass('active');
     table.draw();
   });
-  $(document).on('input', '#searchByProjectName', function (e) {
+  $(document).on('input', '#searchByProjectName, #searchByComment, #filter_budget_from, #filter_budget_to', function (e) {
     table.draw();
   });
   $(document).on('mouseup', '.range-input-selector', function (e) {
@@ -216,14 +226,25 @@ $(document).ready(function () {
     var selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val()).toLowerCase();
     var selectedDateRange = $('#filterableDaterange').val();
     var selectedProjectBudgetRange = $('.range-input-selector').val();
+    var minBudget = parseFloat($('#filter_budget_from').val());
+    var maxBudget = parseFloat($('#filter_budget_to').val());
     var projectName = removeWhitespace(data[2]).toLowerCase();
+    var projectComment = removeWhitespace(data[5]).toLowerCase();
     var isArchived = parseInt(data[3], 10); // 1 for archived, 0 for not archived
     var projectStatus = removeWhitespace(data[4]).toLowerCase();
     var projectPriority = removeWhitespace(data[6]).toLowerCase();
-    var projectBudget = removeWhitespace(data[8]).toLowerCase();
+    var projectBudget = parseFloat(data[8]);
     var projectCreatedAt = data[9];
     var searchByProjectName = removeWhitespace($('#searchByProjectName').val()).toLowerCase();
-    if (selectedProjectBudgetRange <= parseFloat(projectBudget)) {
+    var searchByProjectComment = removeWhitespace($('#searchByComment').val()).toLowerCase();
+
+    // Check if the project budget is within the range
+    if (selectedProjectBudgetRange <= projectBudget) {
+      return false;
+    }
+
+    // Filter project bewteen price range
+    if (minBudget && projectBudget <= minBudget || maxBudget && projectBudget >= maxBudget) {
       return false;
     }
 
@@ -244,7 +265,7 @@ $(document).ready(function () {
     }
 
     // Other Filters (Status, Priority, Project Name)
-    if ((!selectedStatus || projectStatus === selectedStatus) && (!selectedDropdownStatus || projectStatus === selectedDropdownStatus) && (!selectedDropdownPriority || projectPriority === selectedDropdownPriority) && (searchByProjectName === '' || projectName.indexOf(searchByProjectName) !== -1)) {
+    if ((!selectedStatus || projectStatus === selectedStatus) && (!selectedDropdownStatus || projectStatus === selectedDropdownStatus) && (!selectedDropdownPriority || projectPriority === selectedDropdownPriority) && (searchByProjectName === '' || projectName.indexOf(searchByProjectName) !== -1) && (searchByProjectComment === '' || projectComment.indexOf(searchByProjectComment) !== -1)) {
       return true;
     }
     return false;
@@ -272,7 +293,7 @@ $(document).ready(function () {
     }).then(function (result) {
       if (result.isConfirmed) {
         $.ajax({
-          url: route('project.index'),
+          url: route('project.update', 1),
           type: "PUT",
           data: {
             type: type,
@@ -308,11 +329,13 @@ $(document).ready(function () {
             clearInterval(timerInterval);
           }
         }).then(function () {
-          selectedRows.each(function () {
-            var row = $(this).closest('tr');
-            table.row(row).remove();
-          });
-          table.draw();
+          if (type === 'delete') {
+            selectedRows.each(function () {
+              var row = $(this).closest('tr');
+              table.row(row).remove();
+            });
+            table.draw();
+          }
           $('input#select-all').prop('checked', false);
           $('.bulk_action').fadeOut();
         });

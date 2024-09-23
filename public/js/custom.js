@@ -1874,7 +1874,7 @@ $('[data-backgroundColor], [data-fontColor]').each(function () {
 });
 
 function removeWhitespace(str) {
-    return str ? str.replace(/\s+/g, '') : '';
+    return typeof str === 'string' ? str.replace(/\s+/g, '') : String(str || '');
 }
 
 

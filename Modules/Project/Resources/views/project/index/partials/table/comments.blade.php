@@ -1,6 +1,6 @@
 <ul class="project-comments">
     @foreach ($comments as $item)
-        <li>{{ $item->comment }}</li>
+        <li>{{ strip_tags($item->comment) }}</li>
     @endforeach
-    <li class="description">{{ $description }}</li>
+    <li class="description">{{ strip_tags($description) }}</li>
 </ul>
