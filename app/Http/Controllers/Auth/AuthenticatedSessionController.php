@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Nwidart\Modules\Facades\Module;
 use Modules\GoogleCaptcha\Events\VerifyReCaptchaToken;
+
 class AuthenticatedSessionController extends Controller
 {
     /**
@@ -23,14 +24,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function __construct()
     {
-        if(!file_exists(storage_path() . "/installed"))
-        {
+        if (!file_exists(storage_path() . "/installed")) {
             header('location:install');
             die;
         }
         $admin_settings = getAdminAllSetting();
-        if(module_is_active('GoogleCaptcha') && (isset($admin_settings['google_recaptcha_is_on']) ? $admin_settings['google_recaptcha_is_on'] : 'off') == 'on' )
-        {
+        if (module_is_active('GoogleCaptcha') && (isset($admin_settings['google_recaptcha_is_on']) ? $admin_settings['google_recaptcha_is_on'] : 'off') == 'on') {
             config(['captcha.secret' => isset($admin_settings['google_recaptcha_secret']) ? $admin_settings['google_recaptcha_secret'] : '']);
             config(['captcha.sitekey' => isset($admin_settings['google_recaptcha_key']) ? $admin_settings['google_recaptcha_key'] : '']);
         }
@@ -38,16 +37,13 @@ class AuthenticatedSessionController extends Controller
     }
     public function create($lang = '')
     {
-        if($lang == '')
-        {
+        if ($lang == '') {
             $lang = getActiveLanguage();
-        }
-        else
-        {
+        } else {
             $lang = array_key_exists($lang, languages()) ? $lang : 'en';
         }
         \App::setLocale($lang);
-        return view('auth.login',compact('lang'));
+        return view('auth.login', compact('lang'));
     }
 
     /**
@@ -84,11 +80,9 @@ class AuthenticatedSessionController extends Controller
 
         $query = @unserialize(file_get_contents('http://ip-api.com/php/' . $ip));
 
-        if(isset($query['status']) && $query['status'] == 'success')
-        {
+        if (isset($query['status']) && $query['status'] == 'success') {
             $whichbrowser = new \WhichBrowser\Parser($_SERVER['HTTP_USER_AGENT']);
-            if ($whichbrowser->device->type == 'bot')
-            {
+            if ($whichbrowser->device->type == 'bot') {
                 return redirect()->intended(RouteServiceProvider::HOME);
             }
 
@@ -114,23 +108,20 @@ class AuthenticatedSessionController extends Controller
             $login_detail->workspace = getActiveWorkSpace();
             $login_detail->save();
         }
-
         // custom domain code
-        if(Auth::user()->type != 'super admin')
-        {
+        if (Auth::user()->type != 'super admin') {
             $uri = url()->full();
-            $segments = explode('/', str_replace(''.url('').'', '', $uri));
+            $segments = explode('/', str_replace('' . url('') . '', '', $uri));
             $segments = $segments[1] ?? null;
 
             $local = parse_url(config('app.url'))['host'];
             // Get the request host
             $remote = request()->getHost();
-            if($local != $remote)
-            {
+
+            if ($local != $remote) {
                 $remote = str_replace('www.', '', $remote);
-                $workSpace = WorkSpace::where('domain',$remote)->orwhere('subdomain',$remote)->where('created_by',creatorId())->first();
-                if($workSpace && ($workSpace->enable_domain == 'on'))
-                {
+                $workSpace = WorkSpace::where('domain', $remote)->orwhere('subdomain', $remote)->where('created_by', creatorId())->first();
+                if ($workSpace && ($workSpace->enable_domain == 'on')) {
                     $redirect = true;
                     $user = User::find(Auth::user()->id);
                     $user->active_workspace = $workSpace->id;
@@ -139,20 +130,19 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-         // Update wizard
-         if(Auth::user()->type == 'super admin')
-         {
+        // Update wizard
+        if (Auth::user()->type == 'super admin') {
             $ranMigrations = DB::table('migrations')->pluck('migration');
             // $modules = Module::all();
             $modules = Module::getByStatus(1);
 
             $migrationFiles = collect(File::glob(database_path('migrations/*.php')))
-            ->map(function ($path) {
-                return File::name($path);
-            });
+                ->map(function ($path) {
+                    return File::name($path);
+                });
             foreach ($modules as $key => $module) {
                 // Get the module directorie in your project
-                $directory = "Modules/".$module->getName()."/Database/Migrations";
+                $directory = "Modules/" . $module->getName() . "/Database/Migrations";
 
                 $files = collect(File::glob("{$directory}/*.php"))
                     ->map(function ($path) {
@@ -162,39 +152,31 @@ class AuthenticatedSessionController extends Controller
             }
             // Calculate the pending migrations by diffing the two lists
             $pendingMigrations = $migrationFiles->diff($ranMigrations);
-            if(count($pendingMigrations) > 0)
-            {
+            if (count($pendingMigrations) > 0) {
                 return redirect()->route('LaravelUpdater::welcome');
             }
-        }
-        elseif(Auth::user()->type == 'company')
-        {
+        } elseif (Auth::user()->type == 'company') {
             $user = User::where('id', Auth::user()->id)->first();
 
-            if($user->plan_expire_date > (!empty($user->trial_expire_date) ? $user->trial_expire_date :''))
-            {
+            if ($user->plan_expire_date > (!empty($user->trial_expire_date) ? $user->trial_expire_date : '')) {
                 $datetime1 = new \DateTime($user->plan_expire_date);
-            }else{
+            } else {
                 $datetime1 = new \DateTime($user->trial_expire_date);
             }
             $datetime2 = new \DateTime(date('Y-m-d'));
             $interval = $datetime2->diff($datetime1);
             $days     = $interval->format('%r%a');
-            if($days <= 0)
-            {
-                $plan = Plan::where('is_free_plan',1)->first();
-                if($plan)
-                {
-                    $user->assignPlan($plan->id,'Month',$plan->modules,0,$user->id);
+            if ($days <= 0) {
+                $plan = Plan::where('is_free_plan', 1)->first();
+                if ($plan) {
+                    $user->assignPlan($plan->id, 'Month', $plan->modules, 0, $user->id);
                 }
                 return redirect()->route('active.plans')->with('error', __('Your Plan is expired.'));
             }
-
         }
-
-        if($redirect)
-        {
-            return redirect()->away('http://'.$remote.'/dashboard');
+       
+        if ($redirect) {
+            return redirect()->away('http://' . $remote . '/dashboard');
         }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
@@ -204,7 +186,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-         Auth::guard('web')->logout();
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 

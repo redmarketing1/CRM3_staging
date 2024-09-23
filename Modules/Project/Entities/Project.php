@@ -71,4 +71,9 @@ class Project extends Model
         return new ProjectsTable($query);
     }
 
+    public function delays()
+    {
+        return $this->hasMany(ProjectDelay::class, 'project_id', 'id');
+    }
+
 }

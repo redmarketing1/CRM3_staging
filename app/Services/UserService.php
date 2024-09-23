@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\EmailTemplate;
+use App\Models\Role;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 class UserService
 {
     public function genericCreateFunc($modelName, $predefinedModelname = null, $predefinedModelId = null, $data = null, $ajax_request = false) {
-    
+       
         $return         = array('status' => true);
         $is_new         = false;
         $need_delete    = false;
@@ -25,7 +26,7 @@ class UserService
 			$is_new     = true;
 			$need_delete= true;    
         }
-
+        
         $user_id = 0;
         if ($is_new == true) {
             if ($need_delete == true) {
@@ -38,7 +39,7 @@ class UserService
         if ($user_id > 0) {
             $user   = User::find($user_id);
         }
-
+       
         if ($user_id == 0) {
             $validation_array = array('last_name' => 'required|max:120');
 
@@ -128,7 +129,10 @@ class UserService
             }
     
             $user->save();
-    
+            $role = Role::where('name',$user->type)->first();
+            if($role){
+                $user->syncRoles([$role->id]);
+            }
             if ($is_new == true && isset($data['send_access']) && ($data['send_access'] == 'on')) {
                 $this->send_access_mail($user->id, $data['password']);
             }

@@ -26,7 +26,7 @@
     @endpermission
 
     @permission('user import')
-        <a href="#" class="btn btn-sm btn-primary" data-ajax-popup="true" data-title="{{ __('Import') }}"
+        <a href="javascript:;" class="btn btn-sm btn-primary" data-ajax-popup="true" data-title="{{ __('Import') }}"
             data-url="{{ route('users.file.import') }}" data-toggle="tooltip" title="{{ __('Import') }}"><i
                 class="ti ti-file-import"></i>
         </a>
@@ -90,7 +90,7 @@
                                                     @endif
                                                     @permission('user reset password')
                                                         <div class="action-btn bg-warning  ms-2">
-                                                            <a href="#" class="mx-3 btn btn-sm d-inline-flex align-items-center" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}" data-ajax-popup="true"  data-bs-toggle="tooltip" data-bs-original-title="{{ __('Reset Password')}}"> <span class="text-white"><i class="ti ti-adjustments"></i></a>
+                                                            <a href="javascript:;" class="mx-3 btn btn-sm d-inline-flex align-items-center" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}" data-ajax-popup="true"  data-bs-toggle="tooltip" data-bs-original-title="{{ __('Reset Password')}}"> <span class="text-white"><i class="ti ti-adjustments"></i></a>
                                                         </div>
                                                     @endpermission
                                                     @permission('user login manage')
@@ -100,7 +100,7 @@
                                                             </div>
                                                         @elseif ($user->is_enable_login == 0 && $user->password == null)
                                                             <div class="action-btn bg-secondary ms-2">
-                                                                <a href="#" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}"
+                                                                <a href="javascript:;" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}"
                                                                     data-ajax-popup="true" data-size="md" class="mx-3 btn btn-sm d-inline-flex align-items-center login_enable" data-title="{{ __('New Password') }}" data-bs-toggle="tooltip" data-bs-original-title="{{ __('New Password')}}"> <span class="text-white"><i class="ti ti-road-sign"></i></a>
                                                             </div>
                                                         @else
@@ -120,7 +120,7 @@
                                                     <div class="action-btn bg-danger ms-2">
                                                         {{ Form::open(['route' => ['users.destroy', $user->id], 'class' => 'm-0']) }}
                                                         @method('DELETE')
-                                                        <a href="#"
+                                                        <a href="javascript:;"
                                                             class="mx-3 btn btn-sm  align-items-center bs-pass-para show_confirm"
                                                             data-bs-toggle="tooltip" title=""
                                                             data-bs-original-title="Delete" aria-label="Delete"

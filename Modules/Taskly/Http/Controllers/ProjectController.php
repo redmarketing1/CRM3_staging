@@ -95,12 +95,14 @@ class ProjectController extends Controller
             } else {
                 $projects = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->projectonly()->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', getActiveWorkSpace());
             }
+            
             if ($request->start_date) {
                 $projects->where('start_date', $request->start_date);
             }
             if ($request->end_date) {
                 $projects->where('end_date', $request->end_date);
             }
+            
             $projects = $projects->get();
 
             foreach ($projects as $project) {
@@ -137,6 +139,7 @@ class ProjectController extends Controller
 
     public function all_data(Request $request)
     {
+        
         $search          = $request->search;
         $start           = intval($request->start);
         $length          = intval($request->length);
@@ -169,7 +172,7 @@ class ProjectController extends Controller
         $filters_request['take']  = $length;
 
         $project_record = Project::get_all($filters_request);
-
+        
         $filter_count = isset($project_record['filter_count']) ? $project_record['filter_count'] : 0;
         $total_count  = isset($project_record['total_count']) ? $project_record['total_count'] : 0;
         $record       = isset($project_record['records']) ? $project_record['records'] : array();
