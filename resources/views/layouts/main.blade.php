@@ -5,6 +5,7 @@
     {!! Meta::toHtml() !!}
     @stack('css')
     @stack('availabilitylink')
+    @routes
 </head>
 
 <body class="{{ $bodyClasses }}" data-theme-color="{{ $themeColorCode }}" style="{{ $style }}">

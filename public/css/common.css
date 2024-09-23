@@ -2160,11 +2160,13 @@ table thead th {
     padding: 10px 10px !important;
     font-weight: 600;
 }
+
 .project.index table thead .theader th {
     /* background: #f0f0f0 !important; */
     border-top: 2px solid #FFF !important;
     background: #f7f7f7 !important;
 }
+
 .select2-container--default .select2-selection--multiple {
     background: transparent;
 }
@@ -6769,6 +6771,7 @@ table td .btn-sm i {
     border-radius: 8px;
     box-sizing: border-box;
 }
+
 .card .card-header {
     border-bottom: 1px solid #f1f1f1;
     background: #f7f7f7;
@@ -7790,6 +7793,7 @@ td.project-budget {
     width: auto !important;
     border-radius: 0 0 10px 10px !important;
 }
+
 .dropzone .dz-message {
     font-size: 20px;
     background: #f6f6f6;
@@ -7801,6 +7805,7 @@ td.project-budget {
 .dropzone.browse-file {
     column-count: unset;
 }
+
 @media (max-width: 499px) {
     .dropzone {
         column-count: 2;
@@ -8076,10 +8081,81 @@ body.project .row {
 .dropzone .dz-preview:hover {
     z-index: 9 !important;
 }
+
+.projectsTableContainter table#projectsTable .project-comments {
+    background-color: #f1f1f1;
+    max-width: 250px;
+    margin: 0;
+    list-style: none;
+    text-align: left;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 0;
+    font-size: 15px;
+    max-height: 150px;
+    overflow: hidden;
+    padding-left: 25px;
+    transition: 0.4s;
+}
+
+.projectsTableContainter table#projectsTable .project-comments:hover {
+    transition: 0.6s;
+    overflow-y: auto;
+    max-height: 450px;
+    max-width: 550px;
+}
+
+.projectsTableContainter table#projectsTable .project-comments li {
+    list-style: disc;
+    margin-bottom: 10px;
+}
+
+.range-input {
+    display: flex;
+    align-items: center;
+}
+
+.range-input .range-input-selector {
+    transition: 0.6s;
+}
+
+.range-input .range-input-selector.increased-width {
+    width: 400px !important;
+    transition: 4s;
+    transition-delay: 0.8s;
+}
+
+.range-input .range-output-value {
+    display: none;
+    position: relative;
+    width: 60px;
+    color: #fff;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 3px;
+    background: #2c3e50;
+    padding: 5px 10px;
+    margin-left: 8px;
+    text-wrap: nowrap;
+}
+
+.range-input .range-output-value::before {
+    position: absolute;
+    top: 8px;
+    left: -6px;
+    width: 0;
+    height: 0;
+    border-top: 7px solid transparent;
+    border-right: 7px solid #2c3e50;
+    border-bottom: 7px solid transparent;
+    content: "";
+}
+
 .projectsTableContainter>.card-body {
     padding: 0 !important;
     overflow: auto !important;
 }
+
 nav.dash-sidebar .dash-item-tabs .nav-item .nav-link {
     padding: 4px 16px 4px 10px;
     width: auto;
@@ -8091,10 +8167,6 @@ nav.dash-sidebar .dash-item-tabs {
     margin: 10px 0 0 20px !important;
     padding: 0 !important;
 }
- 
-
-
-
 
 
 /* PROJECTS.CSS */
@@ -8106,49 +8178,56 @@ nav.dash-sidebar .dash-item-tabs {
     border-radius: 70px;
     background: #f9f9f9;
 }
+
 #projectsTable .data-thubmnail img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
 }
-.project.index div.dt-container div.dt-layout-cell
-{padding: 0}
 
-table#projectsTable  > thead > tr > th, 
-table#projectsTable  > thead > tr > td
-{border: none;}
+.project.index div.dt-container div.dt-layout-cell {
+    padding: 0
+}
 
-.card.projectsTableContainter
-{
+table#projectsTable>thead>tr>th,
+table#projectsTable>thead>tr>td {
+    border: none;
+}
+
+.card.projectsTableContainter {
     border-radius: 10px;
     overflow: hidden;
     border: 1px solid #FFF;
-    overflow:visible;
+    overflow: visible;
 }
-table#projectsTable
-{
+
+table#projectsTable {
     width: 100% !important;
 }
-table#projectsTable  > thead
-{
 
+table#projectsTable>thead {}
+
+.project.index div#status-tabs {
+    margin: 0 20px 7px 20px !important
 }
-
-.project.index  div#status-tabs
-{margin:0 20px 7px 20px !important}
 
 
 tr.theader th {
     background: #0000000f !important;
 }
 
-table#projectsTable input, table#projectsTable select {
+table#projectsTable input,
+table#projectsTable select {
     padding: 5px 10px;
     font-size: 14px !important;
     border-radius: 5px;
 }
-table#projectsTable thead input, table#projectsTable thead input::placeholder, table#projectsTable thead select, table#projectsTable thead .select2 .select2-selection {
+
+table#projectsTable thead input,
+table#projectsTable thead input::placeholder,
+table#projectsTable thead select,
+table#projectsTable thead .select2 .select2-selection {
     padding: 5px;
     font-size: 14px !important;
     border-radius: 5px;
@@ -8157,20 +8236,22 @@ table#projectsTable thead input, table#projectsTable thead input::placeholder, t
     border: none !important;
     height: auto;
 }
+
 table#projectsTable .select2 .select2-selection .select2-selection__rendered {
     padding: 0 17px 0 5px;
-    line-height:20px !important;
+    line-height: 20px !important;
     font-size: 14px !important;
     font-weight: 500 !important;
     color: #999 !important;
 }
+
 table#projectsTable span.data-project-status,
 table#projectsTable span.data-project-priority {
     padding: 5px;
     border-radius: 5px;
 }
-table#projectsTable .select2.select2-container--default 
-{
+
+table#projectsTable .select2.select2-container--default {
     padding: 0 !important;
     margin: 0 !important;
     border-radius: 5px;
@@ -8200,11 +8281,9 @@ table#projectsTable .select2.select2-container--default
 }*/
 
 
- 
+
 
 
 
 
 /* PROJECTS.CSS END */
-
-
