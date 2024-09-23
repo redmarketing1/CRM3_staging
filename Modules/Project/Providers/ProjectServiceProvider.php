@@ -33,7 +33,7 @@ class ProjectServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
 
         $this->addAssets('project.index', [
-            'project.index.css',
+            // 'project.index.css',
             'project.index.daterangepicker.css',
 
             'project.index.moment.js',

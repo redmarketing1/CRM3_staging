@@ -59,7 +59,7 @@ $(document).ready(function () {
             if (filterableStatusList.data) {
                 const selectData = $.map(filterableStatusList.data, function (value, key) {
                     return {
-                        id: value.name,
+                        id: removeWhitespace(value.name).toLowerCase(),
                         text: value.name,
                         backgroundColor: value.background_color,
                         fontColor: value.font_color
@@ -68,6 +68,7 @@ $(document).ready(function () {
 
                 $('#filterableStatusDropdown').select2({
                     data: selectData,
+                    multiple: true,
                     // templateResult: formatOption,
                     // templateSelection: formatSelection
                 });
@@ -207,7 +208,7 @@ $(document).ready(function () {
 
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         var selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
-        var selectedDropdownStatus = removeWhitespace($('#filterableStatusDropdown').val()).toLowerCase();
+        var selectedDropdownStatus = $('#filterableStatusDropdown').val();
         var selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val()).toLowerCase();
         var selectedDateRange = $('#filterableDaterange').val();
 
@@ -258,7 +259,7 @@ $(document).ready(function () {
         // Other Filters (Status, Priority, Project Name)
         if (
             (!selectedStatus || projectStatus === selectedStatus) &&
-            (!selectedDropdownStatus || projectStatus === selectedDropdownStatus) &&
+            (!selectedDropdownStatus.length || selectedDropdownStatus.includes(projectStatus)) &&
             (!selectedDropdownPriority || projectPriority === selectedDropdownPriority) &&
             (searchByProjectName === '' || projectName.indexOf(searchByProjectName) !== -1) &&
             (searchByProjectComment === '' || projectComment.indexOf(searchByProjectComment) !== -1)
