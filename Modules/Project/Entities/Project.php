@@ -58,7 +58,7 @@ class Project extends Model
         $query = ($user->type == 'company') ?
 
             self::whereCreatedBy($user->id)
-                ->with(['statusData', 'priorityData', 'thumbnail'])
+                ->with(['statusData', 'priorityData', 'thumbnail', 'comments'])
 
             : self::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
                 ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')

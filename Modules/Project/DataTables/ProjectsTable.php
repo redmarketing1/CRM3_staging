@@ -84,7 +84,9 @@ class ProjectsTable extends Tables
             ->editColumn('created_at', function ($project) {
                 return company_datetime_formate($project->created_at);
             })
-            ->addColumn('comments', 'N/A')
+            ->addColumn('comments', function ($project) {
+                return $this->comments($project);
+            })
             ->addColumn('construction', 'N/A')
             ->addColumn('action', function ($project) {
                 return view('project::project.index.partials.table.action', compact('project'));
@@ -106,7 +108,6 @@ class ProjectsTable extends Tables
             --font-color: {$fontColor};
         ";
     }
-
     protected function thumbnail($thumbnail)
     {
         $defaultThumbnail = asset('assets/images/default_thumbnail3.png');
@@ -142,7 +143,6 @@ class ProjectsTable extends Tables
             ];
         });
     }
-
     protected function filterablePriorityList()
     {
         /**
@@ -170,5 +170,18 @@ class ProjectsTable extends Tables
 
         });
     }
+
+    protected function comments($project)
+    {
+        $comments    = $project->comments->take(15);
+        $description = $project->description;
+
+        if ($comments->isEmpty() && empty($description)) {
+            return 'N/A';
+        }
+
+        return view('project::project.index.partials.table.comments', compact('comments', 'description'));
+    }
+
 
 }

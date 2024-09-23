@@ -20,7 +20,7 @@ $(document).ready(function () {
         processing: false,
         serverSide: false,
         ajax: {
-            url: 'project?table',
+            url: route('project.index'),
             type: 'GET',
             dataType: 'json',
         },
@@ -255,7 +255,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: 'project/1',
+                    url: route('project.index'),
                     type: "PUT",
                     data: { type: type, ids: selectedData },
                     success: function (response) {

@@ -9,6 +9,7 @@ use Modules\Taskly\Entities\Timesheet;
 use Modules\Taskly\Entities\ActivityLog;
 use Modules\Taskly\Entities\ProjectFile;
 use Modules\Taskly\Entities\EstimateQuote;
+use Modules\Taskly\Entities\ProjectComment;
 
 trait Relationship
 {
@@ -40,6 +41,11 @@ trait Relationship
     public function clients()
     {
         return $this->belongsToMany('App\Models\User', 'client_projects', 'project_id', 'client_id')->withPivot('is_active')->orderBy('id', 'ASC');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(ProjectComment::class, 'project_id');
     }
 
     public function countTask()
