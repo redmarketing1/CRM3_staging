@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     var table = $('#projectsTable').DataTable({
         lengthChange: false,
-        ordering: false,
+        ordering: true,
         searching: true,
         layout: {
             topEnd: null
@@ -179,6 +179,16 @@ $(document).ready(function () {
         table.draw();
     });
 
+    $(document).on('mouseup', '.range-input-selector', function (e) {
+        $(this).removeClass('increased-width');
+        table.draw();
+        table.order([8, 'desc']).draw();
+    });
+
+    $('.range-input-selector').on('mousedown', function () {
+        $(this).addClass('increased-width');
+    });
+
     $('#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange').on('change', function () {
         table.draw();
     });
@@ -187,15 +197,22 @@ $(document).ready(function () {
         var selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
         var selectedDropdownStatus = removeWhitespace($('#filterableStatusDropdown').val()).toLowerCase();
         var selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val()).toLowerCase();
-        var selectedDateRange = $('#filterableDaterange').val();  // Get selected date range
+        var selectedDateRange = $('#filterableDaterange').val();
+        var selectedProjectBudgetRange = $('.range-input-selector').val();
 
         var projectName = removeWhitespace(data[2]).toLowerCase();
         var isArchived = parseInt(data[3], 10);  // 1 for archived, 0 for not archived
         var projectStatus = removeWhitespace(data[4]).toLowerCase();
         var projectPriority = removeWhitespace(data[6]).toLowerCase();
+        var projectBudget = removeWhitespace(data[8]).toLowerCase();
         var projectCreatedAt = data[9];
 
         var searchByProjectName = removeWhitespace($('#searchByProjectName').val()).toLowerCase();
+
+
+        if (selectedProjectBudgetRange <= parseFloat(projectBudget)) {
+            return false;
+        }
 
         // Date Range Filter
         if (selectedDateRange) {

@@ -1,1 +1,481 @@
-(()=>{var e,t={190:()=>{$(document).ready((function(){var e=$("#projectsTable").DataTable({lengthChange:!1,ordering:!1,searching:!0,layout:{topEnd:null},select:{style:"multi"},pagingType:"simple",language:{paginate:{previous:"Previous",next:"Next"}},processing:!1,serverSide:!1,ajax:{url:"project?table",type:"GET",dataType:"json"},columns:[{data:null,orderable:!1,className:"dt-body-center",render:function(e,t,a,o){return'<input type="checkbox" class="row-select-checkbox" value="'+e.id+'">'}},{data:"thumbnail",name:"thumbnail"},{data:"name",name:"name",orderable:!0},{data:"is_archive",name:"is_archive",visible:!1},{data:"status",name:"status",defaultContent:"N/A",orderable:!0},{data:"comments",name:"comments",defaultContent:"N/A",orderable:!1},{data:"priority",name:"priority",defaultContent:"N/A",orderable:!1},{data:"construction",name:"construction",defaultContent:"N/A",orderable:!1},{data:"budget",name:"budget",orderable:!0},{data:"created_at",name:"created_at",orderable:!0},{data:"action",name:"action",orderable:!1,searchable:!1}],initComplete:function(t,a){var o=a.filterableStatusList,n=a.filterablePriorityList;if($("#projectsTable colgroup").remove(),o.html){var r=$.parseHTML(o.html);$("#projectsTable").parents(".projectsTableContainter").parents("div.col-xl-12").before(r)}if(o.data){var c=$.map(o.data,(function(e,t){return{id:e.name,text:e.name,backgroundColor:e.background_color,fontColor:e.font_color}}));$("#filterableStatusDropdown").select2({data:c})}if(n){var l=$.map(n,(function(e,t){return{id:e.name,text:e.name,backgroundColor:e.background_color,fontColor:e.font_color}}));$("#filterablePriorityDropdown").select2({data:l})}$("#projectsTable tr:first-child.hide").fadeIn(),$(".daterange").daterangepicker({autoUpdateInput:!1,locale:{cancelLabel:"clear"},ranges:{Today:[moment(),moment()],Yesterday:[moment().subtract(1,"days"),moment().subtract(1,"days")],"This Week":[moment().subtract(6,"days"),moment()],"This Month":[moment().startOf("month"),moment().endOf("month")],"Last 30 Days":[moment().subtract(29,"days"),moment()],"Last Month":[moment().subtract(1,"month").startOf("month"),moment().subtract(1,"month").endOf("month")]}}).on("apply.daterangepicker",(function(t,a){$(this).val(a.startDate.format("MM/DD/YYYY")+" - "+a.endDate.format("MM/DD/YYYY")),e.draw()})).on("cancel.daterangepicker",(function(t,a){$(this).val(""),e.draw()})),$("#projectsTable thead tr:nth-child(2) th:first-child").html('<input type="checkbox" id="select-all">'),$("#projectsTable tbody").on("change",".row-select-checkbox",(function(){$("input.row-select-checkbox:checked").length>0?$("#bulk-action-selector").fadeIn():$("#bulk-action-selector").fadeOut()})),$("#select-all").on("change",(function(){var e=this.checked;$("input.row-select-checkbox").prop("checked",e),$("input.row-select-checkbox:checked").length>0?$("#bulk-action-selector").fadeIn():$("#bulk-action-selector").fadeOut()}))}});$(document).on("click","#status-tabs a",(function(t){t.preventDefault(),$("#status-tabs a").removeClass("active"),$(this).addClass("active"),e.draw()})),$(document).on("input","#searchByProjectName",(function(t){e.draw()})),$("#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange").on("change",(function(){e.draw()})),$.fn.dataTable.ext.search.push((function(e,t,a){var o=removeWhitespace($("#status-tabs .active").data("status-name")).toLowerCase(),n=removeWhitespace($("#filterableStatusDropdown").val()).toLowerCase(),r=removeWhitespace($("#filterablePriorityDropdown").val()).toLowerCase(),c=$("#filterableDaterange").val(),l=removeWhitespace(t[2]).toLowerCase(),i=parseInt(t[3],10),s=removeWhitespace(t[4]).toLowerCase(),d=removeWhitespace(t[6]).toLowerCase(),u=t[9],m=removeWhitespace($("#searchByProjectName").val()).toLowerCase();if(c){var h=c.split(" - "),p=moment(h[0],"MM/DD/YYYY"),f=moment(h[1],"MM/DD/YYYY");if(!moment(u,"DD-MM-YYYY HH:mm").isBetween(p,f,void 0,"[]"))return!1}return"archivedprojects"===o&&1===i||!(o&&s!==o||n&&s!==n||r&&d!==r||""!==m&&-1===l.indexOf(m))})),$(document).on("change","#bulk-action-selector",(function(){var t=$(this).find("option:selected"),a=t.val();if(a&&"Bulk actions"!==a){for(var o=t.data("title"),n=t.data("text"),r=t.data("type"),c=$("input.row-select-checkbox:checked"),l=[],i=0;i<c.length;i++)l.push(c[i].value);Swal.fire({title:o,text:n,showCancelButton:!0,confirmButtonText:"Yes, ".concat(r," it"),cancelButtonText:"No, cancel"}).then((function(t){if(t.isConfirmed){$.ajax({url:"project/1",type:"PUT",data:{type:r,ids:l},success:function(e){console.log(e)}});var a,o=1,n=l.length;Swal.fire({icon:"success",title:"".concat(r.charAt(0).toUpperCase()+r.slice(1)," Successful!"),html:"<b>".concat(o,"</b> project").concat(n>1?"s":""," have been moved to ").concat(r),timer:2e3,timerProgressBar:!0,showConfirmButton:!1,didOpen:function(){Swal.showLoading();var e=Swal.getHtmlContainer().querySelector("b");a=setInterval((function(){o<n?(o++,e.textContent="".concat(o)):clearInterval(a)}),100)},willClose:function(){clearInterval(a)}}).then((function(){c.each((function(){var t=$(this).closest("tr");e.row(t).remove()})),e.draw(),$("input#select-all").prop("checked",!1),$(".bulk_action").fadeOut()}))}}))}}))}))},823:()=>{}},a={};function o(e){var n=a[e];if(void 0!==n)return n.exports;var r=a[e]={exports:{}};return t[e](r,r.exports,o),r.exports}o.m=t,e=[],o.O=(t,a,n,r)=>{if(!a){var c=1/0;for(d=0;d<e.length;d++){for(var[a,n,r]=e[d],l=!0,i=0;i<a.length;i++)(!1&r||c>=r)&&Object.keys(o.O).every((e=>o.O[e](a[i])))?a.splice(i--,1):(l=!1,r<c&&(c=r));if(l){e.splice(d--,1);var s=n();void 0!==s&&(t=s)}}return t}r=r||0;for(var d=e.length;d>0&&e[d-1][2]>r;d--)e[d]=e[d-1];e[d]=[a,n,r]},o.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),(()=>{var e={393:0,380:0};o.O.j=t=>0===e[t];var t=(t,a)=>{var n,r,[c,l,i]=a,s=0;if(c.some((t=>0!==e[t]))){for(n in l)o.o(l,n)&&(o.m[n]=l[n]);if(i)var d=i(o)}for(t&&t(a);s<c.length;s++)r=c[s],o.o(e,r)&&e[r]&&e[r][0](),e[r]=0;return o.O(d)},a=self.webpackChunk=self.webpackChunk||[];a.forEach(t.bind(null,0)),a.push=t.bind(null,a.push.bind(a))})(),o.O(void 0,[380],(()=>o(190)));var n=o.O(void 0,[380],(()=>o(823)));n=o.O(n)})();
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./Modules/Project/Resources/assets/js/project.index.js":
+/*!**************************************************************!*\
+  !*** ./Modules/Project/Resources/assets/js/project.index.js ***!
+  \**************************************************************/
+/***/ (() => {
+
+$(document).ready(function () {
+  var table = $('#projectsTable').DataTable({
+    lengthChange: false,
+    ordering: true,
+    searching: true,
+    layout: {
+      topEnd: null
+    },
+    select: {
+      style: 'multi' // Enable multiple row selection
+    },
+    pagingType: 'simple',
+    language: {
+      paginate: {
+        previous: 'Previous',
+        next: 'Next'
+      }
+    },
+    processing: false,
+    serverSide: false,
+    ajax: {
+      url: route('project.index'),
+      type: 'GET',
+      dataType: 'json'
+    },
+    columns: [{
+      data: null,
+      orderable: false,
+      className: 'dt-body-center',
+      render: function render(data, type, full, meta) {
+        return '<input type="checkbox" class="row-select-checkbox" value="' + data.id + '">';
+      }
+    }, {
+      data: 'thumbnail',
+      name: 'thumbnail'
+    }, {
+      data: 'name',
+      name: 'name',
+      orderable: true
+    }, {
+      data: 'is_archive',
+      name: 'is_archive',
+      visible: false
+    }, {
+      data: 'status',
+      name: 'status',
+      defaultContent: 'N/A',
+      orderable: true
+    }, {
+      data: 'comments',
+      name: 'comments',
+      defaultContent: 'N/A',
+      orderable: false
+    }, {
+      data: 'priority',
+      name: 'priority',
+      defaultContent: 'N/A',
+      orderable: false
+    }, {
+      data: 'construction',
+      name: 'construction',
+      defaultContent: 'N/A',
+      orderable: false
+    }, {
+      data: 'budget',
+      name: 'budget',
+      orderable: true
+    }, {
+      data: 'created_at',
+      name: 'created_at',
+      orderable: true
+    }, {
+      data: 'action',
+      name: 'action',
+      orderable: false,
+      searchable: false
+    }],
+    initComplete: function initComplete(settings, _ref) {
+      var filterableStatusList = _ref.filterableStatusList,
+        filterablePriorityList = _ref.filterablePriorityList;
+      $('#projectsTable colgroup').remove();
+      if (filterableStatusList.html) {
+        var htmlContent = $.parseHTML(filterableStatusList.html);
+        $('#projectsTable').parents('.projectsTableContainter').parents('div.col-xl-12').before(htmlContent);
+      }
+      if (filterableStatusList.data) {
+        var selectData = $.map(filterableStatusList.data, function (value, key) {
+          return {
+            id: value.name,
+            text: value.name,
+            backgroundColor: value.background_color,
+            fontColor: value.font_color
+          };
+        });
+        $('#filterableStatusDropdown').select2({
+          data: selectData
+          // templateResult: formatOption,
+          // templateSelection: formatSelection
+        });
+      }
+      if (filterablePriorityList) {
+        var _selectData = $.map(filterablePriorityList, function (value, key) {
+          return {
+            id: value.name,
+            text: value.name,
+            backgroundColor: value.background_color,
+            fontColor: value.font_color
+          };
+        });
+        $('#filterablePriorityDropdown').select2({
+          data: _selectData
+        });
+      }
+      $('#projectsTable tr:first-child.hide').fadeIn();
+      $('.daterange').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+          cancelLabel: 'clear'
+        },
+        ranges: {
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'This Week': [moment().subtract(6, 'days'), moment()],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+      }).on('apply.daterangepicker', function (ev, picker) {
+        $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+        table.draw();
+      }).on('cancel.daterangepicker', function (ev, picker) {
+        $(this).val('');
+        table.draw();
+      });
+      $('#projectsTable thead tr:nth-child(2) th:first-child').html('<input type="checkbox" id="select-all">');
+      $('#projectsTable tbody').on('change', '.row-select-checkbox', function () {
+        var selectedRows = $('input.row-select-checkbox:checked').length;
+        if (selectedRows > 0) {
+          $('#bulk-action-selector').fadeIn();
+        } else {
+          $('#bulk-action-selector').fadeOut();
+        }
+      });
+      $('#select-all').on('change', function () {
+        var isChecked = this.checked;
+        $('input.row-select-checkbox').prop('checked', isChecked);
+        var selectedRows = $('input.row-select-checkbox:checked').length;
+        if (selectedRows > 0) {
+          $('#bulk-action-selector').fadeIn();
+        } else {
+          $('#bulk-action-selector').fadeOut();
+        }
+      });
+    }
+  });
+
+  // Custom format for dropdown options
+  function formatOption(option) {
+    if (!option.id) {
+      return option.text;
+    }
+    return $('<span>').css({
+      'background-color': option.backgroundColor,
+      'color': option.fontColor,
+      'padding': '5px',
+      'border-radius': '4px',
+      'display': 'block'
+    }).text(option.text);
+  }
+
+  // Custom format for selected option
+  function formatSelection(option) {
+    if (!option.id) {
+      return option.text;
+    }
+    return $('<span>').css({
+      'background-color': option.backgroundColor,
+      'color': option.fontColor,
+      'padding': '5px',
+      'border-radius': '4px',
+      'display': 'block'
+    }).text(option.text);
+  }
+  $(document).on('click', '#status-tabs a', function (e) {
+    e.preventDefault();
+    $('#status-tabs a').removeClass('active');
+    $(this).addClass('active');
+    table.draw();
+  });
+  $(document).on('input', '#searchByProjectName', function (e) {
+    table.draw();
+  });
+  $(document).on('mouseup', '.range-input-selector', function (e) {
+    $(this).removeClass('increased-width');
+    table.draw();
+    table.order([8, 'desc']).draw();
+  });
+  $('.range-input-selector').on('mousedown', function () {
+    $(this).addClass('increased-width');
+  });
+  $('#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange').on('change', function () {
+    table.draw();
+  });
+  $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+    var selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
+    var selectedDropdownStatus = removeWhitespace($('#filterableStatusDropdown').val()).toLowerCase();
+    var selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val()).toLowerCase();
+    var selectedDateRange = $('#filterableDaterange').val();
+    var selectedProjectBudgetRange = $('.range-input-selector').val();
+    var projectName = removeWhitespace(data[2]).toLowerCase();
+    var isArchived = parseInt(data[3], 10); // 1 for archived, 0 for not archived
+    var projectStatus = removeWhitespace(data[4]).toLowerCase();
+    var projectPriority = removeWhitespace(data[6]).toLowerCase();
+    var projectBudget = removeWhitespace(data[8]).toLowerCase();
+    var projectCreatedAt = data[9];
+    var searchByProjectName = removeWhitespace($('#searchByProjectName').val()).toLowerCase();
+    if (selectedProjectBudgetRange <= parseFloat(projectBudget)) {
+      return false;
+    }
+
+    // Date Range Filter
+    if (selectedDateRange) {
+      var dateRange = selectedDateRange.split(' - ');
+      var startDate = moment(dateRange[0], 'MM/DD/YYYY');
+      var endDate = moment(dateRange[1], 'MM/DD/YYYY');
+      var projectDate = moment(projectCreatedAt, 'DD-MM-YYYY HH:mm');
+      if (!projectDate.isBetween(startDate, endDate, undefined, '[]')) {
+        return false;
+      }
+    }
+
+    // Filter arhive project
+    if (selectedStatus === 'archivedprojects' && isArchived === 1) {
+      return true;
+    }
+
+    // Other Filters (Status, Priority, Project Name)
+    if ((!selectedStatus || projectStatus === selectedStatus) && (!selectedDropdownStatus || projectStatus === selectedDropdownStatus) && (!selectedDropdownPriority || projectPriority === selectedDropdownPriority) && (searchByProjectName === '' || projectName.indexOf(searchByProjectName) !== -1)) {
+      return true;
+    }
+    return false;
+  });
+  $(document).on('change', '#bulk-action-selector', function () {
+    var selectedOption = $(this).find('option:selected');
+    var value = selectedOption.val();
+    if (!value || value === "Bulk actions") {
+      return;
+    }
+    var title = selectedOption.data('title');
+    var text = selectedOption.data('text');
+    var type = selectedOption.data('type');
+    var selectedRows = $('input.row-select-checkbox:checked');
+    var selectedData = [];
+    for (var i = 0; i < selectedRows.length; i++) {
+      selectedData.push(selectedRows[i].value);
+    }
+    Swal.fire({
+      title: title,
+      text: text,
+      showCancelButton: true,
+      confirmButtonText: "Yes, ".concat(type, " it"),
+      cancelButtonText: "No, cancel"
+    }).then(function (result) {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: route('project.index'),
+          type: "PUT",
+          data: {
+            type: type,
+            ids: selectedData
+          },
+          success: function success(response) {
+            console.log(response);
+          }
+        });
+        var current = 1;
+        var total = selectedData.length;
+        var timerInterval;
+        Swal.fire({
+          icon: 'success',
+          title: "".concat(type.charAt(0).toUpperCase() + type.slice(1), " Successful!"),
+          html: "<b>".concat(current, "</b> project").concat(total > 1 ? 's' : '', " have been moved to ").concat(type),
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          didOpen: function didOpen() {
+            Swal.showLoading();
+            var b = Swal.getHtmlContainer().querySelector('b');
+            timerInterval = setInterval(function () {
+              if (current < total) {
+                current++;
+                b.textContent = "".concat(current);
+              } else {
+                clearInterval(timerInterval);
+              }
+            }, 100);
+          },
+          willClose: function willClose() {
+            clearInterval(timerInterval);
+          }
+        }).then(function () {
+          selectedRows.each(function () {
+            var row = $(this).closest('tr');
+            table.row(row).remove();
+          });
+          table.draw();
+          $('input#select-all').prop('checked', false);
+          $('.bulk_action').fadeOut();
+        });
+      }
+    });
+  });
+});
+
+/***/ }),
+
+/***/ "./Modules/Project/Resources/assets/css/project.index.css":
+/*!****************************************************************!*\
+  !*** ./Modules/Project/Resources/assets/css/project.index.css ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/chunk loaded */
+/******/ 	(() => {
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
+/******/ 			}
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var [chunkIds, fn, priority] = deferred[i];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
+/******/ 				}
+/******/ 			}
+/******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		// no baseURI
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"/assets/js/project.index": 0,
+/******/ 			"assets/css/project.index": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkId] = 0;
+/******/ 			}
+/******/ 			return __webpack_require__.O(result);
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
+/******/ 	__webpack_require__.O(undefined, ["assets/css/project.index"], () => (__webpack_require__("./Modules/Project/Resources/assets/js/project.index.js")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["assets/css/project.index"], () => (__webpack_require__("./Modules/Project/Resources/assets/css/project.index.css")))
+/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	
+/******/ })()
+;

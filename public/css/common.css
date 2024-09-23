@@ -8110,6 +8110,47 @@ body.project .row {
     margin-bottom: 10px;
 }
 
+.range-input {
+    display: flex;
+    align-items: center;
+}
+
+.range-input .range-input-selector {
+    transition: 0.6s;
+}
+
+.range-input .range-input-selector.increased-width {
+    width: 400px !important;
+    transition: 4s;
+    transition-delay: 0.8s;
+}
+
+.range-input .range-output-value {
+    display: none;
+    position: relative;
+    width: 60px;
+    color: #fff;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 3px;
+    background: #2c3e50;
+    padding: 5px 10px;
+    margin-left: 8px;
+    text-wrap: nowrap;
+}
+
+.range-input .range-output-value::before {
+    position: absolute;
+    top: 8px;
+    left: -7px;
+    width: 0;
+    height: 0;
+    border-top: 7px solid transparent;
+    border-right: 7px solid #2c3e50;
+    border-bottom: 7px solid transparent;
+    content: "";
+}
+
 .projectsTableContainter>.card-body {
     padding: 0 !important;
     overflow: auto !important;

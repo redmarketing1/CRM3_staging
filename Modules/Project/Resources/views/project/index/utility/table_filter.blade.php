@@ -46,8 +46,9 @@
             </div>
         </div> --}}
         <div class="range-input">
-            <input type="range" id="budget_range" class="w-100" min="0" max="1000" value="1000"
+            <input type="range" class="w-100 range-input-selector" min="0" value="1000" max="1000"
                 step="1">
+            <span class="range-output-value">0</span>
         </div>
     </th>
     <th class="filterable-daterange-table">

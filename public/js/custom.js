@@ -1876,3 +1876,20 @@ $('[data-backgroundColor], [data-fontColor]').each(function () {
 function removeWhitespace(str) {
     return str ? str.replace(/\s+/g, '') : '';
 }
+
+
+
+$('.range-input').each(function () {
+    const range = $(this).find('input[type=range]');
+    const value = $('.range-output-value');
+
+    value.each(function () {
+        var value = $(this).prev().attr('value');
+        $(this).html(value);
+    });
+
+    range.on('input', function () {
+        value.fadeIn();
+        $(this).next(value).html(this.value);
+    });
+});
