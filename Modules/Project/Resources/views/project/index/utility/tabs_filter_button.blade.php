@@ -15,8 +15,12 @@
          </a>
      @endforeach
 
-     <a class="nav-item nav-link project_status_link" data-status-name="archivedprojects" data-toggle="tab"
-         href="javascript:void" role="tab" aria-selected="false">
-         {{ trans('Archived Projects') }}
-     </a>
+
+     <div class="projects-filters">
+         <select name="projectVisibality" id="projectVisibality" class="select2">
+             <option value="all">{{ trans('All Projects') }}</option>
+             <option value="only-archive">{{ trans('Only Archives') }}</option>
+             <option value="only-active" selected>{{ trans('Only Active Projects') }}</option>
+         </select>
+     </div>
  </div>

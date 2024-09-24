@@ -20,8 +20,8 @@
     </th>
     <th data-orderable="false">
         <div class="search-table">
-            <input type="search" class="form-control text-xl" placeholder="Search project name"
-                name="searchByProjectName" id="searchByProjectName" />
+            <input type="search" class="form-control text-xl" placeholder="{{ trans('Search project') }}"
+                name="searchProject" id="searchProject" />
         </div>
     </th>
     <th data-orderable="false">archive</th>
@@ -32,12 +32,7 @@
             </select>
         </div>
     </th>
-    <th data-orderable="false">
-        <div class="search-table">
-            <input type="search" class="form-control text-xl" placeholder="Search comment..." name="searchByComment"
-                id="searchByComment" />
-        </div>
-    </th>
+    <th data-orderable="false"><!--comment--></th>
     <th data-orderable="false" class="filterable-priority-table">
         <div class="priority-table">
             <select class="form-control" id="filterablePriorityDropdown">

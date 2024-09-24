@@ -8209,7 +8209,9 @@ table#projectsTable {
 table#projectsTable>thead {}
 
 .project.index div#status-tabs {
-    margin: 0 20px 7px 20px !important
+    margin: 0 20px 7px 20px !important;
+    height: 50px;
+    transition: 0.3s;
 }
 
 
