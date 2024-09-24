@@ -87,18 +87,20 @@ class ActivityLog extends Model
             $fileExtension = pathinfo($projectClientFeedback->file, PATHINFO_EXTENSION);
             
             if (in_array(strtolower($fileExtension), $imageExtensions)) {
-                $image = get_file('uploads/projects.'.$projectClientFeedback->file);
+                $image = get_file('uploads/projects/'.$projectClientFeedback->file);
                 $html .= '<a class="lightbox-link" href="' . $image . '" data-lightbox="gallery" data-title="Image placeholder">
                             <img alt="Image placeholder" src="' . $image . '" class="img-thumbnail my-3" 
                                 style="display: block;max-width: 200px;max-height: 140px;">
                         </a>';
+            }else{
+                $file = get_file('uploads/projects/'.$projectClientFeedback->file);
+                $html .= '<a href="' . $file . '" class="" 
+                    data-bs-toggle="tooltip" title="' . __('Download') . '">
+                    '.$file.'
+                    </a>';
             }
 
-            $file = get_file('uploads/projects/'.$projectClientFeedback->file);
-            $html .= '<a href="' . $file . '" class="" 
-                data-bs-toggle="tooltip" title="' . __('Download') . '">
-                '.$file.'
-                </a>';
+           
         }
 
         return $html;
