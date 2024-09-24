@@ -8,7 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use Modules\Taskly\Entities\Timesheet;
 use Modules\Taskly\Entities\ActivityLog;
 use Modules\Taskly\Entities\ProjectFile;
+use Modules\Project\Entities\ProjectDelay;
 use Modules\Taskly\Entities\EstimateQuote;
+use Modules\Taskly\Entities\ProjectComment;
+use Modules\Taskly\Entities\ProjectProgress;
+use Modules\Taskly\Entities\ProjectClientFeedback;
 
 trait Relationship
 {
@@ -40,6 +44,26 @@ trait Relationship
     public function clients()
     {
         return $this->belongsToMany('App\Models\User', 'client_projects', 'project_id', 'client_id')->withPivot('is_active')->orderBy('id', 'ASC');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(ProjectComment::class, 'project_id');
+    }
+
+    public function delays()
+    {
+        return $this->hasMany(ProjectDelay::class, 'project_id');
+    }
+
+    public function progress()
+    {
+        return $this->hasMany(ProjectProgress::class, 'project_id');
+    }
+
+    public function notes()
+    {
+        //TODO: Later
     }
 
     public function countTask()
@@ -104,8 +128,15 @@ trait Relationship
         return $this->hasOne(EstimateQuote::class, 'project_id', 'id')->where('final_for_client', 1);
     }
 
+    public function client_feedback()
+    {
+        return $this->hasMany(ProjectClientFeedback::class, 'project_id');
+    }
+
     public function sub_contractor_final_quote()
     {
         return $this->hasOne(EstimateQuote::class, 'project_id', 'id')->where('final_for_sub_contractor', 1);
     }
+
+
 }

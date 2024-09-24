@@ -252,4 +252,71 @@ class ProjectController extends Controller
 
         return response()->json(['success' => 'Items has been archive successfully.']);
     }
+
+    /**
+     * Duplicate project by id
+     * @param mixed $ids
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    protected function duplicate($ids)
+    {
+        $projects = Project::whereIn('id', $ids)->get();
+
+        foreach ($projects as $project) {
+            $newProject = $project->replicate();
+            $newProject->save();
+
+            // Step 2: Automatically replicate relationships
+            /**
+             * Pls never remove this code, I'll fix this later
+             * @author Fxc Jahid <fxcjahid3@gmail.com>
+             */
+            // $this->duplicateRelations($project, $newProject);
+        }
+
+        return response()->json(['success' => 'Projects have been duplicated successfully.']);
+    }
+
+
+    /**
+     * Automatically duplicate all related data for a project.
+     *
+     * @param Project $originalProject The original project being duplicated.
+     * @param Project $newProject The newly created duplicate project.
+     * @filesource Modules\Project\Traits\Relationship 
+     */
+    protected function duplicateRelations($originalProject, $newProject)
+    {
+        $relationships = [
+            'activities',
+            'client_feedback',
+            'comments',
+            'delays',
+            'estimation',
+            'files',
+            'milestones',
+            // 'notes',
+            'progress',
+            // 'progressFiles',
+            // 'progressMains',
+            // 'smartChats',
+            // 'smartChatAttachments',
+            // 'stages',
+            // 'subContractors',
+            'task',
+            // 'taskCheckLists',
+            // 'taskFiles',
+            // 'taskTimers',
+        ];
+
+        foreach ($relationships as $relation) {
+            if (method_exists($originalProject, $relation)) {
+                foreach ($originalProject->$relation as $relatedItem) {
+                    $newRelatedItem             = $relatedItem->replicate();
+                    $newRelatedItem->project_id = $newProject->id;
+                    $newRelatedItem->save();
+                }
+            }
+        }
+    }
 }
