@@ -52,15 +52,23 @@ Route::get('/asadfeed', function(){
    
     foreach ($feedbacks as $c){
 
-        ActivityLog::updateOrCreate([
-            'user_id'    => creatorId(),
-            'user_type'  => get_class(auth()->user()),
-            'project_id' => $c->project_id,
-            'log_type'   => 'Feedback Create',
-            'remark'     => json_encode(['title' => 'Project feedback created.', 'feedback_id' => $c->id]),
-            'created_at' => $c->created_at,
-            'updated_at' => $c->updated_at,
-        ]);
+        // ActivityLog::updateOrCreate([
+        //     'user_id'    => creatorId(),
+        //     'user_type'  => get_class(auth()->user()),
+        //     'project_id' => $c->project_id,
+        //     'log_type'   => 'Feedback Create',
+        //     'remark'     => json_encode(['title' => 'Project feedback created.', 'feedback_id' => $c->id]),
+        //     'created_at' => $c->created_at,
+        //     'updated_at' => $c->updated_at,
+        // ]);
+
+        if(!empty($c->file)){
+            $feed = ProjectClientFeedback::find($c->id);
+            $path = 'uploads/projects/'.$c->file;
+            $feed->file = $path;
+            $feed->save();
+            
+        }
     }
 
     return 'success';
@@ -84,6 +92,7 @@ Route::get('/asadcment', function(){
 
     return 'success';
 });
+
 
 Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::get('dashboard/taskly', [DashboardController::class, 'index'])->name('taskly.dashboard')->middleware(['auth']);

@@ -73,11 +73,12 @@ class ProjectController extends Controller
         $estimationStatus = ProjectEstimation::$statues;
         $projectLabel     = Label::get_project_dropdowns();
 
-        $workspace_users = User::where('created_by', '=', creatorId())
-            ->emp()
-            ->where('workspace_id', getActiveWorkSpace())
-            ->get();
-
+        // $workspace_users = User::where('created_by', '=', creatorId())
+        //     ->emp()
+        //     ->where('workspace_id', getActiveWorkSpace())
+        //     ->get();
+        
+        $workspace_users = genericGetContacts();
 
         Meta::prependTitle($project->name)->setTitle('Project Detail');
 
