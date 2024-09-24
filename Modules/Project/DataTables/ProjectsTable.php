@@ -44,7 +44,9 @@ class ProjectsTable extends Tables
                 // $query->limit(50);
     
             })
-            ->setRowId('project-items')
+            ->setRowId(function ($entity) {
+                return $entity->id;
+            })
             ->setRowAttr([
                 'data-id' => function ($entity) {
                     return $entity->id;

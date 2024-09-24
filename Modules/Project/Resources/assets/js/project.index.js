@@ -87,7 +87,10 @@ $(document).ready(function () {
 
                 $('#filterablePriorityDropdown').select2({
                     data: selectData,
-                    minimumResultsForSearch: Infinity
+                    multiple: false,
+                    minimumResultsForSearch: Infinity,
+                    templateResult: formatOption,
+                    templateSelection: formatSelection
                 });
             }
 
@@ -356,9 +359,10 @@ $(document).ready(function () {
 
                     if (type === 'archive') {
                         selectedRows.each(function (value, index) {
-                            var rowData = value.data();
-                            rowData[3] = 1;
-                            value.data(rowData).draw();
+                            const rowId = $(this).val();
+                            const rowData = table.row('#' + rowId).data();
+                            rowData.is_archive = 1;
+                            table.row('#' + rowId).data(rowData).draw();
                         });
                     }
 
@@ -366,23 +370,13 @@ $(document).ready(function () {
                         selectedRows.each(function (val, element) {
                             const rowId = $(this).val();
                             const rowData = table.row('#' + rowId).data();
-
-                            if (rowData) { // Check if rowData is defined
-                                const newRowData = [...rowData];
-
-                                newRowData[0] = newRowData[0] + ' - Copy'; // Modify the project name
-                                newRowData[1] = null; // Reset ID or any other field as needed
-
-                                table.row.add(newRowData).draw();
-                            } else {
-                                console.error('Row data not found for ID:', rowId); // Log if rowData is not found
-                            }
+                            table.row.add(rowData).draw();
                         });
                     }
 
                     table.draw();
 
-                    $('input#select-all').prop('checked', false);
+                    $('input#select-all,.row-select-checkbox').prop('checked', false);
                     $('#bulk-action-selector').fadeOut();
                 });
             }
