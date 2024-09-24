@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
     var table = $('#projectsTable').DataTable({
-        lengthChange: false,
+        lengthChange: true,
         ordering: false,
         searching: true,
         layout: {
@@ -68,9 +68,10 @@ $(document).ready(function () {
 
                 $('#filterableStatusDropdown').select2({
                     data: selectData,
-                    multiple: true,
-                    // templateResult: formatOption,
-                    // templateSelection: formatSelection
+                    multiple: false,
+                    minimumResultsForSearch: Infinity,
+                    templateResult: formatOption,
+                    templateSelection: formatSelection
                 });
             }
 
@@ -85,7 +86,8 @@ $(document).ready(function () {
                 });
 
                 $('#filterablePriorityDropdown').select2({
-                    data: selectData
+                    data: selectData,
+                    minimumResultsForSearch: Infinity
                 });
             }
 
@@ -148,6 +150,10 @@ $(document).ready(function () {
                     $('#bulk-action-selector').fadeOut();
                 }
             });
+
+            $('.projects-filters .select2').select2({
+                minimumResultsForSearch: Infinity
+            });
         }
     });
 
@@ -188,7 +194,7 @@ $(document).ready(function () {
         table.draw();
     });
 
-    $(document).on('input', '#searchByProjectName, #searchByComment, #filter_budget_from, #filter_budget_to', function (e) {
+    $(document).on('input', '#searchProject, #filter_budget_from, #filter_budget_to', function (e) {
         table.draw();
     });
 
@@ -202,44 +208,58 @@ $(document).ready(function () {
         $(this).addClass('increased-width');
     });
 
-    $('#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange').on('change', function () {
+    $(document).on('change', '#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange, #projectVisibality', function () {
         table.draw();
     });
 
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-        var selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
-        var selectedDropdownStatus = $('#filterableStatusDropdown').val();
-        var selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val()).toLowerCase();
-        var selectedDateRange = $('#filterableDaterange').val();
-
-        const selectedProjectBudgetRange = $('.range-input-selector').val();
-        const minBudget = parseFloat($('#filter_budget_from').val());
-        const maxBudget = parseFloat($('#filter_budget_to').val());
-
-        var projectName = removeWhitespace(data[2]).toLowerCase();
-        var projectComment = removeWhitespace(data[5]).toLowerCase();
-        var isArchived = parseInt(data[3], 10);  // 1 for archived, 0 for not archived
-        var projectStatus = removeWhitespace(data[4]).toLowerCase();
-        var projectPriority = removeWhitespace(data[6]).toLowerCase();
-        var projectBudget = parseFloat(data[8]);
-        var projectCreatedAt = data[9];
-
-        var searchByProjectName = removeWhitespace($('#searchByProjectName').val()).toLowerCase();
-        var searchByProjectComment = removeWhitespace($('#searchByComment').val()).toLowerCase();
+        let selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
+        let selectedVisibility = $('#projectVisibality').val() || 'only-active';
+        let selectedDropdownStatus = $('#filterableStatusDropdown').val();
+        let selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val()).toLowerCase();
+        let selectedDateRange = $('#filterableDaterange').val();
+        let selectedProjectBudgetRange = $('.range-input-selector').val();
+        let minBudget = parseFloat($('#filter_budget_from').val());
+        let maxBudget = parseFloat($('#filter_budget_to').val());
+        let searchProject = removeWhitespace($('#searchProject').val()).toLowerCase();
 
 
-        // Check if the project budget is within the range
-        if (selectedProjectBudgetRange <= projectBudget) {
+        const projectName = removeWhitespace(data[2]).toLowerCase();
+        const projectComment = removeWhitespace(data[5]).toLowerCase();
+        const isArchived = parseInt(data[3], 10);  // 1 for archived, 0 for not archived
+        const projectStatus = removeWhitespace(data[4]).toLowerCase();
+        const projectPriority = removeWhitespace(data[6]).toLowerCase();
+        const projectBudget = parseFloat(data[8]);
+        const projectCreatedAt = data[9];
+
+
+        /**
+         * Check if the project is archived; 
+         * we only want to show active projects by default
+         */
+        if ((selectedVisibility === 'only-active' && isArchived === 1) ||
+            (selectedVisibility === 'only-archive' && isArchived === 0))
             return false;
-        }
 
-        // Filter project bewteen price range
+
+        $('#status-tabs').find('a')[selectedVisibility === 'only-archive' ? 'fadeOut' : 'fadeIn']();
+
+
+        /**
+         * Check if the project budget is within the range
+         */
+        if (selectedProjectBudgetRange <= projectBudget) return false;
+
+        /**
+         * Filter project bewteen price range
+         */
         if (minBudget && projectBudget <= minBudget || maxBudget && projectBudget >= maxBudget) {
             return false;
         }
 
-
-        // Date Range Filter
+        /**
+         * Date Range Filter
+         */
         if (selectedDateRange) {
             var dateRange = selectedDateRange.split(' - ');
             var startDate = moment(dateRange[0], 'MM/DD/YYYY');
@@ -251,18 +271,12 @@ $(document).ready(function () {
             }
         }
 
-        // Filter arhive project
-        if (selectedStatus === 'archivedprojects' && isArchived === 1) {
-            return true;
-        }
-
         // Other Filters (Status, Priority, Project Name)
         if (
             (!selectedStatus || projectStatus === selectedStatus) &&
             (!selectedDropdownStatus.length || selectedDropdownStatus.includes(projectStatus)) &&
             (!selectedDropdownPriority || projectPriority === selectedDropdownPriority) &&
-            (searchByProjectName === '' || projectName.indexOf(searchByProjectName) !== -1) &&
-            (searchByProjectComment === '' || projectComment.indexOf(searchByProjectComment) !== -1)
+            (searchProject === '' || projectName.indexOf(searchProject) !== -1 || projectComment.indexOf(searchProject) !== -1)
         ) {
             return true;
         }
@@ -338,11 +352,38 @@ $(document).ready(function () {
                             var row = $(this).closest('tr');
                             table.row(row).remove();
                         });
-                        table.draw();
                     }
 
+                    if (type === 'archive') {
+                        selectedRows.each(function (value, index) {
+                            var rowData = value.data();
+                            rowData[3] = 1;
+                            value.data(rowData).draw();
+                        });
+                    }
+
+                    if (type === 'duplicate') {
+                        selectedRows.each(function (val, element) {
+                            const rowId = $(this).val();
+                            const rowData = table.row('#' + rowId).data();
+
+                            if (rowData) { // Check if rowData is defined
+                                const newRowData = [...rowData];
+
+                                newRowData[0] = newRowData[0] + ' - Copy'; // Modify the project name
+                                newRowData[1] = null; // Reset ID or any other field as needed
+
+                                table.row.add(newRowData).draw();
+                            } else {
+                                console.error('Row data not found for ID:', rowId); // Log if rowData is not found
+                            }
+                        });
+                    }
+
+                    table.draw();
+
                     $('input#select-all').prop('checked', false);
-                    $('.bulk_action').fadeOut();
+                    $('#bulk-action-selector').fadeOut();
                 });
             }
         });

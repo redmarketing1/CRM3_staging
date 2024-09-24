@@ -124,6 +124,7 @@ class ProjectsTable extends Tables
          */
         return Cache::remember('filterableStatusList-' . auth()->id(), 60 * 60, function () {
             $statusLists = $this->source->with('statusData')
+                ->where('is_active', 1) // retrieve only actibv project
                 ->get()
                 ->filter(function ($project) {
                     return ! empty($project->statusData->name);
