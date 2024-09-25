@@ -1,7 +1,7 @@
 <tr class="form-group mb-5 hide" role="row" data-orderable="false">
     <th data-orderable="false" colspan="2" class="filterable-bulk-action">
         <select name="action" id="bulk-action-selector" class="hide">
-            <option>Bulk actions</option>
+            <option value="bulk">Bulk actions</option>
             <option value="delete" data-type="delete" data-text="This action can not be undone. Do you want to delete?"
                 data-title="Are you sure delete ?">
                 Delete Projects
@@ -11,6 +11,10 @@
                 data-title="Are you sure archive ?">
                 Move To Archive
             </option>
+            <option value="active" class="hide" data-type="active"
+                data-text="The project will move to active. You can revert it later" data-title="Are you sure active ?">
+                Move To Active
+            </option>
             <option value="duplicate" data-type="duplicate"
                 data-text="The project will be duplicate. You can delete it after created"
                 data-title="Are you sure duplicate this projects ?">
@@ -18,7 +22,7 @@
             </option>
         </select>
     </th>
-    <th data-orderable="false">
+    <th data-orderable="false" colspan="2">
         <div class="search-table">
             <input type="search" class="form-control text-xl" placeholder="{{ trans('Search project') }}"
                 name="searchProject" id="searchProject" />
@@ -28,15 +32,12 @@
     <th data-orderable="false" class="filterable-status-table">
         <div class="status-table">
             <select class="form-control" id="filterableStatusDropdown">
-                <option value="">Select Status</option>
             </select>
         </div>
     </th>
-    <th data-orderable="false"><!--comment--></th>
     <th data-orderable="false" class="filterable-priority-table">
         <div class="priority-table">
             <select class="form-control" id="filterablePriorityDropdown">
-                <option value="">Select priority</option>
             </select>
         </div>
     </th>
