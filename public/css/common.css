@@ -8096,12 +8096,12 @@ body.project .row {
     max-height: 150px;
     overflow: hidden;
     padding-left: 35px;
-    transition: 0.4s;
+    transition: 0.6s;
 }
 
 .projectsTableContainter table#projectsTable .project-comments:hover {
-    transition: 0.9s;
-    transition-delay: 1s;
+    transition: 3s;
+    transition-delay: 2s;
     overflow-y: auto;
     height: auto;
     max-height: 500px;

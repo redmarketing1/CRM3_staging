@@ -28,21 +28,21 @@ $(document).ready(function () {
             {
                 data: null,
                 orderable: false,
-                className: 'dt-body-center',
+                className: 'dt-body-center input-checkbox',
                 render: function (data, type, full, meta) {
                     return '<input type="checkbox" class="row-select-checkbox" value="' + data.id + '">';
                 }
             },
-            { data: 'thumbnail', name: 'thumbnail' },
-            { data: 'name', name: 'name', orderable: true },
-            { data: 'is_archive', name: 'is_archive', visible: false },
-            { data: 'status', name: 'status', defaultContent: 'N/A', orderable: true },
-            { data: 'comments', name: 'comments', defaultContent: 'N/A', orderable: false },
-            { data: 'priority', name: 'priority', defaultContent: 'N/A', orderable: false },
-            { data: 'construction', name: 'construction', defaultContent: 'N/A', orderable: false },
-            { data: 'budget', name: 'budget', orderable: true },
-            { data: 'created_at', name: 'created_at', orderable: true },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
+            { data: 'thumbnail', name: 'thumbnail', className: 'thumbnail' },
+            { data: 'name', name: 'name', orderable: true, className: 'name' },
+            { data: 'comments', name: 'comments', defaultContent: 'N/A', orderable: false, className: 'comments' },
+            { data: 'is_archive', name: 'is_archive', visible: false, className: 'is_archive' },
+            { data: 'status', name: 'status', defaultContent: 'N/A', orderable: true, className: 'status' },
+            { data: 'priority', name: 'priority', defaultContent: 'N/A', orderable: false, className: 'priority' },
+            { data: 'construction', name: 'construction', defaultContent: 'N/A', orderable: false, className: 'construction' },
+            { data: 'budget', name: 'budget', orderable: true, className: 'budget' },
+            { data: 'created_at', name: 'created_at', orderable: true, className: 'created_at' },
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action' }
         ],
         initComplete: function (settings, { filterableStatusList, filterablePriorityList }) {
 
@@ -68,7 +68,9 @@ $(document).ready(function () {
 
                 $('#filterableStatusDropdown').select2({
                     data: selectData,
-                    multiple: false,
+                    placeholder: 'Select Status',
+                    multiple: true,
+                    allowClear: false,
                     minimumResultsForSearch: Infinity,
                     templateResult: formatOption,
                     templateSelection: formatSelection
@@ -87,7 +89,9 @@ $(document).ready(function () {
 
                 $('#filterablePriorityDropdown').select2({
                     data: selectData,
-                    multiple: false,
+                    placeholder: 'Select Priority',
+                    multiple: true,
+                    allowClear: false,
                     minimumResultsForSearch: Infinity,
                     templateResult: formatOption,
                     templateSelection: formatSelection
@@ -218,8 +222,8 @@ $(document).ready(function () {
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         let selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
         let selectedVisibility = $('#projectVisibality').val() || 'only-active';
-        let selectedDropdownStatus = $('#filterableStatusDropdown').val();
-        let selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val()).toLowerCase();
+        let selectedDropdownStatus = $('#filterableStatusDropdown').val() || [];
+        let selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val() || []).toLowerCase();
         let selectedDateRange = $('#filterableDaterange').val();
         let selectedProjectBudgetRange = $('.range-input-selector').val();
         let minBudget = parseFloat($('#filter_budget_from').val());
@@ -228,9 +232,9 @@ $(document).ready(function () {
 
 
         const projectName = removeWhitespace(data[2]).toLowerCase();
-        const projectComment = removeWhitespace(data[5]).toLowerCase();
-        const isArchived = parseInt(data[3], 10);  // 1 for archived, 0 for not archived
-        const projectStatus = removeWhitespace(data[4]).toLowerCase();
+        const projectComment = removeWhitespace(data[3]).toLowerCase();
+        const isArchived = parseInt(data[4], 10);  // 1 for archived, 0 for not archived
+        const projectStatus = removeWhitespace(data[5]).toLowerCase();
         const projectPriority = removeWhitespace(data[6]).toLowerCase();
         const projectBudget = parseFloat(data[8]);
         const projectCreatedAt = data[9];
@@ -245,7 +249,15 @@ $(document).ready(function () {
             return false;
 
 
-        $('#status-tabs').find('a')[selectedVisibility === 'only-archive' ? 'fadeOut' : 'fadeIn']();
+        if (selectedVisibility === 'only-archive') {
+            $('#status-tabs').find('a').fadeOut().removeClass('active');
+            $('#bulk-action-selector').find('option[value=archive]').hide();
+            $('#bulk-action-selector').find('option[value=active]').show();
+        } else {
+            $('#status-tabs').find('a').fadeIn();
+            $('#bulk-action-selector').find('option[value=archive]').show();
+            $('#bulk-action-selector').find('option[value=active]').hide();
+        }
 
 
         /**
@@ -366,6 +378,15 @@ $(document).ready(function () {
                         });
                     }
 
+                    if (type === 'active') {
+                        selectedRows.each(function (value, index) {
+                            const rowId = $(this).val();
+                            const rowData = table.row('#' + rowId).data();
+                            rowData.is_archive = 0;
+                            table.row('#' + rowId).data(rowData).draw();
+                        });
+                    }
+
                     if (type === 'duplicate') {
                         selectedRows.each(function (val, element) {
                             const rowId = $(this).val();
@@ -374,10 +395,9 @@ $(document).ready(function () {
                         });
                     }
 
-                    table.draw();
 
                     $('input#select-all,.row-select-checkbox').prop('checked', false);
-                    $('#bulk-action-selector').fadeOut();
+                    $('#bulk-action-selector').val('bulk').fadeOut();
                 });
             }
         });
