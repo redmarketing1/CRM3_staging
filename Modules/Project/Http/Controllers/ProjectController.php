@@ -77,7 +77,7 @@ class ProjectController extends Controller
         //     ->emp()
         //     ->where('workspace_id', getActiveWorkSpace())
         //     ->get();
-        
+
         $workspace_users = genericGetContacts();
 
         Meta::prependTitle($project->name)->setTitle('Project Detail');
@@ -254,17 +254,17 @@ class ProjectController extends Controller
     }
 
     /**
-     * Move to active project by id
+     * Move to unarchive project by id
      * @param mixed $ids
      * @return mixed|\Illuminate\Http\JsonResponse
      */
-    protected function active($ids)
+    protected function unarchive($ids)
     {
         Project::whereIn('id', $ids)->update([
             'is_archive' => 0,
         ]);
 
-        return response()->json(['success' => 'Items has been active successfully.']);
+        return response()->json(['success' => 'Items has been unarchive successfully.']);
     }
 
     /**

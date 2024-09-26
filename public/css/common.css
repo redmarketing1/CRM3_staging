@@ -8266,7 +8266,7 @@ table#projectsTable .select2.select2-container--default {
     border-radius: 5px;
 }
 
-.project.index .dt-length select {
+/* .project.index .dt-length select {
     position: absolute;
     right: 13px;
     width: 70px;
@@ -8274,7 +8274,7 @@ table#projectsTable .select2.select2-container--default {
     background: #FFF;
     border: none !important;
     color: #999;
-}
+} */
 
 /*.project.index .dt-length label {
     display: none;
