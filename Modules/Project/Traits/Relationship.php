@@ -12,6 +12,7 @@ use Modules\Project\Entities\ProjectDelay;
 use Modules\Taskly\Entities\EstimateQuote;
 use Modules\Taskly\Entities\ProjectComment;
 use Modules\Taskly\Entities\ProjectProgress;
+use Modules\Project\Entities\constructionDetail;
 use Modules\Taskly\Entities\ProjectClientFeedback;
 
 trait Relationship
@@ -110,11 +111,20 @@ trait Relationship
 
     /**
      * Get project construction data
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return \Illuminate\Database\Eloquent\Relations\hasOne
      */
     public function constructionData()
     {
-        return $this->hasMany(Label::class, 'id', 'construction_type');
+        return $this->hasOne(Label::class, 'id', 'construction_type');
+    }
+
+    /**
+     * Get project construction data
+     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     */
+    public function constructionDetail()
+    {
+        return $this->belongsTo(constructionDetail::class, 'construction_detail_id')->with('user');
     }
 
     /**
