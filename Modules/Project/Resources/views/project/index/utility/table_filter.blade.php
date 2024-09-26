@@ -48,7 +48,6 @@
             <div class="field">
                 <input type="number" id="filter_price_from" class="input-min form_filter_field" value="0">
             </div>
-            <div class="separator">-</div>
             <div class="field">
                 <input type="number" id="filter_price_to" class="input-max form_filter_field">
             </div>
