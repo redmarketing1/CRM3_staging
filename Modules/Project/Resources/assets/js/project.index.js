@@ -213,7 +213,7 @@ $(document).ready(function () {
         let selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
         let selectedVisibility = $('#projectVisibality').val() || 'only-active';
         let selectedDropdownStatus = $('#filterableStatusDropdown').val() || [];
-        let selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val() || []).toLowerCase();
+        let selectedDropdownPriority = $('#filterablePriorityDropdown').val() || [];
         let selectedDateRange = $('#filterableDaterange').val();
         let minBudget = parseFloat($('#filter_price_from').val());
         let maxBudget = parseFloat($('#filter_price_to').val());
@@ -270,11 +270,13 @@ $(document).ready(function () {
             }
         }
 
-        // Other Filters (Status, Priority, Project Name)
+        selectedDropdownPriority = selectedDropdownPriority.map(priority => removeWhitespace(priority).toLowerCase());
+
+        // Other Filters (Status, Priority, Project Name)  
         if (
             (!selectedStatus || projectStatus === selectedStatus) &&
             (!selectedDropdownStatus.length || selectedDropdownStatus.includes(projectStatus)) &&
-            (!selectedDropdownPriority || projectPriority === selectedDropdownPriority) &&
+            (!selectedDropdownPriority.length || selectedDropdownPriority.some(priority => priority === projectPriority)) &&
             (searchProject === '' || projectName.indexOf(searchProject) !== -1 || projectComment.indexOf(searchProject) !== -1)
         ) {
             return true;

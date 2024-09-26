@@ -108,6 +108,24 @@ trait Relationship
         return $this->hasOne(Label::class, 'id', 'status');
     }
 
+    /**
+     * Get project construction data
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function constructionData()
+    {
+        return $this->hasMany(Label::class, 'id', 'construction_type');
+    }
+
+    /**
+     * Get project property_type data
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function property()
+    {
+        return $this->hasMany(Label::class, 'id', 'property_type');
+    }
+
     public function activities()
     {
         return $this->hasMany(ActivityLog::class, 'project_id', 'id')->latest();
