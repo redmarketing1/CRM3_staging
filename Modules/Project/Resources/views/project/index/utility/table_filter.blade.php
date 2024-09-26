@@ -11,9 +11,10 @@
                 data-title="Are you sure archive ?">
                 Move To Archive
             </option>
-            <option value="active" class="hide" data-type="active"
-                data-text="The project will move to active. You can revert it later" data-title="Are you sure active ?">
-                Move To Active
+            <option value="unarchive" class="hide" data-type="unarchive"
+                data-text="The project will move to unarchive. You can revert it later"
+                data-title="Are you sure unarchive ?">
+                Unarchive
             </option>
             <option value="duplicate" data-type="duplicate"
                 data-text="The project will be duplicate. You can delete it after created"
@@ -43,20 +44,25 @@
     </th>
     <th data-orderable="false"></th>
     <th data-orderable="false" class="filterable-budget-net-table">
-        <div class="input-items mt-2">
+        <div class="price-input input-items">
             <div class="field">
-                <input type="number" id="filter_budget_from" class="input-min form_filter_field" min="0"
-                    value="0" step="1">
+                <input type="number" id="filter_price_from" class="input-min form_filter_field" value="0">
             </div>
             <div class="separator">-</div>
             <div class="field">
-                <input type="number" id="filter_budget_to" class="input-max form_filter_field" step="1">
+                <input type="number" id="filter_price_to" class="input-max form_filter_field">
             </div>
         </div>
-        <div class="range-input">
-            <input type="range" class="w-100 range-input-selector" min="0" value="1000" max="1000"
-                step="1">
-            <span class="range-output-value">0</span>
+
+        <div class="my-3">
+            <div class="slider_filter price_slider range_slider">
+                <div class="progress2"></div>
+            </div>
+            <div class="range-input price_range_input">
+                <input type="range" class="range-min" id="filter_price_from" min="0" value="0"
+                    step="10">
+                <input type="range" class="range-max" id="filter_price_to" min="0" step="10">
+            </div>
         </div>
     </th>
     <th data-orderable="false" class="filterable-daterange-table">

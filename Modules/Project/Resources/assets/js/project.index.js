@@ -107,8 +107,8 @@ $(document).ready(function () {
                 }
             });
 
-            $('.range-input-selector,#filter_budget_from,#filter_budget_to').attr('max', maxBudget);
-            $('.range-input-selector,#filter_budget_to').val(maxBudget);
+            $('#filter_price_from,#filter_price_to').attr('max', maxBudget);
+            $('#filter_price_to,.range-max').val(maxBudget);
 
             $('#projectsTable tr:first-child.hide').fadeIn();
 
@@ -201,18 +201,8 @@ $(document).ready(function () {
         table.draw();
     });
 
-    $(document).on('input', '#searchProject, #filter_budget_from, #filter_budget_to', function (e) {
+    $(document).on('input', '#searchProject, #filter_price_from, #filter_price_to', function (e) {
         table.draw();
-    });
-
-    $(document).on('mouseup', '.range-input-selector', function (e) {
-        $(this).removeClass('increased-width');
-        table.draw();
-        table.order([8, 'desc']).draw();
-    });
-
-    $('.range-input-selector').on('mousedown', function () {
-        $(this).addClass('increased-width');
     });
 
     $(document).on('change', '#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange, #projectVisibality', function () {
@@ -225,9 +215,8 @@ $(document).ready(function () {
         let selectedDropdownStatus = $('#filterableStatusDropdown').val() || [];
         let selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val() || []).toLowerCase();
         let selectedDateRange = $('#filterableDaterange').val();
-        let selectedProjectBudgetRange = $('.range-input-selector').val();
-        let minBudget = parseFloat($('#filter_budget_from').val());
-        let maxBudget = parseFloat($('#filter_budget_to').val());
+        let minBudget = parseFloat($('#filter_price_from').val());
+        let maxBudget = parseFloat($('#filter_price_to').val());
         let searchProject = removeWhitespace($('#searchProject').val()).toLowerCase();
 
 
@@ -252,18 +241,13 @@ $(document).ready(function () {
         if (selectedVisibility === 'only-archive') {
             $('#status-tabs').find('a').fadeOut().removeClass('active');
             $('#bulk-action-selector').find('option[value=archive]').hide();
-            $('#bulk-action-selector').find('option[value=active]').show();
+            $('#bulk-action-selector').find('option[value=unarchive]').show();
         } else {
             $('#status-tabs').find('a').fadeIn();
             $('#bulk-action-selector').find('option[value=archive]').show();
-            $('#bulk-action-selector').find('option[value=active]').hide();
+            $('#bulk-action-selector').find('option[value=unarchive]').hide();
         }
 
-
-        /**
-         * Check if the project budget is within the range
-         */
-        if (selectedProjectBudgetRange <= projectBudget) return false;
 
         /**
          * Filter project bewteen price range
@@ -378,7 +362,7 @@ $(document).ready(function () {
                         });
                     }
 
-                    if (type === 'active') {
+                    if (type === 'unarchive') {
                         selectedRows.each(function (value, index) {
                             const rowId = $(this).val();
                             const rowData = table.row('#' + rowId).data();
@@ -402,5 +386,51 @@ $(document).ready(function () {
             }
         });
     });
+
+
+    const rangeInput = $(".range-input input");
+    const priceInput = $(".price-input input");
+    const range = $(".slider_filter .progress");
+    let priceGap = 1;
+
+    // Update range input values based on price inputs
+    priceInput.on('input', function () {
+        let minPrice = parseInt(priceInput.eq(0).val());
+        let maxPrice = parseInt(priceInput.eq(1).val());
+
+        if (maxPrice - minPrice >= priceGap && maxPrice <= parseInt(rangeInput.eq(1).attr('max'))) {
+            if ($(this).hasClass("input-min")) {
+                rangeInput.eq(0).val(minPrice);
+                range.css('left', (minPrice / parseInt(rangeInput.eq(0).attr('max'))) * 100 + "%");
+            } else {
+                rangeInput.eq(1).val(maxPrice);
+                range.css('right', 100 - (maxPrice / parseInt(rangeInput.eq(1).attr('max'))) * 100 + "%");
+            }
+        }
+    });
+
+    // Update price inputs based on range input values
+    rangeInput.on('input', function () {
+        let minVal = parseInt(rangeInput.eq(0).val());
+        let maxVal = parseInt(rangeInput.eq(1).val());
+
+        if (maxVal - minVal < priceGap) {
+            if ($(this).hasClass("range-min")) {
+                rangeInput.eq(0).val(maxVal - priceGap);
+            } else {
+                rangeInput.eq(1).val(minVal + priceGap);
+            }
+        } else {
+            priceInput.eq(0).val(minVal);
+            priceInput.eq(1).val(maxVal);
+            range.css('left', (minVal / parseInt(rangeInput.eq(0).attr('max'))) * 100 + "%");
+
+            // Calculate width and set it to the progress bar
+            let width = (maxVal - minVal) / parseInt(rangeInput.eq(1).attr('max')) * 100 + "%";
+            range.css('width', width);
+        }
+    });
+
+
 
 });
