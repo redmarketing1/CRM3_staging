@@ -97,7 +97,7 @@
                                     <span class="badge bg-danger">{{ __('Disable') }}</span>
                                     @endif
                                 </small>
-                                <small class="text-primary">{{ __('V')}}{{ sprintf("%.1f", $json['version']) }}</small>
+                                
                             </div>
                         </div>
                         <div class="checkbox-custom">

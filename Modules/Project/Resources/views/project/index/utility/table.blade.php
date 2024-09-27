@@ -2,16 +2,17 @@
     <thead>
         @include('project::project.index.utility.table_filter')
         <tr class="theader">
-            <th><input id="select-all" type="checkbox"></th> <!-- Checkbox Column -->
-            <th colspan="2" data-orderable="true">Project Name</th>
-            <th data-orderable="false">Comments</th>
-            <th style="display: none">Archive</th>
-            <th data-orderable="false">Status</th>
-            <th data-orderable="true">Priority</th>
-            <th data-orderable="false">Construction</th>
-            <th data-orderable="true">Project Net</th>
-            <th data-orderable="true">Date</th>
-            <th data-orderable="false">Action</th>
+            <th class="checkbox"><input id="select-all" type="checkbox"></th> <!-- Checkbox Column -->
+            <th class="empty" data-orderable="false"></th>
+            <th class="project-name" data-orderable="true">{{ trans('Project Name') }}</th>
+            <th class="comments" data-orderable="false">{{ trans('Comments') }}</th>
+            <th class="archive" style="display: none">{{ trans('Archive') }}</th>
+            <th class="status" data-orderable="false">{{ trans('Status') }}</th>
+            <th class="priority" data-orderable="true">{{ trans('Priority') }}</th>
+            <th class="construction" data-orderable="false">{{ trans('Construction') }}</th>
+            <th class="project-net" data-orderable="true">{{ trans('Project Net') }}</th>
+            <th class="date" data-orderable="true">{{ trans('Date') }}</th>
+            <th class="action" data-orderable="false">{{ trans('Action') }}</th>
         </tr>
     </thead>
     <tbody>

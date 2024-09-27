@@ -1,6 +1,6 @@
 <ul class="project-comments">
     @foreach ($comments as $item)
-        <li>{{ strip_tags(html_entity_decode($item->comment)) }}</li>
+        <li>{!! nl2br(strip_tags(html_entity_decode($item->comment), '<p>')) !!}</li>
     @endforeach
-    <li class="description">{{ strip_tags(html_entity_decode($description)) }}</li>
+    <li class="description">{!! nl2br(strip_tags(html_entity_decode($description), '<p>')) !!}</li>
 </ul>
