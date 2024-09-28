@@ -201,13 +201,15 @@
 //     }
 // }
 
-div#status-tabs {
-    height: 50px;
+.project-tools {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
 }
 
-.projects-filters {
-    position: absolute;
-    right: 40px;
+div#status-tabs {
+    height: 50px;
 }
 
 .filterable-budget-net-table {

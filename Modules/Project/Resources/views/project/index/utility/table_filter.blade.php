@@ -2,7 +2,7 @@
     <th data-orderable="false" colspan="2" class="filterable-bulk-action">
         <select name="action" id="bulk-action-selector" class="hide">
             <option value="bulk">{{ trans('Bulk actions') }}</option>
-            <option value="delete" data-type="delete" 
+            <option value="delete" data-type="delete"
                 data-text="{{ trans('This action can not be undone. Do you want to delete?') }}"
                 data-title="{{ trans('Are you sure delete ?') }}">
                 {{ trans('Delete') }}
@@ -26,8 +26,8 @@
     </th>
     <th class="filterable-search" data-orderable="false" colspan="2">
         <div class="search-table">
-            <input type="search" class="form-control text-xl" placeholder="{{ trans('Search') }}"
-                name="searchProject" id="searchProject" />
+            <input type="search" class="form-control text-xl" placeholder="{{ trans('Search') }}" name="searchProject"
+                id="searchProject" />
         </div>
     </th>
     <th data-orderable="false">{{ trans('archive') }}</th>
@@ -45,13 +45,13 @@
     </th>
     <th data-orderable="false"></th>
     <th data-orderable="false" class="filterable-budget-net-table">
-        
+
         <div class="price-input input-items">
             <div class="field">
-                <input type="number" id="filter_price_from" class="input-min form_filter_field" value="0">
+                <input type="text" id="filter_price_from" class="input-min form_filter_field" value="0">
             </div>
             <div class="field">
-                <input type="number" id="filter_price_to" class="input-max form_filter_field">
+                <input type="text" id="filter_price_to" class="input-max form_filter_field">
             </div>
         </div>
 
@@ -65,11 +65,17 @@
                 <input type="range" class="range-max" id="filter_price_to" min="0" step="10">
             </div>
         </div>
-        
+
     </th>
     <th data-orderable="false" class="filterable-daterange-table">
         <input type='text' class="form-control daterange form_filter_field" placeholder="{{ trans('Date') }}"
             id="filterableDaterange" />
     </th>
-    <th data-orderable="false"><!--- action ---></th>
+    <th data-orderable="false">
+        <div class="buttons--right">
+            <button type="button" id="clearFilter" class="clear_filter">
+                {{ trans('clear all') }}
+            </button>
+        </div>
+    </th>
 </tr>

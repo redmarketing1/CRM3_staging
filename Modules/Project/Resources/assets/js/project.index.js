@@ -44,7 +44,8 @@ $(document).ready(function () {
             { data: 'created_at', name: 'created_at', orderable: true, className: 'created_at' },
             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action' }
         ],
-        initComplete: function (settings, { filterableStatusList, filterablePriorityList }) {
+        initComplete: function (settings, { data, filterableStatusList, filterablePriorityList }) {
+
 
             $('#projectsTable colgroup').remove();
 
@@ -102,13 +103,16 @@ $(document).ready(function () {
             table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                 let data = this.data();
                 let projectBudget = parseFloat(data.budget);
-                if (!isNaN(projectBudget) && projectBudget > maxBudget) {
+                if (projectBudget > maxBudget) {
                     maxBudget = projectBudget;
                 }
             });
 
+            maxBudget = convertNumberFormat(maxBudget);
+
             $('#filter_price_from,#filter_price_to').attr('max', maxBudget);
             $('#filter_price_to,.range-max').val(maxBudget);
+
 
             $('#projectsTable tr:first-child.hide').fadeIn();
 
@@ -434,5 +438,26 @@ $(document).ready(function () {
     });
 
 
+    $(document).on('click', '#clearFilter', function () {
+        $('input#select-all,.row-select-checkbox').prop('checked', false);
+        $('#bulk-action-selector').val('bulk');
+        $('#status-tabs a').removeClass('active');
+        $('#searchProject,#filterableStatusDropdown,#filterablePriorityDropdown,#filterableDaterange').val(null).trigger('change');
+        $('#filter_price_from').val(0);
+        $('#filter_price_to,.range-max').val($('#filter_price_to').attr('max'));
+        table.draw();
+    });
+
+    function convertNumberFormat(number, format = 'EU') {
+        let numString = number.toString();
+
+        if (format === 'EU') {
+            numString = numString.replace(/,/g, '.').replace(/\./g, ',');
+        } else if (format === 'US') {
+            numString = numString.replace(/,/g, '').replace(/\./g, ',').replace(/,/g, '.');
+        }
+
+        return numString;
+    }
 
 });
