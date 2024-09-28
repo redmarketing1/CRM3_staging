@@ -21,4 +21,12 @@
             <i class="ti ti-plus"></i>
         </a>
     @endpermission
+
+    <div class="projects-filters">
+        <select name="projectVisibality" id="projectVisibality" class="select2">
+            <option value="all">{{ trans('All Projects') }}</option>
+            <option value="only-archive">{{ trans('Only Archives') }}</option>
+            <option value="only-active" selected>{{ trans('Only Active Projects') }}</option>
+        </select>
+    </div>
 </div>
