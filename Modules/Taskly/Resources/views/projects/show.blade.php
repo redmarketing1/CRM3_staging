@@ -780,7 +780,7 @@
                         <div class="card-body p-4">
 
                             <!-- <div class="author-box-name form-control-label mb-4">
-                                                                                                                                                                </div> -->
+                                                                                                                                                                    </div> -->
                             <div class="col-md-12 dropzone browse-file" id="dropzonewidget">
                                 <div class="dz-message" data-dz-message>
                                     <span>{{ __('Drop files here to upload') }}</span>
@@ -1516,7 +1516,7 @@
                 @endif
 
 
-                @include('project::projects.utility.activity_log')
+                @include('project::project.show.utility.activity_log')
 
 
                 <div class="col-md-12">
