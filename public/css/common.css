@@ -8290,7 +8290,9 @@ table#projectsTable .select2.select2-container--default {
     padding: 5px;
 }
 #projectsTable thead textarea.select2-search__field {
-    display: none;
+    /* display: none; */
+    position: absolute;
+    margin-top: -30px;
 }
 th.filterable-budget-net-table input {
     width: 100px;
@@ -8368,4 +8370,22 @@ select#bulk-action-selector {
 .project.index .select2-results__option {
     padding: 5px;
     background: transparent !important;
+}
+div#projectsTable_info {
+    padding: 20px 5px 20px 20px;
+    color: #AAA;
+}
+div.dt-container .dt-paging {
+    padding-right: 10px;
+}
+div.dt-container .dt-paging .dt-paging-button,
+div.dt-container .dt-paging .dt-paging-button:hover {
+    border-radius: 5px;
+    font-weight: normal;
+    margin: 2px !important;
+    font-size: 12px;
+    border: none;
+}
+div.dt-container .dt-paging .dt-paging-button:hover {
+    background: #555;
 }
