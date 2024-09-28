@@ -34,20 +34,20 @@ if (! function_exists('getMenu')) {
 
         $user     = auth()->user();
         $cacheKey = 'sidebar_menu_' . $user->id;
-        
+
         $role = $user->roles->first();
         $menu = new \App\Classes\Menu($user);
-        
+
         if ($role->name === 'super admin') {
             event(new \App\Events\SuperAdminMenuEvent($menu));
         } else {
             event(new \App\Events\CompanyMenuEvent($menu));
         }
-       
+
         $groupedMenu = collect($menu->menu)
             ->groupBy('category')
             ->toArray();
-       
+
         $categoryIcon = categoryIcon();
 
 
@@ -418,8 +418,8 @@ if (! function_exists('getActiveWorkSpace')) {
                     static $WorkSpace = null;
                     if ($WorkSpace == null) {
                         $workspace = WorkSpace::where('created_by', $user->id)->first();
-                    }
-                    return $workspace->id;
+                    } 
+                    return $workspace->id ?? null;
                 }
             }
         }
@@ -530,13 +530,13 @@ if (! function_exists('ActivatedModule')) {
         }
         if (! empty($user)) {
             $available_modules = array_keys(Module::getByStatus(1));
-           
+
             if ($user->type == 'super admin') {
                 $user_active_module = $available_modules;
             } else {
                 if ($user->type != 'company') {
                     $user_not_com = User::find($user->created_by);
-                    
+
                     if (! empty($user)) {
                         // Sidebar Performance Changes
                         static $active_module = null;
@@ -550,11 +550,11 @@ if (! function_exists('ActivatedModule')) {
                         $active_module = userActiveModule::where('user_id', $user->id)->pluck('module')->toArray();
                     }
                 }
-                
+
                 // Find the common modules
                 $commonModules      = array_intersect($active_module, $available_modules);
                 $user_active_module = array_unique(array_merge($commonModules, $activated_module));
-                
+
             }
         }
         return $user_active_module;
