@@ -22,17 +22,20 @@
             <select name="project_member" class="form-control member_select2"
             onchange="save_project_member_details(this)" multiple>
             <option value="" disabled>Select</option>
-            @foreach($workspace_users as $row)
-                <option data-background_color="#59c2a6" data-font_color="#ffffff" 
-                    value="{{ $row->id }}" 
-                    @foreach($project->users as $pusr) 
-                        @if($pusr->id == $row->id) 
-                            selected 
-                        @endif 
-                    @endforeach>
-                    {{ $row->name }}
-                </option>
-            @endforeach
+            @if(isset($workspace_users) && count($workspace_users) > 0)
+                @foreach ($workspace_users as $row)
+
+                    <option data-background_color="#59c2a6" data-font_color="#ffffff" 
+                        value="{{ $row['id'] }}" data-type="{{ $row['type'] }}"
+                        @foreach($project->users as $pusr) 
+                            @if($pusr->id == $row['id']) 
+                                selected 
+                            @endif 
+                        @endforeach>
+                        {{ $row['name'] }}
+                    </option>
+                @endforeach
+            @endif
         </select>
         </div>
     </div>

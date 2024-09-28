@@ -1,11 +1,4 @@
 <div class="project-tools">
-    <a href="javascript:void(0)" class="toggle_filter btn btn-sm btn-primary btn-icon"
-        title="{{ __('Show / Hide Filters') }}">
-        <span class="">
-            <i class="fa fa-filter"></i>
-            <i class="fa fa-arrow-down arrow_icon"></i>
-        </span>
-    </a>
     @permission('project manage')
         <a href="{{ route('projects.map') }}" class="btn btn-sm btn-primary mx-1" data-toggle="tooltip"
             title="{{ __('Project Map') }}">
@@ -28,4 +21,12 @@
             <i class="ti ti-plus"></i>
         </a>
     @endpermission
+
+    <div class="projects-filters">
+        <select name="projectVisibality" id="projectVisibality" class="select2">
+            <option value="all">{{ trans('All Projects') }}</option>
+            <option value="only-archive">{{ trans('Only Archives') }}</option>
+            <option value="only-active" selected>{{ trans('Only Active Projects') }}</option>
+        </select>
+    </div>
 </div>

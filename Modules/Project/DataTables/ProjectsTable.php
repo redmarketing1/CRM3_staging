@@ -44,7 +44,9 @@ class ProjectsTable extends Tables
                 // $query->limit(50);
     
             })
-            ->setRowId('project-items')
+            ->setRowId(function ($entity) {
+                return $entity->id;
+            })
             ->setRowAttr([
                 'data-id' => function ($entity) {
                     return $entity->id;
@@ -78,16 +80,15 @@ class ProjectsTable extends Tables
             ->editColumn('budget', function ($project) {
                 return currency_format_with_sym($project->budget);
             })
-            ->editColumn('description', function ($project) {
-                return 'description';
-            })
             ->editColumn('created_at', function ($project) {
                 return company_datetime_formate($project->created_at);
             })
             ->addColumn('comments', function ($project) {
                 return $this->comments($project);
             })
-            ->addColumn('construction', 'N/A')
+            ->addColumn('construction', function ($project) {
+                return $this->construction($project);
+            })
             ->addColumn('action', function ($project) {
                 return view('project::project.index.partials.table.action', compact('project'));
             })
@@ -124,6 +125,7 @@ class ProjectsTable extends Tables
          */
         return Cache::remember('filterableStatusList-' . auth()->id(), 60 * 60, function () {
             $statusLists = $this->source->with('statusData')
+                ->where('projects.is_active', 1) // retrieve only actibv project
                 ->get()
                 ->filter(function ($project) {
                     return ! empty($project->statusData->name);
@@ -183,5 +185,9 @@ class ProjectsTable extends Tables
         return view('project::project.index.partials.table.comments', compact('comments', 'description'));
     }
 
+    protected function construction($project)
+    {
+        return view('project::project.index.partials.table.construction', compact('project'));
+    }
 
 }

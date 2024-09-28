@@ -3042,6 +3042,7 @@ class ProjectController extends Controller
             } else {
                 $projects = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->projectonly()->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', getActiveWorkSpace());
             }
+           
             if ($request->start_date) {
                 $projects->where('start_date', $request->start_date);
             }

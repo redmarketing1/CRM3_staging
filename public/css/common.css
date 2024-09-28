@@ -8083,31 +8083,40 @@ body.project .row {
 }
 
 .projectsTableContainter table#projectsTable .project-comments {
-    background-color: #f1f1f1;
-    max-width: 250px;
+    background-color: #fbfbfb;
+    width: 350px;
     margin: 0;
     list-style: none;
     text-align: left;
-    padding: 5px 10px;
+    padding: 15px !important;
     border-radius: 4px;
     border: 0;
-    font-size: 15px;
     max-height: 150px;
-    overflow: hidden;
-    padding-left: 25px;
-    transition: 0.4s;
+overflow:hidden;    
+padding-left: 35px;
+    transition: 0.3s;
 }
 
 .projectsTableContainter table#projectsTable .project-comments:hover {
-    transition: 0.6s;
-    overflow-y: auto;
-    max-height: 450px;
-    max-width: 550px;
+    /* transition: 3s; */
+    /* transition-delay: 2s; */
+    height: auto;
+    /* max-height: 200px; */
+    background-color: #FFF;
+    overflow: auto;
 }
 
 .projectsTableContainter table#projectsTable .project-comments li {
-    list-style: disc;
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    font-size: 12px;
+    line-height: 14px;
+    border-bottom: 1px dashed #e5e5e5;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+
+.projectsTableContainter table#projectsTable .project-comments li::marker {
+    color: #9a9a9a;
 }
 
 .range-input {
@@ -8168,8 +8177,16 @@ nav.dash-sidebar .dash-item-tabs {
     padding: 0 !important;
 }
 
+#projectsTable td.name {
+    min-width: 200px;
+}
+#projectsTable td.status {
+    min-width: 150px;
+}
+#projectsTable thead span.select2 {
+    background: #FFF;
+}
 
-/* PROJECTS.CSS */
 
 #projectsTable .data-thubmnail {
     width: 100px;
@@ -8209,7 +8226,8 @@ table#projectsTable {
 table#projectsTable>thead {}
 
 .project.index div#status-tabs {
-    margin: 0 20px 7px 20px !important
+    margin: 0 20px 7px 20px !important;
+    transition: 0.3s;
 }
 
 
@@ -8237,13 +8255,13 @@ table#projectsTable thead .select2 .select2-selection {
     height: auto;
 }
 
-table#projectsTable .select2 .select2-selection .select2-selection__rendered {
+/* table#projectsTable .select2 .select2-selection .select2-selection__rendered {
     padding: 0 17px 0 5px;
     line-height: 20px !important;
     font-size: 14px !important;
     font-weight: 500 !important;
     color: #999 !important;
-}
+} */
 
 table#projectsTable span.data-project-status,
 table#projectsTable span.data-project-priority {
@@ -8258,15 +8276,28 @@ table#projectsTable .select2.select2-container--default {
 }
 
 .project.index .dt-length select {
-    position: absolute;
+    /* position: absolute;
     right: 13px;
     width: 70px;
     top: 39px;
-    background: #FFF;
+    background: #FFF; */
     border: none !important;
     color: #999;
 }
-
+#projectsTable thead textarea {
+    min-width: 60px;
+    margin: 0;
+    padding: 5px;
+}
+#projectsTable thead textarea.select2-search__field {
+    /* display: none; */
+    position: absolute;
+    margin-top: -30px;
+}
+th.filterable-budget-net-table input {
+    width: 100px;
+    text-align: right;
+}
 /*.project.index .dt-length label {
     display: none;
 }
@@ -8279,11 +8310,82 @@ table#projectsTable .select2.select2-container--default {
     border: none !important;
     color: #999;
 }*/
+.dt-length label {
+    display: none;
+}
+
+.dt-length select {
+    position: absolute;
+    margin-top: 12px;
+    background: #FFF !important;
+    margin-left: 10px;
+}
+
+#projectsTable thead span.select2-selection {
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 0 !important;
+}
+#projectsTable thead .select2-container .select2-selection--multiple .select2-selection__rendered
+{padding:0; margin:0}
+
+#projectsTable thead li.select2-selection__choice
+{padding: 0 !important;margin: 0 !important; background: transparent;display: flex;}
+
+#projectsTable thead button.select2-selection__choice__remove {
+    position: absolute;
+    margin-top: 15px;
+    border-radius: 20px;
+    padding: 0 4px;
+}
+
+#projectsTable thead .net-range-slider {
+    position: absolute;
+    width: 155px;
+    margin-top: 8px !important;
+    transition: opacity 1s ease-in-out;
+    opacity: 0;
+}
+
+#projectsTable thead:hover .net-range-slider {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+}
+select#bulk-action-selector {
+    z-index: 9;
+    position: relative;
+}
 
 
+.filterable-budget-net-table .slider_filter .progress2 {
+    background: #ccc !important;
+}
 
-
-
-
-
-/* PROJECTS.CSS END */
+.filterable-budget-net-table input[type=range]::-webkit-slider-thumb {
+    background: #aaa !important;
+}
+.data-sub-name span {
+    color: #999 !important;
+}
+.project.index .select2-results__option {
+    padding: 5px;
+    background: transparent !important;
+}
+div#projectsTable_info {
+    padding: 20px 5px 20px 20px;
+    color: #AAA;
+}
+div.dt-container .dt-paging {
+    padding-right: 10px;
+}
+div.dt-container .dt-paging .dt-paging-button,
+div.dt-container .dt-paging .dt-paging-button:hover {
+    border-radius: 5px;
+    font-weight: normal;
+    margin: 2px !important;
+    font-size: 12px;
+    border: none;
+}
+div.dt-container .dt-paging .dt-paging-button:hover {
+    background: #555;
+}

@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
     var table = $('#projectsTable').DataTable({
-        lengthChange: false,
+        lengthChange: true,
         ordering: false,
         searching: true,
         layout: {
@@ -28,23 +28,24 @@ $(document).ready(function () {
             {
                 data: null,
                 orderable: false,
-                className: 'dt-body-center',
+                className: 'dt-body-center input-checkbox',
                 render: function (data, type, full, meta) {
                     return '<input type="checkbox" class="row-select-checkbox" value="' + data.id + '">';
                 }
             },
-            { data: 'thumbnail', name: 'thumbnail' },
-            { data: 'name', name: 'name', orderable: true },
-            { data: 'is_archive', name: 'is_archive', visible: false },
-            { data: 'status', name: 'status', defaultContent: 'N/A', orderable: true },
-            { data: 'comments', name: 'comments', defaultContent: 'N/A', orderable: false },
-            { data: 'priority', name: 'priority', defaultContent: 'N/A', orderable: false },
-            { data: 'construction', name: 'construction', defaultContent: 'N/A', orderable: false },
-            { data: 'budget', name: 'budget', orderable: true },
-            { data: 'created_at', name: 'created_at', orderable: true },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
+            { data: 'thumbnail', name: 'thumbnail', className: 'thumbnail' },
+            { data: 'name', name: 'name', orderable: true, className: 'name' },
+            { data: 'comments', name: 'comments', defaultContent: 'N/A', orderable: false, className: 'comments' },
+            { data: 'is_archive', name: 'is_archive', visible: false, className: 'is_archive' },
+            { data: 'status', name: 'status', defaultContent: 'N/A', orderable: true, className: 'status' },
+            { data: 'priority', name: 'priority', defaultContent: 'N/A', orderable: false, className: 'priority' },
+            { data: 'construction', name: 'construction', defaultContent: 'N/A', orderable: false, className: 'construction' },
+            { data: 'budget', name: 'budget', orderable: true, className: 'budget' },
+            { data: 'created_at', name: 'created_at', orderable: true, className: 'created_at' },
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action' }
         ],
-        initComplete: function (settings, { filterableStatusList, filterablePriorityList }) {
+        initComplete: function (settings, { data, filterableStatusList, filterablePriorityList }) {
+
 
             $('#projectsTable colgroup').remove();
 
@@ -68,9 +69,12 @@ $(document).ready(function () {
 
                 $('#filterableStatusDropdown').select2({
                     data: selectData,
+                    placeholder: 'Select Status',
                     multiple: true,
-                    // templateResult: formatOption,
-                    // templateSelection: formatSelection
+                    allowClear: false,
+                    minimumResultsForSearch: Infinity,
+                    templateResult: formatOption,
+                    templateSelection: formatSelection
                 });
             }
 
@@ -85,7 +89,13 @@ $(document).ready(function () {
                 });
 
                 $('#filterablePriorityDropdown').select2({
-                    data: selectData
+                    data: selectData,
+                    placeholder: 'Select Priority',
+                    multiple: true,
+                    allowClear: false,
+                    minimumResultsForSearch: Infinity,
+                    templateResult: formatOption,
+                    templateSelection: formatSelection
                 });
             }
 
@@ -93,13 +103,16 @@ $(document).ready(function () {
             table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                 let data = this.data();
                 let projectBudget = parseFloat(data.budget);
-                if (!isNaN(projectBudget) && projectBudget > maxBudget) {
+                if (projectBudget > maxBudget) {
                     maxBudget = projectBudget;
                 }
             });
 
-            $('.range-input-selector,#filter_budget_from,#filter_budget_to').attr('max', maxBudget);
-            $('.range-input-selector,#filter_budget_to').val(maxBudget);
+            maxBudget = convertNumberFormat(maxBudget);
+
+            $('#filter_price_from,#filter_price_to').attr('max', maxBudget);
+            $('#filter_price_to,.range-max').val(maxBudget);
+
 
             $('#projectsTable tr:first-child.hide').fadeIn();
 
@@ -148,6 +161,10 @@ $(document).ready(function () {
                     $('#bulk-action-selector').fadeOut();
                 }
             });
+
+            $('.projects-filters .select2').select2({
+                minimumResultsForSearch: Infinity
+            });
         }
     });
 
@@ -188,58 +205,64 @@ $(document).ready(function () {
         table.draw();
     });
 
-    $(document).on('input', '#searchByProjectName, #searchByComment, #filter_budget_from, #filter_budget_to', function (e) {
+    $(document).on('input', '#searchProject, #filter_price_from, #filter_price_to', function (e) {
         table.draw();
     });
 
-    $(document).on('mouseup', '.range-input-selector', function (e) {
-        $(this).removeClass('increased-width');
-        table.draw();
-        table.order([8, 'desc']).draw();
-    });
-
-    $('.range-input-selector').on('mousedown', function () {
-        $(this).addClass('increased-width');
-    });
-
-    $('#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange').on('change', function () {
+    $(document).on('change', '#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange, #projectVisibality', function () {
         table.draw();
     });
 
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-        var selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
-        var selectedDropdownStatus = $('#filterableStatusDropdown').val();
-        var selectedDropdownPriority = removeWhitespace($('#filterablePriorityDropdown').val()).toLowerCase();
-        var selectedDateRange = $('#filterableDaterange').val();
-
-        const selectedProjectBudgetRange = $('.range-input-selector').val();
-        const minBudget = parseFloat($('#filter_budget_from').val());
-        const maxBudget = parseFloat($('#filter_budget_to').val());
-
-        var projectName = removeWhitespace(data[2]).toLowerCase();
-        var projectComment = removeWhitespace(data[5]).toLowerCase();
-        var isArchived = parseInt(data[3], 10);  // 1 for archived, 0 for not archived
-        var projectStatus = removeWhitespace(data[4]).toLowerCase();
-        var projectPriority = removeWhitespace(data[6]).toLowerCase();
-        var projectBudget = parseFloat(data[8]);
-        var projectCreatedAt = data[9];
-
-        var searchByProjectName = removeWhitespace($('#searchByProjectName').val()).toLowerCase();
-        var searchByProjectComment = removeWhitespace($('#searchByComment').val()).toLowerCase();
+        let selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
+        let selectedVisibility = $('#projectVisibality').val() || 'only-active';
+        let selectedDropdownStatus = $('#filterableStatusDropdown').val() || [];
+        let selectedDropdownPriority = $('#filterablePriorityDropdown').val() || [];
+        let selectedDateRange = $('#filterableDaterange').val();
+        let minBudget = parseFloat($('#filter_price_from').val());
+        let maxBudget = parseFloat($('#filter_price_to').val());
+        let searchProject = removeWhitespace($('#searchProject').val()).toLowerCase();
 
 
-        // Check if the project budget is within the range
-        if (selectedProjectBudgetRange <= projectBudget) {
+        const projectName = removeWhitespace(data[2]).toLowerCase();
+        const projectComment = removeWhitespace(data[3]).toLowerCase();
+        const isArchived = parseInt(data[4], 10);  // 1 for archived, 0 for not archived
+        const projectStatus = removeWhitespace(data[5]).toLowerCase();
+        const projectPriority = removeWhitespace(data[6]).toLowerCase();
+        const projectBudget = parseFloat(data[8]);
+        const projectCreatedAt = data[9];
+
+
+        /**
+         * Check if the project is archived; 
+         * we only want to show active projects by default
+         */
+        if ((selectedVisibility === 'only-active' && isArchived === 1) ||
+            (selectedVisibility === 'only-archive' && isArchived === 0))
             return false;
+
+
+        if (selectedVisibility === 'only-archive') {
+            $('#status-tabs').find('a').fadeOut().removeClass('active');
+            $('#bulk-action-selector').find('option[value=archive]').hide();
+            $('#bulk-action-selector').find('option[value=unarchive]').show();
+        } else {
+            $('#status-tabs').find('a').fadeIn();
+            $('#bulk-action-selector').find('option[value=archive]').show();
+            $('#bulk-action-selector').find('option[value=unarchive]').hide();
         }
 
-        // Filter project bewteen price range
+
+        /**
+         * Filter project bewteen price range
+         */
         if (minBudget && projectBudget <= minBudget || maxBudget && projectBudget >= maxBudget) {
             return false;
         }
 
-
-        // Date Range Filter
+        /**
+         * Date Range Filter
+         */
         if (selectedDateRange) {
             var dateRange = selectedDateRange.split(' - ');
             var startDate = moment(dateRange[0], 'MM/DD/YYYY');
@@ -251,18 +274,14 @@ $(document).ready(function () {
             }
         }
 
-        // Filter arhive project
-        if (selectedStatus === 'archivedprojects' && isArchived === 1) {
-            return true;
-        }
+        selectedDropdownPriority = selectedDropdownPriority.map(priority => removeWhitespace(priority).toLowerCase());
 
-        // Other Filters (Status, Priority, Project Name)
+        // Other Filters (Status, Priority, Project Name)  
         if (
             (!selectedStatus || projectStatus === selectedStatus) &&
             (!selectedDropdownStatus.length || selectedDropdownStatus.includes(projectStatus)) &&
-            (!selectedDropdownPriority || projectPriority === selectedDropdownPriority) &&
-            (searchByProjectName === '' || projectName.indexOf(searchByProjectName) !== -1) &&
-            (searchByProjectComment === '' || projectComment.indexOf(searchByProjectComment) !== -1)
+            (!selectedDropdownPriority.length || selectedDropdownPriority.some(priority => priority === projectPriority)) &&
+            (searchProject === '' || projectName.indexOf(searchProject) !== -1 || projectComment.indexOf(searchProject) !== -1)
         ) {
             return true;
         }
@@ -338,14 +357,107 @@ $(document).ready(function () {
                             var row = $(this).closest('tr');
                             table.row(row).remove();
                         });
-                        table.draw();
                     }
 
-                    $('input#select-all').prop('checked', false);
-                    $('.bulk_action').fadeOut();
+                    if (type === 'archive') {
+                        selectedRows.each(function (value, index) {
+                            const rowId = $(this).val();
+                            const rowData = table.row('#' + rowId).data();
+                            rowData.is_archive = 1;
+                            table.row('#' + rowId).data(rowData).draw();
+                        });
+                    }
+
+                    if (type === 'unarchive') {
+                        selectedRows.each(function (value, index) {
+                            const rowId = $(this).val();
+                            const rowData = table.row('#' + rowId).data();
+                            rowData.is_archive = 0;
+                            table.row('#' + rowId).data(rowData).draw();
+                        });
+                    }
+
+                    if (type === 'duplicate') {
+                        selectedRows.each(function (val, element) {
+                            const rowId = $(this).val();
+                            const rowData = table.row('#' + rowId).data();
+                            table.row.add(rowData).draw();
+                        });
+                    }
+
+
+                    $('input#select-all,.row-select-checkbox').prop('checked', false);
+                    $('#bulk-action-selector').val('bulk').fadeOut();
                 });
             }
         });
     });
+
+
+    const rangeInput = $(".range-input input");
+    const priceInput = $(".price-input input");
+    const range = $(".slider_filter .progress");
+    let priceGap = 1;
+
+    // Update range input values based on price inputs
+    priceInput.on('input', function () {
+        let minPrice = parseInt(priceInput.eq(0).val());
+        let maxPrice = parseInt(priceInput.eq(1).val());
+
+        if (maxPrice - minPrice >= priceGap && maxPrice <= parseInt(rangeInput.eq(1).attr('max'))) {
+            if ($(this).hasClass("input-min")) {
+                rangeInput.eq(0).val(minPrice);
+                range.css('left', (minPrice / parseInt(rangeInput.eq(0).attr('max'))) * 100 + "%");
+            } else {
+                rangeInput.eq(1).val(maxPrice);
+                range.css('right', 100 - (maxPrice / parseInt(rangeInput.eq(1).attr('max'))) * 100 + "%");
+            }
+        }
+    });
+
+    // Update price inputs based on range input values
+    rangeInput.on('input', function () {
+        let minVal = parseInt(rangeInput.eq(0).val());
+        let maxVal = parseInt(rangeInput.eq(1).val());
+
+        if (maxVal - minVal < priceGap) {
+            if ($(this).hasClass("range-min")) {
+                rangeInput.eq(0).val(maxVal - priceGap);
+            } else {
+                rangeInput.eq(1).val(minVal + priceGap);
+            }
+        } else {
+            priceInput.eq(0).val(minVal);
+            priceInput.eq(1).val(maxVal);
+            range.css('left', (minVal / parseInt(rangeInput.eq(0).attr('max'))) * 100 + "%");
+
+            // Calculate width and set it to the progress bar
+            let width = (maxVal - minVal) / parseInt(rangeInput.eq(1).attr('max')) * 100 + "%";
+            range.css('width', width);
+        }
+    });
+
+
+    $(document).on('click', '#clearFilter', function () {
+        $('input#select-all,.row-select-checkbox').prop('checked', false);
+        $('#bulk-action-selector').val('bulk');
+        $('#status-tabs a').removeClass('active');
+        $('#searchProject,#filterableStatusDropdown,#filterablePriorityDropdown,#filterableDaterange').val(null).trigger('change');
+        $('#filter_price_from').val(0);
+        $('#filter_price_to,.range-max').val($('#filter_price_to').attr('max'));
+        table.draw();
+    });
+
+    function convertNumberFormat(number, format = 'EU') {
+        let numString = number.toString();
+
+        if (format === 'EU') {
+            numString = numString.replace(/,/g, '.').replace(/\./g, ',');
+        } else if (format === 'US') {
+            numString = numString.replace(/,/g, '').replace(/\./g, ',').replace(/,/g, '.');
+        }
+
+        return numString;
+    }
 
 });

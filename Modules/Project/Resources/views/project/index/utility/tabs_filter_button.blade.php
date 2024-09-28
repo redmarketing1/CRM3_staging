@@ -14,9 +14,4 @@
              </span>
          </a>
      @endforeach
-
-     <a class="nav-item nav-link project_status_link" data-status-name="archivedprojects" data-toggle="tab"
-         href="javascript:void" role="tab" aria-selected="false">
-         {{ trans('Archived Projects') }}
-     </a>
  </div>

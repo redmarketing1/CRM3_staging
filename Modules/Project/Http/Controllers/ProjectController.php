@@ -73,11 +73,12 @@ class ProjectController extends Controller
         $estimationStatus = ProjectEstimation::$statues;
         $projectLabel     = Label::get_project_dropdowns();
 
-        $workspace_users = User::where('created_by', '=', creatorId())
-            ->emp()
-            ->where('workspace_id', getActiveWorkSpace())
-            ->get();
+        // $workspace_users = User::where('created_by', '=', creatorId())
+        //     ->emp()
+        //     ->where('workspace_id', getActiveWorkSpace())
+        //     ->get();
 
+        $workspace_users = genericGetContacts();
 
         Meta::prependTitle($project->name)->setTitle('Project Detail');
 
@@ -250,6 +251,20 @@ class ProjectController extends Controller
         ]);
 
         return response()->json(['success' => 'Items has been archive successfully.']);
+    }
+
+    /**
+     * Move to unarchive project by id
+     * @param mixed $ids
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    protected function unarchive($ids)
+    {
+        Project::whereIn('id', $ids)->update([
+            'is_archive' => 0,
+        ]);
+
+        return response()->json(['success' => 'Items has been unarchive successfully.']);
     }
 
     /**

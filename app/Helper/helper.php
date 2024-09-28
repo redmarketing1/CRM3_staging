@@ -418,7 +418,11 @@ if (! function_exists('getActiveWorkSpace')) {
                     static $WorkSpace = null;
                     if ($WorkSpace == null) {
                         $workspace = WorkSpace::where('created_by', $user->id)->first();
+<<<<<<< HEAD
                     }
+=======
+                    } 
+>>>>>>> 1476faec24a265092d548bb821800115fa794bdb
                     return $workspace->id ?? null;
                 }
             }
