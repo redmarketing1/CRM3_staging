@@ -341,7 +341,6 @@ class ProjectController extends Controller
         return response()->json(['success' => 'Projects have been duplicated successfully.']);
     }
 
-
     /**
      * Automatically duplicate all related data for a project.
      *
@@ -382,5 +381,26 @@ class ProjectController extends Controller
                 }
             }
         }
+    }
+
+    /**
+     * Change the project status by id
+     *
+     * @param string|int $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    protected function changeStatus($id)
+    {
+        if (! Auth::user()->isAbleTo('project setting')) {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+
+        $statusID = request('statusID');
+
+        Project::where('id', $id)->update([
+            'status' => $statusID,
+        ]);
+
+        return response()->json(['success' => 'Project status has change successfully.']);
     }
 }

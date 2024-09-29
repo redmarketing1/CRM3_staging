@@ -468,22 +468,6 @@
                 });
             });
 
-            $(document).on("click", ".status", function() {
-                var status = $(this).attr('data-id');
-                var url = $(this).attr('data-url');
-
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: {
-                        status: status,
-                        "_token": $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(data) {
-                        location.reload();
-                    }
-                });
-            });
 
             $(document).on("select2:clear", "#property", function(e) {
                 store_to_project_data('property_type', e);

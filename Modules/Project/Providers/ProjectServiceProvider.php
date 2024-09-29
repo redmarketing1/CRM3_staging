@@ -40,6 +40,10 @@ class ProjectServiceProvider extends ServiceProvider
             'project.index.daterangepicker.js',
             'project.index.js',
         ]);
+
+        $this->addAssets('project.show', [
+            'project.show.js',
+        ]);
     }
 
     /**
