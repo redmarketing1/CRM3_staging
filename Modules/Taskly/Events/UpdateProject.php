@@ -4,7 +4,7 @@ namespace Modules\Taskly\Events;
 
 use Illuminate\Queue\SerializesModels;
 
-class Updateproject
+class UpdateProject
 {
     use SerializesModels;
 
@@ -16,7 +16,7 @@ class Updateproject
     public $request;
     public $project;
 
-    public function __construct($request,$project)
+    public function __construct($request, $project)
     {
         $this->request = $request;
         $this->project = $project;

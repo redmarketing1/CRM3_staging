@@ -41,8 +41,8 @@
                  <!-- <div class="d-flex align-items-center "> -->
                  @permission('project edit')
                      <div class="btn btn-light d-flex align-items-between">
-                         <a href="javascript:void(0)" class="" data-size="lg"
-                             data-url="{{ route('projects.edit', [$project->id]) }}" data-ajax-popup="true"
+                         <a href="javascript:void(0)" class="" data-size="xl"
+                             data-url="{{ route('project.edit', [$project->id]) }}" data-ajax-popup="true"
                              data-toggle="tooltip" title="{{ __('Edit Project') }}">
                              <i class="ti ti-pencil"></i>
                          </a>

@@ -1103,7 +1103,7 @@ class ProjectController extends Controller
         }
 
         $project = $projectQuery->firstOrFail();
-  
+
         // Fetch tasks based on user type or role
         $taskQuery = Task::where('project_id', $project->id)
             ->orderBy('start_date');
