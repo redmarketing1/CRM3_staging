@@ -15,6 +15,7 @@ use Modules\Taskly\Entities\Stage;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
 use Illuminate\Support\Facades\Storage;
+use Modules\Taskly\Events\UpdateProject;
 use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\EstimateQuote;
 use Modules\Taskly\Entities\ProjectEstimation;
@@ -90,6 +91,29 @@ class ProjectController extends Controller
             'projectLabel',
             'workspace_users',
         ));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     * @param int $id
+     * @return Renderable
+     */
+    public function edit(Project $project)
+    {
+        if (! Auth::user()->isAbleTo('project edit')) {
+            return response()->json(['error' => __('Permission denied.')], 401);
+        }
+
+        $customFields = null;
+        if (module_is_active('CustomField')) {
+            $project->customField = \Modules\CustomField\Entities\CustomField::getData($project, 'taskly', 'projects');
+            $customFields         = \Modules\CustomField\Entities\CustomField::where('workspace_id', getActiveWorkSpace())
+                ->where('module', 'taskly')
+                ->where('sub_module', 'projects')
+                ->get();
+        }
+
+        return view('project::project.show.edit.index', compact('project', 'customFields'));
     }
 
     private function getFirstSeventhWeekDay($week)
@@ -224,6 +248,32 @@ class ProjectController extends Controller
     public function update(Request $request)
     {
         return self::{$request->type}($request->ids);
+    }
+
+    /**
+     * Update project data by id
+     * @param mixed $ids
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    protected function updateAll($ids)
+    {
+        if (! Auth::user()->isAbleTo('project edit')) {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+
+        $id = request()->route('project');
+
+        $project = Project::findOrFail($id);
+
+        $project->update(request()->all());
+
+        if (module_is_active('CustomField')) {
+            \Modules\CustomField\Entities\CustomField::saveData($project, $request->customField ?? []);
+        }
+
+        event(new UpdateProject(request(), $project));
+
+        return redirect()->back()->with('success', __('Project updated successfully!'));
     }
 
     /**

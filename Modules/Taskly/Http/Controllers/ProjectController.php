@@ -95,14 +95,14 @@ class ProjectController extends Controller
             } else {
                 $projects = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->projectonly()->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', getActiveWorkSpace());
             }
-            
+
             if ($request->start_date) {
                 $projects->where('start_date', $request->start_date);
             }
             if ($request->end_date) {
                 $projects->where('end_date', $request->end_date);
             }
-            
+
             $projects = $projects->get();
 
             foreach ($projects as $project) {
@@ -139,7 +139,7 @@ class ProjectController extends Controller
 
     public function all_data(Request $request)
     {
-        
+
         $search          = $request->search;
         $start           = intval($request->start);
         $length          = intval($request->length);
@@ -172,7 +172,7 @@ class ProjectController extends Controller
         $filters_request['take']  = $length;
 
         $project_record = Project::get_all($filters_request);
-        
+
         $filter_count = isset($project_record['filter_count']) ? $project_record['filter_count'] : 0;
         $total_count  = isset($project_record['total_count']) ? $project_record['total_count'] : 0;
         $record       = isset($project_record['records']) ? $project_record['records'] : array();
@@ -1083,46 +1083,54 @@ class ProjectController extends Controller
 
     public function gantt($projectID, $duration = 'Week')
     {
-        if (\Auth::user()->isAbleTo('sub-task manage')) {
-            $objUser          = Auth::user();
-            $currentWorkspace = getActiveWorkSpace();
-            $is_client        = '';
-
-            if ($objUser->hasRole('client')) {
-                $project = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->where('projects.workspace', '=', $currentWorkspace)->where('projects.id', '=', $projectID)->first();
-
-                $is_client = 'client.';
-            } else {
-                $project = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', $currentWorkspace)->where('projects.id', '=', $projectID)->first();
-            }
-            $tasks = [];
-
-            if ($objUser->type == 'client' || $objUser->typ == 'compnay') {
-                $tasksobj = Task::where('project_id', '=', $project->id)->orderBy('start_date')->get();
-            } else {
-                $tasksobj = Task::where('project_id', '=', $project->id)->where('assign_to', '=', $objUser->id)->orderBy('start_date')->get();
-            }
-            foreach ($tasksobj as $task) {
-                $tmp                 = [];
-                $tmp['id']           = 'task_' . $task->id;
-                $tmp['name']         = $task->title;
-                $tmp['start']        = $task->start_date;
-                $tmp['end']          = $task->due_date;
-                $tmp['custom_class'] = strtolower($task->priority);
-                $tmp['progress']     = $task->subTaskPercentage();
-                $tmp['extra']        = [
-                    'priority' => __($task->priority),
-                    'comments' => count($task->comments),
-                    'duration' => Date::parse($task->start_date)->format('d M Y H:i A') . ' - ' . Date::parse($task->due_date)->format('d M Y H:i A'),
-                ];
-                $tasks[]             = $tmp;
-            }
-
-            return view('taskly::projects.gantt', compact('currentWorkspace', 'project', 'tasks', 'duration', 'is_client'));
-        } else {
+        if (! \Auth::user()->isAbleTo('sub-task manage')) {
             return redirect()->back()->with('error', __('Permission Denied.'));
         }
+
+        $objUser          = Auth::user();
+        $currentWorkspace = getActiveWorkSpace();
+        $isClient         = $objUser->hasRole('client') ? 'client.' : '';
+
+        // Fetch the project based on the user role and workspace
+        $projectQuery = Project::select('projects.*')
+            ->join('user_projects', 'projects.id', '=', 'user_projects.project_id')
+            ->where('projects.workspace', '=', $currentWorkspace)
+            ->where('projects.id', '=', $projectID);
+
+
+        if (! $objUser->hasRole('client')) {
+            $projectQuery->where('user_projects.user_id', '=', $objUser->id);
+        }
+
+        $project = $projectQuery->firstOrFail();
+
+        // Fetch tasks based on user type or role
+        $taskQuery = Task::where('project_id', $project->id)
+            ->orderBy('start_date');
+
+        if (! in_array($objUser->type, ['client', 'company'])) {
+            $taskQuery->where('assign_to', '=', $objUser->id);
+        }
+
+        $tasks = $taskQuery->get()->map(function ($task) {
+            return [
+                'id'           => 'task_' . $task->id,
+                'name'         => $task->title,
+                'start'        => $task->start_date,
+                'end'          => $task->due_date,
+                'custom_class' => strtolower($task->priority),
+                'progress'     => $task->subTaskPercentage(),
+                'extra'        => [
+                    'priority' => __($task->priority),
+                    'comments' => $task->comments->count(),
+                    'duration' => Date::parse($task->start_date)->format('d M Y H:i A') . ' - ' . Date::parse($task->due_date)->format('d M Y H:i A'),
+                ],
+            ];
+        })->toArray();
+
+        return view('taskly::projects.gantt', compact('currentWorkspace', 'project', 'tasks', 'duration', 'isClient'));
     }
+
 
 
     public function ganttPost($projectID, Request $request)
@@ -3042,7 +3050,7 @@ class ProjectController extends Controller
             } else {
                 $projects = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->projectonly()->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', getActiveWorkSpace());
             }
-           
+
             if ($request->start_date) {
                 $projects->where('start_date', $request->start_date);
             }
