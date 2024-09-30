@@ -16,7 +16,7 @@
                 @include('project::project.show.section.estimations')
 
                 @include('project::project.show.section.project_progress')
-                {{-- @include('project::project.show.section.project_delay') --}}
+                @include('project::project.show.section.delay')
 
                 @include('project::project.show.section.milestone')
             </div>
