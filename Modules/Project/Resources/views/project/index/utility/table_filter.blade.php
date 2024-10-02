@@ -24,7 +24,7 @@
             </option>
         </select>
     </th>
-    <th class="filterable-search" data-orderable="false" colspan="2">
+    <th data-orderable="false" colspan="2" class="filterable-search">
         <div class="search-table">
             <input type="search" class="form-control text-xl" placeholder="{{ trans('Search') }}" name="searchProject"
                 id="searchProject" />
@@ -61,11 +61,10 @@
             </div>
             <div class="range-input price_range_input">
                 <input type="range" class="range-min" id="filter_price_from" min="0" value="0"
-                    step="10">
-                <input type="range" class="range-max" id="filter_price_to" min="0" step="10">
+                    step="1">
+                <input type="range" class="range-max" id="filter_price_to" min="0" step="1">
             </div>
         </div>
-
     </th>
     <th data-orderable="false" class="filterable-daterange-table">
         <input type='text' class="form-control daterange form_filter_field" placeholder="{{ trans('Date') }}"
