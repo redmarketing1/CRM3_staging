@@ -99,21 +99,6 @@ $(document).ready(function () {
                 });
             }
 
-            let maxBudget = 0;
-            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                let data = this.data();
-                let projectBudget = parseFloat(data.budget);
-                if (projectBudget > maxBudget) {
-                    maxBudget = projectBudget;
-                }
-            });
-
-            maxBudget = convertNumberFormat(maxBudget);
-
-            $('#filter_price_from,#filter_price_to').attr('max', maxBudget);
-            $('#filter_price_to,.range-max').val(maxBudget);
-
-
             $('#projectsTable tr:first-child.hide').fadeIn();
 
             $('.daterange').daterangepicker({
@@ -165,6 +150,22 @@ $(document).ready(function () {
             $('.projects-filters .select2').select2({
                 minimumResultsForSearch: Infinity
             });
+
+
+            let maxBudget = 0;
+            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                let data = this.data();
+                let projectBudget = parseFloat(data.budget);
+                if (projectBudget > maxBudget) {
+                    maxBudget = projectBudget;
+                }
+            });
+
+            // maxBudget = convertNumberFormat(maxBudget);
+            maxBudget = Math.round(maxBudget);
+
+            $('#filter_price_from,#filter_price_to').attr('max', maxBudget);
+            $('#filter_price_to,.range-max').val(maxBudget);
         }
     });
 
@@ -205,7 +206,11 @@ $(document).ready(function () {
         table.draw();
     });
 
-    $(document).on('input', '#searchProject, #filter_price_from, #filter_price_to', function (e) {
+    $(document).on('input', '#searchProject', function (e) {
+        table.draw();
+    });
+
+    $(document).on('mouseup', '#filter_price_from, #filter_price_to', function (e) {
         table.draw();
     });
 
@@ -278,7 +283,7 @@ $(document).ready(function () {
 
         // Other Filters (Status, Priority, Project Name)  
         if (
-            (!selectedStatus || projectStatus === selectedStatus) &&
+            (!selectedStatus || projectStatus.includes(selectedStatus)) &&
             (!selectedDropdownStatus.length || selectedDropdownStatus.includes(projectStatus)) &&
             (!selectedDropdownPriority.length || selectedDropdownPriority.some(priority => priority === projectPriority)) &&
             (searchProject === '' || projectName.indexOf(searchProject) !== -1 || projectComment.indexOf(searchProject) !== -1)

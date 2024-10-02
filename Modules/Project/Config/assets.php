@@ -14,6 +14,7 @@ return [
         'project.index.moment.js'           => ['Cdn' => 'https://cdn.jsdelivr.net/momentjs/latest/moment.min.js'],
         'project.index.daterangepicker.js'  => ['Cdn' => 'https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js'],
         'project.index.js'                  => ['public' => 'assets/js/project.index.js'],
+        'project.show.js'                   => ['public' => 'assets/js/project.show.js'],
     ],
 
     /* 

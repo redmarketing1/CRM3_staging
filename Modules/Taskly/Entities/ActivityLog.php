@@ -5,7 +5,7 @@ namespace Modules\Taskly\Entities;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Taskly\Entities\ProjectClientFeedback;
-  
+
 class ActivityLog extends Model
 {
     protected $fillable = [
@@ -19,7 +19,7 @@ class ActivityLog extends Model
         $remark = json_decode($this->remark, true);
         if (is_array($remark)) {
             if ($this->user_name != null) {
-                $user = $this->user;
+                $user            = $this->user;
                 $this->user_name = $user ? $user->name : '';
             }
 
@@ -57,10 +57,11 @@ class ActivityLog extends Model
     protected function comment($commentID)
     {
         $projectComment = ProjectComment::with('commentUser')->find($commentID);
-        $name = e($projectComment->commentUser->name);
+        $name           = e($projectComment->commentUser->name);
 
         // Don't escape comment content if you want HTML to render
-        $html = '<p>Comment was created by <b class="d-inline text-secondary text-sm">' . $name . '</b></p>';
+        $html = '';
+        // $html = '<p>Comment was created by <b class="d-inline text-secondary text-sm">' . $name . '</b></p>';
         $html .= $projectComment->comment;  // Allow HTML content
 
         if ($projectComment->file) {
@@ -76,31 +77,32 @@ class ActivityLog extends Model
     protected function feedback($feedbackID)
     {
         $projectClientFeedback = ProjectClientFeedback::with('feedbackUser')->find($feedbackID);
-        $name = e($projectClientFeedback->feedbackUser->name);
+        $name                  = e($projectClientFeedback->feedbackUser->name);
 
+        $html = '';
         // Don't escape feedback content if you want HTML to render
-        $html = '<p>Feedback was created by <b class="d-inline text-secondary text-sm">' . $name . '</b></p>';
+        // $html = '<p>Feedback was created by <b class="d-inline text-secondary text-sm">' . $name . '</b></p>';
         $html .= $projectClientFeedback->feedback;  // Allow HTML content
 
         if ($projectClientFeedback->file) {
             $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-            $fileExtension = pathinfo($projectClientFeedback->file, PATHINFO_EXTENSION);
-            
+            $fileExtension   = pathinfo($projectClientFeedback->file, PATHINFO_EXTENSION);
+
             if (in_array(strtolower($fileExtension), $imageExtensions)) {
-                $image = get_file('uploads/projects/'.$projectClientFeedback->file);
+                $image = get_file('uploads/projects/' . $projectClientFeedback->file);
                 $html .= '<a class="lightbox-link" href="' . $image . '" data-lightbox="gallery" data-title="Image placeholder">
                             <img alt="Image placeholder" src="' . $image . '" class="img-thumbnail my-3" 
                                 style="display: block;max-width: 200px;max-height: 140px;">
                         </a>';
-            }else{
-                $file = get_file('uploads/projects/'.$projectClientFeedback->file);
+            } else {
+                $file = get_file('uploads/projects/' . $projectClientFeedback->file);
                 $html .= '<a href="' . $file . '" class="" 
                     data-bs-toggle="tooltip" title="' . __('Download') . '">
-                    '.$file.'
+                    ' . $file . '
                     </a>';
             }
 
-           
+
         }
 
         return $html;

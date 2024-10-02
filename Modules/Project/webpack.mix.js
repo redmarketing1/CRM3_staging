@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
-
-mix.js(`${__dirname}/Resources/assets/js/project.index.js`, `/assets/js/project.index.js`)
-    .sass(`${__dirname}/Resources/assets/css/project.index.scss`, `/assets/css/project.index.css`);
+mix
+    .js(`${__dirname}/Resources/assets/js/project.index.js`, 'public/assets/js/project.index.js')
+    .js(`${__dirname}/Resources/assets/js/project.show.js`, 'public/assets/js/project.show.js')
+    .sass(`${__dirname}/Resources/assets/css/project.index.scss`, 'public/assets/css/project.index.css');

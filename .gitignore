@@ -12,3 +12,5 @@ node_modules/*
 public/uploads 
 public/uploads/*
 public/css/common.css
+public/delays/*
+public/comments/*

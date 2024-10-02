@@ -22,11 +22,11 @@ use Modules\Taskly\Http\Controllers\ProjectReportController;
 use Modules\Taskly\Http\Controllers\ProjectProgressController;
 use Modules\Taskly\Http\Controllers\ProjectEstimationController;
 
-Route::get('/asadc', function(){
+Route::get('/asadc', function () {
     $projectsc = Project::whereNotNull('client_final_quote_id')->get();
-    foreach ($projectsc as $c){
-        $id = $c->client_final_quote_id;
-        $e = EstimateQuote::where('id',$id)->first();
+    foreach ($projectsc as $c) {
+        $id                  = $c->client_final_quote_id;
+        $e                   = EstimateQuote::where('id', $id)->first();
         $e->final_for_client = 1;
         $e->save();
     }
@@ -34,12 +34,12 @@ Route::get('/asadc', function(){
     return 'success';
 });
 
-Route::get('/asadp', function(){
+Route::get('/asadp', function () {
     $projectsc = Project::whereNotNull('sub_contractor_final_quote_id')->get();
-   
-    foreach ($projectsc as $c){
-        $id = $c->sub_contractor_final_quote_id;
-        $e = EstimateQuote::where('id',$id)->first();
+
+    foreach ($projectsc as $c) {
+        $id                          = $c->sub_contractor_final_quote_id;
+        $e                           = EstimateQuote::where('id', $id)->first();
         $e->final_for_sub_contractor = 1;
         $e->save();
     }
@@ -47,10 +47,10 @@ Route::get('/asadp', function(){
     return 'success';
 });
 
-Route::get('/asadfeed', function(){
+Route::get('/asadfeed', function () {
     $feedbacks = ProjectClientFeedback::whereNotNull('project_id')->get();
-   
-    foreach ($feedbacks as $c){
+
+    foreach ($feedbacks as $c) {
 
         // ActivityLog::updateOrCreate([
         //     'user_id'    => creatorId(),
@@ -62,22 +62,22 @@ Route::get('/asadfeed', function(){
         //     'updated_at' => $c->updated_at,
         // ]);
 
-        if(!empty($c->file)){
-            $feed = ProjectClientFeedback::find($c->id);
-            $path = 'uploads/projects/'.$c->file;
+        if (! empty($c->file)) {
+            $feed       = ProjectClientFeedback::find($c->id);
+            $path       = 'uploads/projects/' . $c->file;
             $feed->file = $path;
             $feed->save();
-            
+
         }
     }
 
     return 'success';
 });
 
-Route::get('/asadcment', function(){
+Route::get('/asadcment', function () {
     $comments = ProjectComment::whereNotNull('project_id')->get();
-   
-    foreach ($comments as $c){
+
+    foreach ($comments as $c) {
 
         ActivityLog::create([
             'user_id'    => creatorId(),
@@ -108,8 +108,9 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::post('project/all-data', [ProjectController::class, 'all_data'])->name('project.all_data');
     Route::get('projects-grid', [ProjectController::class, 'grid'])->name('projects.grid')->middleware(['auth']);
     Route::get('projects-map', [ProjectController::class, 'project_map'])->name('projects.map')->middleware(['auth']);
+
     Route::post('project/{id}/status_data', [ProjectController::class, 'status_data'])->name('project.add.status_data');
-    Route::post('project/{project}/status', [ProjectController::class, 'changeStatus'])->name('project.status');
+    //Route::post('project/{project}/status', [ProjectController::class, 'changeStatus'])->name('project.status');
     Route::post('project/custom-status', [ProjectController::class, 'changeCustomStatus'])->name('project.custom-status');
 
 

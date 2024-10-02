@@ -1,10 +1,9 @@
 @permission('project setting')
     @if (!empty($projectLabel['project_status']))
         <div class="col-sm-auto">
-
-            <button class="btn btn-xs btn-primary text-white btn-icon-only width-auto dropdown-toggle" type="button"
-                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ $project->status_data->name ?? 'Select Status' }}
+            <button class="btn btn-xs btn-primary project-statusName text-white btn-icon-only width-auto dropdown-toggle"
+                type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ $project->statusData->name ?? 'Select Status' }}
             </button>
 
             <div class="dropdown-menu">
@@ -18,8 +17,8 @@
                             {{ $status->name }}
                         </a>
                     @else
-                        <a href="javascript:void(0)" class="dropdown-item status" data-id="{{ $status->id }}"
-                            data-url="{{ route('project.status', $project->id) }}">
+                        <a href="javascript:void(0)" class="dropdown-item status" data-status="{{ $status->id }}"
+                            data-id="{{ $project->id }}">
                             {{ $status->name }}
                         </a>
                     @endif

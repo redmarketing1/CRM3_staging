@@ -10,7 +10,7 @@
                                 <a href="javascript:;" class="btn btn-sm btn-primary" data-ajax-popup="true"
                                     data-title="{{ __('Add Project Delay Announcement') }}"
                                     title="{{ __('Add Project Delay Announcement') }}" data-toggle="tooltip"
-                                    data-size="lg" data-url="{{ route('project.addProjectDelay', $project->id) }}">
+                                    data-size="lg" data-url="{{ route('project.delay.index', $project->id) }}">
                                     <i class="ti ti-plus"></i>
                                 </a>
                             </p>
