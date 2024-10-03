@@ -47,14 +47,14 @@ class ProjectsTable extends Tables
             ->setRowId(function ($entity) {
                 return $entity->id;
             })
-            ->setRowAttr([
-                'data-id' => function ($entity) {
-                    return $entity->id;
-                },
-                'style'   => function ($entity) {
-                    return $this->style($entity);
-                },
-            ])
+            // ->setRowAttr([
+            //     'data-id' => function ($entity) {
+            //         return $entity->id;
+            //     },
+            //     'style'   => function ($entity) {
+            //         return $this->style($entity);
+            //     },
+            // ])
         ;
     }
 

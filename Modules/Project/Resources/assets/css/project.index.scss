@@ -302,3 +302,8 @@ div#status-tabs {
         }
     }
 }
+
+table.dataTable>tbody>tr>th,
+table.dataTable>tbody>tr>td {
+    text-wrap: nowrap;
+}

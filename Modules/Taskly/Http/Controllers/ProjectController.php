@@ -672,12 +672,12 @@ class ProjectController extends Controller
                 event(new DestroyProject($project));
                 $project->delete();
 
-                return redirect()->back()->with('success', __('Project Deleted Successfully!'));
+                return redirect()->route('project.index')->with('success', __('Project Deleted Successfully!'));
             } else {
                 return redirect()->back()->with('error', __('There are some Task and Bug on Project, please remove it first!'));
             }
         } else {
-            return redirect()->route('projects.index')->with('error', __("You can't Delete Project!"));
+            return redirect()->route('project.index')->with('error', __("You can't Delete Project!"));
         }
     }
     public function milestone($projectID)
