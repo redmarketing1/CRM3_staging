@@ -78,6 +78,7 @@ class ProjectsTable extends Tables
                 return view('project::project.index.partials.table.priority', compact('project'));
             })
             ->editColumn('budget', function ($project) {
+                // return 0;
                 return currency_format_with_sym($project->budget);
             })
             ->editColumn('created_at', function ($project) {

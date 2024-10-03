@@ -22,6 +22,9 @@
             </div>
         </div>
     </div>
+    @php
+        $canManageTeamMember = Auth::user()->isAbleTo('team member manage');
+    @endphp
 @endsection
 
 @push('scripts')
@@ -29,7 +32,7 @@
         var active_estimation_id = '{{ isset($active_estimation->id) ? $active_estimation->id : 0 }}';
         let moneyFormat = '{{ site_money_format() }}';
         var project_id = '{{ \Crypt::encrypt($project->id) }}';
-
+        
         $(document).ready(function() {
 
             /** call ajaxComplete after open data-popup **/
@@ -504,11 +507,12 @@
                     return data.text;
                 }
             });
-
+           
             //Team member select2
             $('.member_select2').select2({
                 placeholder: "Nutzer wählen",
                 tags: true,
+                disabled:{{ $canManageTeamMember ? 'false' : 'true' }},
                 allowHtml: true,
                 templateResult: formatState,
                 templateSelection: function(data, container) {

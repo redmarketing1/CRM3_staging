@@ -48,6 +48,7 @@ class RoleController extends Controller
                 }
                 $permissions = $permissions->pluck('name', 'id')->toArray();
             }
+           
             $modules = array_merge(['General','ProductService'],getshowModuleList());
             return view('role.create', compact('permissions','modules'));
         }

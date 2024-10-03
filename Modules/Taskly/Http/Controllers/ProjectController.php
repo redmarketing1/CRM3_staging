@@ -897,6 +897,12 @@ class ProjectController extends Controller
     // Add Update Project Team Member
     public function addProjectTeamMember(Request $request, $id)
     {
+        if(!Auth::user()->isAbleTo('team member manage')){
+            return response()->json([
+                'is_success' => false,
+                'message'    => __('Permission Denied.'),
+            ]);
+        }
         // Check if users were selected
         if (isset($request->users) && ! empty($request->users)) {
             // Use sync() to update the relationship, which will automatically add/remove members
@@ -2730,7 +2736,6 @@ class ProjectController extends Controller
 
     public function update_details(Request $request, $project_id, $form_field = "")
     {
-
         $request['country'] = (isset($request->country) && ! empty($request->country)) ? $request->country : null;
 
         if (Auth::user()->type == 'company') {

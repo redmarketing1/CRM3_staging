@@ -53,22 +53,29 @@ class Project extends Model
      */
     public function table($request)
     {
+       
         $user = Auth::user();
 
-        $query = ($user->type == 'company') ?
-
-            self::whereCreatedBy($user->id)
-                ->with(['statusData', 'priorityData', 'constructionData', 'constructionDetail', 'property', 'thumbnail', 'comments'])
-
-            : self::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
-                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
+        if ($user->type == 'company') {
+            $projects = Project::where('projects.created_by', '=', $user->id)
+                ->with(['statusData', 'priorityData', 'constructionData', 'constructionDetail', 'property', 'thumbnail', 'comments']);
+        } else {
+            $projects = Project::leftJoin('client_projects', 'client_projects.project_id', '=', 'projects.id')
+                ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', '=', 'projects.id')
+                ->leftJoin('user_projects', 'user_projects.project_id', '=', 'projects.id')
                 ->where(function ($query) use ($user) {
                     $query->where('client_projects.client_id', $user->id)
+                        ->orWhere('user_projects.user_id', $user->id)
                         ->orWhere('estimate_quotes.user_id', $user->id);
-                })
-                ->with(['statusData', 'priorityData', 'constructionData', 'constructionDetail', 'property', 'thumbnail', 'comments']);
-
-        return new ProjectsTable($query);
+                });
+            
+            $projects->select('projects.*')  
+                     ->groupBy('projects.id'); 
+        }
+        
+        $projects->with(['statusData', 'priorityData', 'constructionData', 'constructionDetail', 'property', 'thumbnail', 'comments']);
+        
+        return new ProjectsTable($projects);
     }
 
     public function delays()

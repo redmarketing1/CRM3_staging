@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Project\Http\Controllers\ProjectController;
+use Modules\Project\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,3 +13,8 @@ use Modules\Project\Http\Controllers\ProjectController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+Route::get('add_team_permissions', [TestController::class, 'AddTeamTeamPermissions']);
+
+Route::get('add_client_permissions', [TestController::class, 'AddClientermissions']);

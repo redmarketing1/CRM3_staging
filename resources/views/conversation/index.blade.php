@@ -53,6 +53,10 @@
 					{{-- <a href="javascript:void(0)" data-ajax-popup="true" data-toggle="tooltip" data-size="md" data-url="{{ route('projects.edit_form', [$project->id, 'project_status']) }}" data-bs-toggle="modal" data-bs-target="#exampleModal"  data-bs-whatever="{{ __('Select Final Estimation') }}"
 						data-title="{{ __('Select Final Estimation') }}" class="dropdown-item" data-bs-toggle="tooltip" >{{ $status->name }}</a>
 						 --}}
+					@php
+						$ai_notification_templates = ai_notification_templates();
+						$ai_models = ai_models();
+					@endphp
                     @if(isset($ai_notification_templates) && count($ai_notification_templates) > 0)
 						<select name="" class="form-control" id="smart_template_id">
 							<option value="">{{ __('Select Prompt') }}</option>

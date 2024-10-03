@@ -9,6 +9,7 @@
 </head>
 
 <body class="{{ $bodyClasses }}" data-theme-color="{{ $themeColorCode }}" style="{{ $style }}">
+ 
     <div class="loader-bg">
         <div class="loader-track">
             <div class="loader-fill">
