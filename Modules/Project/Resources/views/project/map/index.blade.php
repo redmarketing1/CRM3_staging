@@ -4,20 +4,8 @@
     <div class="row">
         <div class="col-xl-12 mb-3 map-wrapper">
             <div class="card map-card no-padding">
-                <div class="card-header map_filter p-3 text-end">
-                    <div class="form-group">
-                        <input type="checkbox" class="form-check-input map_address_type" id="construction_address"
-                            value="construction" checked />
-                        <label class="form-check-label f-w-600 pt-1 ms-1" for="construction_address">
-                            Construction Address
-                        </label>
-                        <input type="checkbox" class="form-check-input map_address_type" id="invoice_address"
-                            value="invoice" />
-                        <label class="form-check-label f-w-600 pt-1 ms-1" for="invoice_address">Invoice Address</label>
-                    </div>
-                </div>
                 <div class="card-body text-center">
-                    <div id="map"></div>
+                    <div id="map" data="{{ json_encode($locations, JSON_UNESCAPED_UNICODE) }}"></div>
                 </div>
             </div>
         </div>
@@ -28,103 +16,123 @@
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbTqlUNbqPssvetzvRl4n65HB2g_-o9tE&callback=initMap&libraries=places&v=weekly"
         defer></script>
 
-    <script type="application/javascript">
-		let map;
-		let autocomplete;
-		const mapMarkers = [];
+    <script>
+        class MapHandler {
+            constructor(mapElementId, initialLatLng = {
+                lat: 51.1657,
+                lng: 10.4515
+            }, zoom = 5) {
+                this.mapElementId = mapElementId;
+                this.mapElement = document.getElementById(mapElementId);
+                this.markerLocations = this.getMarkerLocationsFromElement();
+                this.initialLatLng = initialLatLng;
+                this.zoom = zoom;
+                this.map = null;
+                this.mapMarkers = [];
+                this.initMap();
+            }
 
-		// Create an array of marker locations (latitude and longitude)
-		var markerLocations = [];
+            getMarkerLocationsFromElement() {
+                try {
+                    const dataAttribute = this.mapElement.getAttribute('data');
+                    return dataAttribute ? JSON.parse(dataAttribute) : [];
+                } catch (error) {
+                    console.error("Failed to parse marker locations from the data attribute.", error);
+                    return [];
+                }
+            }
 
-		markerLocations = {!! json_encode($locations) !!};
+            initMap() {
+                this.map = new google.maps.Map(this.mapElement, {
+                    center: this.initialLatLng,
+                    zoom: this.zoom,
+                    mapTypeId: 'terrain'
+                });
 
-		$(document).ready(function () {
-			$(document).on('change', '.map_address_type', function() {
-				initMap();
-			});
-		});
+                this.addMarkersToMap();
+            }
 
-		function initMap() {
-			// Initialize the map
-			const myLatLng = { lat: 51.1657, lng: 10.4515 };
-			map = new google.maps.Map(document.getElementById('map'), {
-				center: myLatLng,
-				zoom: 4
-			});
-			const bounds = new google.maps.LatLngBounds();
+            addMarkersToMap() {
+                const bounds = new google.maps.LatLngBounds();
 
-			for (var i = 0; i < markerLocations.length; i++) {
-				$('.map_address_type').each(function() {
-					if ($(this).is(":checked")) {
-						if (markerLocations[i]['address_type'] == $(this).val()) {
-							var value_position = setMarkerLocations(markerLocations[i]);
-							bounds.extend(value_position);
-						}
-					}
-				});
-			}
-			map.fitBounds(bounds);
+                this.markerLocations.forEach(location => {
+                    const markerPosition = this.setMarker(location);
+                    bounds.extend(markerPosition);
+                });
 
-			setTimeout(function() {
-				showHideLoader('hidden');
-			}, 600);
-		}
+                this.map.fitBounds(bounds);
+            }
 
-		function setMarkerLocations(location){
-			var contentString = '';
-			contentString = '<div id="content">' + '<div id="siteNotice">' + "</div>" + '<h5><b>'+ location.project_name +'</b></h5>' + '<h6 id="firstHeading" class="firstHeading">'+location.title+'</h6>' + '<div id="bodyContent">' + '<p>'+ location.content +'</p>' + "</div>" + "</div>";
-			const infowindow = new google.maps.InfoWindow({
-				content: contentString,
-			});
-			randomPoint = new google.maps.LatLng(location.lat, location.lng);
-			const marker = new google.maps.Marker({
-				position: randomPoint,
-				icon: pinSymbol(location.color),
-				html : infowindow,
-				labelVisible: true,
-				map: map
-			});
-			var isInfoWindowOpenByClick = false;
+            // Set a single marker on the map
+            setMarker(location) {
 
-			marker.addListener('mouseover', function(event) {
-				if (!isInfoWindowOpenByClick) { 
-					infowindow.setContent(this.html);
-					infowindow.setPosition(event.latLng);
-					infowindow.open(map, this);
-				}
-			});
+                const infowindow = new google.maps.InfoWindow({
+                    content: location.content
+                });
 
-			marker.addListener('mouseout', function() {
-				if (!isInfoWindowOpenByClick) { 
-					infowindow.close();
-				}
-			});
+                const marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(location.lat, location.lng),
+                    map: this.map,
+                    icon: this.pinSymbol(location.color),
+                    html: infowindow,
+                    animation: google.maps.Animation.DROP
+                });
 
-			marker.addListener('click', function(event) {
-				if (isInfoWindowOpenByClick) {
-					infowindow.close();
-					isInfoWindowOpenByClick = false;
-				} else {
-					infowindow.setContent(this.html);
-					infowindow.setPosition(event.latLng);
-					infowindow.open(map, this);
-					isInfoWindowOpenByClick = true;
-				}
-			});
-			mapMarkers.push(marker);
-			return marker.getPosition();
-		}
+                this.setupMarkerEvents(marker, infowindow);
 
-		function pinSymbol(color) {
-			return {
-				path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
-				// path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z', // 'M -2,0 0,-2 2,0 0,2 z',
-				strokeColor: '#000',
-				strokeWeight: 1,
-				fillColor: color,
-				fillOpacity: 1,
-				scale: 1
-			};
-		}
-	</script>
+                this.mapMarkers.push(marker);
+                return marker.getPosition();
+            }
+
+            // Setup mouseover, mouseout, and click events for markers
+            setupMarkerEvents(marker, infowindow) {
+                let isInfoWindowOpenByClick = false;
+
+                marker.addListener('mouseover', function(event) {
+                    if (!isInfoWindowOpenByClick) {
+                        infowindow.setContent(this.html);
+                        infowindow.setPosition(event.latLng);
+                        infowindow.open(this.map, this);
+                    }
+                });
+
+                marker.addListener('mouseout', function() {
+                    if (!isInfoWindowOpenByClick) {
+                        infowindow.close();
+                    }
+                });
+
+                marker.addListener('click', function(event) {
+                    if (isInfoWindowOpenByClick) {
+                        infowindow.close();
+                        isInfoWindowOpenByClick = false;
+                    } else {
+                        infowindow.setContent(this.html);
+                        infowindow.setPosition(event.latLng);
+                        infowindow.open(this.map, this);
+                        isInfoWindowOpenByClick = true;
+                    }
+                });
+            }
+
+            pinSymbol(color) {
+                return {
+                    path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
+                    strokeColor: '#000',
+                    strokeWeight: 1,
+                    fillColor: color,
+                    fillOpacity: 1,
+                    scale: 1
+                };
+            }
+        }
+
+        function initMap() {
+            const mapHandler = new MapHandler('map');
+
+            $(document).on('change', '.map_address_type', function() {
+                mapHandler.initMap();
+            });
+        }
+    </script>
 @endpush

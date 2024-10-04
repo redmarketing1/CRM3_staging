@@ -1,4 +1,9 @@
 <div class="construction-detail">
+
+    <div class="bold mb-4 text-left text-xl">
+        <b>{{ $name }}</b>
+    </div>
+
     {{-- Group 1: Company and Name --}}
     @if (!empty($detail->company_name) || !empty($detail->first_name) || !empty($detail->last_name))
         <div class="group separator">

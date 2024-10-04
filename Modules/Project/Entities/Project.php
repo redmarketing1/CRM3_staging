@@ -53,20 +53,12 @@ class Project extends Model
      */
     public function table($request)
     {
-        $user = Auth::user();
+        $user        = Auth::user();
+        $workspaceID = getActiveWorkSpace();
 
         $query = ($user->type == 'company') ?
-
-            self::whereCreatedBy($user->id)
-                ->with(['statusData', 'priorityData', 'constructionData', 'constructionDetail', 'property', 'thumbnail', 'comments'])
-
-            : self::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')
-                ->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
-                ->where(function ($query) use ($user) {
-                    $query->where('client_projects.client_id', $user->id)
-                        ->orWhere('estimate_quotes.user_id', $user->id);
-                })
-                ->with(['statusData', 'priorityData', 'constructionData', 'constructionDetail', 'property', 'thumbnail', 'comments']);
+            self::ForCompany($user->id) :
+            self::ForClient($user->id, $workspaceID);
 
         return new ProjectsTable($query);
     }

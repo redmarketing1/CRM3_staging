@@ -38,16 +38,13 @@ class ProjectMapController extends Controller
             )
             ->map(function ($project) {
                 return [
-                    'id'           => $project->constructionDetail->id,
-                    'lat'          => floatval($project->constructionDetail->lat),
-                    'lng'          => floatval($project->constructionDetail->long),
-                    'name'         => $project->name,
-                    'address_type' => 'construction',
-                    'map_icon'     => 'C',
-                    'title'        => '',
-                    'color'        => $project->statusData->background_color ?? '#EEEEEE',
-                    'url'          => route('projects.show', $project->id),
-                    'content'      => view('project::project.map.construction-content', ['detail' => $project->constructionDetail])->render(),
+                    'id'      => $project->constructionDetail->id,
+                    'lat'     => floatval($project->constructionDetail->lat),
+                    'lng'     => floatval($project->constructionDetail->long),
+                    'name'    => $project->name,
+                    'color'   => $project->statusData->background_color ?? '#EEEEEE',
+                    'url'     => route('projects.show', $project->id),
+                    'content' => view('project::project.map.construction-content', ['detail' => $project->constructionDetail, 'name' => $project->name])->render(),
                 ];
             })
             ->unique('id')
