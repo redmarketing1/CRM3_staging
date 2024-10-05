@@ -2,6 +2,7 @@
 
 namespace Modules\Project\Sidebar;
 
+use Illuminate\Support\Facades\Auth;
 use Modules\Taskly\Entities\Project;
 use Illuminate\Support\Facades\Cache;
 
@@ -100,9 +101,25 @@ class projectsTabs
      */
     protected function renderTabItems()
     {
-        $allProjects     = Project::with('status_data')->get();
+        $user = Auth::user();
+        if ($user->type == 'company') {
+            $allProjects = Project::with('status_data')->get();
+        } else {
+            $allProjects = Project::with('status_data')
+                ->leftJoin('client_projects', 'client_projects.project_id', 'projects.id')
+                ->leftJoin('user_projects', 'user_projects.project_id', 'projects.id')
+                ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
+                ->where(function ($query) use ($user) {
+                    $query->where('client_projects.client_id', $user->id)
+                        ->orWhere('user_projects.user_id', $user->id)
+                        ->orWhere('estimate_quotes.user_id', $user->id);
+                })
+                ->select('projects.*')
+                ->distinct()
+                ->get();
+        }
+        
         $groupedProjects = $allProjects->unique('status_data.name');
-
         $html = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
 
         return $html;
@@ -110,9 +127,25 @@ class projectsTabs
 
     protected function renderProjectList()
     {
-        $allProjects     = Project::with('status_data')->get();
+        $user = Auth::user();
+        if ($user->type == 'company') {
+            $allProjects = Project::with('status_data')->get();
+        } else {
+            $allProjects = Project::with('status_data')
+                ->leftJoin('client_projects', 'client_projects.project_id', 'projects.id')
+                ->leftJoin('user_projects', 'user_projects.project_id', 'projects.id')
+                ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
+                ->where(function ($query) use ($user) {
+                    $query->where('client_projects.client_id', $user->id)
+                        ->orWhere('user_projects.user_id', $user->id)
+                        ->orWhere('estimate_quotes.user_id', $user->id);
+                })
+                ->select('projects.*')
+                ->distinct()
+                ->get();
+        }
+        
         $groupedProjects = $allProjects->groupBy('status_data.name');
-
         $html = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
 
         return $html . $this->renderHtmlMenu();

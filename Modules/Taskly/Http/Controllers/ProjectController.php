@@ -84,6 +84,7 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
+        
         if (Auth::user()->isAbleTo('project manage')) {
             $objUser     = Auth::user();
             $projectUser = array();
@@ -897,6 +898,12 @@ class ProjectController extends Controller
     // Add Update Project Team Member
     public function addProjectTeamMember(Request $request, $id)
     {
+        if(!Auth::user()->isAbleTo('team member manage')){
+            return response()->json([
+                'is_success' => false,
+                'message'    => __('Permission Denied.'),
+            ]);
+        }
         // Check if users were selected
         if (isset($request->users) && ! empty($request->users)) {
             // Use sync() to update the relationship, which will automatically add/remove members
@@ -2730,7 +2737,6 @@ class ProjectController extends Controller
 
     public function update_details(Request $request, $project_id, $form_field = "")
     {
-
         $request['country'] = (isset($request->country) && ! empty($request->country)) ? $request->country : null;
 
         if (Auth::user()->type == 'company') {
@@ -3030,6 +3036,9 @@ class ProjectController extends Controller
 
     public function project_progress($project_id = "")
     {
+        if (!Auth::user()->isAbleTo('progress manage')){
+            abort(403, __('Permission Denied!'));
+        }
         $objUser   = Auth::user();
         $projectID = isset($project_id) ? Crypt::decrypt($project_id) : 0;
         if ($projectID > 0) {
