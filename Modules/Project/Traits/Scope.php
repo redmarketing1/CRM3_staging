@@ -4,9 +4,31 @@ namespace Modules\Project\Traits;
 
 trait Scope
 {
-    public function scopeProjectOnly($query)
+    // public function scopeProjectOnly($query)
+    // {
+    //     return $query->where('type', 'project');
+    // }
+
+    /**
+     * Scope a query to get company project.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $clientId
+     * @param string $workspace
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeForCompany($query, $userID)
     {
-        return $query->where('type', 'project');
+        return $query->whereCreatedBy($userID)
+            ->with([
+                'statusData',
+                'priorityData',
+                'constructionData',
+                'constructionDetail',
+                'property',
+                'thumbnail',
+                'comments',
+            ]);
     }
 
     /**
@@ -17,13 +39,22 @@ trait Scope
      * @param string $workspace
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForClient($query, $clientId, $workspace)
+    public function scopeForClient($query, $userID, $workspace)
     {
         return $query->select('projects.*')
             ->join('client_projects', 'projects.id', '=', 'client_projects.project_id')
-            ->projectonly()
-            ->where('client_projects.client_id', $clientId)
-            ->where('projects.workspace', $workspace);
+            ->where('type', 'project')
+            ->where('client_projects.client_id', $userID)
+            ->where('projects.workspace', $workspace)
+            ->with([
+                'statusData',
+                'priorityData',
+                'constructionData',
+                'constructionDetail',
+                'property',
+                'thumbnail',
+                'comments',
+            ]);
     }
 
     /**

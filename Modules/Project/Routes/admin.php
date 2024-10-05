@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('project')->group(function () {
 
-    Route::resource('/', 'ProjectController')->parameters(['' => 'project'])->names('project');
+    Route::resource('maps', 'ProjectMapController')
+        ->names('project.map');
 
     Route::resource('{id}/feedback', 'ProjectFeedbackController')
         ->names('project.feedback');
@@ -26,6 +27,9 @@ Route::prefix('project')->group(function () {
     Route::resource('{project}/delay', 'ProjectDelayController')
         ->names('project.delay');
 
+    Route::resource('/', 'ProjectController')
+        ->parameters(['' => 'project'])
+        ->names('project');
 });
 
 // Route::resource('project', 'ProjectController');
