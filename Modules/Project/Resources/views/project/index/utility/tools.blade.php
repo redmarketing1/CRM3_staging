@@ -1,6 +1,6 @@
 <div class="project-tools">
     @permission('project manage')
-        <a href="{{ route('projects.map') }}" class="btn btn-sm btn-primary mx-1" data-toggle="tooltip"
+        <a href="{{ route('project.map.index') }}" target="__blank" class="btn btn-sm btn-primary mx-1" data-toggle="tooltip"
             title="{{ __('Project Map') }}">
             <i class="fa-solid fa-map"></i>
         </a>

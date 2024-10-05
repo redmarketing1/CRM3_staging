@@ -1,7 +1,7 @@
 <div class="construction-detail">
 
     <div class="bold mb-4 text-left text-xl">
-        <b>{{ $name }}</b>
+        <a target="__blank" href="{{ $project->url() }}">{{ $project->name }}</a>
     </div>
 
     {{-- Group 1: Company and Name --}}

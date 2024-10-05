@@ -27,7 +27,12 @@ class ProjectMapController extends Controller
             Project::ForCompany($user->id) :
             Project::ForClient($user->id, $workspaceID);
 
-        $projects = $query->get();
+        $projects = $query->without([
+            'priorityData',
+            'property',
+            'thumbnail',
+            'comments',
+        ])->get();
 
 
         $locations = $projects
@@ -43,8 +48,8 @@ class ProjectMapController extends Controller
                     'lng'     => floatval($project->constructionDetail->long),
                     'name'    => $project->name,
                     'color'   => $project->statusData->background_color ?? '#EEEEEE',
-                    'url'     => route('projects.show', $project->id),
-                    'content' => view('project::project.map.construction-content', ['detail' => $project->constructionDetail, 'name' => $project->name])->render(),
+                    'url'     => route('project.show', $project->id),
+                    'content' => view('project::project.map.construction-content', ['detail' => $project->constructionDetail, 'project' => $project])->render(),
                 ];
             })
             ->unique('id')

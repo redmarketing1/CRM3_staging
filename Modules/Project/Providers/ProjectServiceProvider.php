@@ -46,6 +46,7 @@ class ProjectServiceProvider extends ServiceProvider
         ]);
 
         $this->addAssets('project.map.index', [
+            'project.google.map.js',
             'project.map.js',
         ]);
 

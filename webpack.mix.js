@@ -17,7 +17,7 @@ configs.forEach(config => {
     if (modulePath !== null) {
         require(modulePath);
         mix.after(() => {
-            //execSync(`php artisan module:publish ${moduleName}`);
+            // execSync(`php artisan module:publish ${moduleName}`);
         });
     }
 });
