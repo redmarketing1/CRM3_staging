@@ -84,6 +84,7 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
+        
         if (Auth::user()->isAbleTo('project manage')) {
             $objUser     = Auth::user();
             $projectUser = array();
@@ -3035,6 +3036,9 @@ class ProjectController extends Controller
 
     public function project_progress($project_id = "")
     {
+        if (!Auth::user()->isAbleTo('progress manage')){
+            abort(403, __('Permission Denied!'));
+        }
         $objUser   = Auth::user();
         $projectID = isset($project_id) ? Crypt::decrypt($project_id) : 0;
         if ($projectID > 0) {

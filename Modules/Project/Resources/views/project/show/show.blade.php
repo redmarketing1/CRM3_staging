@@ -12,10 +12,13 @@
 
                 @include('project::project.show.utility.activity_log')
 
-                @include('project::project.show.section.files')
+                @permission('files manage')
+                    @include('project::project.show.section.files')
+                @endpermission
                 @include('project::project.show.section.estimations')
-
-                @include('project::project.show.section.project_progress')
+                @permission('progress manage')
+                    @include('project::project.show.section.project_progress')
+                @endpermission
                 @include('project::project.show.section.delay')
 
                 @include('project::project.show.section.milestone')

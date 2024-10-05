@@ -60,10 +60,11 @@ class ProjectProgressController extends Controller
                                         </span>
                                     </span>
                                 </div>';
-
-			$action = '<div class="action_btn">';
-			$action .= '<div class=""><a href="' . route('progress.finalize', \Crypt::encrypt($item->id)) . '" class="" target="_blank" data-bs-whatever="' . __('View Progress') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Progress') . '"> <span class=""> <i class="ti ti-eye"></i></span></a></div>';
-			$action .= '</div>';
+			if (Auth::user()->isAbleTo('progress view')){
+				$action = '<div class="action_btn">';
+				$action .= '<div class=""><a href="' . route('progress.finalize', \Crypt::encrypt($item->id)) . '" class="" target="_blank" data-bs-whatever="' . __('View Progress') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Progress') . '"> <span class=""> <i class="ti ti-eye"></i></span></a></div>';
+				$action .= '</div>';
+			}
 			$row['id'] 			        = $item->id;
 			$row['client_name'] 		= $item->name;
 			$row['comment']             = $item->comment;
@@ -85,6 +86,10 @@ class ProjectProgressController extends Controller
 
 	public function progressFinalize($id)
 	{
+		if (!Auth::user()->isAbleTo('progress view')){
+			abort(403, __('Permission Denied!'));
+		}
+
 		$id 					= Crypt::decrypt($id);
 		$main_progress_id 		= $id;
 		$progress_main_details 	= ProjectProgressMain::where('id', $id)->first();
