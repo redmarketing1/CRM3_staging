@@ -48,34 +48,18 @@ class Project extends Model
 
     /**
      * Get table data for the resource
-     *
-     * @param \Illuminate\Http\Request $request 
+     * 
      */
     public function table($request)
     {
-       
-        $user = Auth::user();
+        $user        = Auth::user();
+        $workspaceID = getActiveWorkSpace();
 
-        if ($user->type == 'company') {
-            $projects = Project::where('projects.created_by', '=', $user->id)
-                ->with(['statusData', 'priorityData', 'constructionData', 'constructionDetail', 'property', 'thumbnail', 'comments']);
-        } else {
-            $projects = Project::leftJoin('client_projects', 'client_projects.project_id', '=', 'projects.id')
-                ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', '=', 'projects.id')
-                ->leftJoin('user_projects', 'user_projects.project_id', '=', 'projects.id')
-                ->where(function ($query) use ($user) {
-                    $query->where('client_projects.client_id', $user->id)
-                        ->orWhere('user_projects.user_id', $user->id)
-                        ->orWhere('estimate_quotes.user_id', $user->id);
-                });
-            
-            $projects->select('projects.*')  
-                     ->groupBy('projects.id'); 
-        }
-        
-        $projects->with(['statusData', 'priorityData', 'constructionData', 'constructionDetail', 'property', 'thumbnail', 'comments']);
-        
-        return new ProjectsTable($projects);
+        $query = ($user->type == 'company') ?
+            self::forCompany($user->id) :
+            self::forClient($user->id, $workspaceID);
+
+        return new ProjectsTable($query);
     }
 
     public function delays()
