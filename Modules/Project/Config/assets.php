@@ -17,6 +17,8 @@ return [
         'project.show.js'                   => ['public' => 'assets/js/project.show.js'],
 
         'project.google.map.js'             => ['Cdn' => 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBbTqlUNbqPssvetzvRl4n65HB2g_-o9tE&d?.js'],
+
+        'project.map.css'                   => ['public' => 'assets/css/project.maps.css'],
         'project.map.js'                    => ['public' => 'assets/js/project.map.js'],
     ],
 

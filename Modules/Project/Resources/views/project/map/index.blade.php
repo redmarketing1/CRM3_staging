@@ -3,6 +3,12 @@
 @section('content')
     <div class="row map-wrapper">
         <div class="col-2">
+            <div class="projectTabs">
+                {!! $projectList->tabs !!}
+            </div>
+            <div class="projectList">
+                {!! $projectList->list !!}
+            </div>
             <div id="projectContainer"></div>
         </div>
         <div class="col-10 p-0">

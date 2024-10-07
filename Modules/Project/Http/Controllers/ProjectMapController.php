@@ -7,12 +7,13 @@ use Modules\Lead\Entities\Label;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
+use Modules\Project\Sidebar\projectsTabs as ProjectsTabs;
 use Illuminate\Contracts\Support\Renderable;
 
 class ProjectMapController extends Controller
 {
 
-    public function index(Request $request)
+    public function index(Request $request, ProjectsTabs $projectsTabs)
     {
         if (! Auth::user()->isAbleTo('project manage')) {
             return redirect()
@@ -56,6 +57,11 @@ class ProjectMapController extends Controller
             ->values()
             ->toArray();
 
-        return view('project::project.map.index', compact('locations'));
+        $projectList = (object)[
+            'tabs' => $projectsTabs->renderTabItems(),
+            'list' => $projectsTabs->renderProjectList(),
+        ];
+
+        return view('project::project.map.index', compact('locations', 'projectList'));
     }
 }

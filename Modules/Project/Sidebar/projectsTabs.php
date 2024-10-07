@@ -118,9 +118,9 @@ class projectsTabs
                 ->distinct()
                 ->get();
         }
-        
+
         $groupedProjects = $allProjects->unique('status_data.name');
-        $html = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
+        $html            = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
 
         return $html;
     }
@@ -144,9 +144,9 @@ class projectsTabs
                 ->distinct()
                 ->get();
         }
-        
+
         $groupedProjects = $allProjects->groupBy('status_data.name');
-        $html = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
+        $html            = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
 
         return $html . $this->renderHtmlMenu();
     }
