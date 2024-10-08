@@ -19,8 +19,11 @@ Route::get('add_team_permissions', [TestController::class, 'AddTeamTeamPermissio
 
 Route::get('add_client_permissions', [TestController::class, 'AddClientermissions']);
 
-Route::get('add_label_permissions', [TestController::class, 'AddLabelsPermissions']);
+// do not run
+//Route::get('add_label_permissions', [TestController::class, 'AddLabelsPermissions']);
 
 Route::get('add_files_permissions', [TestController::class, 'AddFilesPermissions']);
 
 Route::get('add_project_progress_permissions', [TestController::class, 'AddProjectProgressPermissions']);
+
+//Activity Log Permissions
