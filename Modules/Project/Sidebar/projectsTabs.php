@@ -99,7 +99,7 @@ class projectsTabs
      *
      * @return string Rendered HTML for tab items and sidebar menu.
      */
-    protected function renderTabItems()
+    public function renderTabItems()
     {
         $user = Auth::user();
         if ($user->type == 'company') {
@@ -118,14 +118,14 @@ class projectsTabs
                 ->distinct()
                 ->get();
         }
-        
+
         $groupedProjects = $allProjects->unique('status_data.name');
-        $html = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
+        $html            = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
 
         return $html;
     }
 
-    protected function renderProjectList()
+    public function renderProjectList()
     {
         $user = Auth::user();
         if ($user->type == 'company') {
@@ -144,9 +144,9 @@ class projectsTabs
                 ->distinct()
                 ->get();
         }
-        
+
         $groupedProjects = $allProjects->groupBy('status_data.name');
-        $html = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
+        $html            = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
 
         return $html . $this->renderHtmlMenu();
     }

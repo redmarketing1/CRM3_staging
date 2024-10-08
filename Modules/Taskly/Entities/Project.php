@@ -64,7 +64,7 @@ class Project extends Model
             }
         }
 
-        return strtoupper(substr($shortName, 0, 2));
+        return strtoupper(mb_substr($shortName, 0, 2));
     }
 
     /**

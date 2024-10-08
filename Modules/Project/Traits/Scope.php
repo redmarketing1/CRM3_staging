@@ -42,10 +42,18 @@ trait Scope
     public function scopeForClient($query, $userID, $workspace)
     {
         return $query->select('projects.*')
-            ->join('client_projects', 'projects.id', '=', 'client_projects.project_id')
-            ->where('type', 'project')
+            ->leftJoin('client_projects', 'client_projects.project_id', '=', 'projects.id')
+            ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', '=', 'projects.id')
+            ->leftJoin('user_projects', 'user_projects.project_id', '=', 'projects.id')
+            ->where(function ($query) use ($userID) {
+                $query->where('client_projects.client_id', $userID)
+                    ->orWhere('user_projects.user_id', $userID)
+                    ->orWhere('estimate_quotes.user_id', $userID);
+            })
             ->where('client_projects.client_id', $userID)
+            ->where('projects.type', 'project')
             ->where('projects.workspace', $workspace)
+            ->groupBy('projects.id')
             ->with([
                 'statusData',
                 'priorityData',

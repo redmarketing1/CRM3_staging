@@ -129,7 +129,8 @@ if (! function_exists('generateSubMenu')) {
 
             $html .= '</a>'; // Close anchor tag
 
-            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('project') || request()->is('project/*'))) {
+            //|| request()->is('project/*')
+            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('project'))) {
                 $projectTabs = new projectsTabs();
                 $html .= $projectTabs->render();
 
@@ -289,7 +290,7 @@ if (! function_exists('getCompanyAllSetting')) {
         }
 
         $workspace = $workspace ?? $user->active_workspace;
-        
+
         if (! empty($user)) {
             $key = 'company_settings_' . $workspace . '_' . $user->id;
             return Cache::rememberForever($key, function () use ($user, $workspace) {
@@ -1548,9 +1549,9 @@ if (! function_exists('currency_format_with_sym')) {
         $format          = '1';
         $number          = explode('.', $price);
         $length          = strlen(trim($number[0]));
-        
-        $float_number    = isset($company_settings['float_number']) && $company_settings['float_number'] != 'dot' ? ',' : '.';
-       
+
+        $float_number = isset($company_settings['float_number']) && $company_settings['float_number'] != 'dot' ? ',' : '.';
+
         if ($length > 3) {
             $decimal_separator  = isset($company_settings['decimal_separator']) && $company_settings['decimal_separator'] === 'dot' ? ',' : ',';
             $thousand_separator = isset($company_settings['thousand_separator']) && $company_settings['thousand_separator'] === 'dot' ? '.' : ',';
@@ -1576,7 +1577,7 @@ if (! function_exists('currency_format_with_sym')) {
             $currancy_symbol        = $company_settings['site_currency_symbol_name'] == 'symbol' ? $defult_currancy_symbol : $defult_currancy;
         }
         $price = number_format($price, $format, $decimal_separator, $thousand_separator);
-       
+
         if ($company_settings['float_number'] == 'dot') {
             $price = preg_replace('/' . preg_quote($thousand_separator, '/') . '([^' . preg_quote($thousand_separator, '/') . ']*)$/', $float_number . '$1', $price);
         } else {
@@ -1586,7 +1587,7 @@ if (! function_exists('currency_format_with_sym')) {
         //     ($symbol_position == "pre")  ?  $currancy_symbol : '') . ((isset($currency_space) && $currency_space) == 'withspace' ? ' ' : '')
         //     . number_format($price, $format, $decimal_separator, $thousand_separator) . ((isset($currency_space) && $currency_space) == 'withspace' ? ' ' : '') .
         //     (($symbol_position == "post") ?  $currancy_symbol : '');
-        
+
         if ($with_symbol == true) {
             return (($symbol_position == "pre") ? $currancy_symbol : '') . ($currency_space == 'withspace' ? ' ' : '') . $price . ($currency_space == 'withspace' ? ' ' : '') . (($symbol_position == "post") ? $currancy_symbol : '');
         } else {
