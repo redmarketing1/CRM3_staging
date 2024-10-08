@@ -1,4 +1,4 @@
-.footer {
+footer {
     display: none !important;
 }
 
@@ -20,8 +20,7 @@
     .projectList {
         overflow-y: auto;
         height: 100%;
-        max-height: calc(100vh - 240px);
-        background: #f3f3f3;
+        max-height: calc(100vh - 235px);
 
         ul.tab-submenu {
             list-style: none;

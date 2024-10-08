@@ -12,7 +12,7 @@ trait Attribute
      */
     public function getShortNameAttribute()
     {
-        $shortName = $this->status_data->name ?? 'NA';
+        $shortName = $this->statusData->name ?? 'NA';
 
         $words = explode(' ', $shortName);
 
@@ -52,7 +52,7 @@ trait Attribute
      */
     public function getBackgroundColorAttribute()
     {
-        return $this->status_data->background_color ?? '#eeeeee';
+        return $this->statusData->background_color ?? '#eeeeee';
     }
 
     /**
@@ -61,13 +61,22 @@ trait Attribute
      */
     public function getFontColorAttribute()
     {
-        return $this->status_data->font_color ?? '#777777';
+        return $this->statusData->font_color ?? '#777777';
     }
 
     public function getProjectCountAttribute()
     {
-        return self::whereHas('status_data', function ($query) {
-            $query->where('name', $this->status_data->name);
+        return self::whereHas('statusData', function ($query) {
+            $query->where('name', $this->statusData->name);
+        })->count();
+    }
+
+    public function getProjectCountByconstructionAttribute()
+    {
+        return self::whereHas('statusData', function ($query) {
+            $query->where('name', $this->statusData->name);
+        })->whereHas('constructionDetail', function ($query) {
+            $query->whereNotNull('id')->whereNotNull('lat')->whereNotNull('long');
         })->count();
     }
 }

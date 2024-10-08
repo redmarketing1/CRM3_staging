@@ -24,21 +24,22 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
 
     function addMarkersToMap() {
         const bounds = new google.maps.LatLngBounds();
-        markerLocations.forEach(location => {
-            const markerPosition = setMarker(location);
+        markerLocations.forEach((location, index) => {
+            const markerPosition = setMarker(location, index);
             bounds.extend(markerPosition);
         });
         map.fitBounds(bounds);
     }
 
-    function setMarker(location) {
+    function setMarker(location, index) {
         const infowindow = new google.maps.InfoWindow({ content: location.content });
         const marker = new google.maps.Marker({
             position: new google.maps.LatLng(location.lat, location.lng),
             map: map,
             icon: pinSymbol(location.color),
             html: infowindow,
-            animation: google.maps.Animation.DROP
+            animation: google.maps.Animation.DROP,
+            locationIndex: index, // Custom property to track the marker index
         });
         setupMarkerEvents(marker, infowindow);
         mapMarkers.push(marker);
@@ -86,36 +87,14 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         };
     }
 
-    function createProjectList() {
-        const projects = markerLocations;
-        const projectDiv = document.createElement('div');
-        projectDiv.classList.add('project-list');
-        const ulElement = document.createElement('ul');
-
-        projects.forEach((item, index) => {
-            const liElement = document.createElement('li');
-            liElement.textContent = item.name;
-            liElement.dataset.lat = item.lat;
-            liElement.dataset.long = item.lng;
-            liElement.id = `project-${index}`;
-            liElement.addEventListener('click', () => {
-                focusMap(item.lat, item.lng, index);
-            });
-            ulElement.appendChild(liElement);
-        });
-
-        projectDiv.appendChild(ulElement);
-        document.querySelector('#projectContainer').innerHTML = '';
-        document.querySelector('#projectContainer').appendChild(projectDiv);
-    }
-
-    function focusMap(lat, lng, markerIndex) {
+    function focusMap(lat, lng, index) {
         map.panTo({ lat, lng });
         closeCurrentInfoWindow();
-        const marker = mapMarkers[markerIndex];
+
+        const marker = mapMarkers[index];
         if (marker) {
             const infowindow = new google.maps.InfoWindow({
-                content: markerLocations[markerIndex].content || "No content available"
+                content: marker.html.getContent(),
             });
             infowindow.open(map, marker);
             currentInfoWindow = infowindow;
@@ -130,10 +109,21 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
     }
 
     addMarkersToMap();
-    createProjectList();
+
+    $(document).on('click', '.map-wrapper .tab-link', function (e) {
+        e.preventDefault();
+        const id = $(this).attr('id');
+        const lat = Number($(this).data('lat'));
+        const lng = Number($(this).data('long'));
+
+        const markerIndex = markerLocations.findIndex(location => location.id == id);
+        if (markerIndex !== -1) {
+            focusMap(lat, lng, markerIndex);
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const mapHandler = new MapHandler('map');
+    new MapHandler('map');
     $('footer').remove();
 });

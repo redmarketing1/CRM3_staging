@@ -99,7 +99,7 @@ class projectsTabs
      *
      * @return string Rendered HTML for tab items and sidebar menu.
      */
-    protected function renderTabItems()
+    public function renderTabItems()
     {
         $user = Auth::user();
         if ($user->type == 'company') {
@@ -125,7 +125,7 @@ class projectsTabs
         return $html;
     }
 
-    protected function renderProjectList()
+    public function renderProjectList()
     {
         $user = Auth::user();
         if ($user->type == 'company') {
