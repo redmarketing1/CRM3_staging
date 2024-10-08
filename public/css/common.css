@@ -6614,7 +6614,7 @@ ul.basic-plan-ul li,
 
 
 
-
+/* 
 html {
     border-left: 20px solid rgb(0, 153, 255)
 }
@@ -6631,7 +6631,7 @@ html:before {
     font-family: Arial, Helvetica, sans-serif;
     transform: rotate(-90deg);
     top: 60px;
-}
+} */
 
 
 
@@ -8093,8 +8093,14 @@ body.project .row {
     overflow: hidden;
     padding-left: 35px;
     transition: 0.3s;
+    text-wrap: wrap;
 }
-
+.projectsTableContainter table#projectsTable .project-comments li p {
+    margin-bottom: 5px !important;
+}
+.projectsTableContainter table#projectsTable .project-comments li:last-child {
+    border-bottom: none !important;
+}
 .projectsTableContainter table#projectsTable .project-comments:hover {
     /* transition: 3s; */
     /* transition-delay: 2s; */
@@ -8109,8 +8115,8 @@ body.project .row {
     font-size: 12px;
     line-height: 14px;
     border-bottom: 1px dashed #e5e5e5;
-    margin-bottom: 5px;
-    padding-bottom: 5px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 .projectsTableContainter table#projectsTable .project-comments li::marker {

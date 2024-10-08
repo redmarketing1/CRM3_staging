@@ -27171,7 +27171,7 @@ body.theme-10 .team-lists img {
     margin: 0 10px;
 }
 
-.lb-cancel {
+/* .lb-cancel {
     background: url("../images/loading.gif") no-repeat;
 }
 
@@ -27189,7 +27189,7 @@ body.theme-10 .team-lists img {
 
 .lb-data .lb-close {
     background: url("../images/close.png") top right no-repeat;
-}
+} */
 
 .alert-dismissable .close,
 .alert-dismissible .close {
