@@ -96,10 +96,10 @@ class ActivityLog extends Model
                                 style="display: block;max-width: 200px;max-height: 140px;">
                         </a>';
             } else {
-                $file = get_file('uploads/projects/' . $projectClientFeedback->file);
+                $file = get_file('uploads/projects/' . rawurlencode($projectClientFeedback->file));
                 $html .= '<a href="' . $file . '" class="" 
-                    data-bs-toggle="tooltip" title="' . __('Download') . '">
-                    ' . $file . '
+                    data-bs-toggle="tooltip" target="_blank" title="' . __('Download') . '">
+                    ' . $projectClientFeedback->file . '
                     </a>';
             }
 
