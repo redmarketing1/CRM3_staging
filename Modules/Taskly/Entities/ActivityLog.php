@@ -4,6 +4,7 @@ namespace Modules\Taskly\Entities;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Modules\Taskly\Entities\ProjectClientFeedback;
 
 class ActivityLog extends Model

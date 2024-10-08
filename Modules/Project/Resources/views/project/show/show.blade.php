@@ -1,6 +1,203 @@
 @extends('layouts.main')
 
+@push('css')
+    <style>
+        #card2 {
+            right: -61px;
+            width: 48%;
+        }
 
+        #card1 {
+            width: 48%;
+        }
+
+        #useradd-8 {
+            display: flex;
+        }
+
+        #dropBox {
+            width: 100%;
+            height: 100px;
+            margin-top:20px!important;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        #dropBox:hover {
+            border-color: #4CAF50;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        #previewContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .preview {
+            max-width: 100%;
+            max-height: 150px;
+            margin: 10px;
+        }
+        /* The container */
+        .container {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 25px !important;
+            cursor: pointer;
+            font-size: 22px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 11px;
+            height: 15px;
+            width: 15px;
+            background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+        }
+        .header_buttons .checkmark {
+            background-color: #0427e9 !important;
+        }
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the checkmark when checked */
+        .container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Style the checkmark/indicator */
+        .container .checkmark:after {
+            left: 9px;
+            top: 5px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+        .selected_image .actionbuttons .bg-danger, .default_file .header_buttons .action-btn{
+            visibility: visible;
+        }
+
+        .progress-step {
+            position: relative !important;
+        }
+
+        .flex-div span {
+            display: flex;
+        }
+
+        #progress-table tr.group, #progress-table tr.group:hover {
+            background-color: rgba(0, 0, 0, 0.1) !important;
+        }
+        .construction_detail_address span, .client_invoice_address span, .address-class span { 
+            display : block;
+        }
+
+        .progress-signature .sign_btn_block{
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-signature .sign_btn_block_small {
+            display: flex;
+            gap: 1px;
+        }
+        .progress-signature .progress_final_clear_sig, .progress-signature .progress_final_clear_sig:hover {
+            color: #333 !important;
+            background: none !important;
+            border: none !important;
+            margin-top: 1px !important;
+        }
+        .item-signature .progress_amount {
+            border: 1px solid #d8d8d8 !important;
+            padding: 10px !important;
+            background: #ffffff !important;
+            margin-top: 5px !important;
+        }
+        .dash-sidebar .dash-submenu .dash-link {
+            padding: 5px 30px 5px 65px !important;
+        }
+        #progressdropBox {
+            width: 100%;
+            height: 100px !important;
+            border: 2px dashed #ccc !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+        }
+        #progressdropBox:hover {
+            border-color: #4CAF50 !important;
+        }
+        .item-signature .progress_files{
+            margin-top: 10px !important;
+        }
+        .progressfileInput {
+            display: none;
+        }
+        .progress_files_row .progress_mediaimg{
+            padding: 10px !important;
+        }
+        .progress_files_row .progress_mediaimg{
+            padding: 10px !important;
+        }
+        .progress_files_row .lightbox-link{
+            margin: 0 auto !important;
+            display: block !important;
+        }
+        .progress_files_row .mediabox .mediainfo{
+            text-align: center !important;
+        }
+        .progress_files_row .preview{
+            margin: 10px !important;
+        }
+        .media-body a .fileprev{
+            margin: 0 auto !important;
+        }
+        .progress_files_row #progress_bulk_delete_form .btn-primary{
+            background: #48494B !important;
+            padding: 5px 10px !important;
+            color: #fff !important;
+        }
+        .progress_files_row #progress_bulk_delete_form .btn-primary i{
+            color: #fff !important;
+        }
+    </style>
+@endpush
 @section('content')
     <div class="row">
         <div class="col-sm-12">
@@ -31,10 +228,12 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
     <script>
         var active_estimation_id = '{{ isset($active_estimation->id) ? $active_estimation->id : 0 }}';
         let moneyFormat = '{{ site_money_format() }}';
         var project_id = '{{ \Crypt::encrypt($project->id) }}';
+        var csrfToken =  $('meta[name="csrf-token"]').attr('content')
         
         $(document).ready(function() {
 
@@ -655,7 +854,7 @@
 @endpush
 
 @push('scripts')
-    <script>
+    {{-- <script>
         Dropzone.autoDiscover = false;
         var myDropzone = new Dropzone("#dropzonewidget", {
             maxFiles: 20,
@@ -750,5 +949,252 @@
 
             file.previewTemplate.appendChild(html);
         }
+    </script> --}}
+@endpush
+
+<!--- Files Upload -->
+@push('scripts')
+    <script>
+
+        $(document).ready(function(){
+            load_gallary()
+        });
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'copy';
+            document.getElementById('dropBox').style.border = '2px dashed #4CAF50';
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            document.getElementById('dropBox').style.border = '2px dashed #ccc';
+
+            const files = event.dataTransfer.files;
+            handleFiles(files);
+        }
+
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            const previewContainer = document.getElementById('previewContainer');
+            previewContainer.innerHTML = ''; // Clear out any previous previews
+            let formData = new FormData();
+            let counter = 0; // Counter for processed files
+
+            Array.from(files).forEach((file) => {
+                if (!file.type.startsWith('image/')) {
+                    formData.append('files[]', file, file.name);
+                    counter++;
+                    if (counter === files.length) {
+                        uploadFile(formData);
+                    }
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.src = event.target.result;
+                        img.onload = function() {
+                            EXIF.getData(img, function() {
+                                const dateTaken = EXIF.getTag(this, 'DateTimeOriginal'); // Get the original date from EXIF data
+                                const canvas = document.createElement('canvas');
+                                const ctx = canvas.getContext('2d');
+                                const max_width = 1500;
+                                const scaleFactor = max_width / img.width;
+                                canvas.width = max_width;
+                                canvas.height = img.height * scaleFactor;
+                                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                                
+                                // Funktion zum Hinzufügen von Text mit Hintergrund
+                                function drawTextWithBackground(ctx, text, x, y, bgColor, textColor, padding) {
+                                    ctx.fillStyle = bgColor;
+                                    ctx.font = 'bold 20px Arial';
+
+                                    const textMetrics = ctx.measureText(text);
+                                    const textWidth = textMetrics.width;
+                                    const textHeight = 20; // Geschätzte Höhe basierend auf Schriftgröße
+
+                                    // Berechne die Position und Größe des Hintergrunds mit Padding
+                                    const backgroundX = canvas.width - textWidth - padding.leftRight - x;
+                                    const backgroundY = canvas.height - textHeight - padding.topBottom - y;
+                                    const backgroundWidth = textWidth + padding.leftRight * 2;
+                                    const backgroundHeight = textHeight + padding.topBottom * 2;
+
+                                    // Zeichne den Hintergrund
+                                    ctx.fillRect(backgroundX, backgroundY, backgroundWidth, backgroundHeight);
+
+                                    // Zeichne den Text
+                                    ctx.fillStyle = textColor;
+                                    ctx.fillText(text, backgroundX + padding.leftRight, backgroundY + textHeight);
+                                }
+
+                                // Add the text with background to the canvas
+                                const dateText = dateTaken ? formatDate(dateTaken) : '';
+                                drawTextWithBackground(ctx, dateText, 10, 10, '#ee232ac2', '#FFF', { topBottom: 2, leftRight: 5 });
+
+                                ctx.canvas.toBlob(function(blob) {
+                                    const compressedFile = new File([blob], file.name, {
+                                        type: 'image/jpeg',
+                                        lastModified: Date.now(),
+                                    });
+                                    formData.append('files[]', compressedFile, compressedFile.name);
+                                    
+                                    // Add image preview
+                                    const preview = document.createElement('img');
+                                    preview.src = URL.createObjectURL(compressedFile);
+                                    preview.classList.add('preview');
+                                    previewContainer.appendChild(preview);
+
+                                    counter++;
+                                    if (counter === files.length) {
+                                        uploadFile(formData);
+                                    }
+                                }, 'image/jpeg', 0.85); // Compress as JPEG with 85% quality
+                            });
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function uploadFile(formData) {
+            // Perform the AJAX upload
+            $.ajax({
+                url: '{{route('project.files_upload',$project->id)}}',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    showHideLoader('visible'); // Optional: Show a loader graphic
+                },
+                success: function(response) {
+                    showHideLoader('hidden'); // Optional: Hide the loader
+                    toastrs('Success', response.message, 'success');
+                    load_gallary(); // Refresh or update the gallery
+                },
+                error: function(xhr, status, error) {
+                    // Handle errors
+                    console.error('Upload failed:', error);
+                    showHideLoader('hidden'); // Hide the loader even if there's an error
+                }
+            });
+        }
+
+        $(document).on("click", "#dropBox", function(e) {
+			e.preventDefault();
+			$("#fileInput").trigger('click');
+        });
+
+        //Load Gallery
+        function load_gallary() {
+            $.ajax({
+                url:'{{route('project.all_files',$project->id)}}',
+                type:"POST",
+                data:{html:true,_token:csrfToken},
+                success:function (items) {
+                    $(".mediabox").html(items);
+					$("img.preview").remove();
+					selected_images();
+                }
+            })
+		}
+
+        //set default image
+        $(document).on("click", ".default_image_selection", function(e) {
+            // e.preventDefault();
+
+            var file_id = $(this).val();
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "This action can not be undone. Do you want to continue?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url:'{{route('project.files.set_default_file',$project->id)}}',
+                        type:"POST",
+                        data:{file : file_id,_token:csrfToken},
+                        beforeSend:function () {
+                            showHideLoader('visible');
+                        },
+                        success:function (response) {
+                            if(response.status == true){
+                                showHideLoader('hidden');
+                                toastrs('Success', response.message, 'success')
+                                load_gallary();
+                            } else {
+                                toastrs('Error', response.message)
+                            }
+                        }
+                    });
+                }
+            })
+        });
+
+        //bulk Files Delete
+        $(document).on("submit", "#bulk_delete_form", function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            $.ajax({
+                url:'{{route('project.files.delete',$project->id)}}',
+                type:"POST",
+                data:formData,
+                contentType:false,
+                processData:false,
+                beforeSend:function () {
+                    showHideLoader('visible');
+                },
+                success:function (response) {
+                    if(response.status == true){
+                        showHideLoader('hidden');
+                        toastrs('Success', response.message, 'success')
+                        load_gallary();
+                    } else {
+                        toastrs('Error', response.message)
+                    }
+                }
+            });
+        });
+
+        function selected_images() {
+			var total_selected = 0;
+			var files_ids = [];
+			$('.image_selection').each(function () {
+				var id = $(this).data('id');
+				if ($(this).prop('checked')==true){
+					total_selected++;
+					var file_id = $(this).val();
+					files_ids.push(file_id);
+					$(".project_file_"+id).parents('.mediaimg').addClass('selected_image');
+				} else {
+					$(".project_file_"+id).parents('.mediaimg').removeClass('selected_image');
+				}
+			});
+			if(total_selected > 0){
+				$('.btn_bulk_delete_files').removeClass('d-none');
+			} else {
+				$('.btn_bulk_delete_files').addClass('d-none');
+			}
+			$('#remove_files_ids').val(JSON.stringify(files_ids));
+
+		}
     </script>
 @endpush

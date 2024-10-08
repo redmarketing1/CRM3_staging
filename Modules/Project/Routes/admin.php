@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Project\Http\Controllers\ProjectController;
+use Modules\Project\Http\Controllers\ProjectFilesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +34,10 @@ Route::prefix('project')->group(function () {
         ->names('project');
 });
 
+//files
+Route::post('project/{id}/files-upload', [ProjectFilesController::class, 'fileUpload'])->name('project.files_upload');
+Route::post('project/{id}/files', [ProjectFilesController::class, 'all_files'])->name('project.all_files');
+Route::get('project/{pid}/file-edit/{id}', [ProjectFilesController::class, 'fileEdit'])->name('project.file.edit');
+Route::post('project/{id}/set-default-file', [ProjectFilesController::class, 'set_default_file'])->name('project.files.set_default_file');
+Route::post('project/{id}/delete-files', [ProjectFilesController::class, 'delete_files'])->name('project.files.delete');
 // Route::resource('project', 'ProjectController');

@@ -67,4 +67,9 @@ class Project extends Model
         return $this->hasMany(ProjectDelay::class, 'project_id', 'id');
     }
 
+    public function files()
+    {
+        return $this->hasMany('Modules\Project\Entities\ProjectFile', 'project_id', 'id');
+    }
+
 }
