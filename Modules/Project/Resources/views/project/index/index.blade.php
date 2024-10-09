@@ -14,6 +14,11 @@
 
 @section('content')
     <div class="row">
+        <div class="clearFilterContainer">
+            <button type="button" id="clearFilter" class="clear_filter">
+                {{ trans('clear all') }}
+            </button>
+        </div>
         <div class="col-xl-12">
             <div class="card projectsTableContainter">
                 <div class="card-body table-border-style">

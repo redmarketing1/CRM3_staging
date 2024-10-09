@@ -70,11 +70,5 @@
         <input type='text' class="form-control daterange form_filter_field" placeholder="{{ trans('Date') }}"
             id="filterableDaterange" />
     </th>
-    <th data-orderable="false">
-        <div class="buttons--right">
-            <button type="button" id="clearFilter" class="clear_filter">
-                {{ trans('clear all') }}
-            </button>
-        </div>
-    </th>
+    <th data-orderable="false"><!-- action --></th>
 </tr>

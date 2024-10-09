@@ -1,5 +1,5 @@
 <div class="d-flex flex-column text-left">
-    <a href="{{ $project->url() }}" target="__blank">
+    <a href="{{ $project->url() }}">
         <h2 class="data-name font-medium text-xl">{{ $project->name }}</h2>
     </a>
     <div class="d-flex data-sub-name flex-column font-normal">

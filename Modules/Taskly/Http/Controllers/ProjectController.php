@@ -497,7 +497,7 @@ class ProjectController extends Controller
 
             event(new CreateProject($request, $objProject));
 
-            return redirect()->route('projects.index')->with('success', __('Project Created Successfully!') . ((isset($smtp_error)) ? ' <br> <span class="text-danger">' . $smtp_error . '</span>' : ''));
+            return redirect()->route('project.index')->with('success', __('Project Created Successfully!') . ((isset($smtp_error)) ? ' <br> <span class="text-danger">' . $smtp_error . '</span>' : ''));
         } else {
             return redirect()->back()->with('error', 'permission Denied');
         }
