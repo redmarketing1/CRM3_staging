@@ -46,7 +46,7 @@ $(document).on('change', '#construction-select', function () {
 
             $('#construction-details').html(response.data.html_data);
             $('#construction_detail_id').val(response.data.user_id);
-            // initialize_construction();
+
             if ($('#construction_detail-company_notes').length > 0) {
                 init_tiny_mce('#construction_detail-company_notes');
             }
@@ -55,6 +55,18 @@ $(document).on('change', '#construction-select', function () {
             if (clientDetailsElement) {
                 clientDetailsElement.classList.remove('d-none');
             }
+
+            initGoogleMapPlaced('construction_detail-autocomplete', 'construction_detail');
+
+
+            $(".country_select2").select2({
+                placeholder: "Country",
+                multiple: false,
+                dropdownParent: $("#title_form"),
+                placeholder: "Select an country",
+                allowClear: true,
+                dropdownAutoWidth: true,
+            });
         })
     } else {
         var clientDetailsElement = document.getElementById('construction-details');
@@ -101,6 +113,9 @@ $(document).on('change', '#client-select', function () {
             if (clientDetailsElement) {
                 clientDetailsElement.classList.remove('d-none');
             }
+
+            initGoogleMapPlaced('invoice-autocomplete', 'invoice');
+
         })
     } else {
         var clientDetailsElement = document.getElementById('client-details');
@@ -110,3 +125,99 @@ $(document).on('change', '#client-select', function () {
         }
     }
 });
+
+function initGoogleMapPlaced(inputSelector, fieldInput) {
+    const input = document.getElementById(inputSelector);
+    const autocomplete = new google.maps.places.Autocomplete(input);
+
+    autocomplete.addListener('place_changed', function () {
+        let place = autocomplete.getPlace();
+
+        if (place.geometry) {
+            setGoogleMapsPlaced(place, fieldInput);
+        }
+    });
+
+    function setGoogleMapsPlaced(place, selector = "") {
+        let result = {};
+
+        if (!place || !place.geometry || !place.geometry.location) return result;
+
+        result['latitude'] = place.geometry.location.lat();
+        result['longitude'] = place.geometry.location.lng();
+
+        let street_number = '';
+
+        place.address_components.forEach(component => {
+
+            const componentType = component.types[0];
+
+            switch (componentType) {
+                case "street_number":
+                    street_number = component.long_name;
+                    break;
+                case "route":
+                    result['address_1'] = `${component.long_name}${street_number ? ', ' + street_number : ''}`;
+                    break;
+                case "locality":
+                    result['city'] = component.long_name;
+                    break;
+                case "sublocality_level_1":
+                    result['district_1'] = component.long_name;
+                    break;
+                case "administrative_area_level_3":
+                    result['district_2'] = component.long_name;
+                    break;
+                case "administrative_area_level_1":
+                    result['state'] = component.long_name;
+                    break;
+                case "postal_code":
+                case "postal_code_suffix":
+                    result['zip_code'] = component.long_name;
+                    break;
+                case "country":
+                    result['country'] = component.short_name;
+                    break;
+                default:
+                    result[componentType] = component.long_name;
+                    break;
+            }
+        });
+
+        if (selector !== '') {
+
+            const addressFields = [
+                'address_1',
+                'address_2',
+                'city',
+                'district_1',
+                'district_2',
+                'state',
+                'zip_code',
+                'country'
+            ];
+
+            const setFieldValue = (key, value = '') => {
+
+                const itemSelector = $(`#${selector}-${key}`);
+
+                if (itemSelector.length) {
+                    if (key === 'country') {
+                        const selectedOption = itemSelector.find(`option[data-iso="${value}"]`);
+                        if (selectedOption.length) {
+                            selectedOption.prop('selected', true);
+                            itemSelector.trigger('change');
+                        }
+                    } else {
+                        itemSelector.val(value);
+                    }
+                }
+            };
+
+            addressFields.forEach(field => setFieldValue(field));
+            Object.entries(result).forEach(([key, value]) => setFieldValue(key, value));
+        }
+
+        return result;
+    }
+} 

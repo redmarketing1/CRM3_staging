@@ -795,24 +795,6 @@ $('#commonModal').on('hidden.bs.modal', function () {
     }
 })
 
-function initialize() {
-    var input = document.getElementById('invoice-autocomplete');
-    var autocomplete = new google.maps.places.Autocomplete(input);
-    autocomplete.addListener('place_changed', function () {
-        var place = autocomplete.getPlace();
-        var google_address = get_address_google(place, 'invoice');
-    });
-}
-
-function initialize_construction() {
-    var input = document.getElementById('construction_detail-autocomplete');
-    var autocomplete = new google.maps.places.Autocomplete(input);
-    autocomplete.addListener('place_changed', function () {
-        var place = autocomplete.getPlace();
-        var google_address = get_address_google(place, 'construction_detail');
-    });
-}
-
 function init_mini_colors(selector_id) {
     $(selector_id).minicolors({
         control: $(this).attr('data-control') || 'hue',

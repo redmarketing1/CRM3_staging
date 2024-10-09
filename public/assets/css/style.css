@@ -6194,6 +6194,10 @@ fieldset:disabled .btn {
     }
 }
 
+.modal-dialog.modal-w-80 {
+    max-width: 80%;
+}
+
 .modal.show .modal-dialog {
     transform: none;
 }

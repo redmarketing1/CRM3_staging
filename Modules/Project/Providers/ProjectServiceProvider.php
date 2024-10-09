@@ -42,7 +42,9 @@ class ProjectServiceProvider extends ServiceProvider
         ]);
 
         $this->addAssets('project.show', [
+            'project.show.css',
             'project.show.js',
+            'project.google.map.js',
         ]);
 
         $this->addAssets('project.map.index', [

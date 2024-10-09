@@ -27,6 +27,9 @@ Route::prefix('project')->group(function () {
     Route::resource('{project}/delay', 'ProjectDelayController')
         ->names('project.delay');
 
+    Route::resource('{project}/contactDetails', 'ProjectContactDetails')
+        ->names('project.contactDetails');
+
     Route::resource('/', 'ProjectController')
         ->parameters(['' => 'project'])
         ->names('project');
