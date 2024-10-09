@@ -1,6 +1,8 @@
 $(document).ready(function () {
 
     var table = $('#projectsTable').DataTable({
+        pageLength: 50,
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         lengthChange: true,
         ordering: false,
         searching: true,
