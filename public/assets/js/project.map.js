@@ -1,1 +1,132 @@
-(()=>{function t(t){var n,e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{lat:51.1657,lng:10.4515},o=arguments.length>2&&void 0!==arguments[2]?arguments[2]:5,a=document.getElementById(t),i=function(){try{var t=a.getAttribute("data");return a.setAttribute("data",""),t?JSON.parse(t):[]}catch(t){return console.error("Failed to parse marker locations from the data attribute.",t),[]}}(),r=new google.maps.Map(a,{center:e,zoom:o,mapTypeId:"terrain",streetViewControl:!1,mapTypeControl:!1}),l=[],s=null;function h(t){return{path:"M120-120v-560h240v-80l120-120 120 120v240h240v400H120Zm80-80h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm240 320h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm240 480h80v-80h-80v80Zm0-160h80v-80h-80v80Z",strokeColor:"none",strokeWeight:0,fillColor:t,fillOpacity:1,scale:.06}}function m(t,n,e){r.panTo({lat:t,lng:n}),s&&(s.close(),s=null);var o=l[e];if(o){var a=new google.maps.InfoWindow({content:o.html.getContent()});a.open(r,o),s=a}}n=new google.maps.LatLngBounds,i.forEach((function(t,e){var o=function(t,n){var e=new google.maps.InfoWindow({content:t.content}),o=new google.maps.Marker({position:new google.maps.LatLng(t.lat,t.lng),map:r,icon:h(t.color),html:e,animation:google.maps.Animation.DROP,locationIndex:n});return function(t,n){var e=!1;t.addListener("mouseover",(function(t){e||(n.setContent(this.html),n.setPosition(t.latLng),n.open(r,this))})),t.addListener("mouseout",(function(){e||n.close()})),t.addListener("click",(function(t){e?(n.close(),e=!1):(n.setContent(this.html),n.setPosition(t.latLng),n.open(r,this),e=!0)}))}(o,e),l.push(o),o.getPosition()}(t,e);n.extend(o)})),r.fitBounds(n),$(document).on("click",".map-wrapper .tab-link",(function(t){t.preventDefault();var n=$(this).attr("id"),e=Number($(this).data("lat")),o=Number($(this).data("long")),a=i.findIndex((function(t){return t.id==n}));-1!==a&&m(e,o,a)}))}document.addEventListener("DOMContentLoaded",(function(){new t("map"),$("footer").remove()}))})();
+/******/ (() => { // webpackBootstrap
+/*!************************************************************!*\
+  !*** ./Modules/Project/Resources/assets/js/project.map.js ***!
+  \************************************************************/
+function MapHandler(mapElementId) {
+  var initialLatLng = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+    lat: 51.1657,
+    lng: 10.4515
+  };
+  var zoom = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 5;
+  var mapElement = document.getElementById(mapElementId);
+  var markerLocations = getMarkerLocationsFromElement();
+  var map = new google.maps.Map(mapElement, {
+    center: initialLatLng,
+    zoom: zoom,
+    mapTypeId: 'terrain',
+    streetViewControl: false,
+    mapTypeControl: false
+  });
+  var mapMarkers = [];
+  var currentInfoWindow = null;
+  function getMarkerLocationsFromElement() {
+    try {
+      var dataAttribute = mapElement.getAttribute('data');
+      mapElement.setAttribute('data', '');
+      return dataAttribute ? JSON.parse(dataAttribute) : [];
+    } catch (error) {
+      console.error("Failed to parse marker locations from the data attribute.", error);
+      return [];
+    }
+  }
+  function addMarkersToMap() {
+    var bounds = new google.maps.LatLngBounds();
+    markerLocations.forEach(function (location, index) {
+      var markerPosition = setMarker(location, index);
+      bounds.extend(markerPosition);
+    });
+    map.fitBounds(bounds);
+  }
+  function setMarker(location, index) {
+    var infowindow = new google.maps.InfoWindow({
+      content: location.content
+    });
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(location.lat, location.lng),
+      map: map,
+      icon: pinSymbol(location.color),
+      html: infowindow,
+      animation: google.maps.Animation.DROP,
+      locationIndex: index // Custom property to track the marker index
+    });
+    setupMarkerEvents(marker, infowindow);
+    mapMarkers.push(marker);
+    return marker.getPosition();
+  }
+  function setupMarkerEvents(marker, infowindow) {
+    var isInfoWindowOpenByClick = false;
+    marker.addListener('mouseover', function (event) {
+      if (!isInfoWindowOpenByClick) {
+        infowindow.setContent(this.html);
+        infowindow.setPosition(event.latLng);
+        infowindow.open(map, this);
+      }
+    });
+    marker.addListener('mouseout', function () {
+      if (!isInfoWindowOpenByClick) {
+        infowindow.close();
+      }
+    });
+    marker.addListener('click', function (event) {
+      if (isInfoWindowOpenByClick) {
+        infowindow.close();
+        isInfoWindowOpenByClick = false;
+      } else {
+        infowindow.setContent(this.html);
+        infowindow.setPosition(event.latLng);
+        infowindow.open(map, this);
+        isInfoWindowOpenByClick = true;
+      }
+    });
+  }
+  function pinSymbol(color) {
+    return {
+      path: 'M120-120v-560h240v-80l120-120 120 120v240h240v400H120Zm80-80h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm240 320h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm240 480h80v-80h-80v80Zm0-160h80v-80h-80v80Z',
+      strokeColor: 'none',
+      strokeWeight: 0,
+      fillColor: color,
+      fillOpacity: 1,
+      scale: 0.06
+    };
+  }
+  function focusMap(lat, lng, index) {
+    map.panTo({
+      lat: lat,
+      lng: lng
+    });
+    closeCurrentInfoWindow();
+    var marker = mapMarkers[index];
+    if (marker) {
+      var infowindow = new google.maps.InfoWindow({
+        content: marker.html.getContent()
+      });
+      infowindow.open(map, marker);
+      currentInfoWindow = infowindow;
+    }
+  }
+  function closeCurrentInfoWindow() {
+    if (currentInfoWindow) {
+      currentInfoWindow.close();
+      currentInfoWindow = null;
+    }
+  }
+  addMarkersToMap();
+  $(document).on('click', '.map-wrapper .tab-link', function (e) {
+    e.preventDefault();
+    var id = $(this).attr('id');
+    var lat = Number($(this).data('lat'));
+    var lng = Number($(this).data('long'));
+    var markerIndex = markerLocations.findIndex(function (location) {
+      return location.id == id;
+    });
+    if (markerIndex !== -1) {
+      focusMap(lat, lng, markerIndex);
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', function () {
+  new MapHandler('map');
+  $('footer').remove();
+});
+/******/ })()
+;

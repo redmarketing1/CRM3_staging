@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Project\Http\Controllers\ProjectController;
 use Modules\Project\Http\Controllers\ProjectFilesController;
 
 /*
@@ -14,6 +13,13 @@ use Modules\Project\Http\Controllers\ProjectFilesController;
 | contains the "admin" middleware group. Now create something great!
 |
 */
+
+/**
+ * Project Dashboard.
+ */
+Route::get('dashboard/project', 'ProjectDashboardController@index')
+    ->name('taskly.dashboard')
+    ->middleware(['auth']);
 
 Route::prefix('project')->group(function () {
 

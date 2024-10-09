@@ -95,9 +95,13 @@ Route::get('/asadcment', function () {
 
 
 Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
-    Route::get('dashboard/taskly', [DashboardController::class, 'index'])->name('taskly.dashboard')->middleware(['auth']);
 
-    Route::resource('projects', 'ProjectController')->middleware(['auth']);
+    // Route::get('dashboard/project', [DashboardController::class, 'index'])
+    //     ->name('taskly.dashboard')
+    //     ->middleware(['auth']);
+
+    Route::resource('projects', 'ProjectController')
+        ->middleware(['auth']);
 
     Route::get('/project/copy/{id}', [ProjectController::class, 'copyproject'])->name('project.copy')->middleware(['auth']);
     Route::post('/project/copy/store/{id}', [ProjectController::class, 'copyprojectstore'])->name('project.copy.store')->middleware(['auth']);
