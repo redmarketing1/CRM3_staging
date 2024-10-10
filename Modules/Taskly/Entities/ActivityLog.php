@@ -60,16 +60,29 @@ class ActivityLog extends Model
         $projectComment = ProjectComment::with('commentUser')->find($commentID);
         $name           = e($projectComment->commentUser->name);
 
-        // Don't escape comment content if you want HTML to render
         $html = '';
-        // $html = '<p>Comment was created by <b class="d-inline text-secondary text-sm">' . $name . '</b></p>';
-        $html .= $projectComment->comment;  // Allow HTML content
+        $html .= $projectComment->comment;
 
         if ($projectComment->file) {
-            $image = asset($projectComment->file);
-            $html .= '<a class="lightbox-link" href="' . e($image) . '" data-lightbox="gallery" data-title="Image placeholder">
-                <img alt="Image placeholder" src="' . e($image) . '" class="img-thumbnail my-3" style="display: block;max-width: 200px;max-height: 140px;">
-              </a>';
+            $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            $fileExtension   = pathinfo($projectComment->file, PATHINFO_EXTENSION);
+
+            // Handle image files
+            if (in_array(strtolower($fileExtension), $imageExtensions)) {
+                $image = asset($projectComment->file);
+                $html .= '<a class="lightbox-link" href="' . e($image) . '" data-lightbox="gallery" data-title="Image placeholder">
+                            <img alt="Image placeholder" src="' . e($image) . '" class="img-thumbnail my-3" 
+                                style="display: block;max-width: 200px;max-height: 140px;">
+                        </a>';
+            } 
+            // Handle other file types (non-images)
+            else {
+                $file = asset(rawurlencode($projectComment->file));
+                $html .= '<a href="' . e($file) . '" class="" 
+                        data-bs-toggle="tooltip" target="_blank" title="' . __('Download') . '">
+                        ' . e(basename($projectComment->file)) . '
+                        </a>';
+            }
         }
 
         return $html;

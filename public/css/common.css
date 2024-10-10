@@ -7732,11 +7732,11 @@ th.project-priority {
     max-width: 100px !important;
 }
 
-th.project-budget {
+/* th.project-budget {
     width: 90px !important;
     min-width: 90px !important;
     max-width: 90px !important;
-}
+} */
 
 th.project-action {
     width: 75px !important;
@@ -7757,7 +7757,14 @@ th.project-users {
 td.project-budget {
     text-align: right;
 }
-
+.filterable-budget-net-table .price-input {
+    display: flex;
+    margin: 0;
+    width: 100%;
+    column-gap: normal;
+    gap: 4px;
+    flex-wrap: wrap;
+}
 .project-list input[type="checkbox"].select_project,
 .project-list input[type="checkbox"].select_all_projects {
     scale: 1;
@@ -8095,12 +8102,20 @@ body.project .row {
     transition: 0.3s;
     text-wrap: wrap;
 }
-.projectsTableContainter table#projectsTable .project-comments li p {
+.projectsTableContainter table#projectsTable .project-comments li {
+    margin-bottom: 0;
+    font-size: 12px;
+    line-height: 14px;
+    border-bottom: 1px dashed #e5e5e5;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
     margin-bottom: 5px !important;
 }
-.projectsTableContainter table#projectsTable .project-comments li:last-child {
-    border-bottom: none !important;
+.projectsTableContainter table#projectsTable .project-comments li p {
+    font-size: 12px;
+    line-height: 14px;
 }
+
 .projectsTableContainter table#projectsTable .project-comments:hover {
     /* transition: 3s; */
     /* transition-delay: 2s; */
@@ -8109,15 +8124,10 @@ body.project .row {
     background-color: #FFF;
     overflow: auto;
 }
-
-.projectsTableContainter table#projectsTable .project-comments li {
-    margin-bottom: 0;
-    font-size: 12px;
-    line-height: 14px;
-    border-bottom: 1px dashed #e5e5e5;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
+.projectsTableContainter table#projectsTable .project-comments li:last-child {
+    border-bottom: none !important;
 }
+
 
 .projectsTableContainter table#projectsTable .project-comments li::marker {
     color: #9a9a9a;
@@ -8269,10 +8279,11 @@ table#projectsTable thead .select2 .select2-selection {
     color: #999 !important;
 } */
 
-table#projectsTable span.data-project-status,
-table#projectsTable span.data-project-priority {
+table#projectsTable td span {
     padding: 5px;
     border-radius: 5px;
+    margin-right: 2px;
+    border: 1px solid #0000000d;
 }
 
 table#projectsTable .select2.select2-container--default {
@@ -8443,4 +8454,7 @@ div.dt-container .dt-paging .dt-paging-button:hover {
 
 .openProjectToggle {
     position: absolute;
+}
+th.filterable-budget-net-table input {
+    max-width: 80px;
 }
