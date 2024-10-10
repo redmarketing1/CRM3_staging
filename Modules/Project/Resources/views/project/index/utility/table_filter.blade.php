@@ -24,6 +24,12 @@
             </option>
         </select>
     </th>
+    <th data-orderable="false" class="filterable-status-table">
+        <div class="status-table">
+            <select class="form-control" id="filterableStatusDropdown">
+            </select>
+        </div>
+    </th>
     <th data-orderable="false" colspan="2" class="filterable-search">
         <div class="search-table">
             <input type="search" class="form-control text-xl" placeholder="{{ trans('Search') }}" name="searchProject"
@@ -31,12 +37,6 @@
         </div>
     </th>
     <th data-orderable="false">{{ trans('archive') }}</th>
-    <th data-orderable="false" class="filterable-status-table">
-        <div class="status-table">
-            <select class="form-control" id="filterableStatusDropdown">
-            </select>
-        </div>
-    </th>
     <th data-orderable="false" class="filterable-priority-table">
         <div class="priority-table">
             <select class="form-control" id="filterablePriorityDropdown">

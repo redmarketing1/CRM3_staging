@@ -36,12 +36,12 @@ $(document).ready(function () {
                 }
             },
             { data: 'thumbnail', name: 'thumbnail', className: 'thumbnail' },
+            { data: 'status', name: 'status', orderable: true, className: 'status' },
             { data: 'name', name: 'name', orderable: true, className: 'name' },
-            { data: 'comments', name: 'comments', defaultContent: 'N/A', orderable: false, className: 'comments' },
+            { data: 'comments', name: 'comments', orderable: false, className: 'comments' },
             { data: 'is_archive', name: 'is_archive', visible: false, className: 'is_archive' },
-            { data: 'status', name: 'status', defaultContent: 'N/A', orderable: true, className: 'status' },
-            { data: 'priority', name: 'priority', defaultContent: 'N/A', orderable: false, className: 'priority' },
-            { data: 'construction', name: 'construction', defaultContent: 'N/A', orderable: false, className: 'construction' },
+            { data: 'priority', name: 'priority', orderable: false, className: 'priority' },
+            { data: 'construction', name: 'construction', orderable: false, className: 'construction' },
             { data: 'budget', name: 'budget', orderable: true, className: 'budget' },
             { data: 'created_at', name: 'created_at', orderable: true, className: 'created_at' },
             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action' }
@@ -231,10 +231,10 @@ $(document).ready(function () {
         let searchProject = removeWhitespace($('#searchProject').val()).toLowerCase();
 
 
-        const projectName = removeWhitespace(data[2]).toLowerCase();
-        const projectComment = removeWhitespace(data[3]).toLowerCase();
-        const isArchived = parseInt(data[4], 10);  // 1 for archived, 0 for not archived
-        const projectStatus = removeWhitespace(data[5]).toLowerCase();
+        const projectStatus = removeWhitespace(data[2]).toLowerCase();
+        const projectName = removeWhitespace(data[3]).toLowerCase();
+        const projectComment = removeWhitespace(data[4]).toLowerCase();
+        const isArchived = parseInt(data[5], 10);  // 1 for archived, 0 for not archived
         const projectPriority = removeWhitespace(data[6]).toLowerCase();
         const projectBudget = parseFloat(data[8]);
         const projectCreatedAt = data[9];
@@ -284,8 +284,10 @@ $(document).ready(function () {
         selectedDropdownPriority = selectedDropdownPriority.map(priority => removeWhitespace(priority).toLowerCase());
 
         // Other Filters (Status, Priority, Project Name)  
+        console.log(projectStatus);
+
         if (
-            (!selectedStatus || projectStatus.includes(selectedStatus)) &&
+            (!selectedStatus || selectedStatus == projectStatus) &&
             (!selectedDropdownStatus.length || selectedDropdownStatus.includes(projectStatus)) &&
             (!selectedDropdownPriority.length || selectedDropdownPriority.some(priority => priority === projectPriority)) &&
             (searchProject === '' || projectName.indexOf(searchProject) !== -1 || projectComment.indexOf(searchProject) !== -1)
