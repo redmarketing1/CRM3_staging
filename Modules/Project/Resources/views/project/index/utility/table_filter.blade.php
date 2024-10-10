@@ -48,10 +48,12 @@
 
         <div class="price-input input-items">
             <div class="field">
-                <input type="text" id="filter_price_from" class="input-min form_filter_field" value="0">
+                <input type="text" id="filter_price_from" class="input-min form_filter_field" value="0"
+                    step="0.1">
             </div>
             <div class="field">
-                <input type="text" id="filter_price_to" class="input-max form_filter_field">
+                <input type="text" id="filter_price_to" class="input-max form_filter_field" max="9999999"
+                    value="9999999" step="0.1">
             </div>
         </div>
 
@@ -60,9 +62,10 @@
                 <div class="progress2"></div>
             </div>
             <div class="range-input price_range_input">
-                <input type="range" class="range-min" id="filter_price_from" min="0" value="0"
-                    step="1">
-                <input type="range" class="range-max" id="filter_price_to" min="0" step="1">
+                <input type="range" class="range-min" id="filter_price_from" min="0.0" max="9999999"
+                    value="0" step="0.1">
+                <input type="range" class="range-max" id="filter_price_to" min="0.0" max="9999999"
+                    value="9999999" step="0.1">
             </div>
         </div>
     </th>
