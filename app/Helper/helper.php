@@ -129,8 +129,15 @@ if (! function_exists('generateSubMenu')) {
 
             $html .= '</a>'; // Close anchor tag
 
-            //|| request()->is('project/*')
-            if ($item['name'] == 'projects' && $item['depend_on'] && (request()->is('project'))) {
+
+
+            if ($item['name'] == 'projects' &&
+                (
+                    request()->routeIs('project.index') ||
+                    request()->routeIs('project.show') 
+                )
+            ) {
+
                 $projectTabs = new projectsTabs();
                 $html .= $projectTabs->render();
 
