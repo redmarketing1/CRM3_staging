@@ -89,26 +89,68 @@ class ProjectFilesController extends Controller
         ]);
     }
 
-    //file edit
-    public function fileEdit(){
+    //set default file
+    public function set_default_file(Request $request, $project_id){
+        $file_id    = $request->file;
+        if ($file_id != '') { 
+            ProjectFile::where('project_id',$project_id)->update([
+                'is_default' => 0
+            ]);
+
+            ProjectFile::where('id',$file_id)->update([
+                'is_default' => 1
+            ]);
+
+            return response()->json([
+                'is_success' => true,
+                'message'    => __('Default files selected successfully.'),
+            ]);
+        }
         return response()->json([
             'is_success' => false,
-            'message'    => __('Under Development.'),
+            'message'    => __('Something went wrong.'),
         ]);
     }
 
-    public function set_default_file(){
-        return response()->json([
-            'is_success' => false,
-            'message'    => __('Under Development.'),
-        ]);
+    // Bulk Delete Files
+    public function delete_files(Request $request){
+        $remove_files_ids = isset($request->remove_files_ids) ? json_decode($request->remove_files_ids) : array();
+
+        if(!empty($remove_files_ids)){
+            foreach ($remove_files_ids as $file){
+                $file = ProjectFile::find($file);
+                    delete_file($file->file_path);
+                    $file->delete();
+            }
+            return response()->json([
+                'is_success' => true,
+                'message'    => __('Files Deleted.'),
+            ]);
+        }else{
+            return response()->json([
+                'is_success' => false,
+                'message'    => __('Failed to Delete.'),
+            ]);
+        }
     }
 
-    public function delete_files(){
-        return response()->json([
-            'is_success' => false,
-            'message'    => __('Under Development.'),
-        ]);
+    //Single FIle Delete
+    public function fileDelete($file_id){
+       
+        if($file_id){
+            $file = ProjectFile::find($file_id);
+                delete_file($file->file_path);
+                $file->delete();
+            return response()->json([
+                'is_success' => true,
+                'message'    => __('Files Deleted.'),
+            ]);
+        }else{
+            return response()->json([
+                'is_success' => false,
+                'message'    => __('Failed to Delete.'),
+            ]);
+        }
     }
 
 }
