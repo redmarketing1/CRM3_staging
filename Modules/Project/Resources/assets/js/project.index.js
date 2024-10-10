@@ -46,8 +46,7 @@ $(document).ready(function () {
             { data: 'created_at', name: 'created_at', orderable: true, className: 'created_at' },
             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action' }
         ],
-        initComplete: function (settings, { data, filterableStatusList, filterablePriorityList }) {
-
+        initComplete: function (settings, { data, filterableStatusList, filterablePriorityList, minBudget, maxBudget }) {
 
             $('#projectsTable colgroup').remove();
 
@@ -154,20 +153,10 @@ $(document).ready(function () {
             });
 
 
-            let maxBudget = 0;
-            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                let data = this.data();
-                let projectBudget = parseFloat(data.budget);
-                if (projectBudget > maxBudget) {
-                    maxBudget = projectBudget;
-                }
-            });
-
-            // maxBudget = convertNumberFormat(maxBudget);
-            maxBudget = Math.round(maxBudget);
-
-            $('#filter_price_from,#filter_price_to').attr('max', maxBudget);
-            $('#filter_price_to,.range-max').val(maxBudget);
+            $('#filter_price_from,#filter_price_to').attr('max', removeSymbol(maxBudget));
+            $('#filter_price_to,.range-max').val(
+                removeSymbol(maxBudget)
+            );
         }
     });
 
@@ -226,8 +215,8 @@ $(document).ready(function () {
         let selectedDropdownStatus = $('#filterableStatusDropdown').val() || [];
         let selectedDropdownPriority = $('#filterablePriorityDropdown').val() || [];
         let selectedDateRange = $('#filterableDaterange').val();
-        let minBudget = parseFloat($('#filter_price_from').val());
-        let maxBudget = parseFloat($('#filter_price_to').val());
+        let minBudget = $('#filter_price_from').val();
+        let maxBudget = $('#filter_price_to').val();
         let searchProject = removeWhitespace($('#searchProject').val()).toLowerCase();
 
 
@@ -283,9 +272,7 @@ $(document).ready(function () {
 
         selectedDropdownPriority = selectedDropdownPriority.map(priority => removeWhitespace(priority).toLowerCase());
 
-        // Other Filters (Status, Priority, Project Name)  
-        console.log(projectStatus);
-
+        // Other Filters (Status, Priority, Project Name)    
         if (
             (!selectedStatus || selectedStatus == projectStatus) &&
             (!selectedDropdownStatus.length || selectedDropdownStatus.includes(projectStatus)) &&
@@ -446,7 +433,6 @@ $(document).ready(function () {
         }
     });
 
-
     $(document).on('click', '#clearFilter', function () {
         $('input#select-all,.row-select-checkbox').prop('checked', false);
         $('#bulk-action-selector').val('bulk');
@@ -456,6 +442,10 @@ $(document).ready(function () {
         $('#filter_price_to,.range-max').val($('#filter_price_to').attr('max'));
         table.draw();
     });
+
+    function removeSymbol(input) {
+        return input.replace(/[€\s]/g, '');
+    }
 
     function convertNumberFormat(number, format = 'EU') {
         let numString = number.toString();

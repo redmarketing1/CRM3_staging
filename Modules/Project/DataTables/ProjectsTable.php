@@ -4,8 +4,10 @@ namespace Modules\Project\DataTables;
 
 
 use Illuminate\Support\Facades\Cache;
+use Modules\Project\Entities\Project;
 use Yajra\DataTables\Facades\DataTables;
 use Modules\Core\UI\DataTables as Tables;
+use Modules\Taskly\Entities\EstimateQuote;
 
 class ProjectsTable extends Tables
 {
@@ -94,7 +96,9 @@ class ProjectsTable extends Tables
             })
             ->with('filterableStatusList', $this->filterableStatusList())
             ->with('filterablePriorityList', $this->filterablePriorityList())
-            // ->only(['id', 'name'])
+            ->with('minBudget', $this->minBudget())
+            ->with('maxBudget', $this->maxBudget());
+        // ->only(['id', 'name'])
         ;
     }
 
@@ -179,7 +183,7 @@ class ProjectsTable extends Tables
         $description = $project->description;
 
         if ($comments->isEmpty() && empty($description)) {
-            return '<span class="no-data">-</span>';
+            return '-';
         }
 
         return view('project::project.index.partials.table.comments', compact('comments', 'description'));
@@ -190,4 +194,14 @@ class ProjectsTable extends Tables
         return view('project::project.index.partials.table.construction', compact('project'));
     }
 
+    protected function maxBudget()
+    {
+        $maxBudget = Project::max('budget');
+        return currency_format_with_sym($maxBudget);
+    }
+    protected function minBudget()
+    {
+        $minBudget = Project::min('budget');
+        return currency_format_with_sym($minBudget);
+    }
 }

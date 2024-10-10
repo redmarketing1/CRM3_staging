@@ -1859,7 +1859,11 @@ function removeWhitespace(str) {
     return typeof str === 'string' ? str.replace(/\s+/g, '') : String(str || '');
 }
 
-
+function convertToEuropeanFormat(input) {
+    return input.toString()
+        .replace(/[€\s]/g, '') // Remove any euro symbol or spaces
+        .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+}
 
 $('.range-input').each(function () {
     const range = $(this).find('input[type=range]');
