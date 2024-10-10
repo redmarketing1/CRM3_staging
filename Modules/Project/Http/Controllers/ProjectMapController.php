@@ -31,7 +31,7 @@ class ProjectMapController extends Controller
             'comments',
         ])->get();
 
-        $validProjects = $projects->filter([$this, 'isValidConstructionDetail']);
+        $validProjects = $projects->filter([$this, 'isValidContactDetail']);
         $mapsLocations = $validProjects->map([$this, 'mapProjectToLocation'])->values();
 
 
@@ -46,17 +46,17 @@ class ProjectMapController extends Controller
     }
 
     /**
-     * Check if a project has valid construction detail.
+     * Check if a project has valid contact detail.
      *
      * @param  Project  $project
      * @return bool
      */
-    public function isValidConstructionDetail($project)
+    public function isValidContactDetail($project)
     {
         return isset(
-            $project->constructionDetail->id,
-            $project->constructionDetail->lat,
-            $project->constructionDetail->long
+            $project->contactDetail->id,
+            $project->contactDetail->lat,
+            $project->contactDetail->long
         );
     }
 
@@ -69,16 +69,17 @@ class ProjectMapController extends Controller
     public function mapProjectToLocation($project)
     {
         return (object) [
-            'id'        => $project->constructionDetail->id,
-            'lat'       => (float) $project->constructionDetail->lat,
-            'lng'       => (float) $project->constructionDetail->long,
-            'name'      => $project->name,
-            'shortName' => $project->shortName ?? 'N/A',
-            'status'    => $project->statusData->name ?? 'N/A',
-            'color'     => $project->statusData->background_color ?? '#EEEEEE',
-            'url'       => route('project.show', $project->id),
-            'content'   => view('project::project.map.construction-content', [
-                'detail'  => $project->constructionDetail,
+            'id'             => $project->contactDetail->id,
+            'lat'            => (float) $project->contactDetail->lat,
+            'lng'            => (float) $project->contactDetail->long,
+            'name'           => $project->name,
+            'shortName'      => $project->shortName ?? 'N/A',
+            'status'         => $project->statusData->name ?? 'N/A',
+            'fontColor'      => $project->statusData->font_color ?? '#111111',
+            'backgrounColor' => $project->backgroundColor ?? '#111111',
+            'url'            => route('project.show', $project->id),
+            'content'        => view('project::project.map.construction-content', [
+                'detail'  => $project->contactDetail,
                 'project' => $project,
             ])->render(),
         ];

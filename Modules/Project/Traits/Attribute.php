@@ -71,11 +71,11 @@ trait Attribute
         })->count();
     }
 
-    public function getProjectCountByconstructionAttribute()
+    public function getProjectCountByContactDetailAttribute()
     {
         return self::whereHas('statusData', function ($query) {
             $query->where('name', $this->statusData->name);
-        })->whereHas('constructionDetail', function ($query) {
+        })->whereHas('contactDetail', function ($query) {
             $query->whereNotNull('id')->whereNotNull('lat')->whereNotNull('long');
         })->count();
     }

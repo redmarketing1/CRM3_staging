@@ -33,8 +33,8 @@ class projectsTabs
          * Cache::remember for 60 * 60 = 1 hours
          * after expired cache it will again fetch new data 
          */
+        return $this->renderTabItems() . $this->renderProjectList() . $this->renderHtmlMenu();
         return Cache::remember('projectSubmenu-' . auth()->id(), 60 * 60, function () {
-            return $this->renderTabItems() . $this->renderProjectList();
         });
     }
 
@@ -48,7 +48,7 @@ class projectsTabs
         return [
             [
                 'title'      => __('All Projects'),
-                'route'      => 'projects.index',
+                'route'      => 'project.index',
                 'permission' => 'project manage',
             ],
             [
@@ -74,7 +74,7 @@ class projectsTabs
     {
         $menuHtml = '';
 
-        $menuHtml .= '<ul class="dash-submenu">';
+        $menuHtml .= '<ul class="project-submenu">';
 
         foreach ($this->menuItems as $item) {
 
@@ -148,7 +148,7 @@ class projectsTabs
         $groupedProjects = $allProjects->groupBy('status_data.name');
         $html            = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
 
-        return $html . $this->renderHtmlMenu();
+        return $html;
     }
 
     /**

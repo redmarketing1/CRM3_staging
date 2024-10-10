@@ -78,7 +78,6 @@ class ProjectsTable extends Tables
                 return view('project::project.index.partials.table.priority', compact('project'));
             })
             ->editColumn('budget', function ($project) {
-                // return 0;
                 return currency_format_with_sym($project->budget);
             })
             ->editColumn('created_at', function ($project) {
@@ -180,7 +179,7 @@ class ProjectsTable extends Tables
         $description = $project->description;
 
         if ($comments->isEmpty() && empty($description)) {
-            return 'N/A';
+            return '<span class="no-data">-</span>';
         }
 
         return view('project::project.index.partials.table.comments', compact('comments', 'description'));

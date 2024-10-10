@@ -21,7 +21,7 @@
                     <a class="nav-link" id="tab-{{ $statusCssName }}" href="#{{ $statusCssName }}" role="tab"
                         data-bs-toggle="tab" data-bs-placement="top" title="{{ $project->statusData->name }}"
                         style="background-color: {{ $project->backgroundColor }}; color:{{ $project->statusData->font_color }}!important;">
-                        {{ $project->shortName }} <span>{{ $project->ProjectCountByconstruction }}</span>
+                        {{ $project->shortName }} <span>{{ $project->ProjectCountByContactDetail }}</span>
                     </a>
                 </li>
             @endif

@@ -36,7 +36,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         const marker = new google.maps.Marker({
             position: new google.maps.LatLng(location.lat, location.lng),
             map: map,
-            icon: pinSymbol(location.color),
+            icon: pinSymbol(location.backgrounColor),
             html: infowindow,
             animation: google.maps.Animation.DROP,
             locationIndex: index, // Custom property to track the marker index
@@ -76,12 +76,12 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         });
     }
 
-    function pinSymbol(color) {
+    function pinSymbol(backgrounColor) {
         return {
             path: 'M120-120v-560h240v-80l120-120 120 120v240h240v400H120Zm80-80h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm240 320h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm240 480h80v-80h-80v80Zm0-160h80v-80h-80v80Z',
             strokeColor: 'none',
             strokeWeight: 0,
-            fillColor: color,
+            fillColor: backgrounColor,
             fillOpacity: 1,
             scale: 0.06,
         };
@@ -89,6 +89,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
 
     function focusMap(lat, lng, index) {
         map.panTo({ lat, lng });
+        // map.setZoom(12);
         closeCurrentInfoWindow();
 
         const marker = mapMarkers[index];
