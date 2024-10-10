@@ -1135,7 +1135,7 @@
                             showHideLoader('visible');
                         },
                         success:function (response) {
-                            if(response.status == true){
+                            if(response.is_success == true){
                                 showHideLoader('hidden');
                                 toastrs('Success', response.message, 'success')
                                 load_gallary();
@@ -1163,7 +1163,7 @@
                     showHideLoader('visible');
                 },
                 success:function (response) {
-                    if(response.status == true){
+                    if(response.is_success == true){
                         showHideLoader('hidden');
                         toastrs('Success', response.message, 'success')
                         load_gallary();
@@ -1172,6 +1172,48 @@
                     }
                 }
             });
+        });
+
+        //Delete Single File
+        $(document).on("click", ".delete_single_file_p", function(e) {
+            // e.preventDefault();
+
+            var url = $(this).data('url');
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "This action can not be undone. Do you want to continue?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url:url,
+                        type:"GET",
+                        beforeSend:function () {
+                            showHideLoader('visible');
+                        },
+                        success:function (response) {
+                            if(response.is_success == true){
+                                showHideLoader('hidden');
+                                toastrs('Success', response.message, 'success')
+                                load_gallary();
+                            } else {
+                                toastrs('Error', response.message)
+                            }
+                        }
+                    });
+                }
+            })
         });
 
         function selected_images() {

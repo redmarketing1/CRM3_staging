@@ -55,12 +55,12 @@
                 </div>
                 @if (\Auth::user()->type == 'company')
                     <div class="action-btn bg-info ms-2 hide">
-                        <a href="#" class="btn btn-sm d-inline-flex align-items-center" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal"
-                            data-url="{{ route('project.file.edit', [$project->id, $file->id]) }}"
-                            data-bs-whatever="{{ __('Edit Files') }}"> <span class="text-white"> <i class="ti ti-edit"
+                        <a href="#" class="btn btn-sm delete_single_file_p d-inline-flex align-items-center" data-bs-toggle="tooltip"
+                            data-original-title="{{ __('Delete File') }}"
+                            data-url="{{ route('project.file.delete', [$file->id]) }}"> 
+                            <span class="text-white"> <i class="ti ti-trash"
                                     data-bs-toggle="tooltip"
-                                    data-bs-original-title="{{ __('Edit') }}"></i></span></a>
+                                    data-bs-original-title="{{ __('Delete File') }}"></i></span></a>
                     </div>
                 @endif
                 <div class="action-btn checkbox-btn ms-2 default_image_selection_outer hide">
