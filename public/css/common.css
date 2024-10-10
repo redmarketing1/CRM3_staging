@@ -8460,3 +8460,11 @@ div.dt-container .dt-paging .dt-paging-button:hover {
 th.filterable-budget-net-table input {
     max-width: 80px;
 }
+
+.data-sub-name span, .data-sub-name span * {
+    border: none !important;
+    padding: 0 !important;
+    color: #999 !important;
+    margin: 0 !important;
+    line-height: 14px;
+}
