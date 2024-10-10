@@ -3,27 +3,26 @@
         <h2 class="data-name font-medium text-xl">{{ $project->name }}</h2>
     </a>
     <div class="d-flex data-sub-name flex-column font-normal">
-        @if (isset($project->constructionDetail->user->name))
+        @if (isset($project->contactDetail->name))
             <span class="construction-client-name">
-                <a href="{{ route('user', $project->constructionDetail->user->id) }}" target="__blank"
-                    class="text-sm text-black">
-                    {{ $project->constructionDetail->user->name }}
+                <a href="{{ route('user', $project->contactDetail->id) }}" target="__blank" class="text-sm text-black">
+                    {{ $project->contactDetail->name }}
                 </a>
             </span>
         @endif
-        @if (isset($project->constructionDetail->address_1))
+        @if (isset($project->contactDetail->address_1))
             <span class="text-sm text-black">
-                {{ $project->constructionDetail->address_1 }}
+                {{ $project->contactDetail->address_1 }}
             </span>
         @endif
-        @if (isset($project->constructionDetail->mobile))
+        @if (isset($project->contactDetail->mobile))
             <span class="text-sm text-black">
-                {{ $project->constructionDetail->mobile }}
+                {{ $project->contactDetail->mobile }}
             </span>
         @endif
-        @if (isset($project->constructionDetail->phone))
+        @if (isset($project->contactDetail->phone))
             <span class="text-sm text-black">
-                {{ $project->constructionDetail->phone }}
+                {{ $project->contactDetail->phone }}
             </span>
         @endif
     </div>

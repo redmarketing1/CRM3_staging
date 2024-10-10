@@ -2,6 +2,7 @@
 
 namespace Modules\Project\Traits;
 
+use App\Models\User;
 use Modules\Lead\Entities\Label;
 use Modules\Taskly\Entities\Task;
 use Illuminate\Support\Facades\Auth;
@@ -125,6 +126,15 @@ trait Relationship
     public function constructionDetail()
     {
         return $this->belongsTo(constructionDetail::class, 'construction_detail_id')->with('user');
+    }
+
+    /**
+     * Get project construction data
+     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     */
+    public function contactDetail()
+    {
+        return $this->belongsTo(User::class, 'construction_detail_id');
     }
 
     /**

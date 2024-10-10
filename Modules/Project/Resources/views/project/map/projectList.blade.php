@@ -7,7 +7,8 @@
                     <li class="tab-item">
                         <a class="tab-link" id="{{ $project->id }}" data-lat="{{ $project->lat }}"
                             data-long="{{ $project->lng }}" href="{{ $project->url }}">
-                            <span style="background-color: {{ $project->color }};">
+                            <span
+                                style="background-color: {{ $project->backgrounColor }};color: {{ $project->fontColor }};">
                                 {{ $project->shortName }}
                             </span>
                             {{ $project->name }}
@@ -28,7 +29,8 @@
                     <li class="tab-item">
                         <a class="tab-link" id="{{ $project->id }}" data-lat="{{ $project->lat }}"
                             data-long="{{ $project->lng }}" href="{{ $project->url }}">
-                            <span style="background-color: {{ $project->color }};">
+                            <span
+                                style="background-color: {{ $project->backgrounColor }};color: {{ $project->fontColor }}">
                                 {{ $project->shortName }}
                             </span>
                             {{ $project->name }}
