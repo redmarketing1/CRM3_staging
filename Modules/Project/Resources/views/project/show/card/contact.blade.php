@@ -11,7 +11,7 @@
                          <a href="javascript:;" class="btn btn-sm btn-primary" data-ajax-popup="true"
                              data-title="{{ __('Contact Details') }}" data-id="conatcDetails" data-toggle="tooltip"
                              title="{{ __('Contact Details') }}" data-size="w-80"
-                             data-url="{{ route('project.contactDetails.index', [$project->id]) }}">
+                             data-url="{{ route('projects.edit_form', [$project->id, 'ConstructionDetails']) }}">
                              <i class="ti ti-edit"></i>
                          </a>
                      </p>

@@ -517,7 +517,7 @@ td.pos-td[class*="progress-100"] {
                     @php
                         $last_signature = "";
                         $last_progress = "0%";
-                        $last_progress_details = $row->progress()->where('progress_id', $main_progress_id)->first();
+                        $last_progress_details = $row->progress()->latest()->first();
                         if(isset($last_progress_details) && !empty($last_progress_details)){
                             $last_signature = $last_progress_details->signature;
                             $last_progress = ($last_progress_details->progress) ? $last_progress_details->progress.'%' : '0%';

@@ -1,4 +1,4 @@
-{{ Form::open(['route' => ['project.contactDetails.index', [$project->id]], 'method' => 'post', 'id' => 'title_form', 'class' => 'project_contact_details']) }}
+{{ Form::open(['route' => ['project.update_details', [$project_id, $form_field]], 'method' => 'post', 'id' => 'title_form', 'class' => 'project_contact_details']) }}
 
 <div class="card-body p-0">
     <div class="row">

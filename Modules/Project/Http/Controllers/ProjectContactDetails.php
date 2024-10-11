@@ -26,7 +26,6 @@ class ProjectContactDetails extends Controller
      */
     public function index($projectID, $field = "")
     {
-
         $objUser = Auth::user();
 
 
@@ -45,7 +44,6 @@ class ProjectContactDetails extends Controller
             $estimation_quotes = EstimateQuote::whereIn('project_estimation_id', $project_estimations)->get();
         }
         $countries = Country::select(['id', 'name', 'iso'])->get();
-
 
         return view('project::project.show.edit.contact_details', compact('project', 'form_field', 'clients', 'estimation_quotes', 'countries'));
 
