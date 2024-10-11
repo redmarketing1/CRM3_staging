@@ -3,7 +3,9 @@
 ********************** NEUWEST CRM CUSTOM CSS ***********************
 *********************************************************************
 *********************************************************************/
-
+* {
+text-wrap: wrap;
+}
 .bold {
     font-weight: 500;
 }
@@ -8369,7 +8371,7 @@ th.filterable-budget-net-table input {
 
 #projectsTable thead .net-range-slider {
     position: absolute;
-    width: 155px;
+    width: 80px;
     margin-top: 8px !important;
     transition: opacity 1s ease-in-out;
     opacity: 0;

@@ -512,6 +512,7 @@ class ProjectProgressController extends Controller
 
 						$setconfing =  SetConfigEmail();
 						$smtp_error = [];
+						$setconfing = false;
 						if ($setconfing ==  true) {
 							try {
 								Mail::to($sender->email)->send(new EstimationForClientMail($emailData));
