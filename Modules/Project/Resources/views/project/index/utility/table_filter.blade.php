@@ -25,10 +25,10 @@
         </select>
     </th>
     <th data-orderable="false" class="filterable-status-table">
-        <div class="status-table">
+        {{-- <div class="status-table">
             <select class="form-control" id="filterableStatusDropdown">
             </select>
-        </div>
+        </div> --}}
     </th>
     <th data-orderable="false" colspan="2" class="filterable-search">
         <div class="search-table">
@@ -48,16 +48,15 @@
 
         <div class="price-input input-items">
             <div class="field">
-                <input type="text" id="filter_price_from" class="input-min form_filter_field" value="0"
+                <input type="number" id="filter_price_from" class="input-min form_filter_field" value="0"
                     step="0.1">
             </div>
             <div class="field">
-                <input type="text" id="filter_price_to" class="input-max form_filter_field" max="9999999"
-                    value="9999999" step="0.1">
+                <input type="text" id="filter_price_to" class="input-max form_filter_field" step="0.1">
             </div>
         </div>
 
-        <div class="my-3 net-range-slider">
+        {{-- <div class="my-3 net-range-slider d-none">
             <div class="slider_filter price_slider range_slider">
                 <div class="progress2"></div>
             </div>
@@ -67,7 +66,7 @@
                 <input type="range" class="range-max" id="filter_price_to" min="0.0" max="9999999"
                     value="9999999" step="0.1">
             </div>
-        </div>
+        </div> --}}
     </th>
     <th data-orderable="false" class="filterable-daterange-table">
         <input type='text' class="form-control daterange form_filter_field" placeholder="{{ trans('Date') }}"

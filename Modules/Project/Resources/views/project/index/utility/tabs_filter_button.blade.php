@@ -1,6 +1,6 @@
  <div class="nav nav-tabs project_tabs mb-4" id="status-tabs" role="tablist">
      <a class="nav-item nav-link active project_status_link" id="all-tab" data-toggle="tab" href="#all" role="tab"
-         aria-controls="all" aria-selected="true">
+         aria-controls="all" data-status-name="all" aria-selected="true">
          {{ __('All') }}
      </a>
 

@@ -3,8 +3,8 @@
 namespace Modules\Project\Sidebar;
 
 use Illuminate\Support\Facades\Auth;
-use Modules\Taskly\Entities\Project;
 use Illuminate\Support\Facades\Cache;
+use Modules\Project\Entities\Project;
 
 class projectsTabs
 {
@@ -14,12 +14,30 @@ class projectsTabs
     protected $menuItems;
 
     /**
+     * @var object get projects item
+     */
+    protected $projects;
+
+    /**
      * ProjectsTabs constructor.
      * Initializes the menu items.
      */
     public function __construct()
     {
         $this->menuItems = $this->registerProjectSidebarMenu();
+        $this->projects  = $this->getProject();
+    }
+
+    protected function getProject()
+    {
+        $user        = Auth::user();
+        $workspaceID = getActiveWorkSpace();
+
+        $query = ($user->type == 'company') ?
+            Project::forCompany($user->id) :
+            Project::forClient($user->id, $workspaceID);
+
+        return $query;
     }
 
     /**
@@ -33,8 +51,8 @@ class projectsTabs
          * Cache::remember for 60 * 60 = 1 hours
          * after expired cache it will again fetch new data 
          */
-        return $this->renderTabItems() . $this->renderProjectList() . $this->renderHtmlMenu();
         return Cache::remember('projectSubmenu-' . auth()->id(), 60 * 60, function () {
+            return $this->renderTabItems() . $this->renderProjectList() . $this->renderHtmlMenu();
         });
     }
 
@@ -101,52 +119,19 @@ class projectsTabs
      */
     public function renderTabItems()
     {
-        $user = Auth::user();
-        if ($user->type == 'company') {
-            $allProjects = Project::with('status_data')->get();
-        } else {
-            $allProjects = Project::with('status_data')
-                ->leftJoin('client_projects', 'client_projects.project_id', 'projects.id')
-                ->leftJoin('user_projects', 'user_projects.project_id', 'projects.id')
-                ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
-                ->where(function ($query) use ($user) {
-                    $query->where('client_projects.client_id', $user->id)
-                        ->orWhere('user_projects.user_id', $user->id)
-                        ->orWhere('estimate_quotes.user_id', $user->id);
-                })
-                ->select('projects.*')
-                ->distinct()
-                ->get();
-        }
+        $groupedProjects = $this->projects->get()->unique('statusData.name');
 
-        $groupedProjects = $allProjects->unique('status_data.name');
-        $html            = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
+        $html = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
 
         return $html;
     }
 
     public function renderProjectList()
     {
-        $user = Auth::user();
-        if ($user->type == 'company') {
-            $allProjects = Project::with('status_data')->get();
-        } else {
-            $allProjects = Project::with('status_data')
-                ->leftJoin('client_projects', 'client_projects.project_id', 'projects.id')
-                ->leftJoin('user_projects', 'user_projects.project_id', 'projects.id')
-                ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
-                ->where(function ($query) use ($user) {
-                    $query->where('client_projects.client_id', $user->id)
-                        ->orWhere('user_projects.user_id', $user->id)
-                        ->orWhere('estimate_quotes.user_id', $user->id);
-                })
-                ->select('projects.*')
-                ->distinct()
-                ->get();
-        }
+        $allProjects     = $this->projects->get();
+        $groupedProjects = $this->projects->get()->groupBy('statusData.name');
 
-        $groupedProjects = $allProjects->groupBy('status_data.name');
-        $html            = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
+        $html = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
 
         return $html;
     }

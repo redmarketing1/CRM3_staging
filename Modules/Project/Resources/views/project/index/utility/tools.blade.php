@@ -23,7 +23,7 @@
     @endpermission
 
     <div class="projects-filters">
-        <select name="projectVisibality" id="projectVisibality" class="select2">
+        <select name="projectVisibality" id="projectVisibality" class="">
             <option value="all">{{ trans('All Projects') }}</option>
             <option value="only-archive">{{ trans('Only Archives') }}</option>
             <option value="only-active" selected>{{ trans('Only Active Projects') }}</option>
