@@ -8317,10 +8317,12 @@ table#projectsTable .select2.select2-container--default {
 }
 
 th.filterable-budget-net-table input {
-    width: 100px;
+    width: 40px;
     text-align: right;
 }
-
+th.filterable-budget-net-table input:focus {
+    width: 100px;
+}
 /*.project.index .dt-length label {
     display: none;
 }
@@ -8375,12 +8377,13 @@ th.filterable-budget-net-table input {
     margin-top: 8px !important;
     transition: opacity 1s ease-in-out;
     opacity: 0;
+    display: none;;
 }
 
-#projectsTable thead:hover .net-range-slider {
+/* #projectsTable thead:hover .net-range-slider {
     transition: opacity 0.3s ease-in-out;
     opacity: 1;
-}
+} */
 
 select#bulk-action-selector {
     z-index: 9;
@@ -8457,9 +8460,7 @@ div.dt-container .dt-paging .dt-paging-button:hover {
 .openProjectToggle {
     position: absolute;
 }
-th.filterable-budget-net-table input {
-    max-width: 80px;
-}
+
 
 .data-sub-name span, .data-sub-name span * {
     border: none !important;
@@ -8467,4 +8468,8 @@ th.filterable-budget-net-table input {
     color: #999 !important;
     margin: 0 !important;
     line-height: 14px;
+}
+span.no-data {
+    border: none !important;
+    display: none;
 }
