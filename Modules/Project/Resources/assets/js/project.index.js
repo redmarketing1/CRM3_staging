@@ -196,7 +196,8 @@ $(document).ready(function () {
 
     $(document).on('click', '#status-tabs a', function (e) {
         e.preventDefault();
-        $(this).toggleClass('active');
+        $('#status-tabs a').removeClass('active');
+        $(this).addClass('active');
         table.draw();
     });
 
@@ -342,10 +343,11 @@ $(document).ready(function () {
 
         if (selectedStatus === '' || selectedStatus === 'all') return true;
 
+        /** Disable multiple tab selector 
         if (activeTabs.length > 1) {
             $('#status-tabs a').first().removeClass('active');
             return selectedStatus.includes(projectStatus)
-        }
+        }*/
 
 
         return selectedStatus === projectStatus;

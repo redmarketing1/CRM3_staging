@@ -200,7 +200,8 @@ class ProjectsTable extends Tables
     protected function maxBudget()
     {
         $maxBudget = Project::max('budget');
-        return currency_format_with_sym($maxBudget);
+        // return currency_format_with_sym($maxBudget);
+        return "1000000";
     }
     protected function minBudget()
     {

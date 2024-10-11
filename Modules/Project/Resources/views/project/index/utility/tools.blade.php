@@ -16,17 +16,17 @@
     </a>
 
     @permission('project create')
-        <a class="btn btn-sm btn-primary"  data-title="{{ __('Create New Project') }}"
-            href="{{ route('projects.create') }}" data-toggle="tooltip" title="{{ __('Create') }}">
+        <a class="btn btn-sm btn-primary" data-title="{{ __('Create New Project') }}" href="{{ route('projects.create') }}"
+            data-toggle="tooltip" title="{{ __('Create') }}">
             <i class="ti ti-plus"></i>
         </a>
     @endpermission
 
     <div class="projects-filters">
         <select name="projectVisibality" id="projectVisibality" class="">
+            <option value="only-active" selected>{{ trans('Active Projects') }}</option>
+            <option value="only-archive">{{ trans('Archived Projects') }}</option>
             <option value="all">{{ trans('All Projects') }}</option>
-            <option value="only-archive">{{ trans('Only Archives') }}</option>
-            <option value="only-active" selected>{{ trans('Only Active Projects') }}</option>
         </select>
     </div>
 </div>
