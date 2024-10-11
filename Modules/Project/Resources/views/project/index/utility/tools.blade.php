@@ -16,8 +16,8 @@
     </a>
 
     @permission('project create')
-        <a class="btn btn-sm btn-primary" data-ajax-popup="true" data-size="xl" data-title="{{ __('Create New Project') }}"
-            data-url="{{ route('projects.create') }}" data-toggle="tooltip" title="{{ __('Create') }}">
+        <a class="btn btn-sm btn-primary"  data-title="{{ __('Create New Project') }}"
+            href="{{ route('projects.create') }}" data-toggle="tooltip" title="{{ __('Create') }}">
             <i class="ti ti-plus"></i>
         </a>
     @endpermission

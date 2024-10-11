@@ -418,16 +418,24 @@ class ProjectController extends Controller
      */
     public function create()
     {
+       
         if (Auth::user()->isAbleTo('project create')) {
-            if (module_is_active('CustomField')) {
-                $customFields = \Modules\CustomField\Entities\CustomField::where('workspace_id', getActiveWorkSpace())->where('module', '=', 'taskly')->where('sub_module', 'projects')->get();
-            } else {
-                $customFields = null;
-            }
-            $workspace_users = User::where('created_by', creatorId())->emp()->where('workspace_id', getActiveWorkSpace())->orWhere('id', Auth::user()->id)->get();
-            return view('taskly::projects.create', compact('customFields', 'workspace_users'));
+            
+            $objUser          = Auth::user();
+            $currentWorkspace = getActiveWorkSpace();
+            $post ['name']                   = 'New Project';
+            $post['start_date']      = $post['end_date'] = date('Y-m-d');
+            $post['workspace']       = $currentWorkspace;
+            $post['status']          = env('PROJECT_STATUS_NEW_REQUEST');
+            $post['created_by']      = $objUser->id;
+            $post['copylinksetting'] = '{"member":"on","client":"on","milestone":"off","progress":"off","basic_details":"on","activity":"off","attachment":"on","bug_report":"on","task":"off","invoice":"off","timesheet":"off" ,"password_protected":"off"}';
+           
+            $project = Project::create($post);
+
+            return redirect()->route('project.show', $project->id)->with('success',__('Project Created Successfully!'));
+
         } else {
-            return response()->json(['error' => __('Permission denied.')], 401);
+            return redirect()->back()->with('error', __('Permission Denied'));
         }
     }
 
