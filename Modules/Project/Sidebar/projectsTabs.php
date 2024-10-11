@@ -119,7 +119,11 @@ class projectsTabs
      */
     public function renderTabItems()
     {
-        $groupedProjects = $this->projects->get()->unique('statusData.name');
+        $groupedProjects = $this->projects->get()
+            ->unique('statusData.name')
+            ->sortBy(function ($project) {
+                return $project->statusData->order ?? 0;
+            });
 
         $html = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
 

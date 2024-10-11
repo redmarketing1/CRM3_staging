@@ -35,7 +35,12 @@ class ProjectMapController extends Controller
         $mapsLocations = $validProjects->map([$this, 'mapProjectToLocation'])->values();
 
 
-        $projectTabs         = $validProjects->unique('status');
+        $projectTabs = $validProjects
+            ->sortBy(function ($project) {
+                return $project->statusData->order ?? 0;
+            })
+            ->unique('status');
+
         $groupedProjectLists = $mapsLocations->groupBy('status');
 
         return view('project::project.map.index', compact(

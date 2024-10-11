@@ -131,6 +131,9 @@ class ProjectsTable extends Tables
             $statusLists = $this->source->with('statusData')
                 ->where('projects.is_active', 1) // retrieve only actibv project
                 ->get()
+                ->sortBy(function ($project) {
+                    return $project->statusData->order ?? 0;
+                })
                 ->filter(function ($project) {
                     return ! empty($project->statusData->name);
                 })
@@ -197,7 +200,8 @@ class ProjectsTable extends Tables
     protected function maxBudget()
     {
         $maxBudget = Project::max('budget');
-        return currency_format_with_sym($maxBudget);
+        // return currency_format_with_sym($maxBudget);
+        return "1000000";
     }
     protected function minBudget()
     {
