@@ -34,6 +34,7 @@ use Modules\Taskly\Entities\EstimateQuoteItem;
 use Modules\Taskly\Entities\ProjectClientFeedback;
 use Maatwebsite\Excel\Facades\Excel;
 use Batch;
+use Butschster\Head\Facades\Meta;
 
 class ProjectEstimationController extends Controller
 {
@@ -211,7 +212,8 @@ class ProjectEstimationController extends Controller
 
 	public function setup($id)
 	{
-        
+        Meta::prependTitle(trans('Estimations Setup'));
+
 		$user	= Auth::user();
 		if ($user->isAbleTo('estimation edit')) {
 			$encryptId              = $id;
