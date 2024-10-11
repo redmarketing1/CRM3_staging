@@ -1,16 +1,17 @@
 $(document).ready(function () {
 
-    var table = $('#projectsTable').DataTable({
+    let table = $('#projectsTable').DataTable({
         pageLength: 50,
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         lengthChange: true,
         ordering: false,
         searching: true,
+        ordering: false,
         layout: {
             topEnd: null
         },
         select: {
-            style: 'multi'  // Enable multiple row selection
+            style: 'multi'
         },
         pagingType: 'simple',
         language: {
@@ -36,7 +37,10 @@ $(document).ready(function () {
                 }
             },
             { data: 'thumbnail', name: 'thumbnail', className: 'thumbnail' },
-            { data: 'status', name: 'status', orderable: true, className: 'status' },
+            {
+                data: 'status', name: 'status', orderable: true, className: 'status',
+
+            },
             { data: 'name', name: 'name', orderable: true, className: 'name' },
             { data: 'comments', name: 'comments', orderable: false, className: 'comments' },
             { data: 'is_archive', name: 'is_archive', visible: false, className: 'is_archive' },
@@ -68,15 +72,17 @@ $(document).ready(function () {
                     };
                 });
 
-                $('#filterableStatusDropdown').select2({
-                    data: selectData,
-                    placeholder: 'Select Status',
-                    multiple: true,
-                    allowClear: false,
-                    minimumResultsForSearch: Infinity,
-                    templateResult: formatOption,
-                    templateSelection: formatSelection
-                });
+                /** 
+                    $('#filterableStatusDropdown').select2({
+                        data: selectData,
+                        placeholder: 'Select Status',
+                        multiple: true,
+                        allowClear: false,
+                        minimumResultsForSearch: Infinity,
+                        templateResult: formatOption,
+                        templateSelection: formatSelection
+                    });
+                */
             }
 
             if (filterablePriorityList) {
@@ -190,99 +196,16 @@ $(document).ready(function () {
 
     $(document).on('click', '#status-tabs a', function (e) {
         e.preventDefault();
-
-        $('#status-tabs a').removeClass('active');
-        $(this).addClass('active');
-
+        $(this).toggleClass('active');
         table.draw();
     });
 
-    $(document).on('input', '#searchProject', function (e) {
-        table.draw();
-    });
-
-    $(document).on('mouseup', '#filter_price_from, #filter_price_to', function (e) {
+    $(document).on('input', '#searchProject, #filter_price_from, #filter_price_to', function (e) {
         table.draw();
     });
 
     $(document).on('change', '#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange, #projectVisibality', function () {
         table.draw();
-    });
-
-    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-        let selectedStatus = removeWhitespace($('#status-tabs .active').data('status-name')).toLowerCase();
-        let selectedVisibility = $('#projectVisibality').val() || 'only-active';
-        let selectedDropdownStatus = $('#filterableStatusDropdown').val() || [];
-        let selectedDropdownPriority = $('#filterablePriorityDropdown').val() || [];
-        let selectedDateRange = $('#filterableDaterange').val();
-        let minBudget = $('#filter_price_from').val();
-        let maxBudget = $('#filter_price_to').val();
-        let searchProject = removeWhitespace($('#searchProject').val()).toLowerCase();
-
-
-        const projectStatus = removeWhitespace(data[2]).toLowerCase();
-        const projectName = removeWhitespace(data[3]).toLowerCase();
-        const projectComment = removeWhitespace(data[4]).toLowerCase();
-        const isArchived = parseInt(data[5], 10);  // 1 for archived, 0 for not archived
-        const projectPriority = removeWhitespace(data[6]).toLowerCase();
-        const projectBudget = parseFloat(data[8]);
-        const projectCreatedAt = data[9];
-
-
-        /**
-         * Check if the project is archived; 
-         * we only want to show active projects by default
-         */
-        if ((selectedVisibility === 'only-active' && isArchived === 1) ||
-            (selectedVisibility === 'only-archive' && isArchived === 0))
-            return false;
-
-
-        if (selectedVisibility === 'only-archive') {
-            $('#status-tabs').find('a').fadeOut().removeClass('active');
-            $('#bulk-action-selector').find('option[value=archive]').hide();
-            $('#bulk-action-selector').find('option[value=unarchive]').show();
-        } else {
-            $('#status-tabs').find('a').fadeIn();
-            $('#bulk-action-selector').find('option[value=archive]').show();
-            $('#bulk-action-selector').find('option[value=unarchive]').hide();
-        }
-
-
-        /**
-         * Filter project bewteen price range
-         */
-        if (minBudget && projectBudget <= minBudget || maxBudget && projectBudget >= maxBudget) {
-            return false;
-        }
-
-        /**
-         * Date Range Filter
-         */
-        if (selectedDateRange) {
-            var dateRange = selectedDateRange.split(' - ');
-            var startDate = moment(dateRange[0], 'MM/DD/YYYY');
-            var endDate = moment(dateRange[1], 'MM/DD/YYYY');
-            var projectDate = moment(projectCreatedAt, 'DD-MM-YYYY HH:mm');
-
-            if (!projectDate.isBetween(startDate, endDate, undefined, '[]')) {
-                return false;
-            }
-        }
-
-        selectedDropdownPriority = selectedDropdownPriority.map(priority => removeWhitespace(priority).toLowerCase());
-
-        // Other Filters (Status, Priority, Project Name)    
-        if (
-            (!selectedStatus || selectedStatus == projectStatus) &&
-            (!selectedDropdownStatus.length || selectedDropdownStatus.includes(projectStatus)) &&
-            (!selectedDropdownPriority.length || selectedDropdownPriority.some(priority => priority === projectPriority)) &&
-            (searchProject === '' || projectName.indexOf(searchProject) !== -1 || projectComment.indexOf(searchProject) !== -1)
-        ) {
-            return true;
-        }
-
-        return false;
     });
 
     $(document).on('change', '#bulk-action-selector', function () {
@@ -389,50 +312,6 @@ $(document).ready(function () {
         });
     });
 
-
-    const rangeInput = $(".range-input input");
-    const priceInput = $(".price-input input");
-    const range = $(".slider_filter .progress");
-    let priceGap = 1;
-
-    // Update range input values based on price inputs
-    priceInput.on('input', function () {
-        let minPrice = parseInt(priceInput.eq(0).val());
-        let maxPrice = parseInt(priceInput.eq(1).val());
-
-        if (maxPrice - minPrice >= priceGap && maxPrice <= parseInt(rangeInput.eq(1).attr('max'))) {
-            if ($(this).hasClass("input-min")) {
-                rangeInput.eq(0).val(minPrice);
-                range.css('left', (minPrice / parseInt(rangeInput.eq(0).attr('max'))) * 100 + "%");
-            } else {
-                rangeInput.eq(1).val(maxPrice);
-                range.css('right', 100 - (maxPrice / parseInt(rangeInput.eq(1).attr('max'))) * 100 + "%");
-            }
-        }
-    });
-
-    // Update price inputs based on range input values
-    rangeInput.on('input', function () {
-        let minVal = parseInt(rangeInput.eq(0).val());
-        let maxVal = parseInt(rangeInput.eq(1).val());
-
-        if (maxVal - minVal < priceGap) {
-            if ($(this).hasClass("range-min")) {
-                rangeInput.eq(0).val(maxVal - priceGap);
-            } else {
-                rangeInput.eq(1).val(minVal + priceGap);
-            }
-        } else {
-            priceInput.eq(0).val(minVal);
-            priceInput.eq(1).val(maxVal);
-            range.css('left', (minVal / parseInt(rangeInput.eq(0).attr('max'))) * 100 + "%");
-
-            // Calculate width and set it to the progress bar
-            let width = (maxVal - minVal) / parseInt(rangeInput.eq(1).attr('max')) * 100 + "%";
-            range.css('width', width);
-        }
-    });
-
     $(document).on('click', '#clearFilter', function () {
         $('input#select-all,.row-select-checkbox').prop('checked', false);
         $('#bulk-action-selector').val('bulk');
@@ -443,20 +322,187 @@ $(document).ready(function () {
         table.draw();
     });
 
+    function findByTabStatus(data) {
+        const activeTabs = $('#status-tabs .active');
+        let projectStatus = removeWhitespace(data[2] || '').toLowerCase();
+        projectStatus = removeSelectedWords(projectStatus);
+
+        console.log(projectStatus);
+
+        if (activeTabs.length === 0) {
+            $('#status-tabs a').removeClass('active');
+            $('#status-tabs a').first().addClass('active');
+            return true;
+        }
+
+        const selectedStatus = removeWhitespace(activeTabs.map(function () {
+            return $(this).data('status-name');
+        }).get().join(' ')).toLowerCase();
+
+
+        if (selectedStatus === '' || selectedStatus === 'all') return true;
+
+        if (activeTabs.length > 1) {
+            $('#status-tabs a').first().removeClass('active');
+            return selectedStatus.includes(projectStatus)
+        }
+
+
+        return selectedStatus === projectStatus;
+    }
+
+    function projectVisibility(data) {
+
+        const selectedVisibility = $('#projectVisibality').val() || 'only-active';
+        const isArchived = parseInt(data[5], 10);
+
+        if (selectedVisibility === 'only-archive') {
+            $('#status-tabs').find('a').fadeOut().removeClass('active');
+            $('#bulk-action-selector').find('option[value=archive]').hide();
+            $('#bulk-action-selector').find('option[value=unarchive]').show();
+        } else {
+            $('#status-tabs').find('a').fadeIn();
+            $('#bulk-action-selector').find('option[value=archive]').show();
+            $('#bulk-action-selector').find('option[value=unarchive]').hide();
+        }
+
+        if ((selectedVisibility === 'only-active' && isArchived === 1) ||
+            (selectedVisibility === 'only-archive' && isArchived === 0)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function findByMultipleStatus(data) {
+        /** Don't remove will do later */
+        const selectedStatus = removeWhitespace($('#filterableStatusDropdown').val() || []).toLowerCase();
+        const projectStatus = removeWhitespace(data[2]).toLowerCase();
+
+        if (selectedStatus.length == 0) {
+            return true;
+        }
+
+        if (selectedStatus.length > 0 && selectedStatus.includes(projectStatus)) {
+            $('#status-tabs a.active').removeClass('active');
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function findByNameANDComment(data) {
+        const searchProject = removeWhitespace($('#searchProject').val()).toLowerCase();
+        const projectName = removeWhitespace(data[3]).toLowerCase();
+        const projectComment = removeWhitespace(data[4]).toLowerCase();
+
+        if (searchProject.length > 0 &&
+            projectName.indexOf(searchProject) !== -1 ||
+            projectComment.indexOf(searchProject) !== -1)
+            return true;
+
+        return false;
+    }
+
+    function findByPriority(data) {
+        const selectedPriority = $('#filterablePriorityDropdown').val() || [];
+        const projectPriority = removeWhitespace(data[6]).toLowerCase();
+
+        if (selectedPriority.length === 0) {
+            return true;
+        }
+
+        if (selectedPriority.length > 0 && selectedPriority.some(priority => priority === projectPriority)) {
+            return true;
+        }
+    }
+
+    function findByDateRange(data) {
+        let selectedDateRange = $('#filterableDaterange').val();
+        let projectCreatedAt = data[9];
+
+
+        if (selectedDateRange) {
+            var dateRange = selectedDateRange.split(' - ');
+            var startDate = moment(dateRange[0], 'MM/DD/YYYY');
+            var endDate = moment(dateRange[1], 'MM/DD/YYYY');
+            var projectDate = moment(projectCreatedAt, 'DD-MM-YYYY HH:mm');
+
+            if (!projectDate.isBetween(startDate, endDate, undefined, '[]')) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function findByBudgetRnage(data) {
+        let minBudget = parseFloat($('#filter_price_from').val());
+        let maxBudget = parseFloat($('#filter_price_to').val());
+        const projectBudget = parseFloat(data[8]);
+
+        if (minBudget && projectBudget <= minBudget || maxBudget && projectBudget >= maxBudget) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        return findByTabStatus(data) && projectVisibility(data) && findByNameANDComment(data) && findByPriority(data) && findByBudgetRnage(data) && findByDateRange(data);
+    });
+
+    // const rangeInput = $(".range-input input");
+    // const priceInput = $(".price-input input");
+    // const range = $(".slider_filter .progress");
+    // let priceGap = 1;
+
+    // // Update range input values based on price inputs
+    // priceInput.on('input', function () {
+    //     let minPrice = parseInt(priceInput.eq(0).val());
+    //     let maxPrice = parseInt(priceInput.eq(1).val());
+
+    //     if (maxPrice - minPrice >= priceGap && maxPrice <= parseInt(rangeInput.eq(1).attr('max'))) {
+    //         if ($(this).hasClass("input-min")) {
+    //             rangeInput.eq(0).val(minPrice);
+    //             range.css('left', (minPrice / parseInt(rangeInput.eq(0).attr('max'))) * 100 + "%");
+    //         } else {
+    //             rangeInput.eq(1).val(maxPrice);
+    //             range.css('right', 100 - (maxPrice / parseInt(rangeInput.eq(1).attr('max'))) * 100 + "%");
+    //         }
+    //     }
+    // });
+
+    // // Update price inputs based on range input values
+    // rangeInput.on('input', function () {
+    //     let minVal = parseInt(rangeInput.eq(0).val());
+    //     let maxVal = parseInt(rangeInput.eq(1).val());
+
+    //     if (maxVal - minVal < priceGap) {
+    //         if ($(this).hasClass("range-min")) {
+    //             rangeInput.eq(0).val(maxVal - priceGap);
+    //         } else {
+    //             rangeInput.eq(1).val(minVal + priceGap);
+    //         }
+    //     } else {
+    //         priceInput.eq(0).val(minVal);
+    //         priceInput.eq(1).val(maxVal);
+    //         range.css('left', (minVal / parseInt(rangeInput.eq(0).attr('max'))) * 100 + "%");
+
+    //         // Calculate width and set it to the progress bar
+    //         let width = (maxVal - minVal) / parseInt(rangeInput.eq(1).attr('max')) * 100 + "%";
+    //         range.css('width', width);
+    //     }
+    // });
+
     function removeSymbol(input) {
         return input.replace(/[€\s]/g, '');
     }
 
-    function convertNumberFormat(number, format = 'EU') {
-        let numString = number.toString();
+    function removeSelectedWords(inputWord) {
+        const wordsToRemove = ["lvprufen!", "ruckruf"];
 
-        if (format === 'EU') {
-            numString = numString.replace(/,/g, '.').replace(/\./g, ',');
-        } else if (format === 'US') {
-            numString = numString.replace(/,/g, '').replace(/\./g, ',').replace(/,/g, '.');
-        }
-
-        return numString;
+        const regex = new RegExp(`(${wordsToRemove.join('|')})`, 'gi');
+        return inputWord.replace(regex, '').replace(/\s+/g, ' ').trim();
     }
-
 });

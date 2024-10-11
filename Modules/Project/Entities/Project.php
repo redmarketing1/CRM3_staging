@@ -58,7 +58,7 @@ class Project extends Model
         $query = ($user->type == 'company') ?
             self::forCompany($user->id)->latest() :
             self::forClient($user->id, $workspaceID)->latest();
-            
+
         return new ProjectsTable($query);
     }
 

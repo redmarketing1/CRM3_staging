@@ -6,20 +6,20 @@
         </a>
     </li>
     @foreach ($groupedProjects as $project)
-        @if (isset($project->status_data->name))
+        @if (isset($project->statusData->name))
             @php
 
                 $statusCssName = preg_replace(
                     '/[^a-zA-Z0-9_]/',
                     '',
-                    strtolower(str_replace(' ', '_', $project->status_data->name)),
+                    strtolower(str_replace(' ', '_', $project->statusData->name)),
                 );
 
             @endphp
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="tab-{{ $statusCssName }}" href="#{{ $statusCssName }}" role="tab"
-                    data-bs-toggle="tab" data-bs-placement="top" title="{{ $project->status_data->name }}"
-                    style="background-color: {{ $project->backgroundColor }}; color:{{ $project->status_data->font_color }}!important;">
+                    data-bs-toggle="tab" data-bs-placement="top" title="{{ $project->statusData->name }}"
+                    style="background-color: {{ $project->backgroundColor }}; color:{{ $project->statusData->font_color }}!important;">
                     {{ $project->shortName }} <span>{{ $project->projectCount }}</span>
                 </a>
             </li>
