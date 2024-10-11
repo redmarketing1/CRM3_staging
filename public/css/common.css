@@ -336,16 +336,6 @@ th.border-left-right.finalized_sub_contractor_quote {
     margin: 20px 0;
 }
 
-@media only screen and (min-width: 700px) {
-    .dd {
-        float: left;
-        width: 100%;
-    }
-
-    .dd+.dd {
-        margin-left: 2%;
-    }
-}
 
 .dd-hover>.dd-handle {
     background: #2ea8e5 !important;
@@ -7813,35 +7803,6 @@ td.project-budget {
     column-count: unset;
 }
 
-@media (max-width: 499px) {
-    .dropzone {
-        column-count: 2;
-    }
-}
-
-@media (min-width: 500px) and (max-width: 799px) {
-    .dropzone {
-        column-count: 4;
-    }
-}
-
-@media (min-width: 800px) and (max-width: 1199px) {
-    .dropzone {
-        column-count: 5;
-    }
-}
-
-@media (min-width: 1200px) and (max-width: 1799px) {
-    .dropzone {
-        column-count: 6;
-    }
-}
-
-@media (min-width: 1800px) {
-    .dropzone {
-        column-count: 7;
-    }
-}
 
 /* .dropzone:hover {
     background: #5ab18217;
@@ -8473,3 +8434,157 @@ span.no-data {
     border: none !important;
     display: none;
 }
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: var(--bs-modal-padding);
+    overflow: scroll;
+}
+
+/****** MODAL SCROLL FIX *****/
+.modal {
+    overflow-y: auto !important;
+  }
+  
+  .modal-dialog {
+    max-height: 95vh !important;
+    overflow-y: initial !important;
+  }
+  
+  .modal-content {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+  
+  .modal-body {
+    max-height: calc(90vh - 120px) !important; /* Adjust if needed based on your header/footer size */
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+/****** MODAL SCROLL FIX END *****/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/************************************+****************************************************************/
+/************************************+****************************************************************/
+/************************************+ MEDIA QUERIES ONLY ********************************************/
+/************************************+****************************************************************/
+/************************************+****************************************************************/
+
+@media only screen and (min-width: 768px) {
+    .dd {
+        float: left;
+        width: 100%;
+    }
+
+    .dd + .dd {
+        margin-left: 2%;
+    }
+}
+
+@media (max-width: 575px) {
+    .dropzone {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+    .dropzone {
+        column-count: 3;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .dropzone {
+        column-count: 4;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .dropzone {
+        column-count: 5;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .dropzone {
+        column-count: 6;
+    }
+}
+
+@media (min-width: 1400px) {
+    .dropzone {
+        column-count: 7;
+    }
+}
+
+/************************************+ MEDIA QUERIES ONLY ********************************************/
