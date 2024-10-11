@@ -131,6 +131,9 @@ class ProjectsTable extends Tables
             $statusLists = $this->source->with('statusData')
                 ->where('projects.is_active', 1) // retrieve only actibv project
                 ->get()
+                ->sortBy(function ($project) {
+                    return $project->statusData->order ?? 0;
+                })
                 ->filter(function ($project) {
                     return ! empty($project->statusData->name);
                 })

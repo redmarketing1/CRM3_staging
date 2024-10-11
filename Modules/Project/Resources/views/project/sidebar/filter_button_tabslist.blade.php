@@ -1,10 +1,13 @@
 <ul class="nav dash-item-tabs" id="project" role="tablist">
-    <li class="nav-item" role="presentation">
-        <a class="nav-link" id="tab-allprojects" href="#allprojects" role="tab" style="background-color:#eee;"
-            data-bs-toggle="tab" data-bs-placement="top" title="all project">
-            <i class="fa-solid fa-list"></i>
-        </a>
-    </li>
+    @empty(!$groupedProjects)
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="tab-allprojects" href="#allprojects" role="tab" style="background-color:#eee;"
+                data-bs-toggle="tab" data-bs-placement="top" title="all project">
+                <i class="fa-solid fa-list"></i>
+            </a>
+        </li>
+    @endempty
+
     @foreach ($groupedProjects as $project)
         @if (isset($project->statusData->name))
             @php
