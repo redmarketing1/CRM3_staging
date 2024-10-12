@@ -68,7 +68,7 @@ class ProjectsTable extends Tables
     {
         return $this->newTable()
             ->editColumn('thumbnail', function ($project) {
-                return self::thumbnail($project->thumbnail);
+                return self::thumbnail($project->thumbnailOrDefault);
             })
             ->editColumn('name', function ($project) {
                 return view('project::project.index.partials.table.name', compact('project'));
