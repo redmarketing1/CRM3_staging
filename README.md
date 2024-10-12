@@ -4,23 +4,23 @@
 
 This is a custom development project for neu-west.com using Laravel 10 framework & PHP 8.2
 
-version : 0.3
+version : 0.5
 
 ## Features Checklist
 
 **Newly arrived :**
 
-- [x] Added New Project.index Datatable in "https://neu-west.com/crm3_staging/project"
-- [x] Optimize Project.show & Project.index files & folder structure
-- [x] Added Laravel Assest Manage
-- [x] Optimize main blade files
-- [x] Optimize footer code
-- [x] Optimize Project view code
-- [x] Project browser title updated
-- [x] common.css issues updated
-- [x] TinyMCE editor fixed feedback & comment section
-- [x] Added Project Progress
-- [x] Added Backup with Google Drive
+- [X] Added New Project.index Datatable in "https://neu-west.com/crm3_staging/project"
+- [X] Optimize Project.show & Project.index files & folder structure
+- [X] Added Laravel Assest Manage
+- [X] Optimize main blade files
+- [X] Optimize footer code
+- [X] Optimize Project view code
+- [X] Project browser title updated
+- [X] common.css issues updated
+- [X] TinyMCE editor fixed feedback & comment section
+- [X] Added Project Progress
+- [X] Added Backup with Google Drive
 
 ## Clone private Github Repo to cPanel Server
 
