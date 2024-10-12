@@ -328,6 +328,11 @@ $(document).ready(function () {
         let projectStatus = removeWhitespace(data[2] || '').toLowerCase();
         projectStatus = removeSelectedWords(projectStatus);
 
+        const searchProject = removeWhitespace($('#searchProject').val()).toLowerCase();
+        if (searchProject.length > 0) {
+            return true;
+        }
+
         if (activeTabs.length === 0) {
             $('#status-tabs a').removeClass('active');
             $('#status-tabs a').first().addClass('active');
@@ -338,15 +343,13 @@ $(document).ready(function () {
             return $(this).data('status-name');
         }).get().join(' ')).toLowerCase();
 
-
         if (selectedStatus === '' || selectedStatus === 'all') return true;
 
-        /** Disable multiple tab selector 
+        /** Disable multiple tab selector
         if (activeTabs.length > 1) {
             $('#status-tabs a').first().removeClass('active');
             return selectedStatus.includes(projectStatus)
         }*/
-
 
         return selectedStatus === projectStatus;
     }
