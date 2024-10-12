@@ -8464,6 +8464,12 @@ span.no-data {
   }
 /****** MODAL SCROLL FIX END *****/
 
+div#status-tabs {
+    height: auto !important;
+}
+.project.index .dash-content > .row {
+    padding: 0;
+}
 
 
 
@@ -8540,14 +8546,14 @@ span.no-data {
 /************************************+****************************************************************/
 /************************************+****************************************************************/
 
-@media only screen and (min-width: 768px) {
+@media only screen and (max-width: 767px) {
     .dd {
-        float: left;
+        float: none;
         width: 100%;
     }
 
     .dd + .dd {
-        margin-left: 2%;
+        margin-left: 0;
     }
 }
 
@@ -8557,25 +8563,38 @@ span.no-data {
     }
 }
 
-@media (min-width: 576px) and (max-width: 767px) {
+@media (max-width: 767px) {
     .dropzone {
         column-count: 3;
     }
+    table#projectsTable tr {
+        display: flex;
+        flex-flow: wrap;
+        border-bottom: 5px solid #bfbfbf;
+        margin-bottom: 0 !important;
+    }
+    table#projectsTable .theader {
+        display: none;
+    }
+    table#projectsTable td {
+        display: flex;
+        flex: auto;
+    }
 }
 
-@media (min-width: 768px) and (max-width: 991px) {
+@media (max-width: 991px) {
     .dropzone {
         column-count: 4;
     }
 }
 
-@media (min-width: 992px) and (max-width: 1199px) {
+@media (max-width: 1199px) {
     .dropzone {
         column-count: 5;
     }
 }
 
-@media (min-width: 1200px) and (max-width: 1399px) {
+@media (max-width: 1399px) {
     .dropzone {
         column-count: 6;
     }
