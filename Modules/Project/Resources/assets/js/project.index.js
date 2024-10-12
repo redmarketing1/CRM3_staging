@@ -328,8 +328,6 @@ $(document).ready(function () {
         let projectStatus = removeWhitespace(data[2] || '').toLowerCase();
         projectStatus = removeSelectedWords(projectStatus);
 
-        console.log(projectStatus);
-
         if (activeTabs.length === 0) {
             $('#status-tabs a').removeClass('active');
             $('#status-tabs a').first().addClass('active');
