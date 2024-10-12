@@ -3,6 +3,7 @@
 namespace Modules\Project\Traits;
 
 use Carbon\Carbon;
+use Modules\Taskly\Entities\ProjectFile;
 
 trait Attribute
 {
@@ -78,5 +79,22 @@ trait Attribute
         })->whereHas('contactDetail', function ($query) {
             $query->whereNotNull('id')->whereNotNull('lat')->whereNotNull('long');
         })->count();
+    }
+
+    public function getThumbnailOrDefaultAttribute()
+    {
+        $thumbnail = $this->hasOne(ProjectFile::class, 'project_id', 'id')
+            ->where('is_default', 1)
+            ->orderBy('is_default', 'desc')
+            ->first();
+
+        if (! $thumbnail) {
+            $thumbnail = $this->hasOne(ProjectFile::class, 'project_id', 'id')
+                ->where('is_default', 0)
+                ->orderBy('is_default', 'desc')
+                ->first();
+        }
+
+        return $thumbnail;
     }
 }
