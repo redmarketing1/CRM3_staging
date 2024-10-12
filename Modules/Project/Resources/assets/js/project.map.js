@@ -1,15 +1,21 @@
-function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }, zoom = 5) {
+function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }, defaultZoom = 8) {
+    var savedZoom = localStorage.getItem('mapZoomLevel') ?? defaultZoom;
     const mapElement = document.getElementById(mapElementId);
     const markerLocations = getMarkerLocationsFromElement();
     const map = new google.maps.Map(mapElement, {
         center: initialLatLng,
-        zoom: zoom,
+        zoom: parseInt(savedZoom),
         mapTypeId: 'terrain',
         streetViewControl: false,
         mapTypeControl: false,
     });
     const mapMarkers = [];
     let currentInfoWindow = null;
+
+    map.addListener('zoom_changed', function () {
+        var currentZoom = map.getZoom();
+        localStorage.setItem('mapZoomLevel', currentZoom);
+    });
 
     function getMarkerLocationsFromElement() {
         try {
@@ -28,7 +34,9 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
             const markerPosition = setMarker(location, index);
             bounds.extend(markerPosition);
         });
-        map.fitBounds(bounds);
+        if (!savedZoom) {
+            map.fitBounds(bounds);
+        }
     }
 
     function setMarker(location, index) {
@@ -39,7 +47,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
             icon: pinSymbol(location.backgrounColor),
             html: infowindow,
             animation: google.maps.Animation.DROP,
-            locationIndex: index, // Custom property to track the marker index
+            locationIndex: index,
         });
         setupMarkerEvents(marker, infowindow);
         mapMarkers.push(marker);
@@ -89,9 +97,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
 
     function focusMap(lat, lng, index) {
         map.panTo({ lat, lng });
-        // map.setZoom(12);
         closeCurrentInfoWindow();
-
         const marker = mapMarkers[index];
         if (marker) {
             const infowindow = new google.maps.InfoWindow({
@@ -116,11 +122,18 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         const id = $(this).attr('id');
         const lat = Number($(this).data('lat'));
         const lng = Number($(this).data('long'));
-
         const markerIndex = markerLocations.findIndex(location => location.id == id);
         if (markerIndex !== -1) {
             focusMap(lat, lng, markerIndex);
         }
+    });
+
+    $('#searchInput').on('input', function () {
+        const searchTerm = $(this).val().toLowerCase();
+        $('li.tab-item').each(function () {
+            const projectName = $(this).find('a').text().toLowerCase();
+            $(this).toggle(projectName.includes(searchTerm));
+        });
     });
 }
 
