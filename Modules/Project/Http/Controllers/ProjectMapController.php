@@ -24,12 +24,13 @@ class ProjectMapController extends Controller
             ? Project::ForCompany($user->id)
             : Project::ForClient($user->id, $workspaceID);
 
-        $projects = $query->without([
-            'priorityData',
-            'property',
-            'thumbnail',
-            'comments',
-        ])->get();
+        $projects = $query->whereIsArchive(0)
+            ->without([
+                'priorityData',
+                'property',
+                'thumbnail',
+                'comments',
+            ])->get();
 
         $validProjects = $projects->filter([$this, 'isValidContactDetail']);
         $mapsLocations = $validProjects->map([$this, 'mapProjectToLocation'])->values();
