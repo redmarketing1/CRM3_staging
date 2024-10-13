@@ -1,13 +1,57 @@
 function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }, defaultZoom = 8) {
     var savedZoom = localStorage.getItem('mapZoomLevel') ?? defaultZoom;
+
+    var savedLat = localStorage.getItem('mapCenterLat');
+    var savedLng = localStorage.getItem('mapCenterLng');
+
+    const mapCenter = savedLat && savedLng
+        ? { lat: parseFloat(savedLat), lng: parseFloat(savedLng) }
+        : initialLatLng;
+
     const mapElement = document.getElementById(mapElementId);
     const markerLocations = getMarkerLocationsFromElement();
     const map = new google.maps.Map(mapElement, {
-        center: initialLatLng,
+        center: mapCenter,
         zoom: parseInt(savedZoom),
         mapTypeId: 'terrain',
         streetViewControl: false,
         mapTypeControl: false,
+        styles: [
+            {
+                featureType: "poi",
+                elementType: "labels",
+                stylers: [{ visibility: "off" }]
+            },
+            {
+                featureType: "poi.business",
+                stylers: [{ visibility: "off" }]
+            },
+            {
+                featureType: "poi.medical",
+                stylers: [{ visibility: "off" }]
+            },
+            {
+                featureType: "poi.school",
+                stylers: [{ visibility: "off" }]
+            },
+            {
+                featureType: "poi.sports_complex",
+                stylers: [{ visibility: "off" }]
+            },
+            {
+                featureType: "poi.park",
+                stylers: [{ visibility: "off" }]
+            },
+            {
+                featureType: "transit.station",
+                stylers: [{ visibility: "off" }]
+            },
+            {
+                featureType: "road",
+                elementType: "labels",
+                stylers: [{ visibility: "off" }]
+            },
+        ]
     });
     const mapMarkers = [];
     let currentInfoWindow = null;
@@ -15,6 +59,12 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
     map.addListener('zoom_changed', function () {
         var currentZoom = map.getZoom();
         localStorage.setItem('mapZoomLevel', currentZoom);
+    });
+
+    map.addListener('center_changed', function () {
+        var center = map.getCenter();
+        localStorage.setItem('mapCenterLat', center.lat());
+        localStorage.setItem('mapCenterLng', center.lng());
     });
 
     function getMarkerLocationsFromElement() {
@@ -84,16 +134,17 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         });
     }
 
-    function pinSymbol(backgrounColor) {
+    function pinSymbol(backgroundColor) {
         return {
-            path: 'M384 192c0 87.4-117 243-168.3 307.2c-12.3 15.3-35.1 15.3-47.4 0C117 435 0 279.4 0 192C0 86 86 0 192 0S384 86 384 192z',
-            strokeColor: 'none',
-            strokeWeight: 0,
-            fillColor: backgrounColor,
+            path: 'M16.001 5c-4.216 0-7.714 3.418-7.634 7.634.029 1.578.719 2.824 1.351 4.024.242.461 6.264 10.332 6.264 10.332V27l.001-.007.002.007v-.01l6.531-10.377c.407-.703.793-1.771.793-1.771A7.631 7.631 0 0 0 16.001 5zM16 16.019a3.895 3.895 0 0 1-3.896-3.897A3.898 3.898 0 1 1 16 16.019z',
+            strokeColor: '#000',
+            strokeWeight: 1,
+            fillColor: backgroundColor,
             fillOpacity: 1,
-            scale: 0.09,
+            scale: 1.5,
         };
     }
+
 
     function focusMap(lat, lng, index) {
         map.panTo({ lat, lng });
@@ -130,11 +181,51 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
 
     $('#searchInput').on('input', function () {
         const searchTerm = $(this).val().toLowerCase();
-        $('li.tab-item').each(function () {
+
+        if (!searchTerm) {
+            markerLocations.forEach((location, index) => {
+                const marker = mapMarkers[index];
+                marker.setVisible(true);
+            });
+            return;
+        };
+
+        if (!$('#allprojects').hasClass('active')) {
+            $('.tab-pane.fade').removeClass('active show');
+            $('#allprojects').addClass('active show');
+        }
+
+        $('#allprojects li.tab-item').each(function () {
             const projectName = $(this).find('a').text().toLowerCase();
-            $(this).toggle(projectName.includes(searchTerm));
+            const isMatch = projectName.includes(searchTerm);
+
+            $(this).toggle(isMatch);
+
+            if (isMatch) {
+                const projectId = $(this).find('a').attr('id');
+
+                markerLocations.forEach((location, index) => {
+                    const marker = mapMarkers[index];
+                    if (location.id == projectId) {
+                        marker.setVisible(true);
+                        map.panTo(marker.getPosition());
+                        const infowindow = new google.maps.InfoWindow({
+                            content: marker.html.getContent(),
+                        });
+                        closeCurrentInfoWindow();
+                        infowindow.open(map, marker);
+                        currentInfoWindow = infowindow;
+                        setTimeout(() => {
+                            $('#searchInput').focus();
+                        }, 20);
+                    } else {
+                        marker.setVisible(false);
+                    }
+                });
+            }
         });
     });
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {
