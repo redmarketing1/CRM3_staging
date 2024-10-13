@@ -3430,6 +3430,7 @@ a.confirm-progress-btn {
 
 .gm-style-iw.gm-style-iw-c {
     padding: 20px !important;
+    max-width: 300px !important;
 }
 
 .gm-style-iw-d {
@@ -8470,8 +8471,13 @@ div#status-tabs {
 .project.index .dash-content > .row {
     padding: 0;
 }
-
-
+.gm-style-iw-ch {
+    padding: 0;
+}
+.gm-style-iw-chr button {
+    margin-top: -32px !important;
+    right: -5px;
+}
 
 
 
