@@ -61,6 +61,13 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         localStorage.setItem('mapZoomLevel', currentZoom);
     });
 
+    google.maps.event.addListener(map, 'zoom_changed', function () {
+        mapMarkers.forEach(marker => {
+            const position = marker.getPosition();
+            marker.setPosition(position); // Re-set the marker position on zoom change
+        });
+    });
+
     map.addListener('center_changed', function () {
         var center = map.getCenter();
         localStorage.setItem('mapCenterLat', center.lat());
@@ -142,6 +149,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
             fillColor: backgroundColor,
             fillOpacity: 1,
             scale: 1.5,
+            anchor: new google.maps.Point(16, 32)
         };
     }
 
@@ -225,6 +233,39 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
             }
         });
     });
+
+    $(document).on('click', '.nav-link', function (e) {
+        e.preventDefault();
+
+        const tabId = $(this).attr('id').replace('tab-', '');
+        const projectId = [];
+
+        $('#' + tabId).find('a').each(function () {
+            let ids = parseInt($(this).attr('id'));
+            projectId.push(ids);
+        });
+
+        const bounds = new google.maps.LatLngBounds();
+
+        markerLocations.forEach((location, index) => {
+            const marker = mapMarkers[index];
+            const locationId = parseInt(location.id);
+
+            if (projectId.includes(locationId)) {
+                marker.setVisible(true);
+                bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+            } else {
+                marker.setVisible(false);
+            }
+        });
+
+        if (!bounds.isEmpty()) {
+            map.fitBounds(bounds);
+        }
+    });
+
+
+
 
 }
 
