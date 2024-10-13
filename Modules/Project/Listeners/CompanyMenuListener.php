@@ -40,5 +40,19 @@ class CompanyMenuListener
             'module'     => $module,
             'permission' => 'project manage',
         ]);
+
+        $menu->add([
+            'category'   => 'Productivity',
+            'title'      => __('Project Maps'),
+            'icon'       => 'map-2',
+            'name'       => 'project-maps',
+            'parent'     => null,
+            'order'      => 301,
+            'ignore_if'  => [],
+            'depend_on'  => [],
+            'route'      => 'project.map.index',
+            'module'     => $module,
+            'permission' => 'project manage',
+        ]);
     }
 }
