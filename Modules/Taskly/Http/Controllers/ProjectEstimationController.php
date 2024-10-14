@@ -1908,6 +1908,8 @@ class ProjectEstimationController extends Controller
 
 	public function finalizeEstimation($id)
     {
+        Meta::prependTitle(trans('Finalize Estimations'));
+
         $id 		= Crypt::decrypt($id);
         $estimation = ProjectEstimation::whereId($id)->first();
     //    $settings 	= Utility::settings();

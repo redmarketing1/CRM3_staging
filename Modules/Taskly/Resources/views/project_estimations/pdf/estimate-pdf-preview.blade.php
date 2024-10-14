@@ -168,7 +168,7 @@
 				</tr>
 				<tr class="estimate-pdf-top-class">
 					<td style="padding:50px 20px; vertical-align:top;width: 25%;" colspan="4">
-						<textarea name="pdf_top_notes" id="pdf_top_notes" class="form-control" cols="30" rows="10">{!! $estimatePdfTopTemplate ?? $estimatePdfTopTemplate !!}</textarea>
+						<textarea name="pdf_top_notes" id="pdf_top_notes" class="form-control tinyMCE" cols="30" rows="10">{!! $estimatePdfTopTemplate ?? $estimatePdfTopTemplate !!}</textarea>
 					</td>
 				</tr>
 				<tr class="label-auftraggeber-planer">

@@ -117,41 +117,80 @@ class projectsTabs
      *
      * @return string Rendered HTML for tab items and sidebar menu.
      */
-    public function renderTabItems()
-    {
-        $tabItems = $this->projects->with('statusData')
-            ->get()
-            ->sortBy(function ($project) {
-                return $project->statusData->order ?? 0;
-            })
-            ->filter(function ($project) {
-                return ! empty($project->statusData->name) && $project->is_archive === 0;
-            })
-            ->groupBy('statusData.name')
-            ->map(function ($group) {
-                $status = $group->first()->statusData->toArray();
-                return (object) array_merge([
-                    'shortName' => $group->first()->shortName,
-                    'total'     => $group->count(),
-                    'tabID'     => preg_replace('/[^a-zA-Z0-9_]/', '', strtolower(str_replace(' ', '_', $status['name']))),
-                ], $status);
-            });
+    // public function renderTabItems()
+    // {
+    //     $groupedProjects = $this->projects->get()
+    //         ->unique('statusData.name')
+    //         ->sortBy(function ($project) {
+    //             return $project->statusData->order ?? 0;
+    //         });
 
+    //     $html = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
+
+    //     return $html;
+    // }
+    protected function renderTabItems()
+    {
+        $allProjects     = Project::with('statusData')->get();
+        $user = Auth::user();
+        if ($user->type == 'company') {
+            $allProjects = Project::with('statusData')->get();
+        } else {
+            $allProjects = Project::with('statusData')
+                ->leftJoin('client_projects', 'client_projects.project_id', 'projects.id')
+                ->leftJoin('user_projects', 'user_projects.project_id', 'projects.id')
+                ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
+                ->where(function ($query) use ($user) {
+                    $query->where('client_projects.client_id', $user->id)
+                        ->orWhere('user_projects.user_id', $user->id)
+                        ->orWhere('estimate_quotes.user_id', $user->id);
+                })
+                ->select('projects.*')
+                ->distinct()
+                ->get();
+        }
+        
+        $groupedProjects = $allProjects->unique('statusData.name');
 
         $html = view('project::project.sidebar.filter_button_tabslist', compact('tabItems'))->render();
 
         return $html;
     }
 
-    public function renderProjectList()
-    {
-        $allProjects = $this->projects->whereIsArchive(0)->get();
+    // public function renderProjectList()
+    // {
+    //     $allProjects     = $this->projects->get();
+    //     $groupedProjects = $this->projects->get()->groupBy('statusData.name');
 
-        $groupedProjects = $allProjects->groupBy('statusData.name');
+    //     $html = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
+
+    //     return $html;
+    // }
+    protected function renderProjectList()
+    {
+
+        $allProjects     = Project::with('statusData')->get();
+        $user = Auth::user();
+        if ($user->type == 'company') {
+            $allProjects = Project::with('statusData')->get();
+        } else {
+            $allProjects = Project::with('statusData')
+                ->leftJoin('client_projects', 'client_projects.project_id', 'projects.id')
+                ->leftJoin('user_projects', 'user_projects.project_id', 'projects.id')
+                ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
+                ->where(function ($query) use ($user) {
+                    $query->where('client_projects.client_id', $user->id)
+                        ->orWhere('user_projects.user_id', $user->id)
+                        ->orWhere('estimate_quotes.user_id', $user->id);
+                })
+                ->select('projects.*')
+                ->distinct()
+                ->get();
+        }
 
         $html = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
 
-        return $html;
+        return $html . $this->renderHtmlMenu();
     }
 
     /**
