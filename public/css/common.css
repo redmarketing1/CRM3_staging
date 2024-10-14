@@ -6895,6 +6895,7 @@ table td .btn-sm i {
     font-size: 20px !important;
     /* border-radius: 10px 10px 0 0; */
     padding-bottom: 0 !important;
+    z-index: 1!important;
 }
 
 .table#estimation-edit-table thead th.total-net-discount.totalnr,

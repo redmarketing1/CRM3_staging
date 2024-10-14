@@ -69,6 +69,7 @@ use Modules\Account\Entities\Bill;
 use Modules\Documents\Entities\Document;
 use Modules\Lead\Entities\Label;
 use Batch;
+use Butschster\Head\Facades\Meta;
 
 class ProjectController extends Controller
 {
@@ -3044,6 +3045,8 @@ class ProjectController extends Controller
 
     public function project_progress($project_id = "")
     {
+        Meta::prependTitle(trans('Project Progress'));
+
         if (!Auth::user()->isAbleTo('progress manage')){
             abort(403, __('Permission Denied!'));
         }

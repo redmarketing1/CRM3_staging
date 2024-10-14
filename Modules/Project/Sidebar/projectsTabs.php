@@ -117,27 +117,81 @@ class projectsTabs
      *
      * @return string Rendered HTML for tab items and sidebar menu.
      */
-    public function renderTabItems()
+    // public function renderTabItems()
+    // {
+    //     $groupedProjects = $this->projects->get()
+    //         ->unique('statusData.name')
+    //         ->sortBy(function ($project) {
+    //             return $project->statusData->order ?? 0;
+    //         });
+
+    //     $html = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
+
+    //     return $html;
+    // }
+    protected function renderTabItems()
     {
-        $groupedProjects = $this->projects->get()
-            ->unique('statusData.name')
-            ->sortBy(function ($project) {
-                return $project->statusData->order ?? 0;
-            });
+        $allProjects     = Project::with('statusData')->get();
+        $user = Auth::user();
+        if ($user->type == 'company') {
+            $allProjects = Project::with('statusData')->get();
+        } else {
+            $allProjects = Project::with('statusData')
+                ->leftJoin('client_projects', 'client_projects.project_id', 'projects.id')
+                ->leftJoin('user_projects', 'user_projects.project_id', 'projects.id')
+                ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
+                ->where(function ($query) use ($user) {
+                    $query->where('client_projects.client_id', $user->id)
+                        ->orWhere('user_projects.user_id', $user->id)
+                        ->orWhere('estimate_quotes.user_id', $user->id);
+                })
+                ->select('projects.*')
+                ->distinct()
+                ->get();
+        }
+        
+        $groupedProjects = $allProjects->unique('statusData.name');
 
         $html = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
 
         return $html;
     }
 
-    public function renderProjectList()
+    // public function renderProjectList()
+    // {
+    //     $allProjects     = $this->projects->get();
+    //     $groupedProjects = $this->projects->get()->groupBy('statusData.name');
+
+    //     $html = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
+
+    //     return $html;
+    // }
+    protected function renderProjectList()
     {
-        $allProjects     = $this->projects->get();
-        $groupedProjects = $this->projects->get()->groupBy('statusData.name');
+        $allProjects     = Project::with('statusData')->get();
+        $user = Auth::user();
+        if ($user->type == 'company') {
+            $allProjects = Project::with('statusData')->get();
+        } else {
+            $allProjects = Project::with('statusData')
+                ->leftJoin('client_projects', 'client_projects.project_id', 'projects.id')
+                ->leftJoin('user_projects', 'user_projects.project_id', 'projects.id')
+                ->leftJoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id')
+                ->where(function ($query) use ($user) {
+                    $query->where('client_projects.client_id', $user->id)
+                        ->orWhere('user_projects.user_id', $user->id)
+                        ->orWhere('estimate_quotes.user_id', $user->id);
+                })
+                ->select('projects.*')
+                ->distinct()
+                ->get();
+        }
+        
+        $groupedProjects = $allProjects->groupBy('statusData.name');
 
         $html = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
 
-        return $html;
+        return $html . $this->renderHtmlMenu();
     }
 
     /**
