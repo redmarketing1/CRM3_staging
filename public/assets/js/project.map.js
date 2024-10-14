@@ -1,1 +1,262 @@
-(()=>{function t(t){var e,o,n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{lat:51.1657,lng:10.4515},a=arguments.length>2&&void 0!==arguments[2]?arguments[2]:8,i=null!==(e=localStorage.getItem("mapZoomLevel"))&&void 0!==e?e:a,s=localStorage.getItem("mapCenterLat"),l=localStorage.getItem("mapCenterLng"),r=s&&l?{lat:parseFloat(s),lng:parseFloat(l)}:n,c=document.getElementById(t),p=function(){try{var t=c.getAttribute("data");return c.setAttribute("data",""),t?JSON.parse(t):[]}catch(t){return console.error("Failed to parse marker locations from the data attribute.",t),[]}}(),f=new google.maps.Map(c,{center:r,zoom:parseInt(i),mapTypeId:"terrain",streetViewControl:!1,mapTypeControl:!1,styles:[{featureType:"poi",elementType:"labels",stylers:[{visibility:"off"}]},{featureType:"poi.business",stylers:[{visibility:"off"}]},{featureType:"poi.medical",stylers:[{visibility:"off"}]},{featureType:"poi.school",stylers:[{visibility:"off"}]},{featureType:"poi.sports_complex",stylers:[{visibility:"off"}]},{featureType:"poi.park",stylers:[{visibility:"off"}]},{featureType:"transit.station",stylers:[{visibility:"off"}]},{featureType:"road",elementType:"labels",stylers:[{visibility:"off"}]}]}),u=[],g=null;function d(t){return{path:"M16.001 5c-4.216 0-7.714 3.418-7.634 7.634.029 1.578.719 2.824 1.351 4.024.242.461 6.264 10.332 6.264 10.332V27l.001-.007.002.007v-.01l6.531-10.377c.407-.703.793-1.771.793-1.771A7.631 7.631 0 0 0 16.001 5zM16 16.019a3.895 3.895 0 0 1-3.896-3.897A3.898 3.898 0 1 1 16 16.019z",strokeColor:"#000",strokeWeight:1,fillColor:t,fillOpacity:1,scale:1.5,anchor:new google.maps.Point(16,32)}}function m(){g&&(g.close(),g=null)}f.addListener("zoom_changed",(function(){var t=f.getZoom();localStorage.setItem("mapZoomLevel",t)})),google.maps.event.addListener(f,"zoom_changed",(function(){u.forEach((function(t){var e=t.getPosition();t.setPosition(e)}))})),f.addListener("center_changed",(function(){var t=f.getCenter();localStorage.setItem("mapCenterLat",t.lat()),localStorage.setItem("mapCenterLng",t.lng())})),o=new google.maps.LatLngBounds,p.forEach((function(t,e){var n=function(t,e){var o=new google.maps.InfoWindow({content:t.content}),n=new google.maps.Marker({position:new google.maps.LatLng(t.lat,t.lng),map:f,icon:d(t.backgrounColor),html:o,animation:google.maps.Animation.DROP,locationIndex:e});return function(t,e){var o=!1;t.addListener("mouseover",(function(t){o||(e.setContent(this.html),e.setPosition(t.latLng),e.open(f,this))})),t.addListener("mouseout",(function(){o||e.close()})),t.addListener("click",(function(t){o?(e.close(),o=!1):(e.setContent(this.html),e.setPosition(t.latLng),e.open(f,this),o=!0)}))}(n,o),u.push(n),n.getPosition()}(t,e);o.extend(n)})),i||f.fitBounds(o),$(document).on("click",".map-wrapper .tab-link",(function(t){t.preventDefault();var e=$(this).attr("id"),o=Number($(this).data("lat")),n=Number($(this).data("long")),a=p.findIndex((function(t){return t.id==e}));-1!==a&&function(t,e,o){f.panTo({lat:t,lng:e}),m();var n=u[o];if(n){var a=new google.maps.InfoWindow({content:n.html.getContent()});a.open(f,n),g=a}}(o,n,a)})),$("#searchInput").on("input",(function(){var t=$(this).val().toLowerCase();t?($("#allprojects").hasClass("active")||($(".tab-pane.fade").removeClass("active show"),$("#allprojects").addClass("active show")),$("#allprojects li.tab-item").each((function(){var e=$(this).find("a").text().toLowerCase().includes(t);if($(this).toggle(e),e){var o=$(this).find("a").attr("id");p.forEach((function(t,e){var n=u[e];if(t.id==o){n.setVisible(!0),f.panTo(n.getPosition());var a=new google.maps.InfoWindow({content:n.html.getContent()});m(),a.open(f,n),g=a,setTimeout((function(){$("#searchInput").focus()}),20)}else n.setVisible(!1)}))}}))):p.forEach((function(t,e){u[e].setVisible(!0)}))})),$(document).on("click",".nav-link",(function(t){t.preventDefault();var e=$(this).attr("id").replace("tab-",""),o=[];$("#"+e).find("a").each((function(){var t=parseInt($(this).attr("id"));o.push(t)}));var n=new google.maps.LatLngBounds;p.forEach((function(t,e){var a=u[e],i=parseInt(t.id);o.includes(i)?(a.setVisible(!0),n.extend(new google.maps.LatLng(t.lat,t.lng))):a.setVisible(!1)})),n.isEmpty()||f.fitBounds(n)}))}document.addEventListener("DOMContentLoaded",(function(){new t("map"),$("footer").remove()}))})();
+/******/ (() => { // webpackBootstrap
+/*!************************************************************!*\
+  !*** ./Modules/Project/Resources/assets/js/project.map.js ***!
+  \************************************************************/
+function MapHandler(mapElementId) {
+  var _localStorage$getItem;
+  var initialLatLng = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+    lat: 51.1657,
+    lng: 10.4515
+  };
+  var defaultZoom = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 8;
+  var savedZoom = (_localStorage$getItem = localStorage.getItem('mapZoomLevel')) !== null && _localStorage$getItem !== void 0 ? _localStorage$getItem : defaultZoom;
+  var savedLat = localStorage.getItem('mapCenterLat');
+  var savedLng = localStorage.getItem('mapCenterLng');
+  var mapCenter = savedLat && savedLng ? {
+    lat: parseFloat(savedLat),
+    lng: parseFloat(savedLng)
+  } : initialLatLng;
+  var mapElement = document.getElementById(mapElementId);
+  var markerLocations = getMarkerLocationsFromElement();
+  var map = new google.maps.Map(mapElement, {
+    center: mapCenter,
+    zoom: parseInt(savedZoom),
+    mapTypeId: 'terrain',
+    streetViewControl: false,
+    mapTypeControl: false,
+    styles: [{
+      featureType: "poi",
+      elementType: "labels",
+      stylers: [{
+        visibility: "off"
+      }]
+    }, {
+      featureType: "poi.business",
+      stylers: [{
+        visibility: "off"
+      }]
+    }, {
+      featureType: "poi.medical",
+      stylers: [{
+        visibility: "off"
+      }]
+    }, {
+      featureType: "poi.school",
+      stylers: [{
+        visibility: "off"
+      }]
+    }, {
+      featureType: "poi.sports_complex",
+      stylers: [{
+        visibility: "off"
+      }]
+    }, {
+      featureType: "poi.park",
+      stylers: [{
+        visibility: "off"
+      }]
+    }, {
+      featureType: "transit.station",
+      stylers: [{
+        visibility: "off"
+      }]
+    }, {
+      featureType: "road",
+      elementType: "labels",
+      stylers: [{
+        visibility: "off"
+      }]
+    }]
+  });
+  var mapMarkers = [];
+  var currentInfoWindow = null;
+  map.addListener('zoom_changed', function () {
+    var currentZoom = map.getZoom();
+    localStorage.setItem('mapZoomLevel', currentZoom);
+  });
+  google.maps.event.addListener(map, 'zoom_changed', function () {
+    mapMarkers.forEach(function (marker) {
+      var position = marker.getPosition();
+      marker.setPosition(position); // Re-set the marker position on zoom change
+    });
+  });
+  map.addListener('center_changed', function () {
+    var center = map.getCenter();
+    localStorage.setItem('mapCenterLat', center.lat());
+    localStorage.setItem('mapCenterLng', center.lng());
+  });
+  function getMarkerLocationsFromElement() {
+    try {
+      var dataAttribute = mapElement.getAttribute('data');
+      mapElement.setAttribute('data', '');
+      return dataAttribute ? JSON.parse(dataAttribute) : [];
+    } catch (error) {
+      console.error("Failed to parse marker locations from the data attribute.", error);
+      return [];
+    }
+  }
+  function addMarkersToMap() {
+    var bounds = new google.maps.LatLngBounds();
+    markerLocations.forEach(function (location, index) {
+      var markerPosition = setMarker(location, index);
+      bounds.extend(markerPosition);
+    });
+    if (!savedZoom) {
+      map.fitBounds(bounds);
+    }
+  }
+  function setMarker(location, index) {
+    var infowindow = new google.maps.InfoWindow({
+      content: location.content
+    });
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(location.lat, location.lng),
+      map: map,
+      icon: pinSymbol(location.backgrounColor),
+      html: infowindow,
+      animation: google.maps.Animation.DROP,
+      locationIndex: index
+    });
+    setupMarkerEvents(marker, infowindow);
+    mapMarkers.push(marker);
+    return marker.getPosition();
+  }
+  function setupMarkerEvents(marker, infowindow) {
+    var isInfoWindowOpenByClick = false;
+    marker.addListener('mouseover', function (event) {
+      if (!isInfoWindowOpenByClick) {
+        infowindow.setContent(this.html);
+        infowindow.setPosition(event.latLng);
+        infowindow.open(map, this);
+      }
+    });
+    marker.addListener('mouseout', function () {
+      if (!isInfoWindowOpenByClick) {
+        infowindow.close();
+      }
+    });
+    marker.addListener('click', function (event) {
+      if (isInfoWindowOpenByClick) {
+        infowindow.close();
+        isInfoWindowOpenByClick = false;
+      } else {
+        infowindow.setContent(this.html);
+        infowindow.setPosition(event.latLng);
+        infowindow.open(map, this);
+        isInfoWindowOpenByClick = true;
+      }
+    });
+  }
+  function pinSymbol(backgroundColor) {
+    return {
+      path: 'M16.001 5c-4.216 0-7.714 3.418-7.634 7.634.029 1.578.719 2.824 1.351 4.024.242.461 6.264 10.332 6.264 10.332V27l.001-.007.002.007v-.01l6.531-10.377c.407-.703.793-1.771.793-1.771A7.631 7.631 0 0 0 16.001 5zM16 16.019a3.895 3.895 0 0 1-3.896-3.897A3.898 3.898 0 1 1 16 16.019z',
+      strokeColor: '#000',
+      strokeWeight: 1,
+      fillColor: backgroundColor,
+      fillOpacity: 1,
+      scale: 1,
+      anchor: new google.maps.Point(17, 40)
+    };
+  }
+  function focusMap(lat, lng, index) {
+    map.panTo({
+      lat: lat,
+      lng: lng
+    });
+    closeCurrentInfoWindow();
+    var marker = mapMarkers[index];
+    if (marker) {
+      var infowindow = new google.maps.InfoWindow({
+        content: marker.html.getContent()
+      });
+      infowindow.open(map, marker);
+      currentInfoWindow = infowindow;
+    }
+  }
+  function closeCurrentInfoWindow() {
+    if (currentInfoWindow) {
+      currentInfoWindow.close();
+      currentInfoWindow = null;
+    }
+  }
+  $(document).on('click', '.map-wrapper .tab-link', function (e) {
+    e.preventDefault();
+    var id = $(this).attr('id');
+    var lat = Number($(this).data('lat'));
+    var lng = Number($(this).data('long'));
+    var markerIndex = markerLocations.findIndex(function (location) {
+      return location.id == id;
+    });
+    if (markerIndex !== -1) {
+      focusMap(lat, lng, markerIndex);
+    }
+  });
+  $('#searchInput').on('input', function () {
+    var searchTerm = $(this).val().toLowerCase();
+    var projectIds = [];
+    if (!searchTerm) {
+      markerLocations.forEach(function (location, index) {
+        var marker = mapMarkers[index];
+        marker.setVisible(true);
+      });
+      return;
+    }
+    if (!$('#allprojects').hasClass('active')) {
+      $('.tab-pane.fade').removeClass('active show');
+      $('#allprojects').addClass('active show');
+    }
+    $('#allprojects li.tab-item').each(function () {
+      var projectName = $(this).find('a').text().toLowerCase();
+      var isMatch = projectName.includes(searchTerm);
+      if (isMatch) {
+        var id = parseInt($(this).find('a').attr('id'));
+        projectIds.push(id);
+      }
+      var bounds = new google.maps.LatLngBounds();
+      markerLocations.forEach(function (location, index) {
+        var marker = mapMarkers[index];
+        var locationId = parseInt(location.id);
+        if (projectIds.includes(locationId)) {
+          marker.setVisible(true);
+          bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+        } else {
+          marker.setVisible(false);
+        }
+      });
+      if (!bounds.isEmpty()) {
+        map.fitBounds(bounds);
+      }
+      $(this).toggle(isMatch);
+    });
+  });
+  $(document).on('click', '.nav-link', function (e) {
+    e.preventDefault();
+    var tabId = $(this).attr('id').replace('tab-', '');
+    var projectId = [];
+    $('#' + tabId).find('a').each(function () {
+      var ids = parseInt($(this).attr('id'));
+      projectId.push(ids);
+    });
+    var bounds = new google.maps.LatLngBounds();
+    markerLocations.forEach(function (location, index) {
+      var marker = mapMarkers[index];
+      var locationId = parseInt(location.id);
+      if (projectId.includes(locationId)) {
+        marker.setVisible(true);
+        bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+      } else {
+        marker.setVisible(false);
+      }
+    });
+    if (!bounds.isEmpty()) {
+      map.fitBounds(bounds);
+    }
+  });
+  addMarkersToMap();
+}
+document.addEventListener('DOMContentLoaded', function () {
+  new MapHandler('map');
+  $('footer').remove();
+});
+/******/ })()
+;

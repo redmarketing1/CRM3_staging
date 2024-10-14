@@ -148,11 +148,10 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
             strokeWeight: 1,
             fillColor: backgroundColor,
             fillOpacity: 1,
-            scale: 1.5,
-            anchor: new google.maps.Point(16, 32)
+            scale: 1,
+            anchor: new google.maps.Point(17, 40)
         };
     }
-
 
     function focusMap(lat, lng, index) {
         map.panTo({ lat, lng });
@@ -174,8 +173,6 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         }
     }
 
-    addMarkersToMap();
-
     $(document).on('click', '.map-wrapper .tab-link', function (e) {
         e.preventDefault();
         const id = $(this).attr('id');
@@ -189,6 +186,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
 
     $('#searchInput').on('input', function () {
         const searchTerm = $(this).val().toLowerCase();
+        const projectIds = [];
 
         if (!searchTerm) {
             markerLocations.forEach((location, index) => {
@@ -196,7 +194,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
                 marker.setVisible(true);
             });
             return;
-        };
+        }
 
         if (!$('#allprojects').hasClass('active')) {
             $('.tab-pane.fade').removeClass('active show');
@@ -207,31 +205,33 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
             const projectName = $(this).find('a').text().toLowerCase();
             const isMatch = projectName.includes(searchTerm);
 
-            $(this).toggle(isMatch);
-
             if (isMatch) {
-                const projectId = $(this).find('a').attr('id');
-
-                markerLocations.forEach((location, index) => {
-                    const marker = mapMarkers[index];
-                    if (location.id == projectId) {
-                        marker.setVisible(true);
-                        map.panTo(marker.getPosition());
-                        const infowindow = new google.maps.InfoWindow({
-                            content: marker.html.getContent(),
-                        });
-                        closeCurrentInfoWindow();
-                        infowindow.open(map, marker);
-                        currentInfoWindow = infowindow;
-                        setTimeout(() => {
-                            $('#searchInput').focus();
-                        }, 20);
-                    } else {
-                        marker.setVisible(false);
-                    }
-                });
+                const id = parseInt($(this).find('a').attr('id'));
+                projectIds.push(id);
             }
+
+            const bounds = new google.maps.LatLngBounds();
+
+            markerLocations.forEach((location, index) => {
+                const marker = mapMarkers[index];
+                const locationId = parseInt(location.id);
+
+                if (projectIds.includes(locationId)) {
+                    marker.setVisible(true);
+                    bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+                } else {
+                    marker.setVisible(false);
+                }
+            });
+
+            if (!bounds.isEmpty()) {
+                map.fitBounds(bounds);
+            }
+
+
+            $(this).toggle(isMatch);
         });
+
     });
 
     $(document).on('click', '.nav-link', function (e) {
@@ -264,9 +264,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         }
     });
 
-
-
-
+    addMarkersToMap();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
