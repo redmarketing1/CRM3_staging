@@ -68,7 +68,7 @@ class ProjectsTable extends Tables
     {
         return $this->newTable()
             ->editColumn('thumbnail', function ($project) {
-                return self::thumbnail($project->thumbnail);
+                return self::thumbnail($project->thumbnailOrDefault);
             })
             ->editColumn('name', function ($project) {
                 return view('project::project.index.partials.table.name', compact('project'));
@@ -129,13 +129,13 @@ class ProjectsTable extends Tables
          */
         return Cache::remember('filterableStatusList-' . auth()->id(), 60 * 60, function () {
             $statusLists = $this->source->with('statusData')
-                ->where('projects.is_active', 1) // retrieve only actibv project
+                // ->where('projects.is_active', 0) // retrieve only active project
                 ->get()
                 ->sortBy(function ($project) {
                     return $project->statusData->order ?? 0;
                 })
                 ->filter(function ($project) {
-                    return ! empty($project->statusData->name);
+                    return ! empty($project->statusData->name) && $project->is_archive === 0;
                 })
                 ->groupBy('statusData.name')
                 ->map(function ($group) {
@@ -151,6 +151,7 @@ class ProjectsTable extends Tables
                 'data' => $statusLists,
             ];
         });
+
     }
     protected function filterablePriorityList()
     {

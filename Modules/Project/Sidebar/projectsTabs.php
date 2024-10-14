@@ -152,7 +152,7 @@ class projectsTabs
         
         $groupedProjects = $allProjects->unique('statusData.name');
 
-        $html = view('project::project.sidebar.filter_button_tabslist', compact('groupedProjects'))->render();
+        $html = view('project::project.sidebar.filter_button_tabslist', compact('tabItems'))->render();
 
         return $html;
     }
@@ -168,6 +168,7 @@ class projectsTabs
     // }
     protected function renderProjectList()
     {
+
         $allProjects     = Project::with('statusData')->get();
         $user = Auth::user();
         if ($user->type == 'company') {
@@ -186,8 +187,6 @@ class projectsTabs
                 ->distinct()
                 ->get();
         }
-        
-        $groupedProjects = $allProjects->groupBy('statusData.name');
 
         $html = view('project::project.sidebar.filtered_project_lists', compact('groupedProjects', 'allProjects'))->render();
 
