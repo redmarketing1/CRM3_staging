@@ -10,49 +10,33 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
 
     const mapElement = document.getElementById(mapElementId);
     const markerLocations = getMarkerLocationsFromElement();
+
+    const hiddenPOIStyles = [
+        {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }]
+        },
+        { featureType: "poi.business", stylers: [{ visibility: "off" }] },
+        { featureType: "poi.medical", stylers: [{ visibility: "off" }] },
+        { featureType: "poi.school", stylers: [{ visibility: "off" }] },
+        { featureType: "poi.sports_complex", stylers: [{ visibility: "off" }] },
+        { featureType: "poi.park", stylers: [{ visibility: "off" }] },
+        { featureType: "transit.station", stylers: [{ visibility: "off" }] },
+        { featureType: "road", elementType: "labels", stylers: [{ visibility: "off" }] },
+    ];
+
+    const defaultStyles = [];
+
     const map = new google.maps.Map(mapElement, {
         center: mapCenter,
         zoom: parseInt(savedZoom),
         mapTypeId: 'terrain',
         streetViewControl: false,
         mapTypeControl: false,
-        styles: [
-            {
-                featureType: "poi",
-                elementType: "labels",
-                stylers: [{ visibility: "off" }]
-            },
-            {
-                featureType: "poi.business",
-                stylers: [{ visibility: "off" }]
-            },
-            {
-                featureType: "poi.medical",
-                stylers: [{ visibility: "off" }]
-            },
-            {
-                featureType: "poi.school",
-                stylers: [{ visibility: "off" }]
-            },
-            {
-                featureType: "poi.sports_complex",
-                stylers: [{ visibility: "off" }]
-            },
-            {
-                featureType: "poi.park",
-                stylers: [{ visibility: "off" }]
-            },
-            {
-                featureType: "transit.station",
-                stylers: [{ visibility: "off" }]
-            },
-            {
-                featureType: "road",
-                elementType: "labels",
-                stylers: [{ visibility: "off" }]
-            },
-        ]
+        styles: hiddenPOIStyles,
     });
+
     const mapMarkers = [];
     let currentInfoWindow = null;
 
@@ -143,16 +127,16 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
 
     function pinSymbol(backgroundColor) {
         return {
-            path: 'M16.001 5c-4.216 0-7.714 3.418-7.634 7.634.029 1.578.719 2.824 1.351 4.024.242.461 6.264 10.332 6.264 10.332V27l.001-.007.002.007v-.01l6.531-10.377c.407-.703.793-1.771.793-1.771A7.631 7.631 0 0 0 16.001 5zM16 16.019a3.895 3.895 0 0 1-3.896-3.897A3.898 3.898 0 1 1 16 16.019z',
-            strokeColor: '#000',
+            path: 'M33,13.924C33,6.893,27.594,1,20.51,1S8,6.897,8,13.93C8,16.25,8.324,18,9.423,20H9.402l10.695,20.621 c0.402,0.551,0.824-0.032,0.824-0.032C20.56,41.13,31.616,20,31.616,20h-0.009C32.695,18,33,16.246,33,13.924z M14.751,13.528 c0-3.317,2.579-6.004,5.759-6.004c3.179,0,5.76,2.687,5.76,6.004s-2.581,6.005-5.76,6.005C17.33,19.533,14.751,16.846,14.751,13.528 z',
+            strokeColor: '#222',
             strokeWeight: 1,
             fillColor: backgroundColor,
             fillOpacity: 1,
-            scale: 1.5,
-            anchor: new google.maps.Point(16, 32)
+            scale: 0.6,
+            anchor: new google.maps.Point(21, 42),
+            labelOrigin: new google.maps.Point(20, 60)
         };
     }
-
 
     function focusMap(lat, lng, index) {
         map.panTo({ lat, lng });
@@ -174,8 +158,6 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         }
     }
 
-    addMarkersToMap();
-
     $(document).on('click', '.map-wrapper .tab-link', function (e) {
         e.preventDefault();
         const id = $(this).attr('id');
@@ -189,6 +171,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
 
     $('#searchInput').on('input', function () {
         const searchTerm = $(this).val().toLowerCase();
+        const projectIds = [];
 
         if (!searchTerm) {
             markerLocations.forEach((location, index) => {
@@ -196,7 +179,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
                 marker.setVisible(true);
             });
             return;
-        };
+        }
 
         if (!$('#allprojects').hasClass('active')) {
             $('.tab-pane.fade').removeClass('active show');
@@ -207,31 +190,33 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
             const projectName = $(this).find('a').text().toLowerCase();
             const isMatch = projectName.includes(searchTerm);
 
-            $(this).toggle(isMatch);
-
             if (isMatch) {
-                const projectId = $(this).find('a').attr('id');
-
-                markerLocations.forEach((location, index) => {
-                    const marker = mapMarkers[index];
-                    if (location.id == projectId) {
-                        marker.setVisible(true);
-                        map.panTo(marker.getPosition());
-                        const infowindow = new google.maps.InfoWindow({
-                            content: marker.html.getContent(),
-                        });
-                        closeCurrentInfoWindow();
-                        infowindow.open(map, marker);
-                        currentInfoWindow = infowindow;
-                        setTimeout(() => {
-                            $('#searchInput').focus();
-                        }, 20);
-                    } else {
-                        marker.setVisible(false);
-                    }
-                });
+                const id = parseInt($(this).find('a').attr('id'));
+                projectIds.push(id);
             }
+
+            const bounds = new google.maps.LatLngBounds();
+
+            markerLocations.forEach((location, index) => {
+                const marker = mapMarkers[index];
+                const locationId = parseInt(location.id);
+
+                if (projectIds.includes(locationId)) {
+                    marker.setVisible(true);
+                    bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+                } else {
+                    marker.setVisible(false);
+                }
+            });
+
+            if (!bounds.isEmpty()) {
+                map.fitBounds(bounds);
+            }
+
+
+            $(this).toggle(isMatch);
         });
+
     });
 
     $(document).on('click', '.nav-link', function (e) {
@@ -264,9 +249,64 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         }
     });
 
+    function addPOIToggleButton(map, mapElement, hiddenPOIStyles, defaultStyles) {
+        let poiHidden = true;
+
+        const toggleButton = document.createElement('button');
+        toggleButton.textContent = "POI Visibility";
+        toggleButton.classList = "bg-white rounded px-2 shadow-sm py-sm-1 font-semibold";
+        toggleButton.style.position = 'absolute';
+        toggleButton.style.top = '10px';
+        toggleButton.style.left = '10px';
+        toggleButton.style.zIndex = '999';
+        mapElement.appendChild(toggleButton);
+
+        toggleButton.addEventListener('click', function () {
+            poiHidden = !poiHidden;
+            map.setOptions({ styles: poiHidden ? hiddenPOIStyles : defaultStyles });
+        });
+    }
+
+    function addToggleLabelsButton(map, mapElement) {
+        let labelsVisible = true;
+
+        const toggleButton = document.createElement('button');
+        toggleButton.textContent = "Label Visibility";
+        toggleButton.classList = "bg-white rounded px-2 shadow-sm py-sm-1 font-semibold";
+        toggleButton.style.position = 'absolute';
+        toggleButton.style.top = '50px';
+        toggleButton.style.left = '10px';
+        toggleButton.style.zIndex = '999';
+        mapElement.appendChild(toggleButton);
 
 
+        toggleButton.addEventListener('click', function () {
+            labelsVisible = !labelsVisible;
+            markerLocations.forEach((location, index) => {
+                const marker = mapMarkers[index];
+                if (labelsVisible) {
+                    marker.setLabel(null);
+                } else {
+                    marker.setLabel({
+                        text: location.name,
+                        color: "#222222",
+                        fontSize: "15px",
+                        fontWeight: 'bold',
+                        className: "project-label",
+                    });
+                }
+            });
 
+            // toggleButton.textContent = labelsVisible ? 'Label Hide' : 'Label Visibility';
+        });
+    }
+
+    addMarkersToMap();
+
+    setTimeout(function () {
+        addPOIToggleButton(map, mapElement, hiddenPOIStyles, defaultStyles);
+        addToggleLabelsButton(map, mapElement);
+    }, 2000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

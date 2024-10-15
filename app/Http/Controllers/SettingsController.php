@@ -31,55 +31,55 @@ class SettingsController extends Controller
             $settings = getCompanyAllSetting();
         }
 
-        if (!empty($module) && $module != 'Base') {
+        if (! empty($module) && $module != 'Base') {
             $controllerClass = "Modules\\" . $module . "\\Http\\Controllers\\" . $folder . "\\SettingsController";
 
             if (class_exists($controllerClass)) {
                 $controller = \App::make($controllerClass);
                 if (method_exists($controller, $method)) {
-                    $output =  $controller->{$method}($settings);
+                    $output = $controller->{$method}($settings);
                     $return = [
                         'status' => 200,
-                        'html' => $output->toHtml(),
+                        'html'   => $output->toHtml(),
                     ];
-                    return  response()->json($return);
+                    return response()->json($return);
                 }
             }
         } else {
-            $method = 'index';
-            $html = '';
+            $method          = 'index';
+            $html            = '';
             $controllerClass = "App\\Http\\Controllers\\" . $folder . "\\SettingsController";
 
             if (class_exists($controllerClass)) {
                 $controller = \App::make($controllerClass);
                 if (method_exists($controller, $method)) {
-                    $output =  $controller->{$method}($settings);
+                    $output = $controller->{$method}($settings);
                     if ($output !== null) {
                         $html .= $output->toHtml();
                     }
                 }
             }
 
-            $method = 'emailSettingGet';
+            $method          = 'emailSettingGet';
             $controllerClass = "App\\Http\\Controllers\\SettingsController";
 
             if (class_exists($controllerClass)) {
                 $controller = \App::make($controllerClass);
                 if (method_exists($controller, $method)) {
-                    $output =  $controller->{$method}($settings);
+                    $output = $controller->{$method}($settings);
                     if ($output !== null) {
                         $html .= $output->toHtml();
                     }
                 }
             }
 
-            $method = 'settingGet';
+            $method          = 'settingGet';
             $controllerClass = "App\\Http\\Controllers\\BanktransferController";
 
             if (class_exists($controllerClass)) {
                 $controller = \App::make($controllerClass);
                 if (method_exists($controller, $method)) {
-                    $output =  $controller->{$method}($settings);
+                    $output = $controller->{$method}($settings);
                     if ($output !== null) {
                         $html .= $output->toHtml();
                     }
@@ -88,7 +88,7 @@ class SettingsController extends Controller
 
             $return = [
                 'status' => 200,
-                'html' => $html,
+                'html'   => $html,
             ];
             return response()->json($return);
         }
@@ -97,14 +97,14 @@ class SettingsController extends Controller
 
     public function emailSettingGet($settings)
     {
-        $activatedModules = ActivatedModule();
-        $email_notification_modules = Notification::where('type','mail')->whereIn('module', $activatedModules)->orwhere('module','General')->pluck('module')->toArray();
+        $activatedModules           = ActivatedModule();
+        $email_notification_modules = Notification::where('type', 'mail')->whereIn('module', $activatedModules)->orwhere('module', 'General')->pluck('module')->toArray();
 
         $email_notification_modules = array_unique($email_notification_modules);
 
-        $email_notify = Notification::where('type', 'mail')->whereIn('module', $email_notification_modules)->get(['module', 'action', 'permissions']);
+        $email_notify  = Notification::where('type', 'mail')->whereIn('module', $email_notification_modules)->get(['module', 'action', 'permissions']);
         $email_setting = EmailTemplate::$email_settings;
-        return view('email.index', compact('settings', 'email_notification_modules', 'email_notify','email_setting'));
+        return view('email.index', compact('settings', 'email_notification_modules', 'email_notify', 'email_setting'));
     }
 
     /**
@@ -164,59 +164,59 @@ class SettingsController extends Controller
         } else {
             $settings = getCompanyAllSetting();
         }
-       $email_setting = $request->emailsetting;
+        $email_setting = $request->emailsetting;
 
-       $returnHTML = view('email.input', compact('email_setting','settings'))->render();
-       $response = [
-           'is_success' => true,
-           'message' => '',
-           'html' => $returnHTML,
-       ];
+        $returnHTML = view('email.input', compact('email_setting', 'settings'))->render();
+        $response   = [
+            'is_success' => true,
+            'message'    => '',
+            'html'       => $returnHTML,
+        ];
 
-       return response()->json($response);
+        return response()->json($response);
     }
     public function mailStore(Request $request)
     {
 
         if (Auth::user()->isAbleTo('setting manage')) {
 
-                $validator = \Validator::make(
-                    $request->all(),
-                    [
-                        'mail_driver' => 'required|string|max:255',
-                        'mail_host' => 'required|string|max:255',
-                        'mail_port' => 'required|string|max:255',
-                        'mail_username' => 'required|string|max:255',
-                        'mail_password' => 'required|string|max:255',
-                        'mail_encryption' => 'required|string|max:255',
-                        'mail_from_address' => 'required|string|max:255',
-                        'mail_from_name' => 'required|string|max:255',
-                    ]
-                );
-                if ($validator->fails()) {
-                    $messages = $validator->getMessageBag();
-                    return redirect()->back()->with('error', $messages->first());
-                }
+            $validator = \Validator::make(
+                $request->all(),
+                [
+                    'mail_driver'       => 'required|string|max:255',
+                    'mail_host'         => 'required|string|max:255',
+                    'mail_port'         => 'required|string|max:255',
+                    'mail_username'     => 'required|string|max:255',
+                    'mail_password'     => 'required|string|max:255',
+                    'mail_encryption'   => 'required|string|max:255',
+                    'mail_from_address' => 'required|string|max:255',
+                    'mail_from_name'    => 'required|string|max:255',
+                ],
+            );
+            if ($validator->fails()) {
+                $messages = $validator->getMessageBag();
+                return redirect()->back()->with('error', $messages->first());
+            }
 
-                $post = [
-                    'email_setting' => $request->email_setting,
-                    'mail_driver' => $request->mail_driver,
-                    'mail_host' => $request->mail_host,
-                    'mail_port' => $request->mail_port,
-                    'mail_username' => $request->mail_username,
-                    'mail_password' => $request->mail_password,
-                    'mail_encryption' => $request->mail_encryption,
-                    'mail_from_address' => $request->mail_from_address,
-                    'mail_from_name' => $request->mail_from_name,
+            $post = [
+                'email_setting'     => $request->email_setting,
+                'mail_driver'       => $request->mail_driver,
+                'mail_host'         => $request->mail_host,
+                'mail_port'         => $request->mail_port,
+                'mail_username'     => $request->mail_username,
+                'mail_password'     => $request->mail_password,
+                'mail_encryption'   => $request->mail_encryption,
+                'mail_from_address' => $request->mail_from_address,
+                'mail_from_name'    => $request->mail_from_name,
 
-                ];
+            ];
 
             unset($post['_token'], $post['_method'], $post['mail_noti']);
             foreach ($post as $key => $value) {
                 // Define the data to be updated or inserted
                 $data = [
-                    'key' => $key,
-                    'workspace' => getActiveWorkSpace(),
+                    'key'        => $key,
+                    'workspace'  => getActiveWorkSpace(),
                     'created_by' => creatorId(),
                 ];
                 // Check if the record exists, and update or insert accordingly
@@ -233,15 +233,15 @@ class SettingsController extends Controller
 
     public function testMail(Request $request)
     {
-        $data                    = [];
-        $data['mail_driver']     = $request->mail_driver;
-        $data['mail_host']       = $request->mail_host;
-        $data['mail_port']       = $request->mail_port;
-        $data['mail_username']   = $request->mail_username;
-        $data['mail_password']   = $request->mail_password;
-        $data['mail_from_address']   = $request->mail_from_address;
-        $data['mail_encryption'] = $request->mail_encryption;
-        $data['route'] = route('test.mail.send');
+        $data                      = [];
+        $data['mail_driver']       = $request->mail_driver;
+        $data['mail_host']         = $request->mail_host;
+        $data['mail_port']         = $request->mail_port;
+        $data['mail_username']     = $request->mail_username;
+        $data['mail_password']     = $request->mail_password;
+        $data['mail_from_address'] = $request->mail_from_address;
+        $data['mail_encryption']   = $request->mail_encryption;
+        $data['route']             = route('test.mail.send');
         return view('settings.test_mail', compact('data'));
     }
 
@@ -249,43 +249,39 @@ class SettingsController extends Controller
     {
         $validator = \Validator::make(
             $request->all(), [
-                               'email' => 'required|email',
-                               'mail_driver' => 'required',
-                               'mail_host' => 'required',
-                               'mail_port' => 'required',
-                               'mail_username' => 'required',
-                               'mail_password' => 'required',
-                               'mail_from_address' => 'required',
-                           ]
+                'email'             => 'required|email',
+                'mail_driver'       => 'required',
+                'mail_host'         => 'required',
+                'mail_port'         => 'required',
+                'mail_username'     => 'required',
+                'mail_password'     => 'required',
+                'mail_from_address' => 'required',
+            ],
         );
-        if($validator->fails())
-        {
+        if ($validator->fails()) {
             $messages = $validator->getMessageBag();
 
             return error_res($messages->first());
         }
-        try
-        {
+        try {
             config(
                 [
-                    'mail.driver' => $request->mail_driver,
-                    'mail.host' => $request->mail_host,
-                    'mail.port' => $request->mail_port,
-                    'mail.encryption' => $request->mail_encryption,
-                    'mail.username' => $request->mail_username,
-                    'mail.password' => $request->mail_password,
+                    'mail.driver'       => $request->mail_driver,
+                    'mail.host'         => $request->mail_host,
+                    'mail.port'         => $request->mail_port,
+                    'mail.encryption'   => $request->mail_encryption,
+                    'mail.username'     => $request->mail_username,
+                    'mail.password'     => $request->mail_password,
                     'mail.from.address' => $request->mail_from_address,
-                    'mail.from.name' => config('name'),
-                ]
+                    'mail.from.name'    => config('name'),
+                ],
             );
 
-             Mail::to($request->email)->send(new TestMail());
+            Mail::to($request->email)->send(new TestMail());
 
             return success_res(__('Email send Successfully'));
 
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return error_res($e->getMessage());
         }
     }
@@ -297,8 +293,8 @@ class SettingsController extends Controller
             foreach ($request->mail_noti as $key => $notification) {
                 // Define the data to be updated or inserted
                 $data = [
-                    'key' => $key,
-                    'workspace' => getActiveWorkSpace(),
+                    'key'        => $key,
+                    'workspace'  => getActiveWorkSpace(),
                     'created_by' => creatorId(),
                 ];
 

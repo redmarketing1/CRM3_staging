@@ -62,7 +62,37 @@
 
                  <!-- </div> -->
              @endif
-             @include('project::project.show.widget.copy_link')
+
+
+             @if ($project->is_archive)
+                 <div class="col-md-auto col-sm-4">
+                     <a href="javascript:void" class="btn btn-xs btn-primary btn-icon-only col-12 change-archive"
+                         data-toggle="tooltip" data-bs-toggle="tooltip" data-id="{{ $project->id }}"
+                         data-type="unarchive"
+                         data-text="{{ __('The project will move to unrchive. You can revert it later') }}"
+                         data-title="{{ __('Are you sure unrchive ?') }}"
+                         data-bs-original-title="{{ __('Unrchive') }}">
+                         <span class="btn-inner--text text-white">
+                             <i class="ti ti-file-symlink"></i>
+                         </span>
+                     </a>
+                 </div>
+             @else
+                 <div class="col-md-auto col-sm-4">
+                     <a href="javascript:void" class="btn btn-xs btn-primary btn-icon-only col-12 change-archive"
+                         data-toggle="tooltip" data-bs-toggle="tooltip" data-id="{{ $project->id }}"
+                         data-type="archive"
+                         data-text="{{ __('The project will move to archive. You can revert it later') }}"
+                         data-title="{{ __('Are you sure archive ?') }}"
+                         data-bs-original-title="{{ __('Move to archive') }}">
+                         <span class="btn-inner--text text-white">
+                             <i class="ti ti-files-off"></i>
+                         </span>
+                     </a>
+                 </div>
+             @endif
+
+
              @include('project::project.show.widget.project_share_settings')
              @include('project::project.show.widget.project_setting_dropdown')
 

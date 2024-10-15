@@ -126,6 +126,62 @@ $(document).on('change', '#client-select', function () {
     }
 });
 
+$(document).on('click', '.change-archive', function (event) {
+    event.preventDefault();
+
+    const id = $(this).data('id');
+    const title = $(this).data('title');
+    const text = $(this).data('text');
+    const type = $(this).data('type');
+
+    Swal.fire({
+        title: title,
+        text: text,
+        showCancelButton: true,
+        confirmButtonText: `Yes, ${type} it`,
+        cancelButtonText: "No, cancel",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: route('project.update', 1),
+                type: "PUT",
+                data: { type: type, ids: [id] },
+                success: function (response) {
+                    console.log(response);
+                    window.location.reload();
+                }
+            });
+
+            Swal.fire({
+                icon: 'success',
+                title: `${type.charAt(0).toUpperCase() + type.slice(1)} Successful!`,
+                html: `Project have been moved to ${type}`,
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+            });
+        }
+    });
+
+});
+
+$(document).on('click', '#copyProjectShareLinks', function () {
+    const copyText = document.getElementById('copyText');
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+
+    this.textContent = 'Copied!';
+    this.style.backgroundColor = '#6fd943';
+    setTimeout(() => {
+        this.textContent = 'Copy';
+        this.style.backgroundColor = '';
+    }, 2000);
+
+    toastrs('success', 'Project\'s shared links has copied to clipboard', 'success');
+});
+
+
 function initGoogleMapPlaced(inputSelector, fieldInput) {
     const input = document.getElementById(inputSelector);
     const autocomplete = new google.maps.places.Autocomplete(input);
@@ -220,4 +276,5 @@ function initGoogleMapPlaced(inputSelector, fieldInput) {
 
         return result;
     }
-} 
+}
+

@@ -6,8 +6,21 @@
     }
 @endphp
 {{ Form::open(['route' => ['project.setting.save', $project->id], 'method' => 'POST']) }}
-<div class="modal-body">
+<div class="mx-2">
     <div class="table-responsive">
+
+        <div class="mt-1 mb-4">
+            <div class="d-flex gap-3 input-group">
+                <input type="text" class="form-control rounded-1 py-2" id="copyText"
+                    value="{{ route('project.shared.link', [\Illuminate\Support\Facades\Crypt::encrypt($project->id)]) }}"
+                    readonly>
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-primary py-2" id="copyProjectShareLinks">Copy</button>
+                </div>
+            </div>
+        </div>
+
+
         <table class="table mb-0">
             <thead class="thead-light">
                 <tr>

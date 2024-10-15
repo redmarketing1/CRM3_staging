@@ -6,7 +6,7 @@
     {{ __('Settings') }}
 @endsection
 @push('css')
-<link href="{{ asset('assets/js/plugins/summernote-0.8.18-dist/summernote-lite.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/js/plugins/summernote-0.8.18-dist/summernote-lite.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
     <div class="row">
@@ -27,7 +27,7 @@
         </div>
     @endsection
     @push('scripts')
-    <script src="{{ asset('assets/js/plugins/summernote-0.8.18-dist/summernote-lite.min.js') }}"></script>
+        <script src="{{ asset('assets/js/plugins/summernote-0.8.18-dist/summernote-lite.min.js') }}"></script>
 
         <script>
             $(document).ready(function() {
@@ -36,12 +36,12 @@
             $(document).on("click", ".setting-menu-nav", function() {
                 var module = $(this).attr('data-module');
                 var method = $(this).attr('data-method');
-                getSettingSection(module,method);
+                getSettingSection(module, method);
             });
 
-            function getSettingSection(module,method = null) {
+            function getSettingSection(module, method = null) {
                 $.ajax({
-                    url: '{{ url("setting/section") }}' + '/' + module + '/' + method,
+                    url: '{{ url('setting/section') }}' + '/' + module + '/' + method,
                     type: 'get',
                     beforeSend: function() {
                         $(".loader-wrapper").removeClass('d-none');
