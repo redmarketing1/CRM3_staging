@@ -26,4 +26,5 @@ Route::get('add_files_permissions', [TestController::class, 'AddFilesPermissions
 
 Route::get('add_project_progress_permissions', [TestController::class, 'AddProjectProgressPermissions']);
 
-//Activity Log Permissions
+//Templates Permissions
+Route::get('add_templates_permissions', [TestController::class, 'AddTemplatesPermissions']);

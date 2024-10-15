@@ -215,7 +215,7 @@ class CompanyMenuListener
             'depend_on'  => [],
             'route'      => '',
             'module'     => $module,
-            'permission' => 'estimation manage',
+            'permission' => 'templates manage',
         ]);
 
         $menu->add([
@@ -229,7 +229,7 @@ class CompanyMenuListener
             'depend_on'  => [],
             'route'      => 'smart-templates.index',
             'module'     => $module,
-            'permission' => 'estimation manage',
+            'permission' => 'templates manage',
         ]);
         $menu->add([
             'category'   => 'Communication',
@@ -242,7 +242,7 @@ class CompanyMenuListener
             'depend_on'  => [],
             'route'      => 'ai-templates.index',
             'module'     => $module,
-            'permission' => 'estimation manage',
+            'permission' => 'templates manage',
         ]);
         $menu->add([
             'category'   => 'Communication',
@@ -255,7 +255,7 @@ class CompanyMenuListener
             'depend_on'  => [],
             'route'      => 'general-templates.index',
             'module'     => $module,
-            'permission' => 'estimation manage',
+            'permission' => 'templates manage',
         ]);
         $menu->add([
             'category'   => 'Communication',

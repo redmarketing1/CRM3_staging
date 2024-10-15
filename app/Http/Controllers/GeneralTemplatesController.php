@@ -20,6 +20,9 @@ class GeneralTemplatesController extends Controller
      */
     public function index($id = null, $lang = 'en')
     {
+        if(!Auth::user()->isAbleTo('templates manage')){
+			return redirect()->back()->with('error', __('Permission Denied'));
+		}
         //if (Auth::user()->isAbleTo('ai template manage')) {
         if ($id != null) {
             $notification_template = Content::where('id', $id)->first();

@@ -153,4 +153,34 @@ class TestController extends Controller
         return 'success';
     }
 
+
+    public function AddTemplatesPermissions(){
+        Model::unguard();
+        Artisan::call('cache:clear');
+        
+        $new_template_permissions = [
+            'templates manage',
+        ];
+
+        foreach ($new_template_permissions as $key => $value)
+        { 
+            $company_role = Role::where('name','company')->first();
+
+            $per = Permission::create(
+                [
+                    'name' => $value,
+                    'guard_name' => 'web',
+                    'module' => 'General',
+                    'created_by' => 0,
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s')
+                ]);
+                if(!$company_role->hasPermission($value))
+                {
+                    $company_role->givePermission($per);
+                }
+        }
+        return 'success';
+    }
+
 }
