@@ -4297,7 +4297,7 @@ label.dropdown-item:last-child {
 		} */
 .select2-results .select2-results__option,
 .dropdown-menu .dropdown-item {
-    padding: 8px 12px;
+    padding: 5px 12px;
 }
 
 .dropdown-item:hover,
@@ -6896,7 +6896,6 @@ table td .btn-sm i {
     font-size: 20px !important;
     /* border-radius: 10px 10px 0 0; */
     padding-bottom: 0 !important;
-    z-index: 1!important;
 }
 
 .table#estimation-edit-table thead th.total-net-discount.totalnr,
@@ -8144,13 +8143,13 @@ body.project .row {
     overflow: auto !important;
 }
 
-nav.dash-sidebar .dash-item-tabs .nav-item .nav-link {
+.nav.dash-item-tabs .nav-item .nav-link {
     padding: 4px 16px 4px 10px;
     width: auto;
     height: auto;
 }
 
-nav.dash-sidebar .dash-item-tabs {
+.nav.dash-item-tabs {
     gap: 4px;
     margin: 10px 0 0 20px !important;
     padding: 0 !important;
@@ -8393,10 +8392,10 @@ div.dt-container .dt-paging .dt-paging-button:hover {
     background: #555;
 }
 
-.dash-sidebar.light-sidebar .dash-item.active .dash-link .dash-micon i:before,
+/* .dash-sidebar.light-sidebar .dash-item.active .dash-link .dash-micon i:before,
 .dash-sidebar.light-sidebar .dash-item:hover .dash-link .dash-micon i:before {
     color: #333333 !important;
-}
+} */
 
 .project-list {
     margin: 0;
@@ -8480,7 +8479,16 @@ div#status-tabs {
     right: -5px;
 }
 
-
+.project-label {
+    background: #FFF;
+    /* border: 1px solid; */
+    font-weight: 400 !important;
+    padding: 2px 5px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    font-size: 12px !important;
+    max-width: 200px;
+}
 
 
 
