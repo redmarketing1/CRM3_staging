@@ -49,6 +49,13 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        $project_users = $project->users()->get();  
+        $authUser = Auth::user();           
+
+        if (!($authUser->type == 'company') && !$project_users->contains($authUser)) {
+            abort(403, 'Permission Denied');
+        }
+
         if (! Auth::user()->isAbleTo('project show')) {
             abort(403, __('Permission denied.'));
         }
