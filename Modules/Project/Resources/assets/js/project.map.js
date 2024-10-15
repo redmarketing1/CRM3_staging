@@ -132,7 +132,7 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
             strokeWeight: 1,
             fillColor: backgroundColor,
             fillOpacity: 1,
-            scale: 1,
+            scale: 0.6,
             anchor: new google.maps.Point(21, 42),
             labelOrigin: new google.maps.Point(20, 60)
         };

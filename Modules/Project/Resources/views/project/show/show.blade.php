@@ -18,7 +18,7 @@
         #dropBox {
             width: 100%;
             height: 100px;
-            margin-top:20px!important;
+            margin-top: 20px !important;
             border: 2px dashed #ccc;
             display: flex;
             align-items: center;
@@ -47,6 +47,7 @@
             max-height: 150px;
             margin: 10px;
         }
+
         /* The container */
         .container {
             display: block;
@@ -79,6 +80,7 @@
             width: 15px;
             background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
         }
+
         .header_buttons .checkmark {
             background-color: #0427e9 !important;
         }
@@ -91,7 +93,7 @@
         }
 
         /* Show the checkmark when checked */
-        .container input:checked ~ .checkmark:after {
+        .container input:checked~.checkmark:after {
             display: block;
         }
 
@@ -107,7 +109,9 @@
             -ms-transform: rotate(45deg);
             transform: rotate(45deg);
         }
-        .selected_image .actionbuttons .bg-danger, .default_file .header_buttons .action-btn{
+
+        .selected_image .actionbuttons .bg-danger,
+        .default_file .header_buttons .action-btn {
             visibility: visible;
         }
 
@@ -119,14 +123,18 @@
             display: flex;
         }
 
-        #progress-table tr.group, #progress-table tr.group:hover {
+        #progress-table tr.group,
+        #progress-table tr.group:hover {
             background-color: rgba(0, 0, 0, 0.1) !important;
         }
-        .construction_detail_address span, .client_invoice_address span, .address-class span { 
-            display : block;
+
+        .construction_detail_address span,
+        .client_invoice_address span,
+        .address-class span {
+            display: block;
         }
 
-        .progress-signature .sign_btn_block{
+        .progress-signature .sign_btn_block {
             display: flex;
             justify-content: space-between;
         }
@@ -135,21 +143,26 @@
             display: flex;
             gap: 1px;
         }
-        .progress-signature .progress_final_clear_sig, .progress-signature .progress_final_clear_sig:hover {
+
+        .progress-signature .progress_final_clear_sig,
+        .progress-signature .progress_final_clear_sig:hover {
             color: #333 !important;
             background: none !important;
             border: none !important;
             margin-top: 1px !important;
         }
+
         .item-signature .progress_amount {
             border: 1px solid #d8d8d8 !important;
             padding: 10px !important;
             background: #ffffff !important;
             margin-top: 5px !important;
         }
+
         .dash-sidebar .dash-submenu .dash-link {
             padding: 5px 30px 5px 65px !important;
         }
+
         #progressdropBox {
             width: 100%;
             height: 100px !important;
@@ -160,40 +173,51 @@
             text-align: center;
             cursor: pointer;
         }
+
         #progressdropBox:hover {
             border-color: #4CAF50 !important;
         }
-        .item-signature .progress_files{
+
+        .item-signature .progress_files {
             margin-top: 10px !important;
         }
+
         .progressfileInput {
             display: none;
         }
-        .progress_files_row .progress_mediaimg{
+
+        .progress_files_row .progress_mediaimg {
             padding: 10px !important;
         }
-        .progress_files_row .progress_mediaimg{
+
+        .progress_files_row .progress_mediaimg {
             padding: 10px !important;
         }
-        .progress_files_row .lightbox-link{
+
+        .progress_files_row .lightbox-link {
             margin: 0 auto !important;
             display: block !important;
         }
-        .progress_files_row .mediabox .mediainfo{
+
+        .progress_files_row .mediabox .mediainfo {
             text-align: center !important;
         }
-        .progress_files_row .preview{
+
+        .progress_files_row .preview {
             margin: 10px !important;
         }
-        .media-body a .fileprev{
+
+        .media-body a .fileprev {
             margin: 0 auto !important;
         }
-        .progress_files_row #progress_bulk_delete_form .btn-primary{
+
+        .progress_files_row #progress_bulk_delete_form .btn-primary {
             background: #48494B !important;
             padding: 5px 10px !important;
             color: #fff !important;
         }
-        .progress_files_row #progress_bulk_delete_form .btn-primary i{
+
+        .progress_files_row #progress_bulk_delete_form .btn-primary i {
             color: #fff !important;
         }
     </style>
@@ -233,8 +257,9 @@
         var active_estimation_id = '{{ isset($active_estimation->id) ? $active_estimation->id : 0 }}';
         let moneyFormat = '{{ site_money_format() }}';
         var project_id = '{{ \Crypt::encrypt($project->id) }}';
-        var csrfToken =  $('meta[name="csrf-token"]').attr('content')
-        
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        var supportedFormats = '{{ getAdminAllSetting()['local_storage_validation'] }}';
+
         $(document).ready(function() {
 
             /** call ajaxComplete after open data-popup **/
@@ -600,12 +625,12 @@
                     return data.text;
                 }
             });
-           
+
             //Team member select2
             $('.member_select2').select2({
                 placeholder: "Nutzer wählen",
                 tags: true,
-                disabled:{{ $canManageTeamMember ? 'false' : 'true' }},
+                disabled: {{ $canManageTeamMember ? 'false' : 'true' }},
                 allowHtml: true,
                 templateResult: formatState,
                 templateSelection: function(data, container) {
@@ -837,19 +862,6 @@
             /*var chart = new ApexCharts(document.querySelector("#task-chart"), options);
             chart.render();*/
         })();
-
-        // Copy link to clipboard
-        $('.cp_link').on('click', function() {
-            var value = $(this).attr('data-link');
-            var $temp = $("<input>");
-            $("body").append($temp);
-            $temp.val(value).select();
-            document.execCommand("copy");
-            $temp.remove();
-
-            // Show toastr notification on success
-            toastrs('success', '{{ __('Link Copy on Clipboard') }}', 'success');
-        });
     </script>
 @endpush
 
@@ -955,8 +967,7 @@
 <!--- Files Upload -->
 @push('scripts')
     <script>
-
-        $(document).ready(function(){
+        $(document).ready(function() {
             load_gallary()
         });
 
@@ -981,11 +992,22 @@
 
         function handleFiles(files) {
             const previewContainer = document.getElementById('previewContainer');
-            previewContainer.innerHTML = ''; // Clear out any previous previews
+            previewContainer.innerHTML = '';
             let formData = new FormData();
-            let counter = 0; // Counter for processed files
+            let counter = 0;
 
             Array.from(files).forEach((file) => {
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+
+                if (!supportedFormats.includes(fileExtension)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Unsupported File Format',
+                        text: `The file format ".${fileExtension}" is not supported.`,
+                    });
+                    return;
+                }
+
                 if (!file.type.startsWith('image/')) {
                     formData.append('files[]', file, file.name);
                     counter++;
@@ -999,7 +1021,7 @@
                         img.src = event.target.result;
                         img.onload = function() {
                             EXIF.getData(img, function() {
-                                const dateTaken = EXIF.getTag(this, 'DateTimeOriginal'); // Get the original date from EXIF data
+                                const dateTaken = EXIF.getTag(this, 'DateTimeOriginal');
                                 const canvas = document.createElement('canvas');
                                 const ctx = canvas.getContext('2d');
                                 const max_width = 1500;
@@ -1007,42 +1029,44 @@
                                 canvas.width = max_width;
                                 canvas.height = img.height * scaleFactor;
                                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                
-                                // Funktion zum Hinzufügen von Text mit Hintergrund
-                                function drawTextWithBackground(ctx, text, x, y, bgColor, textColor, padding) {
+
+                                function drawTextWithBackground(ctx, text, x, y, bgColor, textColor,
+                                    padding) {
                                     ctx.fillStyle = bgColor;
                                     ctx.font = 'bold 20px Arial';
 
                                     const textMetrics = ctx.measureText(text);
                                     const textWidth = textMetrics.width;
-                                    const textHeight = 20; // Geschätzte Höhe basierend auf Schriftgröße
+                                    const textHeight = 20;
 
-                                    // Berechne die Position und Größe des Hintergrunds mit Padding
-                                    const backgroundX = canvas.width - textWidth - padding.leftRight - x;
-                                    const backgroundY = canvas.height - textHeight - padding.topBottom - y;
+                                    const backgroundX = canvas.width - textWidth - padding
+                                        .leftRight - x;
+                                    const backgroundY = canvas.height - textHeight - padding
+                                        .topBottom - y;
                                     const backgroundWidth = textWidth + padding.leftRight * 2;
                                     const backgroundHeight = textHeight + padding.topBottom * 2;
 
-                                    // Zeichne den Hintergrund
-                                    ctx.fillRect(backgroundX, backgroundY, backgroundWidth, backgroundHeight);
-
-                                    // Zeichne den Text
+                                    ctx.fillRect(backgroundX, backgroundY, backgroundWidth,
+                                        backgroundHeight);
                                     ctx.fillStyle = textColor;
-                                    ctx.fillText(text, backgroundX + padding.leftRight, backgroundY + textHeight);
+                                    ctx.fillText(text, backgroundX + padding.leftRight,
+                                        backgroundY + textHeight);
                                 }
 
-                                // Add the text with background to the canvas
                                 const dateText = dateTaken ? formatDate(dateTaken) : '';
-                                drawTextWithBackground(ctx, dateText, 10, 10, '#ee232ac2', '#FFF', { topBottom: 2, leftRight: 5 });
+                                drawTextWithBackground(ctx, dateText, 10, 10, '#ee232ac2', '#FFF', {
+                                    topBottom: 2,
+                                    leftRight: 5
+                                });
 
                                 ctx.canvas.toBlob(function(blob) {
                                     const compressedFile = new File([blob], file.name, {
                                         type: 'image/jpeg',
                                         lastModified: Date.now(),
                                     });
-                                    formData.append('files[]', compressedFile, compressedFile.name);
-                                    
-                                    // Add image preview
+                                    formData.append('files[]', compressedFile,
+                                        compressedFile.name);
+
                                     const preview = document.createElement('img');
                                     preview.src = URL.createObjectURL(compressedFile);
                                     preview.classList.add('preview');
@@ -1052,7 +1076,7 @@
                                     if (counter === files.length) {
                                         uploadFile(formData);
                                     }
-                                }, 'image/jpeg', 0.85); // Compress as JPEG with 85% quality
+                                }, 'image/jpeg', 0.85);
                             });
                         };
                     };
@@ -1061,10 +1085,11 @@
             });
         }
 
+
         function uploadFile(formData) {
             // Perform the AJAX upload
             $.ajax({
-                url: '{{route('project.files_upload',$project->id)}}',
+                url: '{{ route('project.files_upload', $project->id) }}',
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -1086,23 +1111,26 @@
         }
 
         $(document).on("click", "#dropBox", function(e) {
-			e.preventDefault();
-			$("#fileInput").trigger('click');
+            e.preventDefault();
+            $("#fileInput").trigger('click');
         });
 
         //Load Gallery
         function load_gallary() {
             $.ajax({
-                url:'{{route('project.all_files',$project->id)}}',
-                type:"POST",
-                data:{html:true,_token:csrfToken},
-                success:function (items) {
+                url: '{{ route('project.all_files', $project->id) }}',
+                type: "POST",
+                data: {
+                    html: true,
+                    _token: csrfToken
+                },
+                success: function(items) {
                     $(".mediabox").html(items);
-					$("img.preview").remove();
-					selected_images();
+                    $("img.preview").remove();
+                    selected_images();
                 }
             })
-		}
+        }
 
         //set default image
         $(document).on("click", ".default_image_selection", function(e) {
@@ -1128,14 +1156,17 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url:'{{route('project.files.set_default_file',$project->id)}}',
-                        type:"POST",
-                        data:{file : file_id,_token:csrfToken},
-                        beforeSend:function () {
+                        url: '{{ route('project.files.set_default_file', $project->id) }}',
+                        type: "POST",
+                        data: {
+                            file: file_id,
+                            _token: csrfToken
+                        },
+                        beforeSend: function() {
                             showHideLoader('visible');
                         },
-                        success:function (response) {
-                            if(response.is_success == true){
+                        success: function(response) {
+                            if (response.is_success == true) {
                                 showHideLoader('hidden');
                                 toastrs('Success', response.message, 'success')
                                 load_gallary();
@@ -1154,16 +1185,16 @@
             const formData = new FormData(this);
 
             $.ajax({
-                url:'{{route('project.files.delete',$project->id)}}',
-                type:"POST",
-                data:formData,
-                contentType:false,
-                processData:false,
-                beforeSend:function () {
+                url: '{{ route('project.files.delete', $project->id) }}',
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
                     showHideLoader('visible');
                 },
-                success:function (response) {
-                    if(response.is_success == true){
+                success: function(response) {
+                    if (response.is_success == true) {
                         showHideLoader('hidden');
                         toastrs('Success', response.message, 'success')
                         load_gallary();
@@ -1197,13 +1228,13 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url:url,
-                        type:"GET",
-                        beforeSend:function () {
+                        url: url,
+                        type: "GET",
+                        beforeSend: function() {
                             showHideLoader('visible');
                         },
-                        success:function (response) {
-                            if(response.is_success == true){
+                        success: function(response) {
+                            if (response.is_success == true) {
                                 showHideLoader('hidden');
                                 toastrs('Success', response.message, 'success')
                                 load_gallary();
@@ -1217,26 +1248,26 @@
         });
 
         function selected_images() {
-			var total_selected = 0;
-			var files_ids = [];
-			$('.image_selection').each(function () {
-				var id = $(this).data('id');
-				if ($(this).prop('checked')==true){
-					total_selected++;
-					var file_id = $(this).val();
-					files_ids.push(file_id);
-					$(".project_file_"+id).parents('.mediaimg').addClass('selected_image');
-				} else {
-					$(".project_file_"+id).parents('.mediaimg').removeClass('selected_image');
-				}
-			});
-			if(total_selected > 0){
-				$('.btn_bulk_delete_files').removeClass('d-none');
-			} else {
-				$('.btn_bulk_delete_files').addClass('d-none');
-			}
-			$('#remove_files_ids').val(JSON.stringify(files_ids));
+            var total_selected = 0;
+            var files_ids = [];
+            $('.image_selection').each(function() {
+                var id = $(this).data('id');
+                if ($(this).prop('checked') == true) {
+                    total_selected++;
+                    var file_id = $(this).val();
+                    files_ids.push(file_id);
+                    $(".project_file_" + id).parents('.mediaimg').addClass('selected_image');
+                } else {
+                    $(".project_file_" + id).parents('.mediaimg').removeClass('selected_image');
+                }
+            });
+            if (total_selected > 0) {
+                $('.btn_bulk_delete_files').removeClass('d-none');
+            } else {
+                $('.btn_bulk_delete_files').addClass('d-none');
+            }
+            $('#remove_files_ids').val(JSON.stringify(files_ids));
 
-		}
+        }
     </script>
 @endpush

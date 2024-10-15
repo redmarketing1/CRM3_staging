@@ -17,7 +17,11 @@
                              <div class="d-flex flex-column justify-content-between align-items-center h-100">
                                  <div class="logo-content img-fluid logo-set-bg  text-center py-2">
                                      @php
-                                         $logo_dark = isset($settings['logo_dark']) ? (check_file($settings['logo_dark']) ? $settings['logo_dark'] : 'uploads/logo/logo_dark.png') : 'uploads/logo/logo_dark.png';
+                                         $logo_dark = isset($settings['logo_dark'])
+                                             ? (check_file($settings['logo_dark'])
+                                                 ? $settings['logo_dark']
+                                                 : 'uploads/logo/logo_dark.png')
+                                             : 'uploads/logo/logo_dark.png';
                                      @endphp
                                      <img alt="image" src="{{ get_file($logo_dark) }}{{ '?' . time() }}"
                                          class="small-logo" id="pre_default_logo">
@@ -44,7 +48,11 @@
                              <div class="d-flex flex-column justify-content-between align-items-center h-100">
                                  <div class="logo-content img-fluid logo-set-bg text-center py-2">
                                      @php
-                                         $logo_light = isset($settings['logo_light']) ? (check_file($settings['logo_light']) ? $settings['logo_light'] : 'uploads/logo/logo_light.png') : 'uploads/logo/logo_light.png';
+                                         $logo_light = isset($settings['logo_light'])
+                                             ? (check_file($settings['logo_light'])
+                                                 ? $settings['logo_light']
+                                                 : 'uploads/logo/logo_light.png')
+                                             : 'uploads/logo/logo_light.png';
                                      @endphp
                                      <img alt="image" src="{{ get_file($logo_light) }}{{ '?' . time() }}"
                                          class="img_setting small-logo" id="landing_page_logo">
@@ -72,7 +80,11 @@
                              <div class="d-flex flex-column justify-content-between align-items-center h-100">
                                  <div class="logo-content img-fluid logo-set-bg text-center py-2">
                                      @php
-                                         $favicon = isset($settings['favicon']) ? (check_file($settings['favicon']) ? $settings['favicon'] : 'uploads/logo/favicon.png') : 'uploads/logo/favicon.png';
+                                         $favicon = isset($settings['favicon'])
+                                             ? (check_file($settings['favicon'])
+                                                 ? $settings['favicon']
+                                                 : 'uploads/logo/favicon.png')
+                                             : 'uploads/logo/favicon.png';
                                      @endphp
                                      <img src="{{ get_file($favicon) }}{{ '?' . time() }}" class="setting-img"
                                          width="40px" id="img_favicon" />
@@ -135,7 +147,7 @@
                      <h4 class="small-title">{{ __('Theme Customizer') }}</h4>
                      <div class="setting-card setting-logo-box p-3">
                          <div class="row">
-                            <div class="col-xxl-3 col-md-4 col-sm-6 col-12">
+                             <div class="col-xxl-3 col-md-4 col-sm-6 col-12">
                                  <h6 class="">
                                      <i class="ti ti-credit-card me-2 h5"></i>{{ __('Primary color settings') }}
                                  </h6>
@@ -158,25 +170,25 @@
                                              data-value="theme-3"></a>
                                          <input type="radio" class="theme_color d-none" name="color"
                                              value="theme-3"{{ isset($settings['color']) && $settings['color'] == 'theme-3' ? 'checked' : '' }}>
-                                            
+
                                          <a href="#!"
                                              class="themes-color-change {{ isset($settings['color']) && $settings['color'] == 'theme-4' ? 'active_color' : '' }}"
                                              data-value="theme-4"></a>
                                          <input type="radio" class="theme_color d-none" name="color"
                                              value="theme-4"{{ isset($settings['color']) && $settings['color'] == 'theme-4' ? 'checked' : '' }}>
-                                             <br>
+                                         <br>
                                          <a href="#!"
                                              class="themes-color-change {{ isset($settings['color']) && $settings['color'] == 'theme-5' ? 'active_color' : '' }}"
                                              data-value="theme-5"></a>
                                          <input type="radio" class="theme_color d-none" name="color"
                                              value="theme-5"{{ isset($settings['color']) && $settings['color'] == 'theme-5' ? 'checked' : '' }}>
-                                         
+
                                          <a href="#!"
                                              class="themes-color-change {{ isset($settings['color']) && $settings['color'] == 'theme-6' ? 'active_color' : '' }}"
                                              data-value="theme-6"></a>
                                          <input type="radio" class="theme_color d-none" name="color"
                                              value="theme-6"{{ isset($settings['color']) && $settings['color'] == 'theme-6' ? 'checked' : '' }}>
-                                             
+
                                          <a href="#!"
                                              class="themes-color-change {{ isset($settings['color']) && $settings['color'] == 'theme-7' ? 'active_color' : '' }}"
                                              data-value="theme-7"></a>
@@ -187,30 +199,30 @@
                                              data-value="theme-8"></a>
                                          <input type="radio" class="theme_color d-none" name="color"
                                              value="theme-8"{{ isset($settings['color']) && $settings['color'] == 'theme-8' ? 'checked' : '' }}>
-                                             <br>
+                                         <br>
                                          <a href="#!"
                                              class="themes-color-change {{ isset($settings['color']) && $settings['color'] == 'theme-9' ? 'active_color' : '' }}"
                                              data-value="theme-9"></a>
                                          <input type="radio" class="theme_color d-none" name="color"
                                              value="theme-9"{{ isset($settings['color']) && $settings['color'] == 'theme-9' ? 'checked' : '' }}>
-                                            
+
                                          <a href="#!"
                                              class="themes-color-change {{ isset($settings['color']) && $settings['color'] == 'theme-10' ? 'active_color' : '' }}"
                                              data-value="theme-10"></a>
                                          <input type="radio" class="theme_color d-none" name="color"
                                              value="theme-10"{{ isset($settings['color']) && $settings['color'] == 'theme-10' ? 'checked' : '' }}>
-                                             <div class="color-picker-wrp ">
-                                                 <input type="color"
-                                                     value="{{ isset($settings['color']) ? $settings['color'] : '' }}"
-                                                     class="colorPicker {{ isset($settings['color_flag']) && $settings['color_flag'] == 'true' ? 'active_color' : '' }}"
-                                                     name="custom_color" id="color-picker">
-                                                 <input type='hidden' name="color_flag"
-                                                     value={{ isset($settings['color_flag']) && $settings['color_flag'] == 'true' ? 'true' : 'false' }}>
-                                             </div>
+                                         <div class="color-picker-wrp ">
+                                             <input type="color"
+                                                 value="{{ isset($settings['color']) ? $settings['color'] : '' }}"
+                                                 class="colorPicker {{ isset($settings['color_flag']) && $settings['color_flag'] == 'true' ? 'active_color' : '' }}"
+                                                 name="custom_color" id="color-picker">
+                                             <input type='hidden' name="color_flag"
+                                                 value={{ isset($settings['color_flag']) && $settings['color_flag'] == 'true' ? 'true' : 'false' }}>
+                                         </div>
                                      </div>
                                  </div>
-                            </div>
-                            <div class="col-xxl-2 col-md-4 col-sm-6 col-12">
+                             </div>
+                             <div class="col-xxl-2 col-md-4 col-sm-6 col-12">
                                  <h6>
                                      <i class="ti ti-layout-sidebar me-2 h5"></i> {{ __('Sidebar settings') }}
                                  </h6>
@@ -223,8 +235,8 @@
                                      <label class="form-check-label f-w-600 pl-1"
                                          for="site_transparent">{{ __('Transparent layout') }}</label>
                                  </div>
-                            </div>
-                            <div class="col-xxl-2 col-md-4 col-sm-6 col-12">
+                             </div>
+                             <div class="col-xxl-2 col-md-4 col-sm-6 col-12">
                                  <h6 class="">
                                      <i class="ti ti-sun me-2 h5"></i>{{ __('Layout settings') }}
                                  </h6>
@@ -238,8 +250,8 @@
                                          for="cust-darklayout">{{ __('Dark Layout') }}</label>
 
                                  </div>
-                            </div>
-                            <div class="col-xxl-2 col-md-4 col-sm-6 col-12">
+                             </div>
+                             <div class="col-xxl-2 col-md-4 col-sm-6 col-12">
                                  <h6 class="">
                                      <i class="ti ti-align-right me-2 h5"></i>{{ __('Enable RTL') }}
                                  </h6>
@@ -252,21 +264,22 @@
                                          for="site_rtl">{{ __('RTL Layout') }}</label>
 
                                  </div>
-                            </div>
-                            <div class="col-xxl-3 col-md-4 col-sm-6 col-12">
-                                <h6 class="">
-                                    <i class="ti ti-align-right me-2 h5"></i>{{ __('Category Wise Sidemenu') }}
-                                </h6>
-                                <hr class=" my-2 " />
-                                <div class="form-check form-switch mt-2">
+                             </div>
+                             <div class="col-xxl-3 col-md-4 col-sm-6 col-12">
+                                 <h6 class="">
+                                     <i class="ti ti-align-right me-2 h5"></i>{{ __('Category Wise Sidemenu') }}
+                                 </h6>
+                                 <hr class=" my-2 " />
+                                 <div class="form-check form-switch mt-2">
 
-                                    <input type="checkbox" class="form-check-input" id="category_wise_sidemenu" name="category_wise_sidemenu"
-                                        {{ isset($settings['category_wise_sidemenu']) && $settings['category_wise_sidemenu'] == 'on' ? 'checked' : '' }} />
-                                    <label class="form-check-label f-w-600 pl-1" 
-                                        for="category_wise_sidemenu">{{ __('Category Wise Sidemenu') }}</label>
+                                     <input type="checkbox" class="form-check-input" id="category_wise_sidemenu"
+                                         name="category_wise_sidemenu"
+                                         {{ isset($settings['category_wise_sidemenu']) && $settings['category_wise_sidemenu'] == 'on' ? 'checked' : '' }} />
+                                     <label class="form-check-label f-w-600 pl-1"
+                                         for="category_wise_sidemenu">{{ __('Category Wise Sidemenu') }}</label>
 
-                                </div>
-                            </div>
+                                 </div>
+                             </div>
                          </div>
                      </div>
                  </div>
@@ -415,33 +428,30 @@
                          </select>
                      </div>
                      <div class="form-group col-md-6">
-                        <label for="float_number"
-                            class="form-label">{{ __('Float Number') }}</label>
-                        <select type="text" name="float_number"
-                            class="form-control selectric currency_note" id="float_number">                                        
-                            <option value="comma"
-                                @if (@$settings['float_number'] == 'comma') selected="selected" @endif>
-                                {{ __('Comma') }}</option>
-                            <option value="dot"
-                                @if (@$settings['float_number'] == 'dot') selected="selected" @endif>
-                                {{ __('Dot') }}</option>
-                        </select>
-                    </div>
+                         <label for="float_number" class="form-label">{{ __('Float Number') }}</label>
+                         <select type="text" name="float_number" class="form-control selectric currency_note"
+                             id="float_number">
+                             <option value="comma" @if (@$settings['float_number'] == 'comma') selected="selected" @endif>
+                                 {{ __('Comma') }}</option>
+                             <option value="dot" @if (@$settings['float_number'] == 'dot') selected="selected" @endif>
+                                 {{ __('Dot') }}</option>
+                         </select>
+                     </div>
                      <div class="form-group col-6">
                          {{ Form::label('currency_space', __('Currency Symbol Space'), ['class' => 'form-label']) }}
                          <div class="row ms-1">
                              <div class="form-check col-md-6">
-                                 <input class="form-check-input currency_note" type="radio"
-                                     name="currency_space" value="withspace"
-                                     @if (!isset($settings['currency_space']) || $settings['currency_space'] == 'withspace') checked @endif id="flexCheckDefault">
+                                 <input class="form-check-input currency_note" type="radio" name="currency_space"
+                                     value="withspace" @if (!isset($settings['currency_space']) || $settings['currency_space'] == 'withspace') checked @endif
+                                     id="flexCheckDefault">
                                  <label class="form-check-label" for="flexCheckDefault">
                                      {{ __('With space') }}
                                  </label>
                              </div>
                              <div class="form-check col-6">
-                                 <input class="form-check-input currency_note" type="radio"
-                                     name="currency_space" value="withoutspace"
-                                     @if (!isset($settings['currency_space']) || $settings['currency_space'] == 'withoutspace') checked @endif id="flexCheckChecked">
+                                 <input class="form-check-input currency_note" type="radio" name="currency_space"
+                                     value="withoutspace" @if (!isset($settings['currency_space']) || $settings['currency_space'] == 'withoutspace') checked @endif
+                                     id="flexCheckChecked">
                                  <label class="form-check-label" for="flexCheckChecked">
                                      {{ __('Without space') }}
                                  </label>
@@ -503,11 +513,11 @@
                          </div>
                      </div>
                      <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label" for="new_note_value">{{ __('Preview :') }}</label>
-                            <span id="formatted_price_span"></span>
-                        </div>
-                    </div>
+                         <div class="form-group">
+                             <label class="form-label" for="new_note_value">{{ __('Preview :') }}</label>
+                             <span id="formatted_price_span"></span>
+                         </div>
+                     </div>
                  </div>
              </div>
              <div class="card-footer text-end">
@@ -798,7 +808,9 @@
              <h4 class="small-title">{{ __('Local Settings') }}</h4>
              <div class="form-group col-12 switch-width">
                  {{ Form::label('local_storage_validation', __('Only Upload Files'), ['class' => ' col-form-label']) }}
-                 {{ Form::select('local_storage_validation[]', array_flip($file_type), isset($settings['local_storage_validation']) ? explode(',', $settings['local_storage_validation']) : null, ['id' => 'local_storage_validation', 'class' => ' choices', 'multiple' => '', 'searchEnabled' => 'true']) }}
+                 <input type="text" id="choicesSelectedMultipleValues" name="local_storage_validation"
+                     class="form-control" value="{{ implode(',', [$settings['local_storage_validation']]) }}"
+                     data-placeholder="{{ __('Please type file format extension') }}" />
              </div>
              <div class="col-lg-4">
                  <div class="form-group">
@@ -1016,6 +1028,12 @@
  <script>
      $(document).ready(function() {
          choices();
+         new Choices('#choicesSelectedMultipleValues', {
+             allowHTML: false,
+             duplicateItemsAllowed: false,
+             editItems: false,
+             removeItemButton: true,
+         });
      });
      $(document).on('change', '[name=storage_setting]', function() {
          if ($(this).val() == 's3') {
@@ -1200,7 +1218,7 @@
  </script>
  <script>
      $(document).ready(function() {
-        sendData();
+         sendData();
 
          $('.currency_note').on('change', function() {
              sendData();
@@ -1214,36 +1232,36 @@
                  data: formData,
                  success: function(response) {
                      var formattedPrice = response.formatted_price;
-                      $('#formatted_price_span').text(formattedPrice);
+                     $('#formatted_price_span').text(formattedPrice);
                  }
              });
          }
      });
  </script>
 
-<script>
-    $(document).ready(function() {
-        var maxField = 100; //Input fields increment limitation
-        var addButton = $('.add_button'); //Add button selector
-        var wrapper = $('.field_wrapper'); //Input field wrapper
-        var fieldHTML =
-            '<div class="d-flex gap-1 mb-4"><input type="text" class="form-control " name="api_key[]" value=""/><a href="javascript:void(0);" class="remove_button btn btn-danger"><i class="ti ti-trash"></i></a></div>'; //New input field html
-        var x = 1; //Initial field counter is 1
+ <script>
+     $(document).ready(function() {
+         var maxField = 100; //Input fields increment limitation
+         var addButton = $('.add_button'); //Add button selector
+         var wrapper = $('.field_wrapper'); //Input field wrapper
+         var fieldHTML =
+             '<div class="d-flex gap-1 mb-4"><input type="text" class="form-control " name="api_key[]" value=""/><a href="javascript:void(0);" class="remove_button btn btn-danger"><i class="ti ti-trash"></i></a></div>'; //New input field html
+         var x = 1; //Initial field counter is 1
 
-        //Once add button is clicked
-        $(addButton).click(function() {
-            //Check maximum number of input fields
-            if (x < maxField) {
-                x++; //Increment field counter
-                $(wrapper).append(fieldHTML); //Add field html
-            }
-        });
+         //Once add button is clicked
+         $(addButton).click(function() {
+             //Check maximum number of input fields
+             if (x < maxField) {
+                 x++; //Increment field counter
+                 $(wrapper).append(fieldHTML); //Add field html
+             }
+         });
 
-        //Once remove button is clicked
-        $(wrapper).on('click', '.remove_button', function(e) {
-            e.preventDefault();
-            $(this).parent('div').remove(); //Remove field html
-            x--; //Decrement field counter
-        });
-    });
-</script>
+         //Once remove button is clicked
+         $(wrapper).on('click', '.remove_button', function(e) {
+             e.preventDefault();
+             $(this).parent('div').remove(); //Remove field html
+             x--; //Decrement field counter
+         });
+     });
+ </script>

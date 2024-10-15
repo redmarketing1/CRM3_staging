@@ -35,22 +35,22 @@ class SettingsController extends Controller
             unset($post['_token']);
             unset($post['_method']);
 
-            if (!isset($post['landing_page'])) {
+            if (! isset($post['landing_page'])) {
                 $post['landing_page'] = 'off';
             }
-            if (!isset($post['site_rtl'])) {
+            if (! isset($post['site_rtl'])) {
                 $post['site_rtl'] = 'off';
             }
-            if (!isset($post['signup'])) {
+            if (! isset($post['signup'])) {
                 $post['signup'] = 'off';
             }
-            if (!isset($post['email_verification'])) {
+            if (! isset($post['email_verification'])) {
                 $post['email_verification'] = 'off';
             }
-            if (!isset($post['site_transparent'])) {
+            if (! isset($post['site_transparent'])) {
                 $post['site_transparent'] = 'off';
             }
-            if (!isset($post['cust_darklayout'])) {
+            if (! isset($post['cust_darklayout'])) {
                 $post['cust_darklayout'] = 'off';
             }
             if (isset($request->color) && $request->color_flag == 'false') {
@@ -59,22 +59,22 @@ class SettingsController extends Controller
                 $post['color'] = $request->custom_color;
             }
 
-             if (!isset($post['category_wise_sidemenu'])) {
+            if (! isset($post['category_wise_sidemenu'])) {
                 $post['category_wise_sidemenu'] = 'off';
             }
 
             $admin_settings = getAdminAllSetting();
             if ($request->hasFile('logo_dark')) {
                 $logo_dark = 'logo_dark.png';
-                $uplaod = upload_file($request, 'logo_dark', $logo_dark, 'logo');
+                $uplaod    = upload_file($request, 'logo_dark', $logo_dark, 'logo');
 
-                $logo_dark =  'logo_dark_' . time() . '.png';
-                $uplaod = upload_file($request, 'logo_dark', $logo_dark, 'logo');
+                $logo_dark = 'logo_dark_' . time() . '.png';
+                $uplaod    = upload_file($request, 'logo_dark', $logo_dark, 'logo');
                 if ($uplaod['flag'] == 1) {
                     $post['logo_dark'] = $uplaod['url'];
 
                     $old_logo_dark = isset($admin_settings['logo_dark']) ? $admin_settings['logo_dark'] : null;
-                    if (!empty($old_logo_dark) && check_file($old_logo_dark)) {
+                    if (! empty($old_logo_dark) && check_file($old_logo_dark)) {
                         delete_file($old_logo_dark);
                     }
                 } else {
@@ -84,15 +84,15 @@ class SettingsController extends Controller
             if ($request->hasFile('logo_light')) {
 
                 $logo_light = 'logo_light.png';
-                $uplaod = upload_file($request, 'logo_light', $logo_light, 'logo');
+                $uplaod     = upload_file($request, 'logo_light', $logo_light, 'logo');
 
-                $logo_light =  'logo_light_' . time() . '.png';
-                $uplaod = upload_file($request, 'logo_light', $logo_light, 'logo');
+                $logo_light = 'logo_light_' . time() . '.png';
+                $uplaod     = upload_file($request, 'logo_light', $logo_light, 'logo');
                 if ($uplaod['flag'] == 1) {
                     $post['logo_light'] = $uplaod['url'];
 
                     $old_logo_light = isset($admin_settings['logo_light']) ? $admin_settings['logo_light'] : null;
-                    if (!empty($old_logo_light) && check_file($old_logo_light)) {
+                    if (! empty($old_logo_light) && check_file($old_logo_light)) {
                         delete_file($old_logo_light);
                     }
                 } else {
@@ -102,15 +102,15 @@ class SettingsController extends Controller
             if ($request->hasFile('favicon')) {
 
                 $favicon = 'favicon.png';
-                $uplaod = upload_file($request, 'favicon', $favicon, 'logo');
+                $uplaod  = upload_file($request, 'favicon', $favicon, 'logo');
 
-                $favicon =  'favicon_' . time() . '.png';
-                $uplaod = upload_file($request, 'favicon', $favicon, 'logo');
+                $favicon = 'favicon_' . time() . '.png';
+                $uplaod  = upload_file($request, 'favicon', $favicon, 'logo');
                 if ($uplaod['flag'] == 1) {
                     $post['favicon'] = $uplaod['url'];
 
                     $old_favicon = isset($admin_settings['favicon']) ? $admin_settings['favicon'] : null;
-                    if (!empty($old_favicon) && check_file($old_favicon)) {
+                    if (! empty($old_favicon) && check_file($old_favicon)) {
                         delete_file($old_favicon);
                     }
                 } else {
@@ -121,8 +121,8 @@ class SettingsController extends Controller
             foreach ($post as $key => $value) {
                 // Define the data to be updated or inserted
                 $data = [
-                    'key' => $key,
-                    'workspace' => getActiveWorkSpace(),
+                    'key'        => $key,
+                    'workspace'  => getActiveWorkSpace(),
                     'created_by' => creatorId(),
                 ];
 
@@ -149,8 +149,8 @@ class SettingsController extends Controller
             foreach ($post as $key => $value) {
                 // Define the data to be updated or inserted
                 $data = [
-                    'key' => $key,
-                    'workspace' => getActiveWorkSpace(),
+                    'key'        => $key,
+                    'workspace'  => getActiveWorkSpace(),
                     'created_by' => creatorId(),
                 ];
 
@@ -170,12 +170,12 @@ class SettingsController extends Controller
     {
         if ($request->has('enable_cookie')) {
             $validator = \Validator::make($request->all(), [
-                'cookie_title' => 'required',
-                'cookie_description' => 'required',
-                'strictly_cookie_title' => 'required',
-                'strictly_cookie_description' => 'required',
+                'cookie_title'                 => 'required',
+                'cookie_description'           => 'required',
+                'strictly_cookie_title'        => 'required',
+                'strictly_cookie_description'  => 'required',
                 'more_information_description' => 'required',
-                'contactus_url' => 'required',
+                'contactus_url'                => 'required',
             ]);
             if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
@@ -193,8 +193,8 @@ class SettingsController extends Controller
             foreach ($post as $key => $value) {
                 // Define the data to be updated or inserted
                 $data = [
-                    'key' => $key,
-                    'workspace' => getActiveWorkSpace(),
+                    'key'        => $key,
+                    'workspace'  => getActiveWorkSpace(),
                     'created_by' => creatorId(),
                 ];
 
@@ -204,8 +204,8 @@ class SettingsController extends Controller
         } else {
             // Define the data to be updated or inserted
             $data = [
-                'key' => 'enable_cookie',
-                'workspace' => getActiveWorkSpace(),
+                'key'        => 'enable_cookie',
+                'workspace'  => getActiveWorkSpace(),
                 'created_by' => creatorId(),
             ];
 
@@ -220,15 +220,15 @@ class SettingsController extends Controller
 
     public function CookieConsent(Request $request)
     {
-        if (admin_setting('enable_cookie') == "on" &&  admin_setting('cookie_logging') == "on") {
+        if (admin_setting('enable_cookie') == "on" && admin_setting('cookie_logging') == "on") {
             try {
 
                 $whichbrowser = new \WhichBrowser\Parser($_SERVER['HTTP_USER_AGENT']);
                 // Generate new CSV line
-                $browser_name = $whichbrowser->browser->name ?? null;
-                $os_name = $whichbrowser->os->name ?? null;
+                $browser_name     = $whichbrowser->browser->name ?? null;
+                $os_name          = $whichbrowser->os->name ?? null;
                 $browser_language = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : null;
-                $device_type = GetDeviceType($_SERVER['HTTP_USER_AGENT']);
+                $device_type      = GetDeviceType($_SERVER['HTTP_USER_AGENT']);
 
                 $ip = $_SERVER['REMOTE_ADDR'];
 
@@ -240,7 +240,7 @@ class SettingsController extends Controller
 
 
                     $new_line = implode(',', [$ip, $date, $time, implode('-', $request['cookie']), $device_type, $browser_language, $browser_name, $os_name, isset($query) ? $query['country'] : '', isset($query) ? $query['region'] : '', isset($query) ? $query['regionName'] : '', isset($query) ? $query['city'] : '', isset($query) ? $query['zip'] : '', isset($query) ? $query['lat'] : '', isset($query) ? $query['lon'] : '']);
-                    if (!check_file('/uploads/sample/cookie_data.csv')) {
+                    if (! check_file('/uploads/sample/cookie_data.csv')) {
                         $first_line = 'IP,Date,Time,Accepted-cookies,Device type,Browser anguage,Browser name,OS Name,Country,Region,RegionName,City,Zipcode,Lat,Lon';
                         file_put_contents(base_path() . '/uploads/sample/cookie_data.csv', $first_line . PHP_EOL, FILE_APPEND | LOCK_EX);
                     }
@@ -259,25 +259,25 @@ class SettingsController extends Controller
         if (\Auth::user()->type == 'super admin') {
             $request->validate(
                 [
-                    'pusher_app_id' => 'required',
-                    'pusher_app_key' => 'required',
-                    'pusher_app_secret' => 'required',
+                    'pusher_app_id'      => 'required',
+                    'pusher_app_key'     => 'required',
+                    'pusher_app_secret'  => 'required',
                     'pusher_app_cluster' => 'required',
-                ]
+                ],
             );
             try {
                 $pusher_settings = [];
 
-                $pusher_settings['PUSHER_APP_ID'] = $request->pusher_app_id;
-                $pusher_settings['PUSHER_APP_KEY'] = $request->pusher_app_key;
-                $pusher_settings['PUSHER_APP_SECRET'] = $request->pusher_app_secret;
+                $pusher_settings['PUSHER_APP_ID']      = $request->pusher_app_id;
+                $pusher_settings['PUSHER_APP_KEY']     = $request->pusher_app_key;
+                $pusher_settings['PUSHER_APP_SECRET']  = $request->pusher_app_secret;
                 $pusher_settings['PUSHER_APP_CLUSTER'] = $request->pusher_app_cluster;
 
                 foreach ($pusher_settings as $key => $value) {
                     // Define the data to be updated or inserted
                     $data = [
-                        'key' => $key,
-                        'workspace' => getActiveWorkSpace(),
+                        'key'        => $key,
+                        'workspace'  => getActiveWorkSpace(),
                         'created_by' => creatorId(),
                     ];
 
@@ -301,11 +301,11 @@ class SettingsController extends Controller
         $validator = \Validator::make(
             $request->all(),
             [
-                'meta_title' => 'required|string',
-                'meta_keywords' => 'required|string',
+                'meta_title'       => 'required|string',
+                'meta_keywords'    => 'required|string',
                 'meta_description' => 'required|string',
-                'meta_image' => 'mimes:jpeg,jpg,png,gif',
-            ]
+                'meta_image'       => 'mimes:jpeg,jpg,png,gif',
+            ],
         );
         if ($validator->fails()) {
             $messages = $validator->getMessageBag();
@@ -323,7 +323,7 @@ class SettingsController extends Controller
             if ($uplaod['flag'] == 1) {
                 // old img delete
                 $settings = getAdminAllSetting();
-                if ((!empty($settings['meta_image'])) && strpos($settings['meta_image'], 'meta_image.png') == false && check_file($settings['meta_image'])) {
+                if ((! empty($settings['meta_image'])) && strpos($settings['meta_image'], 'meta_image.png') == false && check_file($settings['meta_image'])) {
                     delete_file($settings['meta_image']);
                 }
             } else {
@@ -334,15 +334,15 @@ class SettingsController extends Controller
         try {
             $post = $request->all();
             unset($post['_token'], $post['_method']);
-            if ((isset($uplaod)) && ($uplaod['flag'] == 1) && (!empty($uplaod['url']))) {
+            if ((isset($uplaod)) && ($uplaod['flag'] == 1) && (! empty($uplaod['url']))) {
                 $post['meta_image'] = $uplaod['url'];
             }
 
             foreach ($post as $key => $value) {
                 // Define the data to be updated or inserted
                 $data = [
-                    'key' => $key,
-                    'workspace' => getActiveWorkSpace(),
+                    'key'        => $key,
+                    'workspace'  => getActiveWorkSpace(),
                     'created_by' => creatorId(),
                 ];
 
@@ -367,37 +367,37 @@ class SettingsController extends Controller
                 $validator = \Validator::make(
                     $request->all(),
                     [
-                        'wasabi_key' => 'required',
-                        'wasabi_secret' => 'required',
-                        'wasabi_region' => 'required',
-                        'wasabi_bucket' => 'required',
-                        'wasabi_url' => 'required',
-                        'wasabi_root' => 'required',
-                        'wasabi_max_upload_size' => 'required',
+                        'wasabi_key'                => 'required',
+                        'wasabi_secret'             => 'required',
+                        'wasabi_region'             => 'required',
+                        'wasabi_bucket'             => 'required',
+                        'wasabi_url'                => 'required',
+                        'wasabi_root'               => 'required',
+                        'wasabi_max_upload_size'    => 'required',
                         'wasabi_storage_validation' => 'required',
-                    ]
+                    ],
                 );
             } elseif ($request->storage_setting == 's3') {
                 $validator = \Validator::make(
                     $request->all(),
                     [
-                        's3_key' => 'required',
-                        's3_secret' => 'required',
-                        's3_region' => 'required',
-                        's3_bucket' => 'required',
-                        's3_url' => 'required',
-                        's3_endpoint' => 'required',
-                        's3_max_upload_size' => 'required',
+                        's3_key'                => 'required',
+                        's3_secret'             => 'required',
+                        's3_region'             => 'required',
+                        's3_bucket'             => 'required',
+                        's3_url'                => 'required',
+                        's3_endpoint'           => 'required',
+                        's3_max_upload_size'    => 'required',
                         's3_storage_validation' => 'required',
-                    ]
+                    ],
                 );
             } else {
                 $validator = \Validator::make(
                     $request->all(),
                     [
                         'local_storage_max_upload_size' => 'required',
-                        'local_storage_validation' => 'required',
-                    ]
+                        'local_storage_validation'      => 'required',
+                    ],
                 );
             }
 
@@ -406,15 +406,15 @@ class SettingsController extends Controller
                 return redirect()->back()->with('error', $messages->first());
             }
 
-            $post['s3_storage_validation'] = isset($request->s3_storage_validation) ? implode(",", $request->s3_storage_validation) : null;
+            $post['s3_storage_validation']     = isset($request->s3_storage_validation) ? implode(",", $request->s3_storage_validation) : null;
             $post['wasabi_storage_validation'] = isset($request->wasabi_storage_validation) ? implode(",", $request->wasabi_storage_validation) : null;
-            $post['local_storage_validation'] = isset($request->local_storage_validation) ? implode(",", $request->local_storage_validation) : null;
+            $post['local_storage_validation']  = $request->local_storage_validation;
 
             foreach ($post as $key => $value) {
                 // Define the data to be updated or inserted
                 $data = [
-                    'key' => $key,
-                    'workspace' => getActiveWorkSpace(),
+                    'key'        => $key,
+                    'workspace'  => getActiveWorkSpace(),
                     'created_by' => creatorId(),
                 ];
 
@@ -435,14 +435,14 @@ class SettingsController extends Controller
         if (Auth::user()->isAbleTo('api key setting create')) {
 
             $key_arr = $request->api_key;
-            foreach ($key_arr as  $data) {
+            foreach ($key_arr as $data) {
 
-                if ($data != '' && !empty($data)) {
+                if ($data != '' && ! empty($data)) {
                     ApikeySetiings::updateOrCreate(
                         [
-                            'key' => $data,
-                            'created_by' => creatorId()
-                        ]
+                            'key'        => $data,
+                            'created_by' => creatorId(),
+                        ],
                     );
                 }
             }
@@ -452,8 +452,8 @@ class SettingsController extends Controller
             foreach ($post as $key => $value) {
                 // Define the data to be updated or inserted
                 $data = [
-                    'key' => $key,
-                    'workspace' => getActiveWorkSpace(),
+                    'key'        => $key,
+                    'workspace'  => getActiveWorkSpace(),
                     'created_by' => creatorId(),
                 ];
 
@@ -475,7 +475,7 @@ class SettingsController extends Controller
         unset($post['_token']);
         unset($post['_method']);
         if (isset($post['defult_currancy'])) {
-            $data = explode('-', $post['defult_currancy']);
+            $data                           = explode('-', $post['defult_currancy']);
             $post['defult_currancy_symbol'] = $data[0];
             $post['defult_currancy']        = $data[1];
         } else {
@@ -483,13 +483,13 @@ class SettingsController extends Controller
             $post['defult_currancy_symbol'] = '$';
         }
         if (isset($post['site_currency_symbol_position'])) {
-            $post['site_currency_symbol_position'] = !empty($request->site_currency_symbol_position) ? $request->site_currency_symbol_position : 'pre';
+            $post['site_currency_symbol_position'] = ! empty($request->site_currency_symbol_position) ? $request->site_currency_symbol_position : 'pre';
         }
         foreach ($post as $key => $value) {
             // Define the data to be updated or inserted
             $data = [
-                'key' => $key,
-                'workspace' => getActiveWorkSpace(),
+                'key'        => $key,
+                'workspace'  => getActiveWorkSpace(),
                 'created_by' => creatorId(),
             ];
 
@@ -504,18 +504,18 @@ class SettingsController extends Controller
     public function updateNoteValue(Request $request)
     {
         $symbol_position = 'pre';
-        $symbol = '$';
-        $format = '1';
-        $price  = '10000';
-        $number = explode('.', $price);
-        $length = strlen(trim($number[0]));
-        $currency_symbol = explode('-',$request->defult_currancy);
+        $symbol          = '$';
+        $format          = '1';
+        $price           = '10000';
+        $number          = explode('.', $price);
+        $length          = strlen(trim($number[0]));
+        $currency_symbol = explode('-', $request->defult_currancy);
 
         if ($length > 3) {
             $decimal_separator  = isset($request->decimal_separator) && $request->decimal_separator === 'dot' ? '.' : ',';
             $thousand_separator = isset($request->thousand_separator) && $request->thousand_separator === 'dot' ? '.' : ',';
         } else {
-            $decimal_separator  = isset($request->decimal_separator) == 'dot'  ? '.' : ',';
+            $decimal_separator  = isset($request->decimal_separator) == 'dot' ? '.' : ',';
             $thousand_separator = isset($request->thousand_separator) == 'dot' ? '.' : ',';
         }
 
@@ -537,10 +537,10 @@ class SettingsController extends Controller
             $symbol = $request->site_currency_symbol_name == 'symbol' ? $currency_symbol[0] : $currency_symbol[1];
         }
         $formatted_price = (
-            ($symbol_position == "pre")  ?  $symbol : '') . (isset($currency_space) && $currency_space == 'withspace' ? ' ' : '')
+            ($symbol_position == "pre") ? $symbol : '') . (isset($currency_space) && $currency_space == 'withspace' ? ' ' : '')
             . number_format($price, $format, $decimal_separator, $thousand_separator) . (isset($currency_space) && $currency_space == 'withspace' ? ' ' : '') .
-            (($symbol_position == "post") ?  $symbol : '');
-        return response()->json(['success' => true,'formatted_price' => $formatted_price]);
+            (($symbol_position == "post") ? $symbol : '');
+        return response()->json(['success' => true, 'formatted_price' => $formatted_price]);
     }
 
 }
