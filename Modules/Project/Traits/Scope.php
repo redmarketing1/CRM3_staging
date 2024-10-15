@@ -50,9 +50,9 @@ trait Scope
                     ->orWhere('user_projects.user_id', $userID)
                     ->orWhere('estimate_quotes.user_id', $userID);
             })
-            ->where('client_projects.client_id', $userID)
-            ->where('projects.type', 'project')
-            ->where('projects.workspace', $workspace)
+            // ->where('client_projects.client_id', $userID)
+            // ->where('projects.type', 'project')
+            // ->where('projects.workspace', $workspace)
             ->groupBy('projects.id')
             ->with([
                 'statusData',

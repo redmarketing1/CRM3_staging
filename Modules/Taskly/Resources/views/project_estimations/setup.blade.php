@@ -1656,7 +1656,7 @@
 					if($('.quantity_input_'+item_id).length > 0){
 						converte_quantity 				= $('.quantity_input_'+item_id).val();
 					}
-					console.log(converte_quantity);
+					// console.log(converte_quantity);
 					tableData['quantity'] 				= parseLocaleNumber(moneyFormat,converte_quantity);
 					tableData['name'] 					= $('.name_input_'+item_id).val();
 					tableData['comment'] 				= $('.comment_input_'+item_id).val();
@@ -1677,6 +1677,7 @@
 							tableData[total_price_key] = converte_total;
 						}
 					}
+					consol.log(tableData);
 					new_table_data.push(tableData);
 				}
 			});

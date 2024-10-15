@@ -23,6 +23,9 @@ class SmartTemplateController extends Controller
 	 */
 	public function index()
 	{
+		if(!Auth::user()->isAbleTo('templates manage')){
+			return redirect()->back()->with('error', __('Permission Denied'));
+		}
 		$smart_templates = SmartTemplate::get();
 		return view('smart_template.index',compact('smart_templates'));
 	}
@@ -138,6 +141,9 @@ class SmartTemplateController extends Controller
 
 	public function setup(Request $request, $id = 0)
 	{
+		if(!Auth::user()->isAbleTo('templates manage')){
+			return redirect()->back()->with('error', __('Permission Denied'));
+		}
 		$template_id = ($id > 0) ? Crypt::decrypt($id) : 0;
 
 		$template		 = new SmartTemplate();

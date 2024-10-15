@@ -460,11 +460,10 @@
 				return false;
 			}
 		});
+		init_tiny_mce('#extra_notes');
+
+		init_tiny_mce('#pdf_top_notes');
 	});
-
-	init_tiny_mce('#extra_notes');
-
-	init_tiny_mce('#pdf_top_notes');
 
 </script>
 @endpush
