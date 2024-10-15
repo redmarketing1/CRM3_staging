@@ -18,55 +18,57 @@ function MapHandler(mapElementId) {
   } : initialLatLng;
   var mapElement = document.getElementById(mapElementId);
   var markerLocations = getMarkerLocationsFromElement();
+  var hiddenPOIStyles = [{
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{
+      visibility: "off"
+    }]
+  }, {
+    featureType: "poi.business",
+    stylers: [{
+      visibility: "off"
+    }]
+  }, {
+    featureType: "poi.medical",
+    stylers: [{
+      visibility: "off"
+    }]
+  }, {
+    featureType: "poi.school",
+    stylers: [{
+      visibility: "off"
+    }]
+  }, {
+    featureType: "poi.sports_complex",
+    stylers: [{
+      visibility: "off"
+    }]
+  }, {
+    featureType: "poi.park",
+    stylers: [{
+      visibility: "off"
+    }]
+  }, {
+    featureType: "transit.station",
+    stylers: [{
+      visibility: "off"
+    }]
+  }, {
+    featureType: "road",
+    elementType: "labels",
+    stylers: [{
+      visibility: "off"
+    }]
+  }];
+  var defaultStyles = [];
   var map = new google.maps.Map(mapElement, {
     center: mapCenter,
     zoom: parseInt(savedZoom),
     mapTypeId: 'terrain',
     streetViewControl: false,
     mapTypeControl: false,
-    styles: [{
-      featureType: "poi",
-      elementType: "labels",
-      stylers: [{
-        visibility: "off"
-      }]
-    }, {
-      featureType: "poi.business",
-      stylers: [{
-        visibility: "off"
-      }]
-    }, {
-      featureType: "poi.medical",
-      stylers: [{
-        visibility: "off"
-      }]
-    }, {
-      featureType: "poi.school",
-      stylers: [{
-        visibility: "off"
-      }]
-    }, {
-      featureType: "poi.sports_complex",
-      stylers: [{
-        visibility: "off"
-      }]
-    }, {
-      featureType: "poi.park",
-      stylers: [{
-        visibility: "off"
-      }]
-    }, {
-      featureType: "transit.station",
-      stylers: [{
-        visibility: "off"
-      }]
-    }, {
-      featureType: "road",
-      elementType: "labels",
-      stylers: [{
-        visibility: "off"
-      }]
-    }]
+    styles: hiddenPOIStyles
   });
   var mapMarkers = [];
   var currentInfoWindow = null;
@@ -116,6 +118,11 @@ function MapHandler(mapElementId) {
       html: infowindow,
       animation: google.maps.Animation.DROP,
       locationIndex: index
+      // label: {
+      //     text: location.name,
+      //     color: "#222222",
+      //     fontSize: "13px",
+      // }
     });
     setupMarkerEvents(marker, infowindow);
     mapMarkers.push(marker);
@@ -252,7 +259,25 @@ function MapHandler(mapElementId) {
       map.fitBounds(bounds);
     }
   });
+  function addPOIToggleButton(map, mapElement, hiddenPOIStyles, defaultStyles) {
+    var poiHidden = true;
+    var toggleButton = document.createElement('button');
+    toggleButton.textContent = "POI Visibility";
+    toggleButton.classList = "bg-white rounded px-2 shadow-sm py-sm-1 font-semibold";
+    toggleButton.style.position = 'absolute';
+    toggleButton.style.top = '10px';
+    toggleButton.style.left = '10px';
+    toggleButton.style.zIndex = '999';
+    mapElement.appendChild(toggleButton);
+    toggleButton.addEventListener('click', function () {
+      poiHidden = !poiHidden;
+      map.setOptions({
+        styles: poiHidden ? hiddenPOIStyles : defaultStyles
+      });
+    });
+  }
   addMarkersToMap();
+  addPOIToggleButton(map, mapElement, hiddenPOIStyles, defaultStyles);
 }
 document.addEventListener('DOMContentLoaded', function () {
   new MapHandler('map');
