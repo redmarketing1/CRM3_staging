@@ -89,11 +89,6 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
             html: infowindow,
             animation: google.maps.Animation.DROP,
             locationIndex: index,
-            // label: {
-            //     text: location.name,
-            //     color: "#222222",
-            //     fontSize: "13px",
-            // }
         });
         setupMarkerEvents(marker, infowindow);
         mapMarkers.push(marker);
@@ -138,7 +133,8 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
             fillColor: backgroundColor,
             fillOpacity: 1,
             scale: 1,
-            anchor: new google.maps.Point(21, 42)
+            anchor: new google.maps.Point(21, 42),
+            labelOrigin: new google.maps.Point(20, 60)
         };
     }
 
@@ -271,8 +267,46 @@ function MapHandler(mapElementId, initialLatLng = { lat: 51.1657, lng: 10.4515 }
         });
     }
 
+    function addToggleLabelsButton(map, mapElement) {
+        let labelsVisible = true;
+
+        const toggleButton = document.createElement('button');
+        toggleButton.textContent = "Label Visibility";
+        toggleButton.classList = "bg-white rounded px-2 shadow-sm py-sm-1 font-semibold";
+        toggleButton.style.position = 'absolute';
+        toggleButton.style.top = '50px';
+        toggleButton.style.left = '10px';
+        toggleButton.style.zIndex = '999';
+        mapElement.appendChild(toggleButton);
+
+
+        toggleButton.addEventListener('click', function () {
+            labelsVisible = !labelsVisible;
+            markerLocations.forEach((location, index) => {
+                const marker = mapMarkers[index];
+                if (labelsVisible) {
+                    marker.setLabel(null);
+                } else {
+                    marker.setLabel({
+                        text: location.name,
+                        color: "#222222",
+                        fontSize: "15px",
+                        fontWeight: 'bold',
+                        className: "project-label",
+                    });
+                }
+            });
+
+            // toggleButton.textContent = labelsVisible ? 'Label Hide' : 'Label Visibility';
+        });
+    }
+
     addMarkersToMap();
-    addPOIToggleButton(map, mapElement, hiddenPOIStyles, defaultStyles);
+
+    setTimeout(function () {
+        addPOIToggleButton(map, mapElement, hiddenPOIStyles, defaultStyles);
+        addToggleLabelsButton(map, mapElement);
+    }, 2000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
