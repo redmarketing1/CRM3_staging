@@ -35,6 +35,4 @@
             </ul>
         </div>
     @endforeach
-
-    <div id="pagination-btn" class="font-semibold mb-3 mt-3 pointer text-center">Show more</div>
 </div>

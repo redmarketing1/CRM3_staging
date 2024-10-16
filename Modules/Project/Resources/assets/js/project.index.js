@@ -510,72 +510,77 @@ $(document).ready(function () {
             return inputWord.replace(regex, '').replace(/\s+/g, ' ').trim();
         }
     }
-    //loadDataTables()
+    loadDataTables();
 
-    function loadSibeMenuPagination() {
+    function loadTabMenuPagination() {
         var projectsPerPage = 15;
-        var totalProjects = document.querySelectorAll('#allprojects a.tab-link').length;
-        var currentVisibleProjects = projectsPerPage;
 
-        function getRandomProjectsPerPage() {
-            var remainingProjects = totalProjects - currentVisibleProjects;
-            var maxProjectsToShow = Math.min(remainingProjects, 50); // Maximum range should be 50 or remaining projects
-            if (remainingProjects <= 0) return 0;
-            return Math.floor(Math.random() * (maxProjectsToShow - 10 + 1)) + 10;
-        }
+        function initPaginationForTab(tabContentId) {
+            var totalProjects = document.querySelectorAll(`#${tabContentId} a.tab-link`).length;
+            var currentVisibleProjects = projectsPerPage;
 
-        function hideProjects(fromIndex) {
-            var projectItems = document.querySelectorAll('#allprojects .tab-item');
-            for (var i = fromIndex; i < totalProjects; i++) {
-                projectItems[i].style.display = 'none';
-            }
-        }
-
-        function showProjects(fromIndex, toIndex) {
-            var projectItems = document.querySelectorAll('#allprojects .tab-item');
-            for (var i = fromIndex; i < toIndex && i < totalProjects; i++) {
-                projectItems[i].style.display = 'list-item';
-            }
-        }
-
-        function updateButtonLabel(number, isLess) {
-            var btn = document.getElementById('pagination-btn');
-            if (isLess) {
-                btn.innerText = `Show Less Projects`;
-            } else {
-                btn.innerText = `Show More ${number} Projects`;
-            }
-        }
-
-        document.getElementById('pagination-btn').addEventListener('click', function () {
-            if (currentVisibleProjects >= totalProjects) {
-                currentVisibleProjects = projectsPerPage;
-                hideProjects(currentVisibleProjects);
-                updateButtonLabel(getRandomProjectsPerPage(), false);
-            } else {
-                var randomProjectsPerPage = getRandomProjectsPerPage();
-                var nextVisible = currentVisibleProjects + randomProjectsPerPage;
-
-                // Make sure not to exceed the total projects
-                nextVisible = Math.min(nextVisible, totalProjects);
-
-                showProjects(currentVisibleProjects, nextVisible);
-                currentVisibleProjects = nextVisible;
-
-                if (currentVisibleProjects >= totalProjects) {
-                    updateButtonLabel(0, true); // Show less button when all projects are visible
-                } else {
-                    updateButtonLabel(getRandomProjectsPerPage(), false); // Show random number for next load
+            function hideProjects(fromIndex) {
+                var projectItems = document.querySelectorAll(`#${tabContentId} .tab-item`);
+                for (var i = fromIndex; i < totalProjects; i++) {
+                    projectItems[i].style.display = 'none';
                 }
             }
-        });
 
-        hideProjects(currentVisibleProjects);
-        updateButtonLabel(getRandomProjectsPerPage(), false);
+            function showAllProjects() {
+                var projectItems = document.querySelectorAll(`#${tabContentId} .tab-item`);
+                projectItems.forEach(item => {
+                    item.style.display = 'list-item';
+                });
+            }
+
+            function updateButtonLabel(isLess) {
+                var btn = document.querySelector(`#${tabContentId} .pagination-btn`);
+                if (isLess) {
+                    btn.innerText = `Show Less Projects`; // If you want to show 'Show Less' when all are displayed
+                } else {
+                    btn.innerText = `Show All Projects`;
+                }
+            }
+
+            // Create the button dynamically if totalProjects exceeds projectsPerPage
+            if (totalProjects > projectsPerPage) {
+                var tabContent = document.getElementById(tabContentId);
+                var button = document.createElement('div');
+                button.classList = 'pagination-btn font-semibold mb-3 mt-3 pointer text-center';
+                button.innerText = `Show All Projects`;
+                tabContent.appendChild(button); // Append the button to the tab content
+
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    if (currentVisibleProjects >= totalProjects) {
+                        currentVisibleProjects = projectsPerPage;
+                        hideProjects(currentVisibleProjects);
+                        updateButtonLabel(false);
+                    } else {
+                        showAllProjects();
+                        currentVisibleProjects = totalProjects;
+                        updateButtonLabel(true);
+                    }
+                });
+
+                hideProjects(currentVisibleProjects); // Hide projects exceeding projectsPerPage
+                updateButtonLabel(false);
+            } else {
+                // If totalProjects is less than or equal to projectsPerPage, show all projects
+                var projectItems = document.querySelectorAll(`#${tabContentId} .tab-item`);
+                projectItems.forEach(item => {
+                    item.style.display = 'list-item';
+                });
+            }
+        }
+
+        $('#project a.nav-link').each(function () {
+            var tabContentId = $(this).attr('id').replace('tab-', '');
+            initPaginationForTab(tabContentId);
+        });
     }
 
-
-    loadSibeMenuPagination()
+    loadTabMenuPagination();
 
 
 });
