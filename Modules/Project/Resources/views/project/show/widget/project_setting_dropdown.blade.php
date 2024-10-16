@@ -2,7 +2,8 @@
     @if (!empty($projectLabel['project_status']))
         <div class="col-sm-auto">
             <button class="btn btn-xs btn-primary project-statusName text-white btn-icon-only width-auto dropdown-toggle"
-                type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                style="background-color: {{ $project->backgroundColor }}; color:{{ $project->statusData->font_color }}!important;">
                 {{ $project->statusData->name ?? 'Select Status' }}
             </button>
 
@@ -13,12 +14,15 @@
                             data-url="{{ route('projects.edit_form', [$project->id, 'project_status']) }}"
                             data-bs-toggle="modal" data-bs-target="#exampleModal"
                             data-bs-whatever="{{ __('Select Final Estimation') }}"
-                            data-title="{{ __('Select Final Estimation') }}" class="dropdown-item">
+                            data-title="{{ __('Select Final Estimation') }}" class="dropdown-item"
+                            data-backgroundColor="{{ $status->background_color }}"
+                            data-fontColor="{{ $status->font_color }}">
                             {{ $status->name }}
                         </a>
                     @else
                         <a href="javascript:void(0)" class="dropdown-item status" data-status="{{ $status->id }}"
-                            data-id="{{ $project->id }}">
+                            data-id="{{ $project->id }}" data-backgroundColor="{{ $status->background_color }}"
+                            data-fontColor="{{ $status->font_color }}">
                             {{ $status->name }}
                         </a>
                     @endif

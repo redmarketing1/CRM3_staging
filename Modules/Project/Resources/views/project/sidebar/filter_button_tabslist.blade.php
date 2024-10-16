@@ -1,3 +1,6 @@
+<div class="h-auto project-search mt-3 mb-2">
+    <input type="search" class="w-100" id="searchInput" placeholder="{{ trans('Search projects...') }}" />
+</div>
 <ul class="nav dash-item-tabs" id="project" role="tablist">
     @empty(!$groupedProjects)
         <li class="nav-item" role="presentation">

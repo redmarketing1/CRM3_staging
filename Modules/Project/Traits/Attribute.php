@@ -83,18 +83,31 @@ trait Attribute
 
     public function getThumbnailOrDefaultAttribute()
     {
+        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
         $thumbnail = $this->hasOne(ProjectFile::class, 'project_id', 'id')
             ->where('is_default', 1)
+            ->where(function ($query) use ($imageExtensions) {
+                foreach ($imageExtensions as $extension) {
+                    $query->orWhere('file_path', 'like', "%.{$extension}");
+                }
+            })
             ->orderBy('is_default', 'desc')
             ->first();
 
         if (! $thumbnail) {
             $thumbnail = $this->hasOne(ProjectFile::class, 'project_id', 'id')
                 ->where('is_default', 0)
+                ->where(function ($query) use ($imageExtensions) {
+                    foreach ($imageExtensions as $extension) {
+                        $query->orWhere('file_path', 'like', "%.{$extension}");
+                    }
+                })
                 ->orderBy('is_default', 'desc')
                 ->first();
         }
 
         return $thumbnail;
     }
+
 }

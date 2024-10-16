@@ -4,8 +4,9 @@
 *********************************************************************
 *********************************************************************/
 * {
-text-wrap: wrap;
+    text-wrap: wrap;
 }
+
 .bold {
     font-weight: 500;
 }
@@ -6896,7 +6897,7 @@ table td .btn-sm i {
     font-size: 20px !important;
     /* border-radius: 10px 10px 0 0; */
     padding-bottom: 0 !important;
-    z-index: 1!important;
+    z-index: 1 !important;
 }
 
 .table#estimation-edit-table thead th.total-net-discount.totalnr,
@@ -7751,6 +7752,7 @@ th.project-users {
 td.project-budget {
     text-align: right;
 }
+
 .filterable-budget-net-table .price-input {
     display: flex;
     margin: 0;
@@ -7759,6 +7761,7 @@ td.project-budget {
     gap: 4px;
     flex-wrap: wrap;
 }
+
 .project-list input[type="checkbox"].select_project,
 .project-list input[type="checkbox"].select_all_projects {
     scale: 1;
@@ -8067,6 +8070,7 @@ body.project .row {
     transition: 0.3s;
     text-wrap: wrap;
 }
+
 .projectsTableContainter table#projectsTable .project-comments li {
     margin-bottom: 0;
     font-size: 12px;
@@ -8076,6 +8080,7 @@ body.project .row {
     padding-bottom: 10px;
     margin-bottom: 5px !important;
 }
+
 .projectsTableContainter table#projectsTable .project-comments li p {
     font-size: 12px;
     line-height: 14px;
@@ -8089,6 +8094,7 @@ body.project .row {
     background-color: #FFF;
     overflow: auto;
 }
+
 .projectsTableContainter table#projectsTable .project-comments li:last-child {
     border-bottom: none !important;
 }
@@ -8283,9 +8289,11 @@ th.filterable-budget-net-table input {
     width: 40px;
     text-align: right;
 }
+
 th.filterable-budget-net-table input:focus {
     width: 100px;
 }
+
 /*.project.index .dt-length label {
     display: none;
 }
@@ -8340,7 +8348,8 @@ th.filterable-budget-net-table input:focus {
     margin-top: 8px !important;
     transition: opacity 1s ease-in-out;
     opacity: 0;
-    display: none;;
+    display: none;
+    ;
 }
 
 /* #projectsTable thead:hover .net-range-slider {
@@ -8425,13 +8434,15 @@ div.dt-container .dt-paging .dt-paging-button:hover {
 }
 
 
-.data-sub-name span, .data-sub-name span * {
+.data-sub-name span,
+.data-sub-name span * {
     border: none !important;
     padding: 0 !important;
     color: #999 !important;
     margin: 0 !important;
     line-height: 14px;
 }
+
 span.no-data {
     border: none !important;
     display: none;
@@ -8447,34 +8458,39 @@ span.no-data {
 /****** MODAL SCROLL FIX *****/
 .modal {
     overflow-y: auto !important;
-  }
-  
-  .modal-dialog {
+}
+
+.modal-dialog {
     max-height: 95vh !important;
     overflow-y: initial !important;
-  }
-  
-  .modal-content {
+}
+
+.modal-content {
     max-height: 90vh !important;
     overflow-y: auto !important;
-  }
-  
-  .modal-body {
-    max-height: calc(90vh - 120px) !important; /* Adjust if needed based on your header/footer size */
+}
+
+.modal-body {
+    max-height: calc(90vh - 120px) !important;
+    /* Adjust if needed based on your header/footer size */
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
-  }
+}
+
 /****** MODAL SCROLL FIX END *****/
 
 div#status-tabs {
     height: auto !important;
 }
-.project.index .dash-content > .row {
+
+.project.index .dash-content>.row {
     padding: 0;
 }
+
 .gm-style-iw-ch {
     padding: 0;
 }
+
 .gm-style-iw-chr button {
     margin-top: -32px !important;
     right: -5px;
@@ -8559,7 +8575,7 @@ div#status-tabs {
         width: 100%;
     }
 
-    .dd + .dd {
+    .dd+.dd {
         margin-left: 0;
     }
 }
@@ -8574,15 +8590,18 @@ div#status-tabs {
     .dropzone {
         column-count: 3;
     }
+
     table#projectsTable tr {
         display: flex;
         flex-flow: wrap;
         border-bottom: 5px solid #bfbfbf;
         margin-bottom: 0 !important;
     }
+
     table#projectsTable .theader {
         display: none;
     }
+
     table#projectsTable td {
         display: flex;
         flex: auto;
@@ -8611,6 +8630,11 @@ div#status-tabs {
     .dropzone {
         column-count: 7;
     }
+}
+
+.project-search {
+    margin-left: 18px;
+    margin-right: 10px;
 }
 
 /************************************+ MEDIA QUERIES ONLY ********************************************/

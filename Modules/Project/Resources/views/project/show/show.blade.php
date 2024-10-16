@@ -1,5 +1,10 @@
 @extends('layouts.main')
 
+@php
+    $countryID = $project->contactDetail->country;
+    $country = \App\Models\Country::whereId($countryID)->first();
+@endphp
+
 @push('css')
     <style>
         #card2 {
@@ -259,6 +264,16 @@
         var project_id = '{{ \Crypt::encrypt($project->id) }}';
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
         var supportedFormats = '{{ getAdminAllSetting()['local_storage_validation'] }}';
+        var projectStatus = '{{ strtolower(preg_replace('/\s+/', '-', $project->statusData->name)) ?? 'no-status' }}';
+        var projectPriority = '{{ $project->priorityData->name ?? 'no-priority' }}';
+        var projectConstructionType = "{{ implode(',', [$project->constructionData->name]) ?? 'no-construction-type' }}";
+        var projectPropertyType = "{{ $project->property->first()->name ?? 'no-property-type' }}";
+        var projectType = "{{ $project->label ?? 'no-project-type' }}";
+        var projectCountry = "{{ $country->name ?? 'no-country' }}";
+
+        $('body').addClass(projectStatus + ' ' + projectPriority + ' ' + projectConstructionType + ' ' +
+            projectPropertyType + ' ' + projectType + ' ' + projectCountry);
+
 
         $(document).ready(function() {
 
@@ -1053,11 +1068,11 @@
                                         backgroundY + textHeight);
                                 }
 
-                                const dateText = dateTaken ? formatDate(dateTaken) : '';
-                                drawTextWithBackground(ctx, dateText, 10, 10, '#ee232ac2', '#FFF', {
-                                    topBottom: 2,
-                                    leftRight: 5
-                                });
+                                drawTextWithBackground(ctx, dateTaken, 10, 10, '#ee232ac2',
+                                    '#FFF', {
+                                        topBottom: 2,
+                                        leftRight: 5
+                                    });
 
                                 ctx.canvas.toBlob(function(blob) {
                                     const compressedFile = new File([blob], file.name, {
