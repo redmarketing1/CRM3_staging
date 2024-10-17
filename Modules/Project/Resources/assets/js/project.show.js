@@ -3,8 +3,8 @@ $(document).on("click", ".status", function (event) {
 
     const projectID = $(this).attr('data-id');
     const statusID = $(this).attr('data-status');
-    const backgroundColor = $(this).attr('data-backgroundColor');
-    const fontColor = $(this).attr('data-fontColor');
+    const backgroundColor = $(this).attr('data-background');
+    const fontColor = $(this).attr('data-font');
     const statusName = $(this).text();
 
     $('.project-statusName').text(statusName).attr('style', `background-color: ${backgroundColor} !important; color: ${fontColor} !important;`);

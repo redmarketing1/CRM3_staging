@@ -3838,8 +3838,11 @@ span.feedback-preview {
 }
 
 .dropdown-menu a.dropdown-item:last-child {
-    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+
 }
+
 
 .dropdown span {
     display: block;
@@ -4322,7 +4325,8 @@ label.dropdown-item:last-child {
 
 .dropdown-item:last-child,
 .select2-results li:last-child {
-    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
 }
 
 .dropdown-menu a:hover,
@@ -8191,6 +8195,7 @@ body.project .row {
     max-height: 150px;
     max-width: 200px;
 }
+
 .dropdown-menu.show a {
     margin: 5px;
     padding: 10px;
