@@ -49,10 +49,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $project_users = $project->users()->get();  
-        $authUser = Auth::user();           
+        $project_users = $project->users()->get();
+        $authUser      = Auth::user();
 
-        if (!($authUser->type == 'company') && !$project_users->contains($authUser)) {
+        if (! ($authUser->type == 'company') && ! $project_users->contains($authUser)) {
             abort(403, 'Permission Denied');
         }
 
@@ -124,7 +124,9 @@ class ProjectController extends Controller
                 ->get();
         }
 
-        return view('project::project.show.edit.index', compact('project', 'customFields'));
+        $projectLabel = Label::get_project_dropdowns();
+
+        return view('project::project.show.edit.index', compact('project', 'customFields', 'projectLabel'));
     }
 
     private function getFirstSeventhWeekDay($week)

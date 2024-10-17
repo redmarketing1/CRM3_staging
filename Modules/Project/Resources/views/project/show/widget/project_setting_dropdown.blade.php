@@ -21,8 +21,7 @@
                         </a>
                     @else
                         <a href="javascript:void(0)" class="dropdown-item status" data-status="{{ $status->id }}"
-                            data-id="{{ $project->id }}" data-backgroundColor="{{ $status->background_color }}"
-                            data-fontColor="{{ $status->font_color }}">
+                            data-id="{{ $project->id }}" style="border-left: 5px solid {{ $status->background_color }};">
                             {{ $status->name }}
                         </a>
                     @endif
