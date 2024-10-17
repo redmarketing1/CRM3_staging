@@ -8197,12 +8197,10 @@ body.project .row {
 }
 
 .dropdown-menu.show a {
-    margin: 2px 0;
+    margin: 5px;
     padding: 10px;
     border-radius: 5px;
     width: auto;
-    border-left-width: 15px !important;
-    border-radius: 2px;
 }
 
 .project.index div.dt-container div.dt-layout-cell {

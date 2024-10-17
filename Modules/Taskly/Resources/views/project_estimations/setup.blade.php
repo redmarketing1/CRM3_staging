@@ -1157,6 +1157,9 @@
 					discount_sc = document.getElementById("discount_sc"+id).value;
 					discount_sc = parseLocaleNumber(moneyFormat,discount_sc);
 				}
+				if (isNaN(discount_sc)) {
+					discount_sc = 0;
+				}
                 let netWithDiscount_sc = net_sc - (net_sc * (discount_sc/100));
 				let gross_sc = net_sc + (net_sc * (vat_sc/100));
                 let grossWithDiscount_sc = gross_sc - (gross_sc * (discount_sc/100));
@@ -1677,7 +1680,7 @@
 							tableData[total_price_key] = converte_total;
 						}
 					}
-					consol.log(tableData);
+					console.log(tableData);
 					new_table_data.push(tableData);
 				}
 			});
