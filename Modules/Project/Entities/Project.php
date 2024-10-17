@@ -4,6 +4,7 @@ namespace Modules\Project\Entities;
 
 use Modules\Project\Traits\Scope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Modules\Project\Traits\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Project\Traits\Relationship;
@@ -36,6 +37,18 @@ class Project extends Model
         'is_active',
         'is_archive',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($project) {
+            if ($project->isDirty('status')) {
+                Cache::forget('projectSubmenu-' . auth()->id());
+                Cache::forget('filterableStatusList-' . auth()->id());
+            }
+        });
+    }
 
     /**
      * Return project URL

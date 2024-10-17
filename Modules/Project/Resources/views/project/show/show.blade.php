@@ -266,7 +266,7 @@
         var supportedFormats = '{{ getAdminAllSetting()['local_storage_validation'] }}';
         var projectStatus = '{{ strtolower(preg_replace('/\s+/', '-', $project->statusData->name)) ?? 'no-status' }}';
         var projectPriority = '{{ $project->priorityData->name ?? 'no-priority' }}';
-        var projectConstructionType = "{{ implode(',', [$project->constructionData->name]) ?? 'no-construction-type' }}";
+        var projectConstructionType = "{{ $project->constructionData->name ?? 'no-construction-type' }}";
         var projectPropertyType = "{{ $project->property->first()->name ?? 'no-property-type' }}";
         var projectType = "{{ $project->label ?? 'no-project-type' }}";
         var projectCountry = "{{ $country->name ?? 'no-country' }}";
