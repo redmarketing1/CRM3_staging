@@ -39,7 +39,7 @@ $(document).ready(function () {
                 },
                 { data: 'thumbnail', name: 'thumbnail', className: 'thumbnail' },
                 {
-                    data: 'status', name: 'status', orderable: true, className: 'status',
+                    data: 'status', name: 'status', visible: false, orderable: true, className: 'status',
 
                 },
                 { data: 'name', name: 'name', orderable: true, className: 'name' },
@@ -210,25 +210,7 @@ $(document).ready(function () {
             table.draw();
         });
 
-        $(document).on('change', '#bulk-action-selector', function () {
-            const selectedOption = $(this).find('option:selected');
-            const value = selectedOption.val();
-
-            if (!value || value === "Bulk actions") {
-                return;
-            }
-
-            const title = selectedOption.data('title');
-            const text = selectedOption.data('text');
-            const type = selectedOption.data('type');
-
-            const selectedRows = $('input.row-select-checkbox:checked');
-            const selectedData = [];
-
-            for (var i = 0; i < selectedRows.length; i++) {
-                selectedData.push(selectedRows[i].value);
-            }
-
+        function handleBulkAction(type, title, text, selectedData, selectedRows, selectedType) {
             Swal.fire({
                 title: title,
                 text: text,
@@ -272,47 +254,76 @@ $(document).ready(function () {
                             clearInterval(timerInterval);
                         }
                     }).then(function () {
-
                         if (type === 'delete') {
                             selectedRows.each(function () {
-                                var row = $(this).closest('tr');
+                                var row = $(this).val();
+                                $(row).remove();
                                 table.row(row).remove();
                             });
                         }
 
-                        if (type === 'archive') {
-                            selectedRows.each(function (value, index) {
+                        if (type === 'archive' || type === 'unarchive') {
+                            selectedRows.each(function () {
                                 const rowId = $(this).val();
                                 const rowData = table.row('#' + rowId).data();
-                                rowData.is_archive = 1;
-                                table.row('#' + rowId).data(rowData).draw();
-                            });
-                        }
-
-                        if (type === 'unarchive') {
-                            selectedRows.each(function (value, index) {
-                                const rowId = $(this).val();
-                                const rowData = table.row('#' + rowId).data();
-                                rowData.is_archive = 0;
+                                rowData.is_archive = type === 'archive' ? 1 : 0;
                                 table.row('#' + rowId).data(rowData).draw();
                             });
                         }
 
                         if (type === 'duplicate') {
-                            selectedRows.each(function (val, element) {
+                            selectedRows.each(function () {
                                 const rowId = $(this).val();
                                 const rowData = table.row('#' + rowId).data();
                                 table.row.add(rowData).draw();
                             });
                         }
 
-
-                        $('input#select-all,.row-select-checkbox').prop('checked', false);
-                        $('#bulk-action-selector').val('bulk').fadeOut();
+                        if (selectedType === 'select') {
+                            $('input#select-all,.row-select-checkbox').prop('checked', false);
+                            $('#bulk-action-selector').val('bulk').fadeOut();
+                        }
                     });
                 }
             });
+        }
+
+        $(document).on('change', '#bulk-action-selector', function () {
+            const selectedOption = $(this).find('option:selected');
+            const value = selectedOption.val();
+            if (!value || value === "Bulk actions") {
+                return;
+            }
+
+            const title = selectedOption.data('title');
+            const text = selectedOption.data('text');
+            const type = selectedOption.data('type');
+            const selectedRows = $('input.row-select-checkbox:checked');
+            const selectedData = [];
+
+            selectedRows.each(function () {
+                selectedData.push($(this).val());
+            });
+
+            handleBulkAction(type, title, text, selectedData, selectedRows, 'select');
         });
+
+        // Handle button click (e.g., delete button)
+        $(document).on('click', '.action-btn button', function (e) {
+            e.preventDefault();
+            const button = $(this);
+
+            const id = $(this).val();
+            const type = button.data('type');
+            const title = button.data('title');
+            const text = button.data('text');
+
+            const selectedRows = button;
+            const selectedData = [id];
+
+            handleBulkAction(type, title, text, selectedData, selectedRows, 'click');
+        });
+
 
         $(document).on('click', '#clearFilter', function () {
             $('input#select-all,.row-select-checkbox').prop('checked', false);

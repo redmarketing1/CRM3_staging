@@ -4,7 +4,7 @@
         <tr class="theader">
             <th class="checkbox"><input id="select-all" type="checkbox"></th> <!-- Checkbox Column -->
             <th class="empty" data-orderable="false"></th>
-            <th class="status" data-orderable="false">{{ trans('Status') }}</th>
+            <th class="status" data-orderable="false" style="display: none">{{ trans('Status') }}</th>
             <th class="project-name" data-orderable="false">{{ trans('Project Name') }}</th>
             <th class="comments" data-orderable="false">{{ trans('Comments') }}</th>
             <th class="archive" style="display: none">{{ trans('Archive') }}</th>

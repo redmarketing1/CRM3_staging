@@ -2,6 +2,12 @@
     <a href="{{ $project->url() }}">
         <h2 class="data-name font-medium text-xl">{{ $project->name }}</h2>
     </a>
+    @if (isset($project->statusData->name))
+        <span class="data-project-status"
+            style="background-color: {{ $project->statusData->background_color ?? '#ffffff' }};color: {{ $project->statusData->font_color ?? '#555555' }};">
+            {{ $project->statusData->name }}
+        </span>
+    @endif
     <div class="d-flex data-sub-name flex-column font-normal">
         @if (isset($project->contactDetail->name))
             <span class="construction-client-name">
@@ -26,4 +32,5 @@
             </span>
         @endif
     </div>
+
 </div>

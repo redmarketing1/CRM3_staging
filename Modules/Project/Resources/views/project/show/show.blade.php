@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @php
-    $countryID = $project->contactDetail->country;
+    $countryID = $project->contactDetail->country ?? null;
     $country = \App\Models\Country::whereId($countryID)->first();
 @endphp
 
@@ -264,7 +264,8 @@
         var project_id = '{{ \Crypt::encrypt($project->id) }}';
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
         var supportedFormats = '{{ getAdminAllSetting()['local_storage_validation'] }}';
-        var projectStatus = '{{ strtolower(preg_replace('/\s+/', '-', $project->statusData->name)) ?? 'no-status' }}';
+        var projectStatus =
+            '{{ strtolower(preg_replace('/\s+/', '-', $project->statusData->name ?? 'no-status')) ?? 'no-status' }}';
         var projectPriority = '{{ $project->priorityData->name ?? 'no-priority' }}';
         var projectConstructionType = "{{ $project->constructionData->name ?? 'no-construction-type' }}";
         var projectPropertyType = "{{ $project->property->first()->name ?? 'no-property-type' }}";
