@@ -1,4 +1,4 @@
-<div class="d-flex flex-column text-left">
+<div class="name-container">
     <a href="{{ $project->url() }}">
         <h2 class="data-name font-medium text-xl">{{ $project->name }}</h2>
     </a>
