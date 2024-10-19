@@ -2,11 +2,11 @@
 
 <div class="col-xxl-12 card-container mt-5 mb-5">
     @permission('team member view')
-        @include('project::project.quickView.team')
+        @include('project::project.show.card.team_members')
     @endpermission
 
-    @include('project::project.quickView.contact')
-    @include('project::project.quickView.label')
+    @include('project::project.show.card.contact')
+    @include('project::project.show.card.project_labels')
 </div>
 
 {{-- @include('project::project.show.section.estimations') --}}

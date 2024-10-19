@@ -621,25 +621,20 @@
                 });
             });
 
-
-            $(document).on("select2:clear", "#property", function(e) {
-                store_to_project_data('property_type', e);
-            });
-            $(document).on("select2:clear", "#construction_type", function(e) {
-                store_to_project_data('construction_type', e)
-            });
-
-            $('.filter_select2').select2({
-                placeholder: "Select",
-                //	multiple: true,
-                tags: true,
-                templateSelection: function(data, container) {
-                    $(container).css("background-color", $(data.element).data("background_color"));
-                    if (data.element) {
-                        $(container).css("color", $(data.element).data("font_color"));
+            $('.filter_select2').each(function() {
+                $(this).select2({
+                    placeholder: "Select",
+                    tags: true,
+                    placeholder: false,
+                    templateSelection: function(data, container) {
+                        $(container).css("background-color", $(data.element).data(
+                            "background_color"));
+                        if (data.element) {
+                            $(container).css("color", $(data.element).data("font_color"));
+                        }
+                        return data.text;
                     }
-                    return data.text;
-                }
+                });
             });
 
             //Team member select2
@@ -660,17 +655,17 @@
         });
 
         //Team Member Ajax
-        function save_project_member_details(event) {
-            var user_ids = $(event).val();
+        $(document).on('change', '#changeProjectMember', function(event) {
+            const projectID = $(this).data('projectid');
+            const userID = $(this).val();
+
             $.ajax({
-                url: '{{ route('project.member.add', $project->id) }}',
+                url: route('project.member.add', projectID),
                 type: "POST",
                 data: {
-                    users: user_ids, // Send the selected user IDs as an array (changed 'user' to 'users')
-                    "_token": $('meta[name="csrf-token"]').attr('content')
+                    users: userID
                 },
                 success: function(data) {
-                    console.log(data);
                     if (data.is_success) {
                         $('.projectteamcount').html(data.count);
                         toastrs('Success', data.message, 'success');
@@ -682,43 +677,29 @@
                     toastrs('Error', 'Something went wrong: ' + textStatus, 'error');
                 }
             });
-        }
+        });
 
-        function store_to_project_data(field, event) {
-            if (field != "") {
-                var field_value = $(event).val();
-                if (field_value != "" && field_value != null) {
-                    if (field == "label") {
-                        field_value = field_value.join(", ")
-                    }
-                    if (field == "construction_type") {
-                        field_value = field_value.join(", ")
-                    }
-                    if (field == "property_type") {
-                        field_value = field_value.join(", ")
-                    }
-                    if (field == "priority") {
-                        field_value = field_value.join(", ")
+        $(document).on('change', '.filter_select2', function(event) {
+            const labelType = $(this).data('labeltype');
+            const ids = $(this).val().join(", ");
+            if (!labelType && !ids) return;
+            $.ajax({
+                url: '{{ route('project.add.status_data', $project->id) }}',
+                type: "POST",
+                data: {
+                    field: labelType,
+                    field_value: ids
+                },
+                success: function(data) {
+                    if (data.is_success) {
+                        toastrs('Success', data.message, 'success');
+                    } else {
+                        toastrs('Error', data.message, 'error');
                     }
                 }
-                $.ajax({
-                    url: '{{ route('project.add.status_data', $project->id) }}',
-                    type: "POST",
-                    data: {
-                        field: field,
-                        field_value: field_value,
-                        "_token": $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(data) {
-                        if (data.is_success) {
-                            toastrs('Success', data.message, 'success');
-                        } else {
-                            toastrs('Error', data.message, 'error');
-                        }
-                    }
-                });
-            }
-        }
+            });
+        });
+
 
         function set_construction_address() {
             var csrfToken = $('meta[name="csrf-token"]').attr('content');

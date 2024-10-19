@@ -1,8 +1,7 @@
 <label for="construction_type" class="form-label">Construction Type</label>
 <div class="select2-custom">
-    <select name="construction_type" class="form-control filter_select2"
-        onchange="store_to_project_data('construction_type', this)" multiple>
-        <option value="" disabled>Select</option>
+    <select name="construction_type" id="constructionType" data-labelType="construction_type"
+        class="form-control filter_select2" multiple>
         @foreach ($projectLabel['construction_type'] ?? [] as $construction_type)
             @php
                 $selected = isset($project->construction_type)

@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="card-body">
-        <div class="row mt-2">
+        <div class="row">
             <div class="col-md-6 form-group">
                 @include('project::project.show.card.labels.construction_type')
             </div>

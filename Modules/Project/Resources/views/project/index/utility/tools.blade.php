@@ -2,7 +2,7 @@
 
     <a href="javascript:void" id="projectStatus" class="btn btn-sm btn-primary mx-1" data-toggle="tooltip"
         title="{{ __('Project Status') }}">
-        <i class="fa-solid fa-sliders"></i>
+        <i class="fa-solid fa-address-card"></i>
     </a>
 
     @permission('project manage')

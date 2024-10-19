@@ -19,7 +19,7 @@
 
     <div class="card-body top-10-scroll">
         <div class="select2-custom">
-            <select name="project_member" class="form-control member_select2" onchange="save_project_member_details(this)"
+            <select name="project_member" class="form-control member_select2" id="changeProjectMember"
                 data-projectId="{{ $project->id }}" multiple>
                 <option value="" disabled>Select</option>
                 @if (isset($workspace_users) && count($workspace_users) > 0)
