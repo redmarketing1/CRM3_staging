@@ -186,6 +186,13 @@ class ProjectController extends Controller
         return $arrTask;
     }
 
+    public function quickView(Project $project)
+    {
+        return view('project::project.quickView.index', compact(
+            'project',
+        ));
+    }
+
     /**
      * Update project by given ids.
      *  

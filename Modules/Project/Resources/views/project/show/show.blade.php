@@ -234,7 +234,7 @@
                 @include('project::project.show.utility.header')
                 @include('project::project.show.utility.dashboard')
 
-                @includeWhen($project->type == 'project', 'project::project.show.utility.if_project_types')
+                @include('project::project.show.utility.if_project_types')
 
                 @include('project::project.show.utility.activity_log')
 

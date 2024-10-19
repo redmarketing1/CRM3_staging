@@ -41,6 +41,9 @@ Route::prefix('project')->group(function () {
     Route::resource('/', 'ProjectController')
         ->parameters(['' => 'project'])
         ->names('project');
+
+    Route::get('quick-view/{project}', 'ProjectController@quickView')
+        ->name('project.quickView');
 });
 
 //files

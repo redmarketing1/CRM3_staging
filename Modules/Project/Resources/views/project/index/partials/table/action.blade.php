@@ -1,9 +1,9 @@
 <div class="actions">
     @permission('project edit')
         <div class="action-btn bg-warning ms-2">
-            <a data-size="lg" data-url="{{ route('project.edit', [$project->id]) }}"
+            <a data-size="w-80" data-url="{{ route('project.quickView', [$project->id]) }}"
                 class="project-edit btn btn-sm d-inline-flex align-items-center text-white " data-ajax-popup="true"
-                data-bs-toggle="tooltip" data-title="{{ trans('Edit Project') }}" title="{{ trans('Edit Project') }}">
+                data-bs-toggle="tooltip" data-title="{{ $project->name }}" title="{{ trans('Quick view') }}">
                 <i class="ti ti-eye"></i>
             </a>
         </div>
