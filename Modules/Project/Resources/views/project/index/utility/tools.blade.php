@@ -1,4 +1,10 @@
 <div class="project-tools">
+
+    <a href="javascript:void" id="projectStatus" class="btn btn-sm btn-primary mx-1" data-toggle="tooltip"
+        title="{{ __('Project Status') }}">
+        <i class="fa-solid fa-sliders"></i>
+    </a>
+
     @permission('project manage')
         <a href="{{ route('project.map.index') }}" target="__blank" class="btn btn-sm btn-primary mx-1" data-toggle="tooltip"
             title="{{ __('Project Map') }}">

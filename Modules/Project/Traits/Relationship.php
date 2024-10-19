@@ -125,7 +125,8 @@ trait Relationship
      */
     public function constructionDetail()
     {
-        return $this->belongsTo(constructionDetail::class, 'construction_detail_id')->with('user');
+        return $this->belongsTo(constructionDetail::class, 'construction_detail_id')
+            ->with('user');
     }
 
     /**
@@ -134,7 +135,18 @@ trait Relationship
      */
     public function contactDetail()
     {
-        return $this->belongsTo(User::class, 'construction_detail_id');
+        return $this->belongsTo(User::class, 'construction_detail_id')
+            ->with('countryDetail');
+    }
+
+    /**
+     * Summary of clientData
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function clientData()
+    {
+        return $this->hasOne(User::class, 'id', 'client')
+            ->with('countryDetail');
     }
 
     /**

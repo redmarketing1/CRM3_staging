@@ -3,6 +3,7 @@
 namespace Modules\Project\Traits;
 
 use Carbon\Carbon;
+use Modules\Lead\Entities\Label;
 use Modules\Taskly\Entities\ProjectFile;
 
 trait Attribute
@@ -108,6 +109,42 @@ trait Attribute
         }
 
         return $thumbnail;
+    }
+
+    public function getConstructionTypeDataAttribute()
+    {
+        if (empty($this->construction_type))
+            return;
+
+        $constructionIds = explode(',', $this->construction_type);
+        return Label::whereIn('id', $constructionIds)->get();
+    }
+
+    public function getPropertyTypeDataAttribute()
+    {
+        if (empty($this->property_type))
+            return;
+
+        $propertyIds = explode(',', $this->property_type);
+        return Label::whereIn('id', $propertyIds)->get();
+    }
+
+    public function getProjectLabelDataAttribute()
+    {
+        if (empty($this->label))
+            return;
+
+        $labelIds = explode(',', $this->label);
+        return Label::whereIn('id', $labelIds)->get();
+    }
+
+    public function getProjectPriorityDataAttribute()
+    {
+        if (empty($this->priority))
+            return;
+
+        $priorityIds = explode(',', $this->priority);
+        return Label::whereIn('id', $priorityIds)->get();
     }
 
 }

@@ -210,6 +210,10 @@ $(document).ready(function () {
             table.draw();
         });
 
+        $(document).on('click', '#projectStatus', function () {
+            $('.data-project-status').toggle();
+        });
+
         function handleBulkAction(type, title, text, selectedData, selectedRows, selectedType) {
             Swal.fire({
                 title: title,
@@ -323,7 +327,6 @@ $(document).ready(function () {
 
             handleBulkAction(type, title, text, selectedData, selectedRows, 'click');
         });
-
 
         $(document).on('click', '#clearFilter', function () {
             $('input#select-all,.row-select-checkbox').prop('checked', false);
@@ -624,5 +627,39 @@ $(document).ready(function () {
 
     loadTabMenuPagination();
 
+    /** call ajaxComplete after open data-popup **/
+    $(document).ajaxComplete(function () {
+
+        function quickView() {
+            function save_project_member_details(event) {
+                console.log(event.data);
+
+                var user_ids = $(event).val();
+                const projectID = 10;
+                $.ajax({
+                    url: route('project.member.add', projectID),
+                    type: "POST",
+                    data: {
+                        users: user_ids,
+                        "_token": $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data.is_success) {
+                            $('.projectteamcount').html(data.count);
+                            toastrs('Success', data.message, 'success');
+                        } else {
+                            toastrs('Error', data.message, 'error');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastrs('Error', 'Something went wrong: ' + textStatus, 'error');
+                    }
+                });
+            }
+        }
+        quickView();
+    });
 
 });
+
