@@ -3,33 +3,33 @@
         <h2 class="data-name font-medium text-xl">{{ $project->name }}</h2>
     </a>
     @if (isset($project->statusData->name))
-        <span class="data-project-status"
-            style="background-color: {{ $project->statusData->background_color ?? '#ffffff' }};color: {{ $project->statusData->font_color ?? '#555555' }};">
+        <div class="data-project-status"
+            style="background-color: {{ $project->statusData->background_color ?? '#ffffff' }};color: {{ $project->statusData->font_color ?? '#555555' }}">
             {{ $project->statusData->name }}
-        </span>
+        </div>
     @endif
-    <div class="d-flex data-sub-name flex-column font-normal">
+    <div class="data-sub-name">
         @if (isset($project->contactDetail->name))
-            <span class="construction-client-name">
+            <div class="construction-client-name">
                 <a href="{{ route('user', $project->contactDetail->id) }}" target="__blank" class="text-sm text-black">
                     {{ $project->contactDetail->name }}
                 </a>
-            </span>
+            </div>
         @endif
         @if (isset($project->contactDetail->address_1))
-            <span class="text-sm text-black">
+            <div class="text-sm text-black">
                 {{ $project->contactDetail->address_1 }}
-            </span>
+            </div>
         @endif
         @if (isset($project->contactDetail->mobile))
-            <span class="text-sm text-black">
+            <div class="text-sm text-black">
                 {{ $project->contactDetail->mobile }}
-            </span>
+            </div>
         @endif
         @if (isset($project->contactDetail->phone))
-            <span class="text-sm text-black">
+            <div class="text-sm text-black">
                 {{ $project->contactDetail->phone }}
-            </span>
+            </div>
         @endif
     </div>
 

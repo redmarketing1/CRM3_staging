@@ -1,6 +1,5 @@
 <label for="status_label" class="form-label">Project Label</label>
-<select name="status_label" class="form-control filter_select2" onchange="store_to_project_data('label', this)" multiple>
-    <option value="">Select</option>
+<select name="status_label" class="form-control filter_select2" id="labelType" data-labelType="label" multiple>
     @foreach ($projectLabel['project_label'] ?? [] as $status_label)
         @php
             $selected = isset($project->label) ? in_array($status_label->id, explode(',', $project->label)) : false;

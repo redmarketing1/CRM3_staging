@@ -188,8 +188,13 @@ class ProjectController extends Controller
 
     public function quickView(Project $project)
     {
+        $workspace_users = genericGetContacts();
+        $projectLabel    = Label::get_project_dropdowns();
+
         return view('project::project.quickView.index', compact(
             'project',
+            'projectLabel',
+            'workspace_users',
         ));
     }
 
