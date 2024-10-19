@@ -8195,7 +8195,6 @@ body.project .row {
     max-height: 150px;
     max-width: 200px;
 }
-
 .dropdown-menu.show a {
     margin: 2px 0;
     padding: 10px;
@@ -8270,6 +8269,8 @@ table#projectsTable td span {
     border-radius: 5px;
     margin-right: 2px;
     border: 1px solid #0000000d;
+    min-width: 68px !important;
+    display: inline-block;
 }
 
 table#projectsTable .select2.select2-container--default {
@@ -8521,9 +8522,17 @@ div#status-tabs {
     font-size: 12px !important;
     max-width: 200px;
 }
-
-
-
+td.thumbnail {
+    min-width: 150px;
+}
+td.name span.data-project-status {
+    margin-bottom: 10px !important;
+    display: inline-block;
+    padding: 0 5px !important;
+}
+td.action {
+    min-width: 85px;
+}
 
 
 
