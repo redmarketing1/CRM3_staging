@@ -2,6 +2,8 @@
     "/assets/js/project.index.js": "/assets/js/project.index.js",
     "/assets/js/project.show.js": "/assets/js/project.show.js",
     "/assets/js/project.map.js": "/assets/js/project.map.js",
+    "/assets/js/project.quickView.js": "/assets/js/project.quickView.js",
+    "/assets/css/project.quickView.css": "/assets/css/project.quickView.css",
     "/assets/css/project.maps.css": "/assets/css/project.maps.css",
     "/assets/css/project.show.css": "/assets/css/project.show.css",
     "/assets/css/project.index.css": "/assets/css/project.index.css"
