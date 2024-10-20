@@ -38,16 +38,24 @@ $(document).ready(function () {
                     }
                 },
                 { data: 'thumbnail', name: 'thumbnail', className: 'thumbnail' },
-                {
-                    data: 'status', name: 'status', visible: false, orderable: true, className: 'status',
-
-                },
+                { data: 'status', name: 'status', visible: false, orderable: true, className: 'status', },
                 { data: 'name', name: 'name', orderable: true, className: 'name' },
                 { data: 'comments', name: 'comments', orderable: false, className: 'comments' },
                 { data: 'is_archive', name: 'is_archive', visible: false, className: 'is_archive' },
                 { data: 'priority', name: 'priority', orderable: false, className: 'priority' },
                 { data: 'construction', name: 'construction', orderable: false, className: 'construction' },
-                { data: 'budget', name: 'budget', orderable: true, className: 'budget' },
+                {
+                    data: 'budget',
+                    name: 'budget',
+                    orderable: true,
+                    className: 'budget',
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        const isZero = parseInt(cellData);
+                        if (isZero == 0) {
+                            $(td).addClass('zero');
+                        }
+                    }
+                },
                 { data: 'created_at', name: 'created_at', orderable: true, className: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action' }
             ],

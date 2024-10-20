@@ -1,7 +1,7 @@
 <div class="project-tools">
 
     <a href="javascript:void" id="projectStatus" class="btn btn-sm btn-primary mx-1" data-toggle="tooltip"
-        title="{{ __('Project Status') }}">
+        title="{{ __('Show Contact Details') }}">
         <i class="fa-solid fa-address-card"></i>
     </a>
 
