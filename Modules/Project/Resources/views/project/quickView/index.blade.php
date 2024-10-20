@@ -23,7 +23,9 @@
 <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 
 <script>
-    const projectID = '{{ $project->id }}';
-    const csrfToken = $('meta[name="csrf-token"]').attr('content');
-    const supportedFormats = '{{ getAdminAllSetting()['local_storage_validation'] }}';
+    $(document).ready(function() {
+        const projectID = '{{ $project->id }}';
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        const supportedFormats = '{{ getAdminAllSetting()['local_storage_validation'] }}';
+    });
 </script>
