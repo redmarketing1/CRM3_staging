@@ -1,9 +1,9 @@
 <div class="project-tools">
 
-    <a href="javascript:void" id="projectStatus" class="btn btn-sm btn-primary mx-1" data-toggle="tooltip"
+    <button type="button" id="projectContactDetailsToggle" class="btn btn-sm btn-primary mx-1" data-toggle="tooltip"
         title="{{ __('Show Contact Details') }}">
         <i class="fa-solid fa-address-card"></i>
-    </a>
+    </button>
 
     @permission('project manage')
         <a href="{{ route('project.map.index') }}" target="__blank" class="btn btn-sm btn-primary mx-1" data-toggle="tooltip"
