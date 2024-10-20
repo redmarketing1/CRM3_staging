@@ -8060,7 +8060,7 @@ body.project .row {
 
 .projectsTableContainter table#projectsTable .project-comments {
     background-color: #fbfbfb;
-    width: 350px;
+    width: 100%;
     margin: 0;
     list-style: none;
     text-align: left;
@@ -8072,6 +8072,8 @@ body.project .row {
     padding-left: 35px;
     transition: 0.3s;
     text-wrap: wrap;
+    max-width: 500px;
+    min-width: 150px;
 }
 
 .projectsTableContainter table#projectsTable .project-comments li {
@@ -8263,16 +8265,37 @@ table#projectsTable thead .select2 .select2-selection {
     font-weight: 500 !important;
     color: #999 !important;
 } */
+.clearFilterContainer {
+    position: absolute;
+    z-index: 999;
+    margin-top: 54px;
+    right: -9px;
+}
 
-table#projectsTable td span {
-    padding: 5px;
+.clearFilterContainer button {
+    background: #99999933;
+    border-radius: 7px;
+    color: #333 !important;
+    font-weight: 500;
+    margin-top: 0;
+    padding: 2px 10px;
+    font-size: 13px;
+}
+
+table#projectsTable td span, 
+.xlabel {
+    padding: 2px 5px;
     border-radius: 5px;
-    margin-right: 2px;
+    margin: 2px;
     border: 1px solid #0000000d;
     min-width: 68px !important;
     display: inline-block;
+    font-size: 13px;
 }
-
+table.dataTable td.budget {
+    text-wrap: nowrap !important;
+    text-align: right;
+}
 table#projectsTable .select2.select2-container--default {
     padding: 0 !important;
     margin: 0 !important;
@@ -8387,8 +8410,15 @@ select#bulk-action-selector {
     background: #aaa !important;
 }
 
-.data-sub-name span {
-    color: #999 !important;
+.data-sub-name *,
+.data-sub-name .text-black {
+    color: #aaa !important;
+    font-size: 12px !important;
+    line-height: 14px;
+}
+.data-sub-name {
+    margin-top: 15px;
+    margin-bottom:10px;
 }
 
 .project.index .select2-results__option {
@@ -8459,9 +8489,10 @@ div.dt-container .dt-paging .dt-paging-button:hover {
     line-height: 14px;
 }
 
-span.no-data {
+table#projectsTable td span.no-data {
     border: none !important;
     display: none;
+    min-width: unset !important;
 }
 
 .modal-body {
@@ -8469,6 +8500,10 @@ span.no-data {
     flex: 1 1 auto;
     padding: var(--bs-modal-padding);
     overflow: scroll;
+}
+table.dataTable>tbody>tr>td, 
+table.dataTable>tbody>tr>th {
+    text-wrap: wrap !important;
 }
 
 /****** MODAL SCROLL FIX *****/
