@@ -3,7 +3,7 @@
         <h2 class="data-name font-medium text-xl">{{ $project->name }}</h2>
     </a>
     @if (isset($project->statusData->name))
-        <div class="data-project-status"
+        <div class="data-project-status xlabel"
             style="background-color: {{ $project->statusData->background_color ?? '#ffffff' }};color: {{ $project->statusData->font_color ?? '#555555' }}">
             {{ $project->statusData->name }}
         </div>

@@ -188,11 +188,57 @@ class ProjectController extends Controller
 
     public function quickView(Project $project)
     {
+        $project_users = $project->users()->get();
+        $authUser      = Auth::user();
+
+        if (! ($authUser->type == 'company') && ! $project_users->contains($authUser)) {
+            abort(403, 'Permission Denied');
+        }
+
+        if (! Auth::user()->isAbleTo('project show')) {
+            abort(403, __('Permission denied.'));
+        }
+
+        $chartData = $this->getProjectChart([
+            'workspace_id' => getActiveWorkSpace(),
+            'project_id'   => $project->id,
+            'duration'     => 'week',
+        ]);
+
+        $user = auth()->user();
+
+        $project_estimations = ProjectEstimation::with('all_quotes_list')
+            ->where('project_id', $project->id)
+            ->where('init_status', 1)
+            ->when($user->type !== 'company', function ($query) use ($project) {
+                $estimationIds = EstimateQuote::where('project_id', $project->id)
+                    ->where('user_id', auth()->id())
+                    ->pluck('project_estimation_id')
+                    ->toArray();
+
+                return $query->whereIn('id', $estimationIds);
+            })
+            ->get();
+
+
+        $estimationStatus = ProjectEstimation::$statues;
+        $projectLabel     = Label::get_project_dropdowns();
+
+        // $workspace_users = User::where('created_by', '=', creatorId())
+        //     ->emp()
+        //     ->where('workspace_id', getActiveWorkSpace())
+        //     ->get();
+
         $workspace_users = genericGetContacts();
-        $projectLabel    = Label::get_project_dropdowns();
+
+        Meta::prependTitle($project->name)->setTitle('Project Detail');
+
 
         return view('project::project.quickView.index', compact(
             'project',
+            'chartData',
+            'project_estimations',
+            'estimationStatus',
             'projectLabel',
             'workspace_users',
         ));
