@@ -1,7 +1,7 @@
 $(document).on("click", ".status", function (event) {
     event.preventDefault();
 
-    const projectID = $(this).attr('data-id');
+    var projectID = $(this).attr('data-id');
     const statusID = $(this).attr('data-status');
     const backgroundColor = $(this).attr('data-background');
     const fontColor = $(this).attr('data-font');
@@ -310,7 +310,6 @@ dropdownItemsToSetPreMessageContent();
 
 
 $(document).on("click", ".projectusers img", function () {
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
     var user_id = $(this).data('user_id');
     var estimation_id = $(this).data('estimation_id');
 
@@ -336,8 +335,7 @@ $(document).on("click", ".projectusers img", function () {
                 type: "POST",
                 data: {
                     estimation_id: estimation_id,
-                    user_id: user_id,
-                    _token: csrfToken
+                    user_id: user_id
                 },
                 beforeSend: function () {
                     showHideLoader('visible');
@@ -814,8 +812,7 @@ function load_gallary() {
         url: route('project.all_files', projectID),
         type: "POST",
         data: {
-            html: true,
-            _token: csrfToken
+            html: true
         },
         success: function (items) {
             $(".mediabox").html(items);
@@ -851,8 +848,7 @@ $(document).on("click", ".default_image_selection", function (e) {
                 url: route('project.files.set_default_file', projectID),
                 type: "POST",
                 data: {
-                    file: file_id,
-                    _token: csrfToken
+                    file: file_id
                 },
                 beforeSend: function () {
                     showHideLoader('visible');

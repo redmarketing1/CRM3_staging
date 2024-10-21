@@ -3,7 +3,6 @@
 namespace Modules\Project\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\User;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Modules\Lead\Entities\Label;
@@ -14,9 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Stage;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
-use Illuminate\Support\Facades\Storage;
 use Modules\Taskly\Events\UpdateProject;
-use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\EstimateQuote;
 use Modules\Taskly\Entities\ProjectEstimation;
 
@@ -41,7 +38,6 @@ class ProjectController extends Controller
 
         return view('project::project.index.index');
     }
-
 
     /**
      * Show the specified resource.

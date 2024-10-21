@@ -5,6 +5,7 @@
     $country = \App\Models\Country::whereId($countryID)->first();
 @endphp
 
+
 @push('css')
     <style>
         #card2 {

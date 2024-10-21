@@ -84,7 +84,11 @@ trait Attribute
 
     public function getThumbnailOrDefaultAttribute()
     {
-        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        if ($this->hasMedia('projects')) {
+            return $this->getFirstMediaUrl('projects', 'thumb');
+        }
+
+        $imageExtensions = ['jpg', 'jpeg', 'png'];
 
         $thumbnail = $this->hasOne(ProjectFile::class, 'project_id', 'id')
             ->where('is_default', 1)
@@ -108,7 +112,11 @@ trait Attribute
                 ->first();
         }
 
-        return $thumbnail;
+        if (empty($thumbnail->file_path)) {
+            return asset('assets/images/default_thumbnail3.png'); // Default image
+        }
+
+        return asset($thumbnail->file_path);
     }
 
     public function getConstructionTypeDataAttribute()

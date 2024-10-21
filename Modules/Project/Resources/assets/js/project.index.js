@@ -218,8 +218,13 @@ $(document).ready(function () {
             table.draw();
         });
 
-        $(document).on('click', '#projectStatus', function () {
-            $('.data-sub-name').toggle();
+        $(document).on('click', '#projectContactDetailsToggle', function (e) {
+            e.preventDefault();
+            table.rows().every(function () {
+                var rowNode = this.node();
+                $(rowNode).find('.data-sub-name').toggle();
+            });
+            table.draw();
         });
 
         function handleBulkAction(type, title, text, selectedData, selectedRows, selectedType) {

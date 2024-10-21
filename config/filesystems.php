@@ -29,20 +29,27 @@ return [
 
     'disks'   => [
 
-        'local'  => [
+        'local'    => [
             'driver'     => 'local',
             'root'       => base_path('uploads'),
             'visibility' => 'public',
         ],
 
-        'public' => [
+        'public'   => [
             'driver'     => 'local',
             'root'       => public_path(),
             'url'        => env('APP_URL'),
             'visibility' => 'public',
         ],
 
-        's3'     => [
+        'projects' => [
+            'driver'     => 'local',
+            'root'       => public_path('uploads/projects'),
+            'url'        => env('APP_URL') . '/uploads/projects',
+            'visibility' => 'public',
+        ],
+
+        's3'       => [
             'driver'                  => 's3',
             'key'                     => env('AWS_ACCESS_KEY_ID'),
             'secret'                  => env('AWS_SECRET_ACCESS_KEY'),
@@ -52,7 +59,7 @@ return [
             'endpoint'                => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
-        'wasabi' => [
+        'wasabi'   => [
             'driver'     => 's3',
             'key'        => env('WASABI_ACCESS_KEY_ID'),
             'secret'     => env('WASABI_SECRET_ACCESS_KEY'),
