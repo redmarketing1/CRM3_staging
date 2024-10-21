@@ -3,7 +3,6 @@
 namespace Modules\Project\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\User;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Modules\Lead\Entities\Label;
@@ -14,9 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Stage;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
-use Illuminate\Support\Facades\Storage;
 use Modules\Taskly\Events\UpdateProject;
-use Illuminate\Support\Facades\Validator;
 use Modules\Taskly\Entities\EstimateQuote;
 use Modules\Taskly\Entities\ProjectEstimation;
 
@@ -33,15 +30,14 @@ class ProjectController extends Controller
                 ->with('error', __('Permission Denied.'));
         }
 
-        return $projects->table($request);
         if (request()->ajax()) {
+            return $projects->table($request);
         }
 
         Meta::prependTitle(trans('Manage Projects'));
 
         return view('project::project.index.index');
     }
-
 
     /**
      * Show the specified resource.
