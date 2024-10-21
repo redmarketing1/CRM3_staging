@@ -33,8 +33,8 @@ class ProjectController extends Controller
                 ->with('error', __('Permission Denied.'));
         }
 
+        return $projects->table($request);
         if (request()->ajax()) {
-            return $projects->table($request);
         }
 
         Meta::prependTitle(trans('Manage Projects'));

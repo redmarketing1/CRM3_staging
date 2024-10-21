@@ -10,10 +10,13 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Project\Traits\Relationship;
 use Modules\Project\DataTables\ProjectsTable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Project extends Model
+class Project extends Model implements HasMedia
 {
-    use HasFactory, Attribute, Scope, Relationship;
+    use HasFactory, Attribute, Scope, Relationship, InteractsWithMedia;
 
     protected $fillable = [
         'name',
@@ -37,7 +40,6 @@ class Project extends Model
         'is_active',
         'is_archive',
     ];
-
     protected static function boot()
     {
         parent::boot();
@@ -83,6 +85,22 @@ class Project extends Model
     public function files()
     {
         return $this->hasMany('Modules\Project\Entities\ProjectFile', 'project_id', 'id');
+    }
+
+    public function registerMediaCollections() : void
+    {
+        $this->addMediaCollection('images')
+            ->singleFile();
+    }
+
+    public function registerMediaConversions(Media $media = null) : void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(100)
+            ->height(100)
+            ->sharpen(10)
+            ->performOnCollections('images')
+            ->cache();
     }
 
 }
