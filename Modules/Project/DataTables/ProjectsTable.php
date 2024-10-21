@@ -115,9 +115,6 @@ class ProjectsTable extends Tables
     }
     protected function thumbnail($thumbnail)
     {
-        $defaultThumbnail = asset('assets/images/default_thumbnail3.png');
-        $thumbnail        = isset($thumbnail->file_path) ? asset($thumbnail->file_path) : $defaultThumbnail;
-
         return view('project::project.index.partials.table.thumbnail', compact('thumbnail'));
     }
 

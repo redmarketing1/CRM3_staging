@@ -4,7 +4,7 @@
     $countryID = $project->contactDetail->country ?? null;
     $country = \App\Models\Country::whereId($countryID)->first();
 @endphp
-{{ dd($project->getFirstMediaUrl('images', 'thumb')) }}
+
 
 @push('css')
     <style>
