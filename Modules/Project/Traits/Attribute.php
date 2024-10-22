@@ -4,6 +4,7 @@ namespace Modules\Project\Traits;
 
 use Carbon\Carbon;
 use Modules\Lead\Entities\Label;
+use Illuminate\Support\Facades\File;
 use Modules\Taskly\Entities\ProjectFile;
 
 trait Attribute
@@ -110,6 +111,12 @@ trait Attribute
                 })
                 ->orderBy('is_default', 'desc')
                 ->first();
+        }
+
+        if (isset($thumbnail->file_path) && File::exists(public_path($thumbnail->file_path))) {
+            $this->addMedia(public_path($thumbnail->file_path))
+                ->preservingOriginal()
+                ->toMediaCollection('projects', 'projects');
         }
 
         if (empty($thumbnail->file_path)) {

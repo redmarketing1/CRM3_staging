@@ -59,6 +59,13 @@ $(document).ready(function () {
                 { data: 'created_at', name: 'created_at', orderable: true, className: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action' }
             ],
+            rowCallback: function (row, data, index) {
+                if (data.is_archive) {
+                    $(row).addClass('is_archive');
+                } else {
+                    $(row).addClass('is_active');
+                }
+            },
             initComplete: function (settings, { data, filterableStatusList, filterablePriorityList, minBudget, maxBudget }) {
 
                 $('#projectsTable colgroup').remove();
@@ -218,11 +225,17 @@ $(document).ready(function () {
             table.draw();
         });
 
+        var isVisible = false;
         $(document).on('click', '#projectContactDetailsToggle', function (e) {
             e.preventDefault();
+            isVisible = !isVisible;
             table.rows().every(function () {
                 var rowNode = this.node();
-                $(rowNode).find('.data-sub-name').toggle();
+                if (isVisible) {
+                    $(rowNode).find('.data-sub-name').fadeIn(600);
+                } else {
+                    $(rowNode).find('.data-sub-name').fadeOut(600);
+                }
             });
             table.draw();
         });
@@ -480,6 +493,11 @@ $(document).ready(function () {
         }
 
         $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+            if (isVisible) {
+                $('.data-sub-name').fadeIn(600);
+            } else {
+                $('.data-sub-name').fadeOut(600);
+            }
             return findByTabStatus(data) && projectVisibility(data) && findByNameANDComment(data) && findByPriority(data) && findByBudgetRnage(data) && findByDateRange(data);
         });
 
