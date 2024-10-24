@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Cache;
 use Modules\Project\Entities\Project;
 use Yajra\DataTables\Facades\DataTables;
 use Modules\Core\UI\DataTables as Tables;
-use Modules\Taskly\Entities\EstimateQuote;
 
 class ProjectsTable extends Tables
 {
@@ -18,45 +17,15 @@ class ProjectsTable extends Tables
      */
     protected $rawColumns = [];
 
-    /**
-     * Convert hexa color to RGB
-     * @param mixed $hex
-     * @param mixed $percentage
-     * @return string
-     */
-    function hexToRgb($hex, $percentage = 1)
-    {
-        $hex = ltrim($hex, '#');
-        $int = hexdec($hex);
-
-        $r = ($int >> 16) & 0xFF;
-        $g = ($int >> 8) & 0xFF;
-        $b = $int & 0xFF;
-
-        $percentage = min(1, max(0, $percentage));
-
-        return "rgb($r, $g, $b, $percentage)";
-    }
-
     public function newTable()
     {
         return DataTables::eloquent($this->source)
             ->filter(function ($query) {
-
-                // $query->limit(50);
-    
+                // $query->limit(50); 
             })
             ->setRowId(function ($entity) {
                 return $entity->id;
             })
-            // ->setRowAttr([
-            //     'data-id' => function ($entity) {
-            //         return $entity->id;
-            //     },
-            //     'style'   => function ($entity) {
-            //         return $this->style($entity);
-            //     },
-            // ])
         ;
     }
 
@@ -68,22 +37,10 @@ class ProjectsTable extends Tables
     {
         return $this->newTable()
             ->editColumn('thumbnail', function ($project) {
-                return self::thumbnail($project->thumbnailOrDefault);
+                return $project->ThumbnailOrDefault;
             })
             ->editColumn('name', function ($project) {
                 return view('project::project.index.partials.table.name', compact('project'));
-            })
-            ->editColumn('status', function ($project) {
-                return view('project::project.index.partials.table.status', compact('project'));
-            })
-            ->editColumn('priority', function ($project) {
-                return view('project::project.index.partials.table.priority', compact('project'));
-            })
-            ->editColumn('budget', function ($project) {
-                return currency_format_with_sym($project->budget);
-            })
-            ->editColumn('created_at', function ($project) {
-                return company_datetime_formate($project->created_at);
             })
             ->addColumn('comments', function ($project) {
                 return $this->comments($project);
@@ -91,31 +48,24 @@ class ProjectsTable extends Tables
             ->addColumn('construction', function ($project) {
                 return $this->construction($project);
             })
+            ->editColumn('budget', function ($project) {
+                return currency_format_with_sym($project->budget);
+            })
+            ->editColumn('created_at', function ($project) {
+                return company_datetime_formate($project->created_at);
+            })
             ->addColumn('action', function ($project) {
-                return view('project::project.index.partials.table.action', compact('project'));
+                $cacheKey = 'projectTableAction-' . auth()->id() . '-' . $project->id;
+
+                return Cache::remember($cacheKey, 60 * 60, function () use ($project) {
+                    return view('project::project.index.partials.table.action', compact('project'))->render();
+                });
             })
             ->with('filterableStatusList', $this->filterableStatusList())
             ->with('filterablePriorityList', $this->filterablePriorityList())
             ->with('minBudget', $this->minBudget())
-            ->with('maxBudget', $this->maxBudget());
-        // ->only(['id', 'name'])
+            ->with('maxBudget', $this->maxBudget())
         ;
-    }
-
-    protected function style($entity)
-    {
-        $backgroundColor = $entity->statusData->background_color ?? '#c3c3c3';
-        $fontColor       = $entity->statusData->font_color ?? '#000000';
-
-        return "
-            --background-color: {$backgroundColor}; 
-            --hover-background-color: {$this->hexToRgb($backgroundColor, 0.05)}; 
-            --font-color: {$fontColor};
-        ";
-    }
-    protected function thumbnail($thumbnail)
-    {
-        return view('project::project.index.partials.table.thumbnail', compact('thumbnail'));
     }
 
     protected function filterableStatusList()

@@ -131,11 +131,11 @@ trait Relationship
 
     /**
      * Get project construction data
-     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\hasOne
      */
     public function contactDetail()
     {
-        return $this->belongsTo(User::class, 'construction_detail_id')
+        return $this->hasOne(User::class, 'id', 'construction_detail_id')
             ->with('countryDetail');
     }
 
