@@ -25,6 +25,7 @@ trait Scope
                 'priorityData',
                 'constructionData',
                 'constructionDetail',
+                'contactDetail',
                 'property',
                 'thumbnail',
                 'comments',

@@ -37,12 +37,52 @@ $(document).ready(function () {
                         return '<input type="checkbox" class="row-select-checkbox" value="' + data.id + '">';
                     }
                 },
-                { data: 'thumbnail', name: 'thumbnail', className: 'thumbnail' },
-                { data: 'status', name: 'status', visible: false, orderable: true, className: 'status', },
+                {
+                    data: 'thumbnail',
+                    name: 'thumbnail',
+                    className: 'thumbnail',
+                    render: function (url) {
+                        return `<div class="data-thubmnail"><img src="${url}"></div>`;
+                    }
+                },
+                {
+                    data: 'status_data',
+                    visible: false,
+                    name: 'status',
+                    className: 'status',
+                    render: function (data) {
+                        if (data && data.name) {
+
+                            let backgroundColor = data.background_color || '#ffffff';
+                            let fontColor = data.font_color || '#555555';
+
+                            return `<span class="data-project-status" style="background-color: ${backgroundColor}; color: ${fontColor};">${data.name}</span>`;
+                        } else {
+                            return `<span class="no-data">-</span>`;
+                        }
+                    }
+                },
                 { data: 'name', name: 'name', orderable: true, className: 'name' },
                 { data: 'comments', name: 'comments', orderable: false, className: 'comments' },
                 { data: 'is_archive', name: 'is_archive', visible: false, className: 'is_archive' },
-                { data: 'priority', name: 'priority', orderable: false, className: 'priority' },
+                {
+                    data: 'priority_data',
+                    name: 'priority',
+                    orderable: false,
+                    className: 'priority',
+                    render: function (data) {
+                        if (data && data.name) {
+
+                            let backgroundColor = data.background_color || '#ffffff';
+                            let fontColor = data.font_color || '#555555';
+
+                            return `<span class="data-project-priority" style="background-color: ${backgroundColor}; color: ${fontColor};">${data.name}</span>`;
+                        } else {
+                            return `<span class="no-data">-</span>`;
+                        }
+
+                    }
+                },
                 { data: 'construction', name: 'construction', orderable: false, className: 'construction' },
                 {
                     data: 'budget',
