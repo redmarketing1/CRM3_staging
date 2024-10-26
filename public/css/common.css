@@ -3736,11 +3736,11 @@ span.btn-separator {
     padding: 2px 0;
 }
 
-.final-attachments ul input[type="checkbox"] {
+/* .final-attachments ul input[type="checkbox"] {
     margin-left: -35px;
     position: absolute;
     margin-top: -3px;
-}
+} */
 
 .tox-tinymce .tox-statusbar {
     font-size: 8px !important;
@@ -8008,18 +8008,18 @@ span.select2-selection.select2-selection--multiple {
     padding-left: 43px;
 }
 
-.dropdown-menu .dropdown-item input,
-.dropdown-menu .dropdown-item i {
+.dropdown-menu .dropdown-item input 
+{
     position: absolute;
     margin-left: -25px;
     margin-top: 2px;
 }
 
-.dropdown-menu .dropdown-item i {
+/* .dropdown-menu .dropdown-item i {
     position: absolute;
     margin-left: -30px;
     margin-top: 2px;
-}
+} */
 
 .invoice_address2 {
     border-left: 1px solid #f1f1f1;
@@ -8568,9 +8568,15 @@ td.name span.data-project-status {
 td.action {
     min-width: 85px;
 }
-
-
-
+.project-detail-dashboard {
+    padding: 0 !important;
+}
+.estimation-card .form-switch {
+    padding: 0;
+}
+thead th {
+    text-wrap: auto !important;
+}
 
 
 
@@ -8637,72 +8643,81 @@ td.action {
 /************************************+****************************************************************/
 /************************************+****************************************************************/
 
-@media only screen and (max-width: 767px) {
+
+
+/**************** SMARTPHONE */
+@media (max-width: 767px) {
     .dd {
         float: none;
         width: 100%;
     }
-
+ 
     .dd+.dd {
         margin-left: 0;
     }
-}
-
-@media (max-width: 575px) {
+ 
     .dropzone {
         column-count: 2;
     }
-}
-
-@media (max-width: 767px) {
-    .dropzone {
-        column-count: 3;
-    }
-
+ 
     table#projectsTable tr {
         display: flex;
         flex-flow: wrap;
         border-bottom: 5px solid #bfbfbf;
         margin-bottom: 0 !important;
     }
-
+ 
     table#projectsTable .theader {
         display: none;
     }
-
+ 
     table#projectsTable td {
         display: flex;
-        flex: auto;
+        flex: auto; 
     }
-}
+    .card-container {
+        column-count: 1;
+    }
+ }
+ 
 
-@media (max-width: 991px) {
+
+
+ /**************** TABLET */
+ @media (max-width: 1966px) {
     .dropzone {
         column-count: 4;
     }
-}
-
-@media (max-width: 1199px) {
-    .dropzone {
-        column-count: 5;
+    .project-detail-dashboard div div {
+        flex-wrap: wrap;
+        justify-content: start !important;
     }
-}
+    .card-container {
+        column-count: 2;
+    }
+    body.project .row .mb-5 {
+        margin: 30px 0 !important;
+    }
+    .dash-container .dash-content {
+        padding: 0 !important;
+    }
 
-@media (max-width: 1399px) {
+
+ }
+ 
+
+
+
+ /**************** DESKTOP */
+ @media (min-width: 1367px) {
     .dropzone {
         column-count: 6;
     }
-}
-
-@media (min-width: 1400px) {
-    .dropzone {
-        column-count: 7;
-    }
-}
-
-.project-search {
+ }
+ 
+ .project-search {
     margin-left: 18px;
     margin-right: 10px;
-}
+ }
 
 /************************************+ MEDIA QUERIES ONLY ********************************************/

@@ -1,5 +1,5 @@
 @permission('estimation manage')
-    <div class="col-md-12">
+    <div class="col-md-12" id="estimations-card">
         <div class="card estimation-card table-card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">

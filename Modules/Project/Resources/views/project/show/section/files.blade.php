@@ -1,4 +1,4 @@
-<div id="useradd-7" class="project-files">
+<div id="useradd-7" class="project-files files-card">
     <div class="card files-card">
         <div class="card-header d-flex justify-content-between">
                     <h5 class="">{{ __('Files') }}</h5>

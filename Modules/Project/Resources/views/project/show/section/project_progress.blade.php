@@ -1,5 +1,5 @@
 <div class="col-xxl-12">
-    <div class="card-container cc1">
+    <div class="card-container cc1" id="progress-card">
         <div class="card table-card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">{{ __('Project Progress') }}</h5>

@@ -1,4 +1,4 @@
-<div class="col-md-12">
+<div class="col-md-12" id="delay-card">
     <div id="useradd-15" class="delay-announcements">
         <div class="card">
             <div class="card-header">

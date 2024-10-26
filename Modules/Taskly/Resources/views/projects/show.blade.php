@@ -656,7 +656,7 @@
                 @endif
 
 
-                <div class="card-container cc1">
+                <div class="card-container cc1" id="milestones-card">
                     <div class="card milestone-card table-card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
@@ -1481,7 +1481,7 @@
 
 
                 @if ($display_other_tabs == true)
-                    <div class="card-container cc2">
+                    <div class="card-container cc2" id="progress-card">
                         <div class="card table-card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">{{ __('Project Progress') }}</h5>
