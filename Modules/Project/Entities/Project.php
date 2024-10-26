@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Modules\Project\Traits\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Project\Activity\TrackStatus;
 use Modules\Project\Traits\Relationship;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Modules\Project\DataTables\ProjectsTable;
@@ -40,11 +41,16 @@ class Project extends Model implements HasMedia
         'is_active',
         'is_archive',
     ];
+
+
     protected static function boot()
     {
         parent::boot();
 
-        static::updated(function ($project) {
+        static::updating(function ($project) {
+
+            (new TrackStatus($project))->track();
+
             if ($project->isDirty('status')) {
                 Cache::forget('projectSubmenu-' . auth()->id());
                 Cache::forget('filterableStatusList-' . auth()->id());
@@ -74,16 +80,6 @@ class Project extends Model implements HasMedia
             self::forClient($user->id, $workspaceID)->latest();
 
         return new ProjectsTable($query);
-    }
-
-    public function delays()
-    {
-        return $this->hasMany(ProjectDelay::class, 'project_id', 'id');
-    }
-
-    public function files()
-    {
-        return $this->hasMany('Modules\Project\Entities\ProjectFile', 'project_id', 'id');
     }
 
     /**

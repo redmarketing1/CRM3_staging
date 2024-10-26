@@ -3,8 +3,9 @@
 namespace Modules\Taskly\Entities;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
+use Modules\Lead\Entities\Label;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Taskly\Entities\ProjectClientFeedback;
 
 class ActivityLog extends Model
@@ -49,6 +50,8 @@ class ActivityLog extends Model
                     return $this->feedback($remark['feedback_id']);
                 case 'Comment Create':
                     return $this->comment($remark['project_comment_id']);
+                case 'Status Changed':
+                    return $this->status($remark);
             }
         } else {
             return $this->remark;
@@ -74,7 +77,7 @@ class ActivityLog extends Model
                             <img alt="Image placeholder" src="' . e($image) . '" class="img-thumbnail my-3" 
                                 style="display: block;max-width: 200px;max-height: 140px;">
                         </a>';
-            } 
+            }
             // Handle other file types (non-images)
             else {
                 $file = asset(rawurlencode($projectComment->file));
@@ -120,6 +123,19 @@ class ActivityLog extends Model
         }
 
         return $html;
+    }
+
+    protected function status(array $remark) : string
+    {
+        $projectLabel = collect(Label::get_project_dropdowns()['project_status']);
+
+        $oldStatus = $projectLabel->firstWhere('id', $remark['oldStatus']);
+        $newStatus = $projectLabel->firstWhere('id', $remark['newStatus']);
+
+        return trans('	Project status changed from ":old" to ":new"', [
+            'old' => $oldStatus->name ?? __('unknown'),
+            'new' => $newStatus->name ?? __('unknown'),
+        ]);
     }
 
     public function user()
