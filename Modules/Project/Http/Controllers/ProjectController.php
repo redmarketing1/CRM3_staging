@@ -394,11 +394,10 @@ class ProjectController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
 
-        $statusID = request('statusID');
-
-        Project::where('id', $id)->update([
-            'status' => $statusID,
-        ]);
+        $statusID        = request('statusID');
+        $project         = Project::find($id);
+        $project->status = $statusID;
+        $project->save();
 
         return response()->json(['success' => 'Project status has change successfully.']);
     }

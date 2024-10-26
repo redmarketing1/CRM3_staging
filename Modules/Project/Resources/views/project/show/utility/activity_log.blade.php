@@ -84,6 +84,10 @@
                                      <span class="border round text-white timeline-step">
                                          <i class="fas fa-message text-dark"></i>
                                      </span>
+                                 @elseif($activity->log_type == 'Status Changed')
+                                     <span class="border round text-white timeline-step">
+                                         <i class="fas fa-exchange-alt text-dark"></i>
+                                     </span>
                                  @endif
                              </td>
                              <td class="col-1 m-0 text-nowrap text-center" style="width: 16%;">
