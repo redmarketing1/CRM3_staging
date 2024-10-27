@@ -8577,21 +8577,135 @@ td.action {
 thead th {
     text-wrap: auto !important;
 }
+.project-detail-dashboard .btn {
+    width: auto;
+    margin: 2px;
+}
+.project-detail-dashboard .button-container {
+    display: flex;
+}
+.simplebar-content .tab-content ul.tab-submenu li, 
+.simplebar-content .tab-content ul.tab-submenu li a {
+    width: auto !important; 
+}
+.dash-container .dash-content {
+    padding: 15px !important;
+}
+.project-search {
+    padding: 0 15px 0 15px;
+}
+.project-detail-dashboard div div {
+    flex-flow: wrap;
+}
+.description-card .card-body {
+    max-height: 400px;
+    overflow: auto;
+}
+
+/* .lightbox {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2vh !important;
+}
+
+.lb-outerContainer,
+.lb-image {
+    max-width: 96vw !important;
+    max-height: 96vh !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+}
 
 
+.lb-dataContainer {
+    display:none !important;
+} */
+
+.activity-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+#activity-card .card-body {
+    max-height: 780px;
+}
+.activity-grid > .activity-item {
+    flex: 1 1 300px;
+}
+
+#activity-card .card-body {
+    padding: 20px !important;
+    background: #f7f7f7;
+}
+#activity-card .card-body .card-body {
+    max-height: 250px;
+    background: #FFF;
+}
+#activity-card .card-body .card-header {
+    padding: 15px 20px !important;
+}
+
+#activity-card .card-body .card-header span:last-child {
+    right: 15px;
+    position: absolute;
+    font-size: 11px;
+}
+span.timeline-step {
+    margin-right: 10px;
+}
+
+/* Status Colors */
+.status-file { color: #1976d2; }
+.status-milestone { color: #9c27b0; }
+.status-task { color: #2e7d32; }
+.status-bug { color: #d32f2f; }
+.status-move { color: #ef6c00; }
+.status-invoice { color: #00796b; }
+.status-user { color: #7b1fa2; }
+.status-share { color: #3f51b5; }
+.status-time { color: #c2185b; }
+.status-comment { color: #689f38; }
+.status-feedback { color: #0288d1; }
+.status-status { color: #512da8; }
 
 
+.status-filter {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
 
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
 
+.filter-btn.active {
+    background: #f8f9fa;
+    border-color: #666;
+}
 
+.filter-btn:not(.active) {
+    opacity: 0.5;
+}
 
-
-
-
-
-
-
-
+.filter-btn i {
+    font-size: 0.875rem;
+}
 
 
 
@@ -8645,7 +8759,59 @@ thead th {
 
 
 
-/**************** SMARTPHONE */
+
+ 
+
+
+ /**************** DESKTOP */
+ @media (min-width: 1367px) {
+    .dropzone {
+        column-count: 6;
+    }
+ }
+ 
+ .project-search {
+    margin-left: 18px;
+    margin-right: 10px;
+ }
+
+
+
+
+
+ /**************** TABLET */
+ @media (max-width: 1366px) {
+    .dropzone {
+        column-count: 4;
+    }
+    .project-detail-dashboard div div {
+        flex-wrap: wrap;
+        justify-content: start !important;
+    }
+    .card-container {
+        column-count: 1;
+    }
+    body.project .row .mb-5 {
+        margin: 30px 0 !important;
+    }
+    .dash-container .dash-content {
+        padding: 0 !important;
+    }
+    .finalizeEstimation .final-wrapper {
+        flex-flow: column-reverse;
+    }
+    .projectestimation .dash-container .dash-content .card-body {
+        max-width: unset !important;
+        height: auto !important;
+    }
+
+ }
+ 
+
+
+
+
+ /**************** SMARTPHONE */
 @media (max-width: 767px) {
     .dd {
         float: none;
@@ -8675,49 +8841,7 @@ thead th {
         display: flex;
         flex: auto; 
     }
-    .card-container {
-        column-count: 1;
-    }
+    .table thead th {
+        overflow-wrap:anywhere;
  }
- 
-
-
-
- /**************** TABLET */
- @media (max-width: 1966px) {
-    .dropzone {
-        column-count: 4;
-    }
-    .project-detail-dashboard div div {
-        flex-wrap: wrap;
-        justify-content: start !important;
-    }
-    .card-container {
-        column-count: 2;
-    }
-    body.project .row .mb-5 {
-        margin: 30px 0 !important;
-    }
-    .dash-container .dash-content {
-        padding: 0 !important;
-    }
-
-
- }
- 
-
-
-
- /**************** DESKTOP */
- @media (min-width: 1367px) {
-    .dropzone {
-        column-count: 6;
-    }
- }
- 
- .project-search {
-    margin-left: 18px;
-    margin-right: 10px;
- }
-
 /************************************+ MEDIA QUERIES ONLY ********************************************/

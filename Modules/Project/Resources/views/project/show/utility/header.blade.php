@@ -31,20 +31,20 @@
                  @endif
              </div>
 
+             <div class="button-container">
              @include('project::project.show.widget.gantt_chart')
              @include('project::project.show.widget.task_board')
              @include('project::project.show.widget.bug_report')
              @include('project::project.show.widget.tracker_manage')
 
              @if (!$project->is_active)
-                 <button class="btn btn-light d">
+                 <button class="btn btn-light">
                      <a href="#" class="" title="{{ __('Locked') }}">
                          <i class="ti ti-lock"> </i></a>
                  </button>
              @else
-                 <!-- <div class="d-flex align-items-center "> -->
                  @permission('project edit')
-                     <div class="btn btn-light d-flex align-items-between">
+                     <div class="btn btn-light">
                          <a href="javascript:void(0)" class="" data-size="w-80"
                              data-url="{{ route('project.edit', [$project->id]) }}" data-ajax-popup="true"
                              data-toggle="tooltip" title="{{ __('Edit Project') }}">
@@ -53,23 +53,24 @@
                      </div>
                  @endpermission
                  @permission('project delete')
+                    <div class="">
                      {!! Form::open([
                          'method' => 'DELETE',
                          'route' => ['projects.destroy', $project->id],
                          'id' => 'delete-form-' . $project->id,
                      ]) !!}
-                     <button class="btn btn-light d" type="button"><a href="#" data-toggle="tooltip"
+                     <button class="btn btn-light" type="button"><a href="#" data-toggle="tooltip"
                              title="{{ __('Delete') }}" class="bs-pass-para show_confirm"><i class="ti ti-trash">
                              </i></a></button>
                      {!! Form::close() !!}
+                     </div>
                  @endpermission
 
-                 <!-- </div> -->
              @endif
 
 
              @if ($project->is_archive)
-                 <div class="col-md-auto col-sm-4">
+                 <div class="">
                      <a href="javascript:void" class="btn btn-xs btn-primary btn-icon-only col-12 change-archive"
                          data-toggle="tooltip" data-bs-toggle="tooltip" data-id="{{ $project->id }}"
                          data-type="unarchive"
@@ -82,7 +83,7 @@
                      </a>
                  </div>
              @else
-                 <div class="col-md-auto col-sm-4">
+                 <div class="">
                      <a href="javascript:void" class="btn btn-xs btn-primary btn-icon-only col-12 change-archive"
                          data-toggle="tooltip" data-bs-toggle="tooltip" data-id="{{ $project->id }}"
                          data-type="archive"
@@ -100,6 +101,7 @@
              @include('project::project.show.widget.project_share_settings')
              @include('project::project.show.widget.project_setting_dropdown')
 
+                </div>
          </div>
      </div>
  </div>
