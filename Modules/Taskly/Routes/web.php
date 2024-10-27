@@ -217,6 +217,7 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::post('estimations/all-data', [ProjectEstimationController::class, 'all_data'])->name('estimations.all_data');
     Route::get('estimations/create/{project_id}/page', [ProjectEstimationController::class, 'create'])->name('estimations.create.page');
     Route::get('estimations/{id}/setup', [ProjectEstimationController::class, 'setup'])->name('estimations.setup.estimate');
+    Route::get('estimations/{projectEstimation}/change-status/{id}', [ProjectEstimationController::class, 'changeStatus'])->name('estimations.changeStatus');
     Route::post('estimations/importdata', [ProjectEstimationController::class, 'ImportEstimationsData'])->name('estimations.importdata');
     Route::post('estimations/store_import', [ProjectEstimationController::class, 'StoreImportEstimations'])->name('estimations.store_import');
     Route::get('estimations/{id}/export-excel/{type}', [ProjectEstimationController::class, 'exportEstimationInExcel'])->name('estimation.export.excel');

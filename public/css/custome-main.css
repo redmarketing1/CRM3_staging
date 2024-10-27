@@ -1855,3 +1855,39 @@ body.theme-10 .border-primary {
     z-index: 999 !important;
     width: auto !important;
 }
+
+fieldset[disabled] {
+    user-select: none !important;
+    cursor: not-allowed !important;
+}
+
+fieldset[disabled] input,
+fieldset[disabled] button,
+fieldset[disabled] a,
+fieldset[disabled] tbody,
+fieldset[disabled] textarea,
+fieldset[disabled] select,
+fieldset[disabled] .estimation-footer-box,
+fieldset[disabled] .company-total-settings {
+    user-select: none !important;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+fieldset[disabled] .not-disable,
+fieldset[disabled] .not-disable>* {
+    pointer-events: all !important;
+    opacity: 1 !important;
+    user-select: auto !important;
+    cursor: auto !important;
+}
+
+.estimation-statusName {
+    padding: 13px 20px !important;
+    margin-top: 2px;
+    font-size: 20px;
+    border: 2px solid #ececec !important;
+    border-radius: 5px !important;
+    width: 89%;
+    color: #fff;
+}
