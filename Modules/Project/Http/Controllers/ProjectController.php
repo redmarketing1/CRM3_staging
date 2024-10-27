@@ -102,8 +102,7 @@ class ProjectController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
+     * @param int $id 
      */
     public function edit(Project $project)
     {
@@ -266,13 +265,18 @@ class ProjectController extends Controller
 
         $project->update(request()->all());
 
-        if (module_is_active('CustomField')) {
-            \Modules\CustomField\Entities\CustomField::saveData($project, $request->customField ?? []);
-        }
-
         event(new UpdateProject(request(), $project));
 
-        return redirect()->back()->with('success', __('Project updated successfully!'));
+
+        if (request()->ajax()) {
+            return response()->json([
+                'status' => 'success',
+            ]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', __('Project updated successfully!'));
     }
 
     /**

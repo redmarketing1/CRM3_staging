@@ -1828,3 +1828,30 @@ body.theme-10 .border-primary {
 .upgrade-line hr {
     flex: 1;
 }
+
+.inline-edit {
+    padding: 4px 15px;
+}
+
+.inline-edit:focus,
+.inline-edit:hover {
+    border: 1px dashed #eee;
+    border-radius: 3px;
+    transition: 0.1s;
+}
+
+.inline-edit[type="date"],
+.inline-edit[type="text"] {
+    background: transparent;
+    border: 0 !important;
+    font-weight: 600;
+    width: 120px;
+    display: block;
+    padding: 0;
+    font-size: 16px;
+}
+
+.ui-datepicker {
+    z-index: 999 !important;
+    width: auto !important;
+}
