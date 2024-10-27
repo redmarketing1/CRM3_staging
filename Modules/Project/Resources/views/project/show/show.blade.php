@@ -227,6 +227,7 @@
             color: #fff !important;
         }
     </style>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
 @endpush
 @section('content')
     <div class="row">
@@ -258,11 +259,13 @@
 @endsection
 
 @push('scripts')
+    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
     <script>
         var active_estimation_id = '{{ isset($active_estimation->id) ? $active_estimation->id : 0 }}';
         let moneyFormat = '{{ site_money_format() }}';
         var project_id = '{{ \Crypt::encrypt($project->id) }}';
+        var projectID = '{{ $project->id }}';
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
         var supportedFormats = '{{ getAdminAllSetting()['local_storage_validation'] }}';
         var projectStatus =

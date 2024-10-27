@@ -34,8 +34,8 @@ class projectsTabs
         $workspaceID = getActiveWorkSpace();
 
         $query = ($user->type == 'company') ?
-            Project::forCompany($user->id) :
-            Project::forClient($user->id, $workspaceID);
+            Project::forCompany($user->id)->where('is_archive', 0) :
+            Project::forClient($user->id, $workspaceID)->where('is_archive', 0); //Exclude archive project
 
         return $query;
     }

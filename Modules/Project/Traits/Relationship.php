@@ -160,7 +160,8 @@ trait Relationship
 
     public function activities()
     {
-        return $this->hasMany(ActivityLog::class, 'project_id', 'id')->latest();
+        return $this->hasMany(ActivityLog::class, 'project_id', 'id')
+            ->whereNot('log_type', 'Upload File')->latest();
     }
 
     public function files()

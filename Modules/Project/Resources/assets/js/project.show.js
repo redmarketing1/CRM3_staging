@@ -284,6 +284,38 @@ $('#searchInput').on('input', function () {
 
 });
 
+$(document).on('blur', '.inline-edit[contenteditable]', function () {
+    const text = $(this).text().trim();
+    const field = $(this).data('field');
+    const message = $(this).data('message');
+    const update = {
+        [field]: text
+    };
+    $.ajax({
+        url: route('project.update', projectID),
+        type: "PUT",
+        data: { type: 'updateAll', ...update },
+        success: function (response) {
+            toastrs('success', message, 'success');
+        },
+        error: function (xhr, status, error) {
+            toastrs('Error', 'There was an issue updating the content');
+        }
+    });
+});
+
+$(document).on('focus', '.edit-datafield', function () {
+    const $this = $(this);
+
+    $this.datepicker({
+        dateFormat: 'yy-mm-dd',
+        onClose: function (dateText) {
+            console.log(dateText);
+            $this.text(dateText).trigger('blur');
+        }
+    }).datepicker("show");
+});
+
 
 function initGoogleMapPlaced(inputSelector, fieldInput) {
     const input = document.getElementById(inputSelector);

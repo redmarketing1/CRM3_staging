@@ -1,29 +1,33 @@
  <div class="card bg-primary project-detail-dashboard">
      <div class="card-body">
          <div class="d-block d-sm-flex align-items-center justify-content-between">
-             <h4 class="text-white"> {{ $project->name }}</h4>
+             <h4 class="text-white inline-edit" contenteditable="true" data-field="name"
+                 data-message="{{ trans('Project title has been updated.') }}" data-toggle="tooltip"
+                 title="{{ __('Edit Project Title') }}">
+                 {{ $project->name }}
+             </h4>
              <div class="d-flex  align-items-center row1">
                  @if ($project->type == 'project')
                      <div class="px-3">
                          <span class="text-white text-sm">{{ __('Start Date') }}:</span>
-                         <h5 class="text-white text-nowrap">
-                             {{ company_date_formate($project->start_date) }}
-                         </h5>
+                         <input type="text" class="text-white text-nowrap inline-edit edit-datafield"
+                             contenteditable="true" data-field="start_date"
+                             data-message="{{ trans('Project start date has been updated.') }}" data-toggle="tooltip"
+                             title="{{ __('Edit Project Start Date') }}" value="{{ $project->start_date }}">
                      </div>
                      <div class="px-3">
                          <span class="text-white text-sm">{{ __('Due Date') }}:</span>
-                         <h5 class="text-white text-nowrap">
-                             {{ company_date_formate($project->end_date) }}
-                         </h5>
+                         <input type="text" class="text-white text-nowrap inline-edit edit-datafield"
+                             contenteditable="true" data-field="end_date"
+                             data-message="{{ trans('Project edning date has been updated.') }}" data-toggle="tooltip"
+                             title="{{ __('Edit Project Ending Date') }}" value="{{ $project->end_date }}">
                      </div>
-                     {{--
-                        <div class="px-3">
+                     {{-- <div class="px-3">
                          <span class="text-white text-sm">{{ __('Total Members') }}:</span>
                          <h5 class="text-white text-nowrap">
                              {{ (int) $project->users->count() + (int) $project->clients->count() }}
                          </h5>
-                     </div>
-                     --}}
+                     </div> --}}
                  @endif
              </div>
 
