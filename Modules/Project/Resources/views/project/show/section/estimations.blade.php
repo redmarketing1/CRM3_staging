@@ -201,7 +201,7 @@
                                         <td style="font-weight:600;">
                                             @if ($estimation->status > 1)
                                                 <a
-                                                    href="{{ route('estimations.finalize.estimate', encrypt($estimation->id)) }}">
+                                                    href="{{ route('estimations.setup.estimate', \Crypt::encrypt($estimation->id)) }}">
                                                     {{ $estimation->title }}
                                                 </a>
                                             @else
@@ -343,7 +343,7 @@
                                         <td style="font-weight:600;">
                                             @if ($estimation->status > 1)
                                                 <a
-                                                    href="{{ route('estimations.finalize.estimate', encrypt($estimation->id)) }}">
+                                                    href="{{ route('estimations.setup.estimate', \Crypt::encrypt($estimation->id)) }}">
                                                     {{ $estimation->title }}
                                                 </a>
                                             @else
@@ -519,7 +519,7 @@
                                                 <td class="est-title">
                                                     @if ($estimation->status > 1)
                                                         <a
-                                                            href="{{ route('estimations.finalize.estimate', encrypt($estimation->id)) }}">
+                                                            href="{{ route('estimations.setup.estimate', \Crypt::encrypt($estimation->id)) }}">
                                                             {{ $estimation->title }}
                                                         </a>
                                                     @else
