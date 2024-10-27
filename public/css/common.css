@@ -8584,10 +8584,19 @@ thead th {
 .project-detail-dashboard .button-container {
     display: flex;
 }
-
-
-
-
+.simplebar-content .tab-content ul.tab-submenu li, 
+.simplebar-content .tab-content ul.tab-submenu li a {
+    width: auto !important; 
+}
+.dash-container .dash-content {
+    padding: 15px !important;
+}
+.project-search {
+    padding: 0 15px 0 15px;
+}
+.project-detail-dashboard div div {
+    flex-flow: wrap;
+}
 
 
 
