@@ -69,7 +69,7 @@ trait Attribute
 
     public function getProjectCountAttribute()
     {
-        return self::whereHas('statusData', function ($query) {
+        return self::where('is_archive', 0)->whereHas('statusData', function ($query) {
             $query->where('name', $this->statusData->name);
         })->count();
     }

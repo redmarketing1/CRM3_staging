@@ -64,16 +64,10 @@
                                                 class="badge fix_badges bg {{ $estimationStatus[$estimation->status] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
                                         </td>
                                         <td style="font-weight:600;">
-                                            @if ($estimation->status > 1)
-                                                <a
-                                                    href="{{ route('estimations.finalize.estimate', encrypt($estimation->id)) }}">
-                                                    {{ $estimation->title }}
-                                                </a>
-                                            @else
-                                                <a href="{{ $setup_url }}">
-                                                    {{ $estimation->title }}
-                                                </a>
-                                            @endif
+                                            <a
+                                                href="{{ route('estimations.setup.estimate', \Crypt::encrypt($estimation->id)) }}">
+                                                {{ $estimation->title }}
+                                            </a>
                                         </td>
                                         <td class="text-right">
                                             {{ company_date_formate($estimation->issue_date) }}</td>
