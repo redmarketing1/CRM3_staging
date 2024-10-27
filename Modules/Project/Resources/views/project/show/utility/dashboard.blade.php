@@ -1,4 +1,4 @@
-<div class="row mt-5 mb-5">
+<div class="row mt-4 mb-2">
     @if ($project->type == 'project')
         <div class="col-lg-3 col-6">
             <div class="card">
