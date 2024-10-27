@@ -139,14 +139,14 @@
 </head>
 <body>
 <div class="watermark">
-	<img src="https://neu-west.com/CRM/public/assets/images/neuwest-watermark.png">
+	<img src="https://neu-west.com/crm/public/assets/images/neuwest-watermark.png">
 </div>
 
 <table style="border-collapse: collapse; width: 100%; font-family: Arial; font-size: 12px;" border="0"  class="page-break coverpage">
     <tbody>
 		<tr class="logo-estimate-title-class">
 			<td style="width: 25%;" colspan="2" class="logo-class">
-				<img class="img-fluid mb-3" src="{{ get_file(sidebar_logo()) }}"
+				<img class="img-fluid mb-3" style="width:80%" src="{{ get_file(sidebar_logo()) }}"
 					alt="Dashboard-kit Logo">
 				<h4 style="font-weight:bold; font-size: 25px;margin-top:50px; margin-bottom:10px;">{{ $estimation->title }}</h4>
 				<div class="field mt-2 estimation-no">
@@ -320,21 +320,19 @@
         <h4 style="margin-bottom: 20px; font-weight: normal;" class="estim-address-text-info">
             <b>{{__('Project Images')}}</b>
         </h4>
-        <!-- @foreach($project->files->sortBy('file') as $file)
-            <div style="display: inline-block; vertical-align: top; padding:1px 0; margin-left:-2px; width:232px;">
-                <img class="watermark-img" style="position:absolute; z-index:99; margin-left:5px; margin-top:5px; opacity:0.5;" src="https://neu-west.com/CRM/public/assets/images/neuwest-watermark-small.png">
-                <img src="https://neu-west.com/CRM/storage/uploads/files/{{ $file->file }}" alt="Project Image" style="width: 100%; height: auto;">
-            </div>
-        @endforeach -->
 		@foreach($project_images_files as $prow)
-		@php 
-			$fname = '';
-        	$fname = str_replace(" ", "%20", $prow['file']);
-		@endphp
-			<div style="display: inline-block; vertical-align: top; padding:1px 0; margin-left:-2px; width:232px;">
-				<img class="watermark-img" style="position:absolute; z-index:99; margin-left:5px; margin-top:5px; opacity:0.5;" src="https://neu-west.com/CRM/public/assets/images/neuwest-watermark-small.png">
-				<img src="https://neu-west.com/CRM/storage/uploads/files/{{ $fname }}" alt="Project Image" style="width: 100%; height: auto;">
-			</div>
+			@php 
+				$fname = '';
+				$fname = str_replace(" ", "%20", $prow['file']);
+				$allowedExtensions = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'bmp', 'heic'];
+				$fileExtension = strtolower(pathinfo($prow->file_path, PATHINFO_EXTENSION));
+			@endphp
+			@if(in_array($fileExtension, $allowedExtensions))
+				<div style="display: inline-block; vertical-align: top; padding:1px 0; margin-left:-2px; width:232px;">
+					<img class="watermark-img" style="position:absolute; z-index:99; margin-left:5px; margin-top:5px; opacity:0.5;" src="https://neu-west.com/crm/public/assets/images/neuwest-watermark-small.png">
+					<img src="{{ get_file($prow->file_path) }}" alt="Project Image" style="width: 100%; height: auto;">
+				</div>
+			@endif
 		@endforeach
     </div>
 @endif

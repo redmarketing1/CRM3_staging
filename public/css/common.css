@@ -8577,8 +8577,13 @@ td.action {
 thead th {
     text-wrap: auto !important;
 }
-
-
+.project-detail-dashboard .btn {
+    width: auto;
+    margin: 2px;
+}
+.project-detail-dashboard .button-container {
+    display: flex;
+}
 
 
 
@@ -8678,13 +8683,15 @@ thead th {
     .card-container {
         column-count: 1;
     }
+    .table thead th {
+        overflow-wrap:anywhere;
  }
  
 
 
 
  /**************** TABLET */
- @media (max-width: 1966px) {
+ @media (max-width: 1366px) {
     .dropzone {
         column-count: 4;
     }
@@ -8701,7 +8708,13 @@ thead th {
     .dash-container .dash-content {
         padding: 0 !important;
     }
-
+    .finalizeEstimation .final-wrapper {
+        flex-flow: column-reverse;
+    }
+    .projectestimation .dash-container .dash-content .card-body {
+        max-width: unset !important;
+        height: auto !important;
+    }
 
  }
  
