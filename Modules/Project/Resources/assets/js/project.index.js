@@ -257,9 +257,9 @@ $(document).ready(function () {
             table.draw();
         });
 
-        $(document).on('input', '#searchProject, #filter_price_from, #filter_price_to', function (e) {
+        $(document).on('input', '#searchProject, #filter_price_from, #filter_price_to', debounce(function (e) {
             table.draw();
-        });
+        }, 500));
 
         $(document).on('change', '#filterableStatusDropdown, #filterablePriorityDropdown, #filterableDaterange, #projectVisibality', function () {
             table.draw();
@@ -697,6 +697,14 @@ $(document).ready(function () {
     });
 
     loadTabMenuPagination();
+
+    function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
 
     /** call ajaxComplete after open data-popup **/
     // $(document).ajaxComplete(function (event, xhr, settings) {
