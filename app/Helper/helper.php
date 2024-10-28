@@ -52,7 +52,7 @@ if (! function_exists('getMenu')) {
         uksort($groupedMenu, function ($a, $b) use ($categoryIcon) {
             return array_search($a, array_keys($categoryIcon)) <=> array_search($b, array_keys($categoryIcon));
         });
-        // dd($groupedMenu);
+
         return generateMenu($groupedMenu, null);
     }
 }

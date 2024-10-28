@@ -14,7 +14,7 @@ class CompanyMenuListener
         $module = 'Base';
         $menu   = $event->menu;
         $menu->add([
-            'category'   => 'General',
+            'category'   => 'Dashboard',
             'title'      => __('Dashboard'),
             'icon'       => 'home',
             'name'       => 'dashboard',
@@ -26,42 +26,53 @@ class CompanyMenuListener
             'module'     => $module,
             'permission' => '',
         ]);
+        $menu->add([
+            'category'   => 'Dashboard',
+            'title'      => __('CRM Dashboard'),
+            'icon'       => '',
+            'name'       => 'crm-dashboard',
+            'parent'     => 'dashboard',
+            'order'      => 3,
+            'ignore_if'  => [],
+            'depend_on'  => [],
+            'route'      => 'lead.dashboard',
+            'module'     => $module,
+            'permission' => 'crm dashboard manage',
+        ]);
 
         $menu->add([
             'category'   => 'User',
-            'title'      => __('User Management'),
+            'title'      => __('User'),
             'icon'       => 'users',
             'name'       => 'user-management',
             'parent'     => null,
-            'order'      => 50,
+            'order'      => 30,
             'ignore_if'  => [],
             'depend_on'  => [],
             'route'      => '',
             'module'     => $module,
             'permission' => 'user manage',
         ]);
-
         $menu->add([
             'category'   => 'User',
             'title'      => __('User'),
             'icon'       => '',
             'name'       => 'user',
             'parent'     => 'user-management',
-            'order'      => 10,
+            'order'      => 30,
             'ignore_if'  => [],
             'depend_on'  => [],
             'route'      => 'users.index',
             'module'     => $module,
             'permission' => 'user manage',
         ]);
-
         $menu->add([
             'category'   => 'User',
             'title'      => __('Role'),
             'icon'       => '',
             'name'       => 'role',
             'parent'     => 'user-management',
-            'order'      => 20,
+            'order'      => 30,
             'ignore_if'  => [],
             'depend_on'  => [],
             'route'      => 'roles.index',

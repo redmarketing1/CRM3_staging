@@ -19,7 +19,7 @@ class CompanyMenuListener
             'icon'       => '',
             'name'       => 'taskly-dashboards',
             'parent'     => 'dashboard',
-            'order'      => 10,
+            'order'      => 2,
             'ignore_if'  => [],
             'depend_on'  => [],
             'route'      => 'taskly.dashboard',
@@ -28,12 +28,12 @@ class CompanyMenuListener
         ]);
 
         $menu->add([
-            'category'   => 'Projects',
+            'category'   => 'Dashboard',
             'title'      => __('Projects'),
             'icon'       => 'square-check',
             'name'       => 'projects',
             'parent'     => null,
-            'order'      => 300,
+            'order'      => 10,
             'ignore_if'  => [],
             'depend_on'  => ['tabs'],
             'route'      => 'project.index',
@@ -42,12 +42,12 @@ class CompanyMenuListener
         ]);
 
         $menu->add([
-            'category'   => 'Projects',
-            'title'      => __('Project Maps'),
+            'category'   => 'Dashboard',
+            'title'      => __('Maps'),
             'icon'       => 'map-2',
             'name'       => 'project-maps',
             'parent'     => null,
-            'order'      => 301,
+            'order'      => 10,
             'ignore_if'  => [],
             'depend_on'  => [],
             'route'      => 'project.map.index',
