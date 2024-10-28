@@ -252,6 +252,7 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::post('users/{estimation_id}', [ProjectEstimationController::class, 'storeUsers'])->name('estimation.users.store');
     Route::post('estimation/remove-estimation-user', [ProjectEstimationController::class, 'remove_estimation_user'])->name('estimation.remove_estimation_user');
 
+    //Project Progress Routes
     Route::get('project/{project_id}/project-progress', [ProjectController::class, 'project_progress'])->name('project.project_progress');
     Route::post('estimation/progress/sign/update', [ProjectProgressController::class, 'update'])->name('progress.sign.store');
     Route::post('progress/estimation/item', [ProjectProgressController::class, 'estimationItem'])->name('progress.estimation.item');
@@ -259,6 +260,9 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::post('estimation/progress/file', [ProjectProgressController::class, 'progressFileStore'])->name('progress.file.store');
     Route::get('estimations/{id}/progress-finalize', [ProjectProgressController::class, 'progressFinalize'])->name('progress.finalize');
     Route::post('estimations/progress-finalize/send-client', [ProjectProgressController::class, 'sendProgressFinalizeClient'])->name('progress.finalize.send.client');
+    //Progress Invoice
+    Route::get('progress/invoice/{progress_id}',[ProjectProgressController::class, 'progress_invoice'])->name('project.progress.invoice');
+    Route::get('progress/view-invoice/{progress_id}',[ProjectProgressController::class, 'view_progress_invoice'])->name('project.progress.viewInvoice');
 
     // Project Progress
     Route::post('progress/list', [ProjectProgressController::class, 'list'])->name('progress.list');

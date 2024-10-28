@@ -262,7 +262,7 @@
 								<input type="text" id="progress-date-time-picker" name="progress-date-time" value="{{ \Carbon\Carbon::now('Europe/Berlin')->format('d.m.Y - H:i') }}" readonly>
 							</div>
 							<div class="progress-client">
-								<input type="text" name="progress_final_user_name" id="progress_final_user_name" placeholder="{{ __('Name') }}" value="{{isset(\Auth::user()->name) ? \Auth::user()->name : '' }}">
+								<input type="text" name="progress_final_user_name" id="progress_final_user_name" placeholder="{{ __('Name') }}" value="{{isset(\Auth::user()->name) ? \Auth::user()->name : '' }}" required>
 							</div>
 							<div class="progress-signature">
 								<canvas id="signature-pad" class="signature-pad progress-final-signature" height="100" width="300"></canvas>
@@ -609,7 +609,7 @@
 										showHideLoader('hidden');
 										$('#progress_final_confirm_checkbox').prop('checked', false);
 										$('#progress_final_comment').val('');
-										$('#progress_final_user_name').val('');
+										//$('#progress_final_user_name').val('');
 										if (response.status == true){
 											toastrs('Success', response.message, 'success');
 											getItems(estimation_id);
@@ -621,7 +621,7 @@
 										showHideLoader('hidden');
 										$('#progress_final_confirm_checkbox').prop('checked', false);
 										$('#progress_final_comment').val('');
-										$('#progress_final_user_name').val('');
+										//$('#progress_final_user_name').val('');
 									}
 								});
 							}

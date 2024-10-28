@@ -9,6 +9,7 @@ use Modules\Account\Entities\StockReport;
 use Modules\LMS\Entities\Student;
 use Modules\Fleet\Entities\VehicleInvoice;
 use Modules\Taskly\Entities\Project;
+use Modules\Taskly\Entities\ProjectProgressMain;
 
 class Invoice extends Model
 {
@@ -29,6 +30,7 @@ class Invoice extends Model
         'shipping_display',
 		'client',	
 		'project',	
+        'progress_id',
 		'tax',	
 		'discount',	
 		'project_estimation_id',	
@@ -37,7 +39,8 @@ class Invoice extends Model
         'end_date',
         'discount_apply',
         'workspace',
-        'created_by'
+        'created_by',
+        'path'
     ];
     public static $statues = [
         'Draft',

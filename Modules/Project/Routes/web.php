@@ -28,3 +28,6 @@ Route::get('add_project_progress_permissions', [TestController::class, 'AddProje
 
 //Templates Permissions
 Route::get('add_templates_permissions', [TestController::class, 'AddTemplatesPermissions']);
+
+//Estimation Permissions
+Route::get('add_estimations_permissions', [TestController::class, 'AddEstimationsPermissions']);

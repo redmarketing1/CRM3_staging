@@ -2,6 +2,7 @@
 
 namespace Modules\Taskly\Entities;
 
+use App\Models\Invoice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
@@ -31,5 +32,10 @@ class ProjectProgressMain extends Model
     public function project_progress()
     {
         return $this->hasMany(ProjectProgress::class, 'progress_id', 'id');
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'progress_id');
     }
 }

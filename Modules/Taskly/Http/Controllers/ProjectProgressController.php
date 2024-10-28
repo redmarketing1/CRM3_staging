@@ -47,6 +47,12 @@ class ProjectProgressController extends Controller
 		$progress_array     = array();
 
 		foreach ($items as $item) {
+
+			$invoice_link = '<a href="'.route('project.progress.invoice',$item->id).'" class="btn-info mx-1 btn btn-sm" title="' . __('Create Incoice') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('Create Invoice') . '"><span class=""><i class="ti ti-file-invoice"></i></span> '.__('Create Invoice').'</a>';
+			if($item->invoice){
+				$invoice_link = '<a href="'.route('project.progress.viewInvoice',$item->id).'" class="btn-info mx-1  btn btn-sm d-inline-flex align-items-center" target="_blank" title="' . __('View Invoice') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Invoice') . '"><span class=""><i class="ti ti-file-invoice"></i></span> '.__('View Invoice').'</a>';
+			}
+
 			$username = isset($item->user->name) ? $item->user->name : '';
 			$name_signature    = '<div class="progress-history-item">
                                     <span class="user-avatar">
@@ -61,8 +67,11 @@ class ProjectProgressController extends Controller
                                     </span>
                                 </div>';
 			if (Auth::user()->isAbleTo('progress view')){
-				$action = '<div class="action_btn">';
-				$action .= '<div class=""><a href="' . route('progress.finalize', \Crypt::encrypt($item->id)) . '" class="" target="_blank" data-bs-whatever="' . __('View Progress') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Progress') . '"> <span class=""> <i class="ti ti-eye"></i></span></a></div>';
+				$action = '<div class="action_btn btn-primary">';
+				$action .= '<div class="">
+								<a href="' . route('progress.finalize', \Crypt::encrypt($item->id)) . '" class="action-btn btn-info mx-1  btn btn-sm d-inline-flex align-items-center" target="_blank" title="' . __('View Progress') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Progress') . '"> <span class=""> <i class="ti ti-eye"></i></span></a>
+								'.$invoice_link.'
+							</div>';
 				$action .= '</div>';
 			}
 			$row['id'] 			        = $item->id;
@@ -327,222 +336,119 @@ class ProjectProgressController extends Controller
 
 	public function update(Request $request, ProjectProgress $projectProgress)
 	{
+		// $return = array();
+		// $post_data = '';
+		// $post_data = $request->formdata;
+		// if (isset($request->confirm_signature) && !empty($request->confirm_signature)) {
+		// 	$progress_id = 0;
+		// 	$progress_confirmation 					= new ProjectProgressMain();
+		// 	$progress_confirmation->estimation_id 	= $request->estimation_id;
+		// 	$progress_confirmation->project_id 		= isset($request->project_id) ? Crypt::decrypt($request->project_id) : '';
+		// 	$progress_confirmation->user_id 		= isset($request->user_id) ? Crypt::decrypt($request->user_id) : '';
+		// 	$progress_confirmation->name 			= trim($request->confirm_user_name);
+		// 	$progress_confirmation->signature 		= $request->confirm_signature;
+		// 	$progress_confirmation->comment 		= trim($request->confirm_comment);
+		// 	$progress_confirmation->save();
+		// 	$progress_id = $progress_confirmation->id;
+		// 	if (isset($post_data) && !empty($post_data)) {
+		// 		/**** insert item details ****/
+		// 		foreach ($post_data as $key => $row) {
+		// 			if (isset($row['signature']) && !empty($row['signature'])) {
+		// 				$total_progress = 0;
+		// 				if ((isset($row['progress_amount']) && ($row['progress_amount'] != 'NaN')) && ($row['progress_amount'] > $row['progress_old_qty'])) {
+		// 					$total_progress = ($row['progress_amount'] / $row['progress_total_qty']) * 100;
+		// 				} else {
+		// 					$total_progress = isset($row['progress']) ? $row['progress'] : 0;
+		// 				}
+		// 				ProjectProgress::create([
+		// 					"estimation_id" => $request->estimation_id,
+		// 					"progress_id" 	=> $progress_id,
+		// 					'product_id' 	=> $key,
+		// 					'progress' 		=> $total_progress,
+		// 					'progress_amount' => isset($row['progress_amount']) ? trim($row['progress_amount']) : 0,
+		// 					'remarks' 		=> isset($row['comment']) ? $row['comment'] : '',
+		// 					'signature' 	=> isset($row['signature']) ? $row['signature'] : '',
+		// 					"status" 		=> 1,
+		// 					"approve_date" 	=> date("Y-m-d H:i:s"),
+		// 				]);
+		// 			} else {
+		// 					return response()->json(['status' => false, 'message' => __('Progress not confirm.')]);
+		// 				}
+		// 		}
+		// 	} else {
+		// 		return response()->json(['status' => false, 'message' => __('Please fill the details or signature.')]);
+		// 	}
+		// } else {
+		// 	return response()->json(['status' => false, 'message' => __('Please do confirmation signature.')]);
+		// }
+
 		$return = array();
-		$post_data = '';
 		$post_data = $request->formdata;
+
 		if (isset($request->confirm_signature) && !empty($request->confirm_signature)) {
-			$progress_id = 0;
-			$progress_confirmation 					= new ProjectProgressMain();
-			$progress_confirmation->estimation_id 	= $request->estimation_id;
-			$progress_confirmation->project_id 		= isset($request->project_id) ? Crypt::decrypt($request->project_id) : '';
-			$progress_confirmation->user_id 		= isset($request->user_id) ? Crypt::decrypt($request->user_id) : '';
-			$progress_confirmation->name 			= trim($request->confirm_user_name);
-			$progress_confirmation->signature 		= $request->confirm_signature;
-			$progress_confirmation->comment 		= trim($request->confirm_comment);
-			$progress_confirmation->save();
-			$progress_id = $progress_confirmation->id;
 			if (isset($post_data) && !empty($post_data)) {
-				/**** insert item details ****/
+				$all_progress_items = [];
+				$valid_data = true;
+
+				// Validate and build data in a single loop
 				foreach ($post_data as $key => $row) {
-					if (isset($row['signature']) && !empty($row['signature'])) {
-						$total_progress = 0;
-						if ((isset($row['progress_amount']) && ($row['progress_amount'] != 'NaN')) && ($row['progress_amount'] > $row['progress_old_qty'])) {
-							$total_progress = ($row['progress_amount'] / $row['progress_total_qty']) * 100;
-						} else {
-							$total_progress = isset($row['progress']) ? $row['progress'] : 0;
-						}
-						ProjectProgress::create([
-							"estimation_id" => $request->estimation_id,
-							"progress_id" 	=> $progress_id,
-							'product_id' 	=> $key,
-							'progress' 		=> $total_progress,
-							'progress_amount' => isset($row['progress_amount']) ? trim($row['progress_amount']) : 0,
-							'remarks' 		=> isset($row['comment']) ? $row['comment'] : '',
-							'signature' 	=> isset($row['signature']) ? $row['signature'] : '',
-							"status" 		=> 1,
-							"approve_date" 	=> date("Y-m-d H:i:s"),
-						]);
+					if (!isset($row['signature']) || empty($row['signature'])) {
+						$valid_data = false;
+						break;
 					}
+
+					$total_progress = 0;
+					if ((isset($row['progress_amount']) && ($row['progress_amount'] != 'NaN')) && ($row['progress_amount'] > $row['progress_old_qty'])) {
+						$total_progress = ($row['progress_amount'] / $row['progress_total_qty']) * 100;
+					} else {
+						$total_progress = isset($row['progress']) ? $row['progress'] : 0;
+					}
+
+					// Prepare item data for batch insertion
+					$all_progress_items[] = [
+						"estimation_id" => $request->estimation_id,
+						"product_id" => $key,
+						'progress' => $total_progress,
+						'progress_amount' => isset($row['progress_amount']) ? trim($row['progress_amount']) : 0,
+						'remarks' => isset($row['comment']) ? $row['comment'] : '',
+						'signature' => $row['signature'],
+						"status" => 1,
+						"approve_date" => date("Y-m-d H:i:s"),
+						"created_at" => date("Y-m-d H:i:s"),
+						"updated_at" => date("Y-m-d H:i:s"),
+					];
 				}
-				/*** after save the progress details progress confirm and generate invoice ***/
-				$dir_path = storage_path('fonts/');
-				$company_details = getCompanyAllSetting();
-				if (!is_dir($dir_path)) {
-					mkdir($dir_path, 0777);
+
+				if (!$valid_data) {
+					return response()->json(['status' => false, 'message' => __('Each item must have a signature.')]);
 				}
-				if (isset($request->estimation_id) && $request->estimation_id != "") {
-					$estimation = ProjectEstimation::find($request->estimation_id);
-					if (isset($estimation->project_id) && $estimation->project_id != "") {
-						Project::count_progress($estimation->project_id);
-					}
-					$estimation 	= ProjectEstimation::find($request->estimation_id);
-					$products 		= ProjectEstimationProduct::with("progress")->where("project_estimation_id", $request->estimation_id)->where("type", "item")->get();
-					$progressArray 	= [];
-					$quote 			= EstimateQuote::where("project_estimation_id", $request->estimation_id)->where("is_final", 1)->first();
-					$quoteItem 		= EstimateQuoteItem::where("estimate_quote_id", $quote->id)->whereHas("progress", function ($query) {
-						$query->where("status", 1);
-					})->with('projectEstimationProduct')->get();
-					/*** check if only comment added then do not generate invoice ****/
-					$generate_new_invoice = 0;
-					foreach ($quoteItem as $item) {
-						$progress 			= ProjectProgress::where("product_id", $item->product_id)->where("status", 1)->orderBy("progress", "desc")->first();
-						$done_progress 		= ProjectProgress::where("product_id", $item->product_id)->where("status", 2)->orderBy("progress", "desc")->first();
-						$latest_progress 	= isset($progress) ? $progress->progress : 0;
-						$previous_progress 	= isset($done_progress) ? $done_progress->progress : 0;
-						$new_progress 		= floatval($latest_progress) - floatval($previous_progress);
-						if ($new_progress > 0) {
-							$generate_new_invoice = 1;
-						}
-					}
 
-					/*** generate invoice if any progress ****/
-					if ($generate_new_invoice == 1) {
-						$invoice = ["tax" => $quote->tax, 'discount' => $quote->discount];
-						$invoiceController 	= new InvoiceController();
-						$invoice_id 		= Invoice::create([
-							"invoice_id" 			=> $invoiceController->invoiceNumber(),
-							'account_type' 			=> "Taskly",
-							'issue_date' 			=> date("Y-m-d H:i:s"),
-							'due_date' 				=> date("Y-m-d H:i:s", strtotime("+7Days")),
-							'send_date' 			=> date("Y-m-d H:i:s"),
-							'client' 				=> $estimation->project()->client,
-							'project' 				=> $estimation->project()->id,
-							'type' 					=> __('Progress'),
-							'tax' 					=> $quote->tax == 19 ? 1 : 0,
-							'discount' 				=> $quote->discount,
-							'project_estimation_id' => $request->estimation_id,
-							'invoice_template' 		=> 'template11',
-							'workspace' 			=> getActiveWorkSpace(),
-							'created_by' 			=> Auth::user()->id,
-						])->id;
-						foreach ($quoteItem as $item) {
-							$data 				= ["name" => $item->name];
-							$progress 			= ProjectProgress::where("product_id", $item->product_id)->where("status", 1)->orderBy("progress", "desc")->first();
-							$done_progress 		= ProjectProgress::where("product_id", $item->product_id)->where("status", 2)->orderBy("progress", "desc")->first();
-							$latest_progress 	= isset($progress) ? $progress->progress : 0;
-							$previous_progress 	= isset($done_progress) ? $done_progress->progress : 0;
-							$new_progress 		= floatval($latest_progress) - floatval($previous_progress);
-							$price 				= $item->price;
-							$done_price 		= 0;
-							$done_total_price 	= 0;
-							if ($new_progress > 0) {
-								$done_price 		= $price * $new_progress / 100;
-								$done_total_price 	= $item->projectEstimationProduct->quantity * floatval($done_price);
-							}
-							$data['done_progress'] 	= ($done_progress) ? $done_progress->progress : 0;
-							$data['progress'] 		= ($progress) ? $progress->progress : 0;
-							$data['cal_progress'] 	= $data['progress'] - $data['done_progress'];
-							$data['total_price'] 	= $item->total_price;
-							$data["amount"] 		= round($item->total_price * $data['cal_progress'] / 100, 2);
-							$invoice["item"][] 		= $data;
-							$invoiceProduct 				= new InvoiceProduct();
-							$invoiceProduct->invoice_id 	= $invoice_id;
-							$invoiceProduct->item 			= isset($item->projectEstimationProduct->name) ? $item->projectEstimationProduct->name : '';
-							$invoiceProduct->quantity 		= $item->projectEstimationProduct->quantity;
-							$invoiceProduct->price 			= $done_price;
-							$invoiceProduct->total_price 	= $done_total_price;
-							$invoiceProduct->tax 			= $quote->tax == 19 ? 1 : 0;
-							$invoiceProduct->product_type 	= __('progress');
-							$invoiceProduct->description 	= $item->projectEstimationProduct->description;
-							$invoiceProduct->progress 		= $data['cal_progress'];
-							$invoiceProduct->progress_amount = $data["amount"];
-							$invoiceProduct->save();
-						}
-						$file_name = "";
-						$estimation_file_name = $estimation->title . ' - ' . $estimation->project()->title;
-						if (isset($estimation->project()->construction_detail->address_1)) {
-							$estimation_file_name .= ' - ' . $estimation->project()->construction_detail->address_1;
-						}
-						if (isset($estimation->project()->construction_detail->city)) {
-							$estimation_file_name .= ' - ' . $estimation->project()->construction_detail->city;
-						}
-						$estimation_file_name .= ' - #1' . $estimation->id . ' - ' . $company_details['company_name'];
-						$file_name = $estimation_file_name . '.pdf';
-
-						$content = $this->pdf($invoice_id);
-						$content['file_name'] = $file_name;
-
-						$path = $this->generatePDF($content);
-						$path2 = $this->generateProgressPDF($content);
-						foreach ($products as $product) {
-							$productData = [];
-							// Initialize progress values to 0 for each percentage
-							for ($i = 10; $i <= 100; $i += 10) {
-								$productData[$i] = (object)['progress' => 0, 'created_at' => "", 'approve_date' => ""];
-							}
-							foreach ($product->progress()->where('status', ">", 0)->get() as $progress) {
-								// Update the corresponding progress value
-								$productData[round($progress->progress)] = (object)[
-									'progress' => 1,
-									'created_at' => date("m/d/Y", strtotime($progress->created_at)),
-									'approve_date' => $progress->approve_date
-								];
-							}
-							// Add the product data to the progress array
-							$progressArray[$product->name] = $productData;
-						}
-						$content["products"] = $progressArray;
-						$content["project"] = $estimation->project();
-						$html = view('pdf.progress', compact('content'))->render();
-						$client_name = isset($content["client"]->name) ? $content["client"]->name : '';
-						$subject = "Rechnung " . Invoice::invoiceNumberFormat($content["settings"], $content["invoice"]->invoice) . " - BV " . $estimation->project()->location . " " . $client_name . " - " . $company_details['company_name'];
-						$emailData = (object) [
-							"subject" => $subject,
-							"sender_name" => env("APP_NAME"),
-							"content" => $content,
-							'pdf' => $path,
-							'progress_pdf' => $path2,
-							'cc' => null,
-							"sender" => env("MAIL_FROM_ADDRESS"),
-							"view" => 'pdf.progress'
-						];
-						$email = Email::create([
-							'subject' => $subject ? $subject : "",
-							"message" => $html,
-							"status" => 1,
-							'attachments' => $path . ', ' . $path2,
-							"project_id" => $estimation->project_id,
-							"type" => "App\Models\ProjectEstimation",
-							"type_id" => $products[0]->project_estimation_id
-						]);
-						$client = $estimation->project()->client_data;
-						/*** send email with attached PDF of progress to logged in user ***/
-						$sender = User::find(Auth::user()->id);
-						$sender->sentEmails()->save($email);
-
-						$setconfing =  SetConfigEmail();
-						$smtp_error = [];
-						$setconfing = false;
-						if ($setconfing ==  true) {
-							try {
-								Mail::to($sender->email)->send(new EstimationForClientMail($emailData));
-								/*** send email with attached PDF of progress to client ***/
-								if (isset($client->id)) {
-									$recipient = User::find($client->id);
-									if (isset($recipient->id)) {
-										$recipient->receivedEmails()->save($email);
-									}
-									Mail::to($recipient->email)->send(new EstimationForClientMail($emailData));
-								}
-							} catch (\Exception $e) {
-								return response()->json(['status' => false, 'message' => $e->getMessage()]);
-							}
-						}
-
-						ProjectProgress::where("estimation_id", $request->estimation_id)->where("status", 1)->update([
-							"status" => 2,
-						]);
-					}
-					return response()->json(['status' => true, 'message' => __('Progress confirm succesfully.')]);
-				} else {
-					return response()->json(['status' => false, 'message' => __('Progress not confirm.')]);
+				// All items have valid signatures, proceed with saving ProjectProgressMain
+				$progress_confirmation = new ProjectProgressMain();
+				$progress_confirmation->estimation_id = $request->estimation_id;
+				$progress_confirmation->project_id = isset($request->project_id) ? Crypt::decrypt($request->project_id) : '';
+				$progress_confirmation->user_id = isset($request->user_id) ? Crypt::decrypt($request->user_id) : '';
+				$progress_confirmation->name = trim($request->confirm_user_name);
+				$progress_confirmation->signature = $request->confirm_signature;
+				$progress_confirmation->comment = trim($request->confirm_comment);
+				$progress_confirmation->save();
+				
+				// Set progress_id for each item and batch insert
+				foreach ($all_progress_items as &$item) {
+					$item["progress_id"] = $progress_confirmation->id;
 				}
+				ProjectProgress::insert($all_progress_items); // Batch insert
+				Project::count_progress($request->project_id);
+
+				return response()->json(['status' => true, 'message' => __('Progress confirm succesfully.')]);
+
 			} else {
-				return response()->json(['status' => false, 'message' => __('Please fill the details or signature.')]);
+				return response()->json(['status' => false, 'message' => __('Please fill in the details or signature.')]);
 			}
 		} else {
-			return response()->json(['status' => false, 'message' => __('Please do confirmation signature.')]);
+			return response()->json(['status' => false, 'message' => __('Please provide a confirmation signature.')]);
 		}
+
 	}
 
 	public function pdf($invoiceId)
@@ -953,4 +859,125 @@ class ProjectProgressController extends Controller
         $pdf->save($dir);
         return $dir;
     }
+
+
+	//Create Project Progress Invoice
+	public function progress_invoice($progress_id){
+		
+		DB::beginTransaction();
+		try {
+			$main_progress 		= ProjectProgressMain::find($progress_id);
+			$project_id = $main_progress->project_id;
+			$estimation = ProjectEstimation::find($main_progress->estimation_id);
+			$quote 	= EstimateQuote::where("project_estimation_id", $main_progress->estimation_id)->where("is_final", 1)->first();
+			if (!$quote) {
+				return redirect()->back()->with('error', __('Quote not found.'));
+			}
+
+			$quoteItem 	= EstimateQuoteItem::where("estimate_quote_id", $quote->id)->with('projectEstimationProduct')->get();
+			
+			$invoice = Invoice::create([
+				"invoice_id" 			=> company_setting('invoice_starting_number'),
+				'account_type' 			=> "Taskly",
+				'invoice_module'        => 'taskly',
+				'issue_date' 			=> date("Y-m-d H:i:s"),
+				'due_date' 				=> date("Y-m-d H:i:s", strtotime("+7Days")),
+				'send_date' 			=> date("Y-m-d H:i:s"),
+				'client' 				=> $estimation->project()->client,
+				'project' 				=> $estimation->project()->id,
+				'progress_id'           => $main_progress->id,
+				'type' 					=> __('Progress'),
+				'tax' 					=> $quote->tax,
+				'discount' 				=> $quote->discount,
+				'project_estimation_id' => $estimation->id,
+				'invoice_template' 		=> 'template11',
+				'workspace' 			=> getActiveWorkSpace(),
+				'created_by' 			=> Auth::user()->id,
+			]);
+			Invoice::starting_number($invoice->invoice_id + 1, 'invoice');
+
+			foreach ($quoteItem as $item) { 
+				$latest_progress = 0;
+				$previous_progress = 0;
+				if($item->progress){
+					$progress = ProjectProgress::where("product_id", $item->product_id)->orderBy("progress", "desc")->first();
+					if(InvoiceProduct::where("product_id", $item->product_id)->exists()) {
+						$old_progress = InvoiceProduct::where("product_id", $item->product_id)
+							->sum('progress');
+					}else{
+						$old_progress = ProjectProgress::where("product_id", $item->product_id)->orderBy("progress", "desc")->skip(1)->first();
+						$old_progress = $old_progress->progress ?? 0;
+					}
+					$latest_progress 	= isset($progress) ? $progress->progress : 0;
+					$previous_progress 	= isset($old_progress) ? $old_progress : 0;
+				}
+				$new_progress = floatval($latest_progress) - floatval($previous_progress);
+				$progress_amount = 0;
+				$price 				= $item->price;
+				$total_price = $item->total_price;
+				if ($new_progress > 0) {
+					$progress_amount = ($new_progress/100) * $total_price;
+				}
+				
+				$invoiceProduct 				= new InvoiceProduct();
+				$invoiceProduct->invoice_id 	= $invoice->id;
+				$invoiceProduct->item 			= isset($item->projectEstimationProduct->name) ? $item->projectEstimationProduct->name : '';
+				$invoiceProduct->product_id 	= isset($item->projectEstimationProduct->id) ? $item->projectEstimationProduct->id : '';
+				$invoiceProduct->quantity 		= $item->projectEstimationProduct->quantity;
+				$invoiceProduct->unit 		    = $item->projectEstimationProduct->unit;
+				$invoiceProduct->price 			= $price;
+				$invoiceProduct->total_price 	= $total_price;
+				$invoiceProduct->tax 			= $quote->tax;
+				$invoiceProduct->product_type 	= __('progress');
+				$invoiceProduct->description 	= $item->projectEstimationProduct->description;
+				$invoiceProduct->progress 		= $new_progress;
+				$invoiceProduct->progress_amount = $progress_amount;
+				$invoiceProduct->save();
+
+			}
+			DB::commit();
+			return redirect()->route('project.show', $project_id)->with('success',__('Invoice successfully created.'));
+		} catch (\Throwable $th) {
+			DB::rollback();
+			dd($th);
+			//throw $th;
+			return redirect()->back()->with('error',__('something went wrong please try again'));
+		}
+	}
+
+	public function view_progress_invoice($progress_id){
+		$invoice = Invoice::where('progress_id',$progress_id)->with('items', 'items.group')->first();
+		$project 		=  Project::where('id',$invoice->project)->first();
+		$settings 		= getCompanyAllSetting($project->created_by, $project->workspace);
+		$client 		= $project->client_data;
+		$client_name 	= isset($client->name) ? $client->name : '';
+		$client_email 	= isset($client->email) ? $client->email : '';
+		//dd($invoice);
+		return view('invoice.templates.template11', 
+				compact('invoice','project', 'settings','client', 'client_name', 'client_email'))->render();
+		// $id 					= $progress_id;
+		// $main_progress_id 		= $id;
+		// $progress_main_details 	= ProjectProgressMain::where('id', $id)->first();
+		// $estimation 			= ProjectEstimation::whereId($progress_main_details->estimation_id)->first();
+		// $quote 					= EstimateQuote::with("quoteItem")->where("project_estimation_id", $progress_main_details->estimation_id)->where("is_final", 1)->first();
+		// $project_estimation 	= ProjectEstimationProduct::where("project_estimation_id", $progress_main_details->estimation_id)->where("type", "item");
+		// $items 					= $project_estimation->get();
+
+		// $progressFinalizeEmailTemplate = getNotificationTemplateData('progress_finalize');
+
+		// 
+		// 
+		// $contractor 	= $quote->subContractor;
+		// 
+		// 
+		// 
+
+		// $filters_request['order_by'] 	= array('field' => 'projects.created_at', 'order' => 'DESC');
+		// $project_record 				= Project::get_all($filters_request);
+		// $all_projects 					= isset($project_record['records']) ? $project_record['records'] : array();
+		// /*** with render use ****/
+		// $html 							= view('invoice.templates.template11', compact('settings', 'items', 'main_progress_id', 'quote', 'contractor', 'client', 'client_name', 'client_email', 'project', 'estimation', 'progress_main_details'))->render();
+		// return $html;
+		// return view("taskly::project_progress.progress_invoice", compact('estimation', 'quote', 'settings', 'progressFinalizeEmailTemplate', 'html', 'main_progress_id', 'all_projects'));
+	}
 }

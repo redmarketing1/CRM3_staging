@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\CarDealership\Entities\DealershipProduct;
 use Modules\Newspaper\Entities\Newspaper;
 use Modules\Fleet\Entities\VehicleInvoice;
+use Modules\Taskly\Entities\EstimationGroup;
 use Modules\Taskly\Entities\ProjectEstimationProduct;
 use Modules\Taskly\Entities\ProjectProgress;
 use Modules\Taskly\Entities\ProjectProgressFiles;  
@@ -20,6 +21,7 @@ class InvoiceProduct extends Model
         'product_id',
         'invoice_id',
         'quantity',
+        'unit',
         'tax',
         'discount',
         'description',
@@ -104,4 +106,26 @@ class InvoiceProduct extends Model
 		$product_id = $this->estimation_product->id;
 		return ProjectProgressFiles::where('product_id',$product_id)->where('estimation_id',$estimation_id)->orderBy("id", "desc")->get();
     }
+
+    public function projectEstimationProduct()
+    {
+        return $this->belongsTo(ProjectEstimationProduct::class, 'product_id', 'id');
+    }
+
+    public function group()
+    {
+        return $this->hasOneThrough(
+            EstimationGroup::class,
+            ProjectEstimationProduct::class,
+            'id',            // Foreign key on ProjectEstimationsProduct table
+            'id',            // Foreign key on EstimationGroups table
+            'product_id',    // Local key on InvoiceProduct table
+            'group_id'       // Local key on ProjectEstimationsProduct table
+        );
+    }
+
+    // public function itemProgress(){
+    //     return ProjectProgress::where('product_id', '=', $this->product_id)-
+    //     return $this->hasMany(ProjectProgress::class,$this->product_id);
+    // }
 }
