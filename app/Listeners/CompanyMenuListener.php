@@ -14,7 +14,7 @@ class CompanyMenuListener
         $module = 'Base';
         $menu   = $event->menu;
         $menu->add([
-            'category'   => 'General',
+            'category'   => 'Dashboard',
             'title'      => __('Dashboard'),
             'icon'       => 'home',
             'name'       => 'dashboard',
@@ -27,12 +27,26 @@ class CompanyMenuListener
             'permission' => '',
         ]);
         $menu->add([
-            'category'   => 'General',
-            'title'      => __('User Management'),
+            'category'   => 'Dashboard',
+            'title'      => __('CRM Dashboard'),
+            'icon'       => '',
+            'name'       => 'crm-dashboard',
+            'parent'     => 'dashboard',
+            'order'      => 3,
+            'ignore_if'  => [],
+            'depend_on'  => [],
+            'route'      => 'lead.dashboard',
+            'module'     => $module,
+            'permission' => 'crm dashboard manage',
+        ]);
+
+        $menu->add([
+            'category'   => 'User',
+            'title'      => __('User'),
             'icon'       => 'users',
             'name'       => 'user-management',
             'parent'     => null,
-            'order'      => 50,
+            'order'      => 30,
             'ignore_if'  => [],
             'depend_on'  => [],
             'route'      => '',
@@ -40,12 +54,12 @@ class CompanyMenuListener
             'permission' => 'user manage',
         ]);
         $menu->add([
-            'category'   => 'General',
+            'category'   => 'User',
             'title'      => __('User'),
             'icon'       => '',
             'name'       => 'user',
             'parent'     => 'user-management',
-            'order'      => 10,
+            'order'      => 30,
             'ignore_if'  => [],
             'depend_on'  => [],
             'route'      => 'users.index',
@@ -53,18 +67,19 @@ class CompanyMenuListener
             'permission' => 'user manage',
         ]);
         $menu->add([
-            'category'   => 'General',
+            'category'   => 'User',
             'title'      => __('Role'),
             'icon'       => '',
             'name'       => 'role',
             'parent'     => 'user-management',
-            'order'      => 20,
+            'order'      => 30,
             'ignore_if'  => [],
             'depend_on'  => [],
             'route'      => 'roles.index',
             'module'     => $module,
             'permission' => 'roles manage',
         ]);
+
         $menu->add([
             'category'   => 'Finance',
             'title'      => __('Proposal'),

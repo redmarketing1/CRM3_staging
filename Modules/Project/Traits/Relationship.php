@@ -7,7 +7,7 @@ use Modules\Lead\Entities\Label;
 use Modules\Taskly\Entities\Task;
 use Illuminate\Support\Facades\Auth;
 use Modules\Taskly\Entities\Timesheet;
-use Modules\Taskly\Entities\ActivityLog;
+use Modules\Project\Entities\ActivityLog;
 use Modules\Taskly\Entities\ProjectFile;
 use Modules\Project\Entities\ProjectDelay;
 use Modules\Taskly\Entities\EstimateQuote;

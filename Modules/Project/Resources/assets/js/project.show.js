@@ -284,13 +284,22 @@ $('#searchInput').on('input', function () {
 
 });
 
+$(document).on('focus', '.inline-edit[contenteditable]', function () {
+    $(this).data('original-text', $(this).text().trim());
+});
+
 $(document).on('blur', '.inline-edit[contenteditable]', function () {
-    const text = $(this).text().trim();
+    const originalText = $(this).data('original-text');
+    const currentText = $(this).text().trim() ?? $(this).val().trim();
+
+    if (originalText === currentText) return;
+
     const field = $(this).data('field');
     const message = $(this).data('message');
     const update = {
-        [field]: text
+        [field]: currentText
     };
+
     $.ajax({
         url: route('project.update', projectID),
         type: "PUT",
@@ -304,13 +313,11 @@ $(document).on('blur', '.inline-edit[contenteditable]', function () {
     });
 });
 
-$(document).on('focus', '.edit-datafield', function () {
+$(document).on('focus', '.edit-dateField', function () {
     const $this = $(this);
-
     $this.datepicker({
         dateFormat: 'yy-mm-dd',
         onClose: function (dateText) {
-            console.log(dateText);
             $this.text(dateText).trigger('blur');
         }
     }).datepicker("show");

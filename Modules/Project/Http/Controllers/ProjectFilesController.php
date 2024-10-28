@@ -16,17 +16,18 @@ class ProjectFilesController extends Controller
     //get files
     public function all_files(Request $request, $project_id)
     {
-		$project 	= Project::find($project_id);
-		$files 		= ProjectFile::where('project_id', $project_id)->get();
+        $project = Project::find($project_id);
+        $files   = ProjectFile::where('project_id', $project_id)->get();
 
-        if($request->html=="true"){
-            return view('project::project.show.section.all_files', compact('files','project'));
+        if ($request->html == "true") {
+            return view('project::project.show.section.all_files', compact('files', 'project'));
         }
         return $files;
     }
 
     //upload files
-    public function fileUpload(Request $request,$project_id){
+    public function fileUpload(Request $request, $project_id)
+    {
 
         $project = Project::find($project_id);
 
@@ -34,7 +35,7 @@ class ProjectFilesController extends Controller
             $request->all(),
             [
                 'files' => 'required',
-            ]
+            ],
         );
 
         if ($validator->fails()) {
@@ -42,18 +43,18 @@ class ProjectFilesController extends Controller
 
             return redirect()->back()->with('error', $messages->first());
         }
-        
+
         foreach ($request->file('files') as $file) {
-            $image_size = $file->getSize();
-            $request = new Request();
+            $image_size    = $file->getSize();
+            $request       = new Request();
             $request->file = $file;
 
-            $file_name = $file->getClientOriginalName();
+            $file_name    = $file->getClientOriginalName();
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $extension = $file->getClientOriginalExtension();
+            $extension    = $file->getClientOriginalExtension();
             date_default_timezone_set('Europe/Berlin');
             $currentTime = date('His'); // Format: HHMMSS
-            $fileName = $originalName . '_' . $project_id . '_' . $currentTime . '.' . $extension;
+            $fileName    = $originalName . '_' . $project_id . '_' . $currentTime . '.' . $extension;
 
 
             $url = '';
@@ -67,21 +68,11 @@ class ProjectFilesController extends Controller
                 return redirect()->back()->with('error', __($path['msg']));
             }
 
-            $notes = new ProjectFile();
+            $notes             = new ProjectFile();
             $notes->project_id = $project->id;
-            $notes->file_name = $fileName;
-            $notes->file_path = $path['url'];
+            $notes->file_name  = $fileName;
+            $notes->file_path  = $path['url'];
             $notes->save();
-
-            ActivityLog::create(
-                [
-                    'user_id'    => Auth::user()->id,
-                    'user_type'  => get_class(Auth::user()),
-                    'project_id' => $project->id,
-                    'log_type'   => 'Upload File',
-                    'remark'     => json_encode(['file_name' => $fileName]),
-                ],
-            );
         }
         return response()->json([
             'is_success' => true,
@@ -90,15 +81,16 @@ class ProjectFilesController extends Controller
     }
 
     //set default file
-    public function set_default_file(Request $request, $project_id){
-        $file_id    = $request->file;
-        if ($file_id != '') { 
-            ProjectFile::where('project_id',$project_id)->update([
-                'is_default' => 0
+    public function set_default_file(Request $request, $project_id)
+    {
+        $file_id = $request->file;
+        if ($file_id != '') {
+            ProjectFile::where('project_id', $project_id)->update([
+                'is_default' => 0,
             ]);
 
-            ProjectFile::where('id',$file_id)->update([
-                'is_default' => 1
+            ProjectFile::where('id', $file_id)->update([
+                'is_default' => 1,
             ]);
 
             return response()->json([
@@ -113,20 +105,21 @@ class ProjectFilesController extends Controller
     }
 
     // Bulk Delete Files
-    public function delete_files(Request $request){
+    public function delete_files(Request $request)
+    {
         $remove_files_ids = isset($request->remove_files_ids) ? json_decode($request->remove_files_ids) : array();
 
-        if(!empty($remove_files_ids)){
-            foreach ($remove_files_ids as $file){
+        if (! empty($remove_files_ids)) {
+            foreach ($remove_files_ids as $file) {
                 $file = ProjectFile::find($file);
-                    delete_file($file->file_path);
-                    $file->delete();
+                delete_file($file->file_path);
+                $file->delete();
             }
             return response()->json([
                 'is_success' => true,
                 'message'    => __('Files Deleted.'),
             ]);
-        }else{
+        } else {
             return response()->json([
                 'is_success' => false,
                 'message'    => __('Failed to Delete.'),
@@ -135,17 +128,18 @@ class ProjectFilesController extends Controller
     }
 
     //Single FIle Delete
-    public function fileDelete($file_id){
-       
-        if($file_id){
+    public function fileDelete($file_id)
+    {
+
+        if ($file_id) {
             $file = ProjectFile::find($file_id);
-                delete_file($file->file_path);
-                $file->delete();
+            delete_file($file->file_path);
+            $file->delete();
             return response()->json([
                 'is_success' => true,
                 'message'    => __('Files Deleted.'),
             ]);
-        }else{
+        } else {
             return response()->json([
                 'is_success' => false,
                 'message'    => __('Failed to Delete.'),

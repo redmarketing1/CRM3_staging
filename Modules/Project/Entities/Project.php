@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Modules\Project\Traits\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Project\Activity\TrackStatus;
 use Modules\Project\Traits\Relationship;
+use Modules\Project\Activity\TrackProject;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Modules\Project\DataTables\ProjectsTable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -49,7 +49,7 @@ class Project extends Model implements HasMedia
 
         static::updating(function ($project) {
 
-            (new TrackStatus($project))->track();
+            (new TrackProject($project))->track();
 
             if ($project->isDirty('status')) {
                 Cache::forget('projectSubmenu-' . auth()->id());
