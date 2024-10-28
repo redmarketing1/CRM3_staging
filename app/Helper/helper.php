@@ -31,12 +31,10 @@ use Modules\Taskly\Entities\ProjectEstimation;
 if (! function_exists('getMenu')) {
     function getMenu()
     {
-
-        $user     = auth()->user();
-        $cacheKey = 'sidebar_menu_' . $user->id;
-
+        $user = auth()->user();
         $role = $user->roles->first();
         $menu = new \App\Classes\Menu($user);
+
 
         if ($role->name === 'super admin') {
             event(new \App\Events\SuperAdminMenuEvent($menu));
@@ -54,10 +52,9 @@ if (! function_exists('getMenu')) {
         uksort($groupedMenu, function ($a, $b) use ($categoryIcon) {
             return array_search($a, array_keys($categoryIcon)) <=> array_search($b, array_keys($categoryIcon));
         });
-
+        // dd($groupedMenu);
         return generateMenu($groupedMenu, null);
     }
-
 }
 
 if (! function_exists('generateMenu')) {
@@ -134,7 +131,7 @@ if (! function_exists('generateSubMenu')) {
             if ($item['name'] == 'projects' &&
                 (
                     request()->routeIs('project.index') ||
-                    request()->routeIs('project.show') 
+                    request()->routeIs('project.show')
                 )
             ) {
 
@@ -205,6 +202,7 @@ if (! function_exists('hasChildren')) {
 if (! function_exists('getSettingMenu')) {
     function getSettingMenu()
     {
+        return 'd';
         $user = auth()->user();
         $role = $user->roles->first();
         $menu = new \App\Classes\Menu($user);

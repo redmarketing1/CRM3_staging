@@ -14,7 +14,7 @@ class CompanyMenuListener
         $module = 'Taskly';
         $menu   = $event->menu;
         $menu->add([
-            'category'   => 'General',
+            'category'   => 'Dashboard',
             'title'      => __('Project Dashboard'),
             'icon'       => '',
             'name'       => 'taskly-dashboards',
@@ -28,7 +28,7 @@ class CompanyMenuListener
         ]);
 
         $menu->add([
-            'category'   => 'Productivity',
+            'category'   => 'Projects',
             'title'      => __('Projects'),
             'icon'       => 'square-check',
             'name'       => 'projects',
@@ -42,7 +42,7 @@ class CompanyMenuListener
         ]);
 
         $menu->add([
-            'category'   => 'Productivity',
+            'category'   => 'Projects',
             'title'      => __('Project Maps'),
             'icon'       => 'map-2',
             'name'       => 'project-maps',

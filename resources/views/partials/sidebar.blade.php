@@ -3,9 +3,7 @@
     <div class="navbar-wrapper">
         <div class="m-header main-logo">
             <a href="{{ route('home') }}" class="b-brand">
-                <!-- ========   change your logo hear   ============ -->
-                <img src="{{ get_file(sidebar_logo()) }}{{ '?' . time() }}" alt="" class="logo logo-lg" />
-                {{-- <img src="{{ get_file(sidebar_logo()) }}{{ '?' . time() }}" alt="" class="logo logo-sm" /> --}}
+                <img src="{{ get_file(sidebar_logo()) }}" alt="" class="logo logo-lg" />
             </a>
         </div>
         @if (!empty($company_settings['category_wise_sidemenu']) && $company_settings['category_wise_sidemenu'] == 'on')

@@ -26,8 +26,9 @@ class CompanyMenuListener
             'module'     => $module,
             'permission' => '',
         ]);
+
         $menu->add([
-            'category'   => 'General',
+            'category'   => 'User',
             'title'      => __('User Management'),
             'icon'       => 'users',
             'name'       => 'user-management',
@@ -39,8 +40,9 @@ class CompanyMenuListener
             'module'     => $module,
             'permission' => 'user manage',
         ]);
+
         $menu->add([
-            'category'   => 'General',
+            'category'   => 'User',
             'title'      => __('User'),
             'icon'       => '',
             'name'       => 'user',
@@ -52,8 +54,9 @@ class CompanyMenuListener
             'module'     => $module,
             'permission' => 'user manage',
         ]);
+
         $menu->add([
-            'category'   => 'General',
+            'category'   => 'User',
             'title'      => __('Role'),
             'icon'       => '',
             'name'       => 'role',
@@ -65,6 +68,7 @@ class CompanyMenuListener
             'module'     => $module,
             'permission' => 'roles manage',
         ]);
+
         $menu->add([
             'category'   => 'Finance',
             'title'      => __('Proposal'),
