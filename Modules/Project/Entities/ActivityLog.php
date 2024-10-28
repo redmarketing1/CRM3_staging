@@ -1,17 +1,21 @@
 <?php
 
-namespace Modules\Taskly\Entities;
+namespace Modules\Project\Entities;
 
 use App\Models\User;
 use Modules\Lead\Entities\Label;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Taskly\Entities\ProjectComment;
 use Modules\Taskly\Entities\ProjectClientFeedback;
 
 class ActivityLog extends Model
 {
     protected $fillable = [
-        'user_id', 'user_type', 'project_id', 'log_type', 'remark',
+        'user_id',
+        'user_type',
+        'project_id',
+        'log_type',
+        'remark',
     ];
 
     public static $user_name;
@@ -166,10 +170,5 @@ class ActivityLog extends Model
             'old' => $remark['oldEndDate'] ?? __('unknown'),
             'new' => $remark['newEndDate'] ?? __('unknown'),
         ]);
-    }
-
-    public function user()
-    {
-        return $this->hasOne('App\Models\User', 'id', 'user_id');
     }
 }
