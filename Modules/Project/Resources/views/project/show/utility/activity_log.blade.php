@@ -1,4 +1,4 @@
-<div class="col-md-12" id="activity-card" x-data="{ 
+<div class="col-md-12" id="activity-card" x-data="{
     activeFilters: new Set(['file', 'milestone', 'task', 'bug', 'move', 'invoice', 'user', 'share', 'time', 'comment', 'feedback', 'mail', 'status']),
     toggleFilter(type) {
         if (this.activeFilters.has(type)) {
@@ -23,31 +23,59 @@
                 <div class="header-filter">
                     <div class="status-filter">
                         @php
-                        $activityTypes = [
-                            'Upload File' => ['type' => 'file', 'icon' => 'fa-file', 'label' => __('File')],
-                            'Create Milestone' => ['type' => 'milestone', 'icon' => 'fa-cubes', 'label' => __('Milestone')],
-                            'Create Task' => ['type' => 'task', 'icon' => 'fa-tasks', 'label' => __('Task')],
-                            'Create Bug' => ['type' => 'bug', 'icon' => 'fa-bug', 'label' => __('Bug')],
-                            'Move' => ['type' => 'move', 'icon' => 'fa-align-justify', 'label' => __('Status')],
-                            'Move Bug' => ['type' => 'move', 'icon' => 'fa-align-justify', 'label' => __('Bug status')],
-                            'Create Invoice' => ['type' => 'invoice', 'icon' => 'fa-file-invoice', 'label' => __('Invoice')],
-                            'Invite User' => ['type' => 'user', 'icon' => 'fa-plus', 'label' => __('User')],
-                            'Share with Client' => ['type' => 'share', 'icon' => 'fa-share', 'label' => __('Shared')],
-                            'Create Timesheet' => ['type' => 'time', 'icon' => 'fa-clock-o', 'label' => __('Time')],
-                            'Comment Create' => ['type' => 'comment', 'icon' => 'fa-comments', 'label' => __('Comment')],
-                            'Feedback Create' => ['type' => 'feedback', 'icon' => 'fa-message', 'label' => __('Mail')],
-                            'Status Changed' => ['type' => 'status', 'icon' => 'fa-exchange-alt', 'label' => __('Status Changed')]
-                        ];
+                            $activityTypes = [
+                                'Upload File' => ['type' => 'file', 'icon' => 'fa-file', 'label' => __('File')],
+                                'Create Milestone' => [
+                                    'type' => 'milestone',
+                                    'icon' => 'fa-cubes',
+                                    'label' => __('Milestone'),
+                                ],
+                                'Create Task' => ['type' => 'task', 'icon' => 'fa-tasks', 'label' => __('Task')],
+                                'Create Bug' => ['type' => 'bug', 'icon' => 'fa-bug', 'label' => __('Bug')],
+                                'Move' => ['type' => 'move', 'icon' => 'fa-align-justify', 'label' => __('Status')],
+                                'Move Bug' => [
+                                    'type' => 'move',
+                                    'icon' => 'fa-align-justify',
+                                    'label' => __('Bug status'),
+                                ],
+                                'Create Invoice' => [
+                                    'type' => 'invoice',
+                                    'icon' => 'fa-file-invoice',
+                                    'label' => __('Invoice'),
+                                ],
+                                'Invite User' => ['type' => 'user', 'icon' => 'fa-plus', 'label' => __('User')],
+                                'Share with Client' => [
+                                    'type' => 'share',
+                                    'icon' => 'fa-share',
+                                    'label' => __('Shared'),
+                                ],
+                                'Create Timesheet' => ['type' => 'time', 'icon' => 'fa-clock-o', 'label' => __('Time')],
+                                'Comment Create' => [
+                                    'type' => 'comment',
+                                    'icon' => 'fa-comments',
+                                    'label' => __('Comment'),
+                                ],
+                                'Feedback Create' => [
+                                    'type' => 'feedback',
+                                    'icon' => 'fa-message',
+                                    'label' => __('Mail'),
+                                ],
+                                'Status Changed' => [
+                                    'type' => 'status',
+                                    'icon' => 'fa-exchange-alt',
+                                    'label' => __('Status Changed'),
+                                ],
+                            ];
 
-                        $usedTypes = $project->activities->pluck('log_type')->unique();
+                            $usedTypes = $project->activities->pluck('log_type')->unique();
                         @endphp
 
-                        @foreach($usedTypes as $logType)
-                            @if(isset($activityTypes[$logType]))
+                        @foreach ($usedTypes as $logType)
+                            @if (isset($activityTypes[$logType]))
                                 @php $config = $activityTypes[$logType]; @endphp
-                                <button @click="toggleFilter('{{ $config['type'] }}')" 
-                                        class="filter-btn status-{{ $config['type'] }}"
-                                        :class="{ 'active': isActive('{{ $config['type'] }}') }">
+                                <button @click="toggleFilter('{{ $config['type'] }}')"
+                                    class="filter-btn status-{{ $config['type'] }}"
+                                    :class="{ 'active': isActive('{{ $config['type'] }}') }">
                                     <i class="fas {{ $config['icon'] }}"></i>
                                     <span>{{ $config['label'] }}</span>
                                 </button>
@@ -60,8 +88,7 @@
                         <a class="btn btn-sm btn-primary" data-size="lg" data-ajax-popup="true"
                             data-title="Add Client Feedback"
                             data-url="{{ route('project.feedback.index', [$project->id]) }}" data-toggle="tooltip"
-                            title="Add Client Feedback" data-bs-original-title="Add Client Feedback"
-                            aria-label="popup">
+                            title="Add Client Feedback" data-bs-original-title="Add Client Feedback" aria-label="popup">
                             <i class="ti ti-send"></i>
                         </a>
                     </button>
@@ -80,7 +107,7 @@
             <div class="activity-grid">
                 @foreach ($project->activities as $activity)
                     @php
-                        $friendlyName = match($activity->log_type) {
+                        $friendlyName = match ($activity->log_type) {
                             'Upload File' => __('File'),
                             'Create Milestone' => __('Milestone'),
                             'Create Task' => __('Task'),
@@ -94,16 +121,16 @@
                             'Comment Create' => __('Comment'),
                             'Feedback Create' => __('Mail'),
                             'Status Changed' => __('Status'),
-                            default => $activity->log_type
+                            default => $activity->log_type,
                         };
-                        
+
                         $type = strtolower(str_replace(['Create ', ' ', 'Upload '], '', $activity->log_type));
                     @endphp
                     <div class="activity-item card" x-show="isActive('{{ $type }}')">
                         <div class="card-header d-flex align-items-center">
-                            <span class="timeline-step border 
-                                @if ($activity->log_type == 'Upload File')
-                                    status-file
+                            <span
+                                class="timeline-step border 
+                                @if ($activity->log_type == 'Upload File') status-file
                                 @elseif($activity->log_type == 'Create Milestone')
                                     status-milestone
                                 @elseif($activity->log_type == 'Create Task')
@@ -125,8 +152,7 @@
                                 @elseif($activity->log_type == 'Feedback Create')
                                     status-feedback
                                 @elseif($activity->log_type == 'Status Changed')
-                                    status-status
-                                @endif">
+                                    status-status @endif">
                                 @if ($activity->log_type == 'Upload File')
                                     <i class="fas fa-file"></i>
                                 @elseif($activity->log_type == 'Create Milestone')
@@ -151,6 +177,12 @@
                                     <i class="fas fa-message"></i>
                                 @elseif($activity->log_type == 'Status Changed')
                                     <i class="fas fa-exchange-alt"></i>
+                                @elseif($activity->log_type == 'Name Changed')
+                                    <i class="fas fa-pen-to-square"></i>
+                                @elseif($activity->log_type == 'End Date Changed')
+                                    <i class="fas fa-th"></i>
+                                @elseif($activity->log_type == 'Start Date Changed')
+                                    <i class="fas fa-th"></i>
                                 @endif
                             </span>
                             <span class="fw-bold">{{ $friendlyName }}</span>
