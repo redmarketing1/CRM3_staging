@@ -167,12 +167,12 @@
                                                 <div class="tagContainer"></div>
                                                 <div class="tagList" class="d-none"></div>
                                             </div>
-
+											
                                             <label class="company-cc"><input type="checkbox" class="form-check-input"
                                                     name="copy_to_company"
-                                                    value="{{ isset($company_details->email) ? $company_details->email : '' }}"
+                                                    value="{{ isset($company_details['company_email']) ? $company_details['company_email'] : '' }}"
                                                     checked /> {{ __('Send copy to') }}
-                                                {{ isset($company_details->email) ? $company_details->email : '' }}</label>
+                                                {{ isset($company_details['company_email']) ? $company_details['company_email'] : '' }}</label>
                                             @if (isset($quote->subContractor->email))
                                                 <label class="company-cc"><input type="checkbox" class="form-check-input"
                                                         name="copy_to_subcontractor"
@@ -186,7 +186,7 @@
                                             <div class="col-10">
                                                 <label for="" class="form-label">{{ __('Subject') }}</label>
                                                 <input type="text" name="subject" class="form-control" id="subject"
-                                                    value="{estimation.title} - {{ __('CP') }} {construction.street} - {client_name} - #1{{ $estimation->id }} - {{ isset($company_details->name) ? $company_details->name : '' }}">
+                                                    value="{estimation.title} - {{ __('CP') }} {construction.street} - {client_name} - #1{{ $estimation->id }} - {{ isset($company_details['company_name']) ? $company_details['company_name'] : '' }}">
                                             </div>
                                             <div class="col-2" style="align-content:center;">
                                                 <span class="col-12 lright variable-box">
@@ -347,8 +347,8 @@
                                                                             class="form-check-input additional_files_list"
                                                                             name="project_other_files_list[]"
                                                                             value="{{ encrypt($row->id) }}" /><a
-                                                                            href="{{ get_file('uploads/files/') . rawurlencode($row->file) }}"
-                                                                            target="_blank"> {{ $row->file }}
+                                                                            href="{{ asset($row->file_path) }}"
+                                                                            target="_blank"> {{ $row->file_name }}
                                                                         </a></label>
                                                                 </li>
                                                             @endforeach
