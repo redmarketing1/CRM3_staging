@@ -64,6 +64,13 @@
                             ->count();
                     @endphp
                     <li class="dash-h-item">
+                        <div class="dash-head-link me-0 search-input-box" data-bs-toggle="modal"
+                            data-bs-target="#search-pro">
+                            <i class="ti ti-search"></i>
+                            Search
+                        </div>
+                    </li>
+                    <li class="dash-h-item">
                         <a class="dash-head-link me-0 ai_progress_link" href="{{ route('smart.progress') }}"
                             alt="{{ __('Smart Progress') }}" title="{{ __('Smart Progress') }}">
                             <span class="">AI</span>

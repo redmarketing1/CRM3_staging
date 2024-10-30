@@ -92,7 +92,7 @@
                                             <div class="dropdown-menu estimation-dropdown-menu">
                                                 @foreach ($estimationStatus as $key => $status)
                                                     <a href="{{ route('estimations.changeStatus', [$estimation->id, $key]) }}"
-                                                        class="dropdown-item d-block badge bg  {{ $status }}">
+                                                        class="dropdown-item {{ $status }}">
                                                         {{ $status }}
                                                     </a>
                                                 @endforeach
