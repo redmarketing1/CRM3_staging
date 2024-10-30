@@ -10,5 +10,6 @@
     "Taskly": true,
     "Project": true,
     "Backup": true,
-    "Core": true
+    "Core": true,
+    "Search": true
 }

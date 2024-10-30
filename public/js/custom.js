@@ -1879,3 +1879,23 @@ $('.range-input').each(function () {
         $(this).next(value).html(this.value);
     });
 });
+
+function GlobalSearchService() {
+    $(document).on('input', '#search-pro .input-s', function () {
+        const keywords = $(this).val().trim();
+        if (keywords.length > 3) {
+            search(keywords);
+        }
+    });
+    function search(keywords) {
+        $.ajax({
+            url: route('GlobalSearchService.index'),
+            type: "GET",
+            data: { keywords: keywords },
+            success: function (response) {
+                $('#search-results').html(response.html);
+            }
+        });
+    }
+}
+GlobalSearchService();
