@@ -38,7 +38,7 @@
 @section('page-breadcrumb')
     <a href="{{ route('project.index') }}">{{ __('All Project') }}</a>, <a
         href="{{ route('project.show', [$estimation->project_id]) }}">{{ $estimation->getProjectDetail->name }}</a>, <a
-        href="{{ route('estimations.finalize.estimate', encrypt($estimation->id)) }}">{{ $estimation->title }}</a>,
+        href="{{ route('estimations.setup.estimate', encrypt($estimation->id)) }}">{{ $estimation->title }}</a>,
     {{ __('Final Proposal') }}
 @endsection
 
