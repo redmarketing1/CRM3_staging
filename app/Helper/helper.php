@@ -201,8 +201,7 @@ if (! function_exists('hasChildren')) {
 
 if (! function_exists('getSettingMenu')) {
     function getSettingMenu()
-    {
-        return 'd';
+    { 
         $user = auth()->user();
         $role = $user->roles->first();
         $menu = new \App\Classes\Menu($user);

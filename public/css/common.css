@@ -6770,8 +6770,8 @@ table td .btn-sm i {
 
 .card .card-header {
     border-bottom: 1px solid #f1f1f1;
-    background: #f7f7f7;
-    border: 1px solid #FFF !important;
+    background: #00000008;
+    border: 1px solid #ffffff !important;
 }
 
 .card.wide {
