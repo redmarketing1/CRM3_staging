@@ -779,11 +779,11 @@
         $(document).ready(function() {
             update_all_prices();
 
-            setInterval(function() {
-                if (execute_request == true) {
-                    check_progress();
-                }
-            }, 3000);
+            // setInterval(function() {
+            //     if (execute_request == true) {
+            //         check_progress();
+            //     }
+            // }, 3000);
 
             if ($('#final_quote_checkbox').is(':checked')) {
                 updateCellColors(final_id, null, true);
