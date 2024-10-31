@@ -342,12 +342,15 @@
                                                             {{ __('Attach Project Files to Email') }}</h6>
                                                         <ul>
                                                             @foreach ($project_other_files as $row)
+																@php
+																	$filee = rawurlencode($row->file_name);
+																@endphp
                                                                 <li>
                                                                     <label><input type="checkbox"
                                                                             class="form-check-input additional_files_list"
                                                                             name="project_other_files_list[]"
                                                                             value="{{ encrypt($row->id) }}" /><a
-                                                                            href="{{ asset($row->file_path) }}"
+                                                                            href="{{ get_file('uploads/projects/') . '/' . $filee }}"
                                                                             target="_blank"> {{ $row->file_name }}
                                                                         </a></label>
                                                                 </li>

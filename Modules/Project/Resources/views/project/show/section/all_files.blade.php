@@ -18,7 +18,10 @@
                                 onerror="this.onerror=null; this.src='{{ URL('assets/images/default_icon.png') }}';">
                         </a>
                     @else
-                        <a href="{{ get_file('uploads/projects/') . '/' . $file->file_name }}"
+						@php
+							$filee = rawurlencode($file->file_name);
+						@endphp
+                        <a href="{{ get_file('uploads/projects/') . '/' . $filee }}"
                             target="_blank" data-title="{{ $file->file_name }}"
                             class="file-{{ strtoupper($file_extension) }}">
                             <div class="fileprev">
@@ -31,6 +34,9 @@
                 </div>
             </div>
             <div class="text-end actionbuttons">
+				@php
+					$filee = rawurlencode($file->file_name);
+				@endphp
                 <div class="action-btn checkbox-btn ms-2 img-select">
                     <label class="container" title="{{ __('Select Image') }}">
                         <input type="checkbox" class="image_selection" value="{{ $file->id }}"
@@ -39,14 +45,15 @@
                     </label>
                 </div>
                 <div class="action-btn bg-primary ms-2 hide">
-                    <a href="{{ get_file('uploads/projects/') . '/' . $file->file_name }}"
+                    <a href="{{ get_file('uploads/projects/') . '/' . $filee }}"
                         class="btn btn-sm d-inline-flex align-items-center" download="">
                         <i data-bs-toggle="tooltip" data-bs-original-title="{{ __('Download') }}"
                             class="ti ti-arrow-bar-to-down text-white"></i>
                     </a>
                 </div>
                 <div class="action-btn bg-secondary ms-2 hide">
-                    <a href="{{ get_file('uploads/projects/') . '/' . $file->file_name }}"
+						
+                    <a href="{{ get_file('uploads/projects/') . '/' . $filee }}"
                         class="btn btn-sm d-inline-flex align-items-center" data-bs-toggle="tooltip" target="_blank"
                         data-original-title="{{ __('Preview') }}">
                         <i class="ti ti-crosshair text-white" data-bs-toggle="tooltip"
