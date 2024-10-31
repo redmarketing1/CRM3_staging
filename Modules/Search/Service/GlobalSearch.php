@@ -5,6 +5,7 @@ namespace Modules\Search\Service;
 use App\Models\User;
 use App\Models\Proposal;
 use Modules\Project\Entities\Project;
+use Modules\Search\Service\MenuConfig;
 
 class GlobalSearch
 {
@@ -14,6 +15,7 @@ class GlobalSearch
 
         $results = array_merge($results, $this->projects($keywords));
         $results = array_merge($results, $this->users($keywords));
+        $results = array_merge($results, $this->menus($keywords));
 
         // Sort results by priority
         usort($results, function ($a, $b) {
@@ -52,18 +54,29 @@ class GlobalSearch
             ->toArray();
     }
 
-    private function proposal($keywords)
+    private function menus($keywords)
     {
-        return Proposal::where('name', 'LIKE', "%{$keywords}%")
-            ->orWhere('email', 'LIKE', "%{$keywords}%")
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'type'     => 'User',
-                    'view'     => view('search::partials.user_result', compact('user'))->render(),
-                    'priority' => 2,
+        $results      = [];
+        $keywords     = strtolower($keywords);
+        $allowedMenus = MenuConfig::getAllowedFlatMenus();
+
+        foreach ($allowedMenus as $menu) {
+            if (str_contains(strtolower($menu['name']), $keywords)) {
+                $results[] = [
+                    'type'     => isset($menu['parent']) ? 'Submenu' : 'Menu',
+                    'view'     => view('search::partials.menu_result', [
+                        'name'       => $menu['name'],
+                        'route'      => $menu['route'],
+                        'icon'       => $menu['icon'],
+                        'parentName' => isset($menu['parent']) ? $menu['parent']['name'] : null,
+                        'isParent'   => ! empty($menu['children']),
+                        'key'        => $menu['key'],
+                    ])->render(),
+                    'priority' => isset($menu['parent']) ? 4 : 3
                 ];
-            })
-            ->toArray();
+            }
+        }
+
+        return $results;
     }
 }
