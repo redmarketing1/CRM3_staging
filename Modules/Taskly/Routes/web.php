@@ -260,7 +260,7 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::post('estimation/progress/file', [ProjectProgressController::class, 'progressFileStore'])->name('progress.file.store');
     Route::get('estimations/{id}/progress-finalize', [ProjectProgressController::class, 'progressFinalize'])->name('progress.finalize');
     Route::post('estimations/progress-finalize/send-client', [ProjectProgressController::class, 'sendProgressFinalizeClient'])->name('progress.finalize.send.client');
-    //Progress Invoice
+    //Progress Invoices
     Route::get('progress/invoice/{progress_id}',[ProjectProgressController::class, 'progress_invoice'])->name('project.progress.invoice');
     Route::get('progress/view-invoice/{progress_id}',[ProjectProgressController::class, 'view_progress_invoice'])->name('project.progress.viewInvoice');
 

@@ -288,13 +288,15 @@
                                                                     $quote_status = __('Invited');
                                                                 }
                                                             @endphp
-                                                            <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
-                                                                class="subc"
-                                                                style="border:4px solid {{ $border_color }} !important"
-                                                                data-bs-toggle="tooltip"
-                                                                title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
-                                                                data-user_id="{{ $row->user->id }}"
-                                                                data-estimation_id="{{ $estimation->id }}">
+                                                            @if(!empty($row->user))
+                                                                <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
+                                                                    class="subc"
+                                                                    style="border:4px solid {{ $border_color }} !important"
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
+                                                                    data-user_id="{{ $row->user->id }}"
+                                                                    data-estimation_id="{{ $estimation->id }}">
+                                                            @endif
                                                         @endforeach
                                                     </div>
                                         </td>
@@ -417,13 +419,15 @@
                                                             $quote_status = __('Invited');
                                                         }
                                                     @endphp
-                                                    <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
-                                                        class="subc"
-                                                        style="border:4px solid {{ $border_color }} !important"
-                                                        data-bs-toggle="tooltip"
-                                                        title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
-                                                        data-user_id="{{ $row->user->id }}"
-                                                        data-estimation_id="{{ $estimation->id }}">
+                                                    @if(!empty($row->user))
+                                                        <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
+                                                            class="subc"
+                                                            style="border:4px solid {{ $border_color }} !important"
+                                                            data-bs-toggle="tooltip"
+                                                            title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
+                                                            data-user_id="{{ $row->user->id }}"
+                                                            data-estimation_id="{{ $estimation->id }}">
+                                                    @endif
                                                 @endforeach
                                             </div>
                                         </td>
@@ -618,13 +622,15 @@
                                                                         $quote_status = __('Invited');
                                                                     }
                                                                 @endphp
-                                                                <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
-                                                                    class="subc"
-                                                                    style="border:4px solid {{ $border_color }} !important"
-                                                                    data-bs-toggle="tooltip"
-                                                                    title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
-                                                                    data-user_id="{{ $row->user->id }}"
-                                                                    data-estimation_id="{{ $estimation->id }}">
+                                                                @if(!empty($row->user))
+                                                                    <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
+                                                                        class="subc"
+                                                                        style="border:4px solid {{ $border_color }} !important"
+                                                                        data-bs-toggle="tooltip"
+                                                                        title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
+                                                                        data-user_id="{{ $row->user->id }}"
+                                                                        data-estimation_id="{{ $estimation->id }}">
+                                                                @endif
                                                             @endforeach
                                                         </div>
                                                     @endif
