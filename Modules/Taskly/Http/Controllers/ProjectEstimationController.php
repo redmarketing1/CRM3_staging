@@ -1950,6 +1950,7 @@ class ProjectEstimationController extends Controller
 
     public function finalizeEstimation($id)
     {
+		
         Meta::prependTitle(trans('Finalize Estimations'));
 
         $id         = Crypt::decrypt($id);
@@ -1968,7 +1969,6 @@ class ProjectEstimationController extends Controller
         if (File::isDirectory($additional_files_path)) {
             $additional_files_list = File::files($additional_files_path);
         }
-
         $project_files        = '';
         $project_images_files = array();
         $project_other_files  = array();

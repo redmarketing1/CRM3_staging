@@ -14,5 +14,7 @@ public/uploads/*
 public/css/common.css
 public/delays/*
 public/comments/*
+public/additional_files/*
+public/additional_files
 .timetracker
 bootstrap/cache/search_module.php
