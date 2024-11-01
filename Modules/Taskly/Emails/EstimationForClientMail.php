@@ -75,11 +75,7 @@ class EstimationForClientMail extends Mailable
         if (isset($this->project_other_files) && !empty($this->project_other_files)) {
             if (count($this->project_other_files)) {
                 foreach ($this->project_other_files as $prow) {
-<<<<<<< HEAD
                     $email = $email->attach(get_file('uploads/projects') . '/' . rawurlencode($prow['file']), array('as' => $prow['file']));
-=======
-                    $email = $email->attach(get_file('uploads/projects') . '/' . rawurlencode($prow['file_name']), array('as' => $prow['file_name']));
->>>>>>> 1f32ca2 (from server)
                 }
             }
         }
