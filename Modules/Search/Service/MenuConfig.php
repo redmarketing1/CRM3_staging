@@ -11,21 +11,21 @@ class MenuConfig
             [
                 'name'       => 'Dashboard',
                 'route'      => '',
-                'icon'       => 'fas fa-home',
+                'icon'       => 'fas fa-tachometer-alt',
                 'key'        => 'dashboard',
                 'permission' => 'crm dashboard manage',
                 'children'   => [
                     [
                         'name'       => __('CRM Dashboard'),
                         'route'      => route('lead.dashboard'),
-                        'icon'       => 'fas fa-palette',
+                        'icon'       => 'fas fa-chart-line',
                         'key'        => 'brand_settings',
                         'permission' => 'crm dashboard manage',
                     ],
                     [
                         'name'       => __('Project Dashboard'),
                         'route'      => route('taskly.dashboard'),
-                        'icon'       => 'fas fa-palette',
+                        'icon'       => 'fas fa-project-diagram',
                         'key'        => 'brand_settings',
                         'permission' => 'taskly dashboard manage',
                     ],
@@ -34,7 +34,7 @@ class MenuConfig
             [
                 'name'       => __('Projects'),
                 'route'      => route('project.index'),
-                'icon'       => 'fas fa-file-contract',
+                'icon'       => 'fas fa-tasks',
                 'key'        => 'project',
                 'permission' => 'project manage',
                 'children'   => [],
@@ -42,7 +42,7 @@ class MenuConfig
             [
                 'name'       => __('Maps'),
                 'route'      => route('project.map.index'),
-                'icon'       => 'fas fa-file-contract',
+                'icon'       => 'fas fa-map-marked-alt',
                 'key'        => 'project',
                 'permission' => 'project manage',
                 'children'   => [],
@@ -50,7 +50,7 @@ class MenuConfig
             [
                 'name'       => __('User'),
                 'route'      => route('users.index'),
-                'icon'       => 'fas fa-users',
+                'icon'       => 'fas fa-user',
                 'key'        => 'user',
                 'permission' => 'user manage',
                 'children'   => [],
@@ -58,7 +58,7 @@ class MenuConfig
             [
                 'name'       => __('User Role'),
                 'route'      => route('roles.index'),
-                'icon'       => 'fas fa-users',
+                'icon'       => 'fas fa-user-shield',
                 'key'        => 'user-management',
                 'permission' => 'user-management',
                 'children'   => [],
@@ -66,7 +66,7 @@ class MenuConfig
             [
                 'name'       => __('Proposal'),
                 'route'      => route('proposal.index'),
-                'icon'       => 'fas fa-file-contract',
+                'icon'       => 'fas fa-file-signature',
                 'key'        => 'proposal',
                 'permission' => 'proposal manage',
                 'children'   => [],
@@ -82,85 +82,95 @@ class MenuConfig
             [
                 'name'       => __('Invoice'),
                 'route'      => route('invoice.index'),
-                'icon'       => 'fas fa-file-invoice',
+                'icon'       => 'fas fa-file-invoice-dollar',
                 'key'        => 'invoice',
                 'permission' => 'invoice manage',
                 'children'   => [],
             ],
             [
                 'name'       => __('Helpdesk'),
-                'route'      => route('headphones'),
-                'icon'       => 'fas fa-file-invoice',
-                'key'        => 'helpdesk ticket manage',
-                'permission' => 'helpdesk.index',
+                'route'      => route('helpdesk.index'),
+                'icon'       => 'fas fa-headset',
+                'key'        => 'helpdesk',
+                'permission' => 'helpdesk ticket manage',
                 'children'   => [],
             ],
             [
-                'name'       => 'Settings',
-                'route'      => '/settings',
-                'icon'       => 'fas fa-cog',
+                'name'       => __('Settings'),
+                'route'      => route('settings.index'),
+                'icon'       => 'fas fa-gear',
                 'key'        => 'settings',
-                'permission' => 'settings.view',
+                'permission' => 'setting manage',
                 'children'   => [
                     [
-                        'name'  => 'Brand Settings',
-                        'route' => '/settings/brand',
-                        'icon'  => 'fas fa-palette',
-                        'key'   => 'brand_settings',
+                        'name'       => __('Brand Settings'),
+                        'route'      => route('settings.index') . '#site-settings',
+                        'icon'       => 'fas fa-paint-brush',
+                        'key'        => 'brand_settings',
+                        'permission' => 'setting manage',
                     ],
                     [
-                        'name'  => 'System Settings',
-                        'route' => '/settings/system',
-                        'icon'  => 'fas fa-server',
-                        'key'   => 'system_settings',
+                        'name'       => __('System Settings'),
+                        'route'      => route('settings.index') . '#system-settings',
+                        'icon'       => 'fas fa-server',
+                        'key'        => 'system_settings',
+                        'permission' => 'setting manage',
                     ],
                     [
-                        'name'  => 'Company Settings',
-                        'route' => '/settings/company',
-                        'icon'  => 'fas fa-building',
-                        'key'   => 'company_settings',
+                        'name'       => __('Company Settings'),
+                        'route'      => route('settings.index') . '#company-setting-sidenav',
+                        'icon'       => 'fas fa-building',
+                        'key'        => 'company_settings',
+                        'permission' => 'setting manage',
                     ],
                     [
-                        'name'  => 'Currency Settings',
-                        'route' => '/settings/currency',
-                        'icon'  => 'fas fa-dollar-sign',
-                        'key'   => 'currency_settings',
+                        'name'       => __('Currency Settings'),
+                        'route'      => route('settings.index') . '#currency-setting-sidenav',
+                        'icon'       => 'fas fa-money-bill-alt',
+                        'key'        => 'currency_settings',
+                        'permission' => 'setting manage',
                     ],
                     [
-                        'name'  => 'Proposal Print Settings',
-                        'route' => '/settings/proposal-print',
-                        'icon'  => 'fas fa-print',
-                        'key'   => 'proposal_print_settings',
+                        'name'       => __('Proposal Print Settings'),
+                        'route'      => route('settings.index') . '#proposal-print-sidenav',
+                        'icon'       => 'fas fa-file-pdf',
+                        'key'        => 'proposal_print_settings',
+                        'permission' => 'setting manage',
                     ],
                     [
-                        'name'  => 'Invoice Print Settings',
-                        'route' => '/settings/invoice-print',
-                        'icon'  => 'fas fa-file-invoice',
-                        'key'   => 'invoice_print_settings',
+                        'name'       => __('Invoice Print Settings'),
+                        'route'      => route('settings.index') . '#invoice-print-sidenav',
+                        'icon'       => 'fas fa-file-pdf',
+                        'key'        => 'invoice_print_settings',
+                        'permission' => 'setting manage',
                     ],
                     [
-                        'name'  => 'Purchase Print Settings',
-                        'route' => '/settings/purchase-print',
-                        'icon'  => 'fas fa-print',
-                        'key'   => 'purchase_print_settings',
+                        'name'       => __('Purchase Print Settings'),
+                        'route'      => route('settings.index') . '#purchase-print-sidenav',
+                        'icon'       => 'fas fa-file-pdf',
+                        'key'        => 'purchase_print_settings',
+                        'permission' => 'setting manage',
                     ],
                     [
-                        'name'  => 'Email Settings',
-                        'route' => '/settings/email',
-                        'icon'  => 'fas fa-envelope',
-                        'key'   => 'email_settings',
+                        'name'       => __('Email Settings'),
+                        'route'      => route('settings.index') . '#email-sidenav',
+                        'icon'       => 'fas fa-envelope-open',
+                        'key'        => 'email_settings',
+                        'permission' => 'setting manage',
                     ],
                     [
-                        'name'  => 'Email Notification Settings',
-                        'route' => '/settings/email-notification',
-                        'icon'  => 'fas fa-bell',
-                        'key'   => 'email_notification_settings',
+                        'name'       => __('Email Notification Settings'),
+                        'route'      => route('settings.index') . '#email-notification-sidenav',
+                        'icon'       => 'fas fa-bell',
+                        'key'        => 'email_notification_settings',
+                        'permission' => 'setting manage',
                     ],
                     [
-                        'name'  => 'Bank Transfer',
-                        'route' => '/settings/bank-transfer',
-                        'icon'  => 'fas fa-university',
-                        'key'   => 'bank_transfer',
+                        'name'       => __('Bank Transfer'),
+                        'route'      => route('settings.index') . '#bank-transfer-sidenav',
+                        'icon'       => 'fas fa-university',
+                        'key'        => 'bank_transfer',
+                        'permission' => 'setting manage',
                     ],
                 ],
             ],
@@ -173,12 +183,11 @@ class MenuConfig
         $allowedMenus = [];
 
         foreach ($menus as $menu) {
-            // Check if user has permission for the main menu
+
             if (self::hasMenuPermission($menu)) {
                 $menuCopy             = $menu;
                 $menuCopy['children'] = [];
 
-                // Check permissions for children
                 if (! empty($menu['children'])) {
                     foreach ($menu['children'] as $submenu) {
                         if (self::hasMenuPermission($submenu)) {
@@ -187,7 +196,6 @@ class MenuConfig
                     }
                 }
 
-                // Only add menu if it has permission and either has no children or has at least one allowed child
                 if (empty($menu['children']) || ! empty($menuCopy['children'])) {
                     $allowedMenus[] = $menuCopy;
                 }
@@ -203,13 +211,13 @@ class MenuConfig
         $flatMenus = [];
 
         foreach ($menus as $menu) {
-            // Add main menu
+
             $flatMenus[] = $menu;
 
-            // Add allowed submenus with parent information
+
             if (! empty($menu['children'])) {
                 foreach ($menu['children'] as $submenu) {
-                    // Add parent name and key for proper breadcrumb display
+
                     $submenu['parent'] = [
                         'name'  => $menu['name'],
                         'key'   => $menu['key'],
@@ -225,8 +233,8 @@ class MenuConfig
 
     private static function hasMenuPermission($menu)
     {
+        return true;
         if (! isset($menu['permission'])) {
-            return true; // If no permission specified, allow access
         }
 
         return Auth::user()->can($menu['permission']);

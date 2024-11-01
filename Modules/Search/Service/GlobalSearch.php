@@ -14,7 +14,7 @@ class GlobalSearch
         $results = [];
 
         $results = array_merge($results, $this->projects($keywords));
-        $results = array_merge($results, $this->users($keywords));
+        // $results = array_merge($results, $this->users($keywords));
         $results = array_merge($results, $this->menus($keywords));
 
         // Sort results by priority
@@ -24,10 +24,11 @@ class GlobalSearch
 
         return $results;
     }
+
     private function projects($keywords)
     {
         return Project::where('name', 'LIKE', "%{$keywords}%")
-            ->orWhere('description', 'LIKE', "%{$keywords}%")
+            // ->orWhere('description', 'LIKE', "%{$keywords}%")
             ->get()
             ->map(function ($project) {
                 return [
