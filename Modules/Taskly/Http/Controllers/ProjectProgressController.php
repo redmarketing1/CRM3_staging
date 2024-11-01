@@ -896,44 +896,52 @@ class ProjectProgressController extends Controller
 			]);
 			Invoice::starting_number($invoice->invoice_id + 1, 'invoice');
 
-			foreach ($quoteItem as $item) { 
+			foreach ($quoteItem as $item) {
 				$latest_progress = 0;
 				$previous_progress = 0;
-				if($item->progress){
-					$progress = ProjectProgress::where("product_id", $item->product_id)->orderBy("progress", "desc")->first();
-					if(InvoiceProduct::where("product_id", $item->product_id)->exists()) {
-						$old_progress = InvoiceProduct::where("product_id", $item->product_id)
-							->sum('progress');
-					}else{
-						$old_progress = ProjectProgress::where("product_id", $item->product_id)->orderBy("progress", "desc")->skip(1)->first();
-						$old_progress = $old_progress->progress ?? 0;
+			
+				if ($item->progress) {
+					// Fetch progress records related to the current product
+					$progress = ProjectProgress::where("product_id", $item->product_id)
+						->where('created_at', '=', $main_progress->created_at)
+						->first();
+					
+					if ($progress) {
+						$old_progress = ProjectProgress::where("product_id", $item->product_id)
+							->where('created_at', '<=', $progress->created_at)
+							->orderBy('created_at', 'desc') // Get the most recent old progress
+							->skip(1) // Skip the latest one to get the previous
+							->first();
 					}
-					$latest_progress 	= isset($progress) ? $progress->progress : 0;
-					$previous_progress 	= isset($old_progress) ? $old_progress : 0;
+			
+					$latest_progress = isset($progress) ? $progress->progress : 0;
+					$previous_progress = isset($old_progress) ? $old_progress->progress : 0;
 				}
+			
 				$new_progress = floatval($latest_progress) - floatval($previous_progress);
 				$progress_amount = 0;
-				$price 				= $item->price;
+				$price = $item->price;
 				$total_price = $item->total_price;
+			
 				if ($new_progress > 0) {
-					$progress_amount = ($new_progress/100) * $total_price;
+					$progress_amount = ($new_progress / 100) * $total_price;
 				}
-				
-				$invoiceProduct 				= new InvoiceProduct();
-				$invoiceProduct->invoice_id 	= $invoice->id;
-				$invoiceProduct->item 			= isset($item->projectEstimationProduct->name) ? $item->projectEstimationProduct->name : '';
-				$invoiceProduct->product_id 	= isset($item->projectEstimationProduct->id) ? $item->projectEstimationProduct->id : '';
-				$invoiceProduct->quantity 		= $item->projectEstimationProduct->quantity;
-				$invoiceProduct->unit 		    = $item->projectEstimationProduct->unit;
-				$invoiceProduct->price 			= $price;
-				$invoiceProduct->total_price 	= $total_price;
-				$invoiceProduct->tax 			= $quote->tax;
-				$invoiceProduct->product_type 	= __('progress');
-				$invoiceProduct->description 	= $item->projectEstimationProduct->description;
-				$invoiceProduct->progress 		= $new_progress;
+			
+				// Create new InvoiceProduct
+				$invoiceProduct = new InvoiceProduct();
+				$invoiceProduct->invoice_id = $invoice->id;
+				$invoiceProduct->item = $item->projectEstimationProduct->name ?? '';
+				$invoiceProduct->product_id = $item->projectEstimationProduct->id ?? '';
+				$invoiceProduct->quantity = $item->projectEstimationProduct->quantity;
+				$invoiceProduct->unit = $item->projectEstimationProduct->unit;
+				$invoiceProduct->price = $price;
+				$invoiceProduct->total_price = $progress_amount;
+				$invoiceProduct->tax = $quote->tax;
+				$invoiceProduct->product_type = __('progress');
+				$invoiceProduct->description = $item->projectEstimationProduct->description;
+				$invoiceProduct->progress = $new_progress;
 				$invoiceProduct->progress_amount = $progress_amount;
 				$invoiceProduct->save();
-
 			}
 			DB::commit();
 			return redirect()->route('project.show', $project_id)->with('success',__('Invoice successfully created.'));
@@ -952,9 +960,9 @@ class ProjectProgressController extends Controller
 		$client 		= $project->client_data;
 		$client_name 	= isset($client->name) ? $client->name : '';
 		$client_email 	= isset($client->email) ? $client->email : '';
-		//dd($invoice);
-		return view('invoice.templates.template11', 
+		$html = view('invoice.templates.template11', 
 				compact('invoice','project', 'settings','client', 'client_name', 'client_email'))->render();
+		return view("taskly::project_progress.progress_invoice", compact('project','settings','html','invoice'));
 		// $id 					= $progress_id;
 		// $main_progress_id 		= $id;
 		// $progress_main_details 	= ProjectProgressMain::where('id', $id)->first();
