@@ -502,7 +502,7 @@
                         </td>
                         <td class="td" style="text-align:right;">{{ $item->quantity }} {{ $item->unit }}</td>
                         <td class="td">{{ currency_format_with_sym($item->price) }}</td>
-                        <td class="td">{{ currency_format_with_sym($item->total_price) }}</td>
+                        <td class="td">{{ currency_format_with_sym($item->quantity * $item->price) }}</td>
                         <td class="td">{{ $item->progress }}%</td>
                         <td class="td">{{ currency_format_with_sym($item->progress_amount) }}</td>
                         @php 

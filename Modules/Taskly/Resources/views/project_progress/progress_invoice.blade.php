@@ -1,11 +1,11 @@
 @extends('layouts.main')
 
 @section('page-title')
-	{{__('Progress Finalize')}}
+	{{__('Invoice Finalize')}}
 @endsection
 
 @section('title')
-	{{__('Progress Finalize')}}
+	{{__('Invoice Finalize')}}
 @endsection
 
 @push('css')
@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="{{ asset('css/common.css') }}" type="text/css" />
 @endpush
 @section('page-breadcrumb')
-<a href="{{route('projects.index')}}">{{ __('All Project') }}</a>,<a href="{{route('projects.show', [$estimation->project_id])}}">{{ $estimation->getProjectDetail->name }}</a>,{{__('Progress Finalize')}}
+<a href="{{route('projects.index')}}">{{ __('All Project') }}</a>,<a href="{{route('projects.show', [$project->id])}}">{{ $project->name }}</a>,{{__('Invoice Finalize')}}
 @endsection
 @section('page-action')
 
@@ -67,35 +67,32 @@
                         <div class="row final-pdf-paper d-flex justify-content-center" style="padding: 50px 0px;">
                             <div class="col-md-12">
                                 <?php
-                                $client = $estimation->project()->client_data;
+                                $client = $project->client_data;
                                 $client_name = isset($client->first_name) ? $client->first_name . ' ' . $client->last_name : '';
                                 $client_email = isset($client->email) ? $client->email : '';
                                 $contractor = '';
                                 $data = [
-                                    'estimation' => $estimation,
                                     'settings' => $settings,
-                                    'quote' => $quote,
                                     'client' => $client,
                                     'client_name' => $client_name,
                                     'client_email' => $client_email,
-                                    'contractor' => $contractor,
                                 ];
                                 ?>
                                 <!--- using render -->
                                 {!! $html !!}
                                 <!--- without render use -->
-                                <!-- @include('invoice.templates.template11') -->
+                                {{-- <!-- @include('invoice.templates.template11') --> --}}
                             </div>
                         </div>
                     </div>
-                    <div class="final-right-col card-body bg-gray-200 px-3">
+                    <div class="final-right-col card-body bg-gray-200 px-3" style="min-width: 350px!important;">
                         <div class="row">
                             <div class="col-12">
                                 <div class="col-12">
                                     <div class="final-send-wrapper">
                                         <div class="mt-3">
-                                            <form action="{{route('progress.finalize.send.client')}}" id="print" method="post">
-                                                <input type="hidden" name="id" value="{{$main_progress_id}}">
+                                            <form action="#" id="print" method="post">
+                                                <input type="hidden" name="id" value="{{$invoice->progress_id}}">
                                                 <input type="hidden" name="type" value="pdf">
                                                 <input type="hidden" name="subject" value="" id="print-subject">
                                                 <input type="hidden" name="client_email" id="print-client_email" value="">
@@ -109,20 +106,20 @@
                                                     {{__('Send to Client')}}
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <a href="javascript:void(0)" onclick="send_progress('{{$main_progress_id}}', 'email')" class="dropdown-item">{{__('Send to Client')}}</a>
-                                                    <a href="javascript:void(0)" onclick="send_progress('{{$main_progress_id}}', 'pdf')" class="dropdown-item">{{__('Download')}}</a>
+                                                    <a href="javascript:void(0)" onclick="send_progress('{{$invoice->progress_id}}', 'email')" class="dropdown-item">{{__('Send to Client')}}</a>
+                                                    <a href="javascript:void(0)" onclick="send_progress('{{$invoice->progress_id}}', 'pdf')" class="dropdown-item">{{__('Download')}}</a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="final-email-header">
-                                        @if(isset($estimation->project()->client_data->first_name))
-                                        <label for="">{{ $estimation->project()->client_data->first_name .' '. $estimation->project()->client_data->last_name }}</label>
+                                        @if(isset($project->client_data->first_name))
+                                        <label for="">{{ $project->client_data->first_name .' '. $project->client_data->last_name }}</label>
                                         @endif
                                         <div class="col-12 pt-1">
                                             <label for="" class="form-label">{{__('Client Email')}}</label>
-                                            <input type="email" name="client_email" class="form-control" id="client_email" value="{{ isset($estimation->project()->construction_detail->email) ? $estimation->project()->construction_detail->email : '' }}">
+                                            <input type="email" name="client_email" class="form-control" id="client_email" value="{{ isset($project->construction_detail->email) ? $project->construction_detail->email : '' }}">
                                         </div>
                                         <div class="col-12 pt-1 tag_box">
                                             <label for="" class="form-label mt-1">{{__('Other CC-E-Mails')}} ({{__('Separate emails with Comma')}})</label>
@@ -136,17 +133,12 @@
                                             <div class="tagContainer"></div>
                                             <div class="tagList" class="d-none"></div>
                                         </div>
-
-                                        <label class="company-cc"><input type="checkbox" class="form-check-input" name="copy_to_company" value="{{ $settings['company_email'] }}" checked /> {{ __('Send copy to') }} {{ $settings['company_email'] }}</label>
-                                        @if (isset($quote->subContractor->email))
-                                        <label class="company-cc"><input type="checkbox" class="form-check-input" name="copy_to_subcontractor" value="{{$quote->subContractor->email}}" /> {{ __('Send copy to Subcontractor') }} {{$quote->subContractor->email}}</label>
-                                        @endif
                                     </div>
 
                                     <div class="row mt-3">
                                         <div class="col-10">
                                             <label for="" class="form-label">{{__('Subject')}}</label>
-                                            <input type="text" name="subject" class="form-control" id="subject" value="{estimation.title} - {{ __('CP') }} {construction.street} - {client_name} - #1{{$main_progress_id}} - {{ $settings['company_name'] }}">
+                                            <input type="text" name="subject" class="form-control" id="subject" value="{estimation.title} - {{ __('CP') }} {construction.street} - {client_name} - #1{{$invoice->progress_id}} - {{ $settings['company_name'] }}">
                                         </div>
                                         <div class="col-2" style="align-content:center;">
                                             <span class="col-12 lright variable-box">
@@ -198,7 +190,7 @@
 </div>
 @endsection
 @push("scripts")
-<script type="application/javascript">
+{{-- <script type="application/javascript">
     const ccArray = [];
     const bccArray = [];
     function addTag() {
@@ -350,5 +342,5 @@
 
     init_tiny_mce('#extra_notes');
     init_tiny_mce('#pdf_top_notes');
-</script>
+</script> --}}
 @endpush
