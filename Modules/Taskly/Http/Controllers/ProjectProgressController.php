@@ -18,6 +18,7 @@ use App\Models\Email;
 use App\Models\Invoice;
 use App\Models\InvoiceProduct;
 use App\Http\Controllers\InvoiceController;
+use Modules\Taskly\Emails\InvoiceForClientMail;
 use Modules\Taskly\Entities\Project;
 use Modules\Taskly\Entities\ProjectEstimation;
 use Modules\Taskly\Entities\EstimateQuote;
@@ -960,32 +961,266 @@ class ProjectProgressController extends Controller
 		$client 		= $project->client_data;
 		$client_name 	= isset($client->name) ? $client->name : '';
 		$client_email 	= isset($client->email) ? $client->email : '';
+		$progressInvoiceFinalizeEmailTemplate = getNotificationTemplateData('progress-invoice');
 		$html = view('invoice.templates.template11', 
 				compact('invoice','project', 'settings','client', 'client_name', 'client_email'))->render();
-		return view("taskly::project_progress.progress_invoice", compact('project','settings','html','invoice'));
-		// $id 					= $progress_id;
-		// $main_progress_id 		= $id;
-		// $progress_main_details 	= ProjectProgressMain::where('id', $id)->first();
-		// $estimation 			= ProjectEstimation::whereId($progress_main_details->estimation_id)->first();
-		// $quote 					= EstimateQuote::with("quoteItem")->where("project_estimation_id", $progress_main_details->estimation_id)->where("is_final", 1)->first();
-		// $project_estimation 	= ProjectEstimationProduct::where("project_estimation_id", $progress_main_details->estimation_id)->where("type", "item");
-		// $items 					= $project_estimation->get();
-
-		// $progressFinalizeEmailTemplate = getNotificationTemplateData('progress_finalize');
-
-		// 
-		// 
-		// $contractor 	= $quote->subContractor;
-		// 
-		// 
-		// 
-
-		// $filters_request['order_by'] 	= array('field' => 'projects.created_at', 'order' => 'DESC');
-		// $project_record 				= Project::get_all($filters_request);
-		// $all_projects 					= isset($project_record['records']) ? $project_record['records'] : array();
-		// /*** with render use ****/
-		// $html 							= view('invoice.templates.template11', compact('settings', 'items', 'main_progress_id', 'quote', 'contractor', 'client', 'client_name', 'client_email', 'project', 'estimation', 'progress_main_details'))->render();
-		// return $html;
-		// return view("taskly::project_progress.progress_invoice", compact('estimation', 'quote', 'settings', 'progressFinalizeEmailTemplate', 'html', 'main_progress_id', 'all_projects'));
+		return view("taskly::project_progress.progress_invoice", compact('project','settings','html','invoice','progressInvoiceFinalizeEmailTemplate'));
+		
 	}
+
+	public function sendInvoiceFinalizeClient(Request $request)
+	{
+		ini_set("max_execution_time", "-1");
+		ini_set("memory_limit", "-1");
+
+		$invoice = Invoice::where('id',$request->id)->with('items', 'items.group')->first();
+		$project = Project::where('id',$invoice->project)->first();
+		$client = $project->client_data;
+		$estimation = ProjectEstimation::whereId($invoice->project_estimation_id)->first();
+		$settings 				= getCompanyAllSetting();
+
+		if ($request->type == "pdf" || $request->type == "email") { 
+			$constructionDetail 			= isset($project->construction_detail) ? $project->construction_detail : null;
+		//	$contractor 					= $quote->subContractor;
+			$path 							= 'invoices/';
+			$client_name 					= isset($client->name) ? $client->name : '';
+			$client_email 					= isset($request->client_email) ? $request->client_email : '';
+			$clientCompanyName 				= '';
+			$clientSalutationTitle 			= '';
+			$clientAcademicTitle 			= '';
+			$clientFirstName 				= '';
+			$clientLastName 				= '';
+			$clientEmail 					= '';
+			$clientPhone 					= '';
+			$clientMobile 					= '';
+			$clientWebsite 					= '';
+			$constructionStreetN 			= '';
+			$constructionAdditionalAddress 	= '';
+			$constructionZipcode 			= '';
+			$constructionCity 				= '';
+			$constructionState 				= '';
+			$constructionCountry 			= '';
+			$constructionTaxNumber 			= '';
+			$constructionTaxNotes 			= '';
+			$clientSalutation 				= "";
+			$constructionSalutation 		= "";
+
+			if (isset($constructionDetail) && $constructionDetail != null) {
+				$clientCompanyName = (isset($client->company_name) && !empty($client->company_name)) ? $client->company_name : '';
+				$clientSalutationTitle = (isset($client->salutation) && !empty($client->salutation)) ? $client->salutation : '';
+				$clientAcademicTitle = (isset($client->title) && !empty($client->title)) ? $client->title : '';
+				$clientFirstName = (isset($client->first_name) && !empty($client->first_name)) ? $client->first_name : '';
+				$clientLastName = (isset($client->last_name) && !empty($client->last_name)) ? $client->last_name : '';
+				$clientEmail = (isset($client->email) && !empty($client->email)) ? $client->email : '';
+				$clientPhone = (isset($client->phone) && !empty($client->phone)) ? $client->phone : '';
+				$clientMobile = (isset($client->mobile) && !empty($client->mobile)) ? $client->mobile : '';
+				$clientWebsite = (isset($client->website) && !empty($client->website)) ? $client->website : '';
+				$constructionStreetN = (isset($constructionDetail->address_1) && !empty($constructionDetail->address_1)) ? $constructionDetail->address_1 : '';
+				$constructionAdditionalAddress = (isset($constructionDetail->address_2) && !empty($constructionDetail->address_2)) ? $constructionDetail->address_2 : '';
+				$constructionZipcode = (isset($constructionDetail->zipcode) && !empty($constructionDetail->zipcode)) ? $constructionDetail->zipcode : '';
+				$constructionCity = (isset($constructionDetail->city) && !empty($constructionDetail->city)) ? $constructionDetail->city : '';
+				$constructionState = (isset($constructionDetail->state) && !empty($constructionDetail->state)) ? $constructionDetail->state : '';
+				$constructionCountry = (isset($constructionDetail->country) && !empty($constructionDetail->country) && (isset($constructionDetail->countryDetail) && $constructionDetail->countryDetail != null)) ? $constructionDetail->countryDetail->name : '';
+				$constructionTaxNumber = (isset($constructionDetail->tax_number) && !empty($constructionDetail->tax_number)) ? $constructionDetail->tax_number : '';
+				$constructionTaxNotes = (isset($constructionDetail->notes) && !empty($constructionDetail->notes)) ? $constructionDetail->notes : '';
+				if (isset($client->salutation) && $client->salutation == 'Mr.') {
+					$clientSalutation = __("Dear");
+				} else if (isset($client->salutation) && $client->salutation == 'Ms.') {
+					$clientSalutation = __("Dear");
+				};
+				if (isset($constructionDetail->salutation) && $constructionDetail->salutation == 'Mr.') {
+					$constructionSalutation = __("Dear");
+				} else if (isset($constructionDetail->salutation) && $constructionDetail->salutation == 'Ms.') {
+					$constructionSalutation = __("Dear");
+				};
+			}
+
+			$allVariable = [
+				"{client_name}",
+				"{estimation.title}",
+				"{client.company_name}",
+				"{client.salutation_title}",
+				"{client.academic_title}",
+				"{client.first_name}",
+				"{client.last_name}",
+				"{client.email}",
+				"{client.phone}",
+				"{client.mobile}",
+				"{client.website}",
+				"{construction.street}",
+				"{construction.additional_address}",
+				"{construction.zipcode}",
+				"{construction.city}",
+				"{construction.state}",
+				"{construction.country}",
+				"{construction.tax_number}",
+				"{construction.notes}",
+				"{current.date+21days}",
+				"{client.salutation}",
+				"{construction.salutation}",
+			];
+			$allVariabelValues = [
+				$client_name,
+				$estimation->title,
+				$clientCompanyName,
+				$clientSalutationTitle,
+				$clientAcademicTitle,
+				$clientFirstName,
+				$clientLastName,
+				$clientEmail,
+				$clientPhone,
+				$clientMobile,
+				$clientWebsite,
+				$constructionStreetN,
+				$constructionAdditionalAddress,
+				$constructionZipcode,
+				$constructionCity,
+				$constructionState,
+				$constructionCountry,
+				$constructionTaxNumber,
+				$constructionTaxNotes,
+				date("m/d/Y", strtotime("+21days")),
+				$clientSalutation,
+				$constructionSalutation,
+			];
+
+			$subject 		= $request->subject;
+			$subject 		= str_replace($allVariable, $allVariabelValues, $subject);
+			$message 		= $request->email_text;
+			$message 		= str_replace($allVariable, $allVariabelValues, $message);
+			// $extra_notes 	= $request->extra_notes;
+			// $extra_notes 	= str_replace($allVariable, $allVariabelValues, $extra_notes);
+			// $pdfTopNotes 	= $request->pdf_top_notes;
+			// $pdfTopNotes 	= str_replace($allVariable, $allVariabelValues, $pdfTopNotes);
+			$site_money_format = site_money_format();
+
+			$invoice_file_name = $subject.'-'.date('d.m.y',strtotime($invoice->created_at));
+
+			$file_name = $invoice_file_name . '.pdf';
+			$data = [
+				'estimation' 		=> $estimation,
+				'settings' 			=> $settings,
+				'client' 			=> $client,
+				'client_name' 		=> $client_name,
+				'client_email' 		=> $client_email,
+				'message' 			=> $message,
+			//	'extra_notes' 		=> $extra_notes,
+			//	'pdfTopNotes' 		=> $pdfTopNotes,
+			//	'contractor' 		=> $contractor,
+				'project' 			=> $project,
+				'site_money_format' => $site_money_format,
+				'path' 				=> $path,
+				'file_name' 		=> $file_name,
+				'invoice' 	=> $invoice,
+			];
+
+			if ($request->type == "pdf") {
+				return $this->generateInvoiceFinalizePDF($data, true);
+			}
+			$dir = $this->generateInvoiceFinalizePDF($data);
+			$cc_email = $request->cc_email;
+			$bcc_email = $request->bcc_email;
+			if (isset($request->copy_to_company) && $request->copy_to_company == true) {
+				$bcc_email[] = $settings['company_email'];
+			}
+			if (isset($request->copy_to_subcontractor) && $request->copy_to_subcontractor == true) {
+				if (isset($quote->subContractor->email) && ($quote->subContractor->email != '')) {
+					$bcc_email[] = $settings['company_email'];
+				}
+			}
+
+			$emailData = (object)[
+				"subject" => $subject,
+				"sender_name" => env("APP_NAME"),
+				"content" => $message,
+				'pdf' => $dir,
+				'cc' => $cc_email,
+				'bcc' => $bcc_email,
+				"sender" => env("MAIL_FROM_ADDRESS"),
+				"view" => 'email.common',
+			];
+
+			// $email = Email::create([
+			// 	'subject' => $subject ? $subject : "",
+			// 	"message" => $message,
+			// 	"status" => 1,
+			// 	'attachments' => $path,
+			// 	"project_id" => $estimation->project_id,
+			// 	"type" => "Modules\Taskly\Entities\ProjectProgressMain",
+			// 	"type_id" => $quote->id,
+			// 	"estimations" => json_encode(['quote' => $quote, 'items' => $quote->quoteItem()->get()])
+			// ]);
+
+			// $sender = User::find(Auth::user()->id);
+			// $sender->sentEmails()->save($email);
+			// if (isset($client->user_id)) {
+			// 	$recipient = User::find($client->user_id);
+			// 	if (isset($recipient->id)) {
+			// 		$recipient->receivedEmails()->save($email);
+			// 	}
+			// }
+			$setconfing =  SetConfigEmail();
+			$smtp_error = [];
+
+			if ($setconfing ==  true) {
+				try {
+					Mail::to($client_email)->send(new InvoiceForClientMail($emailData));
+				} catch (\Exception $e) {
+					return response(['status' => false, 'message' => $e->getMessage()]);
+				}
+			}
+			
+			if ($request->type == "email") {
+				$fileName = "";
+				if (File::exists($dir)) {
+					$dir_path = 'uploads/files/';
+					if (!is_dir($dir_path)) {
+						mkdir($dir_path, 0777);
+					}
+					$fileName = $file_name;
+					$new_path = $dir_path . $file_name;
+					File::copy($dir, $new_path);
+				}
+				$new_message = "Project Progress Finalize  : " . $quote->title;
+				$client_message = isset($message) ? $message : $new_message;
+
+				$feedback = new ProjectClientFeedback();
+				$feedback->project_id = $estimation->project_id;
+				$feedback->file = isset($fileName) ? $fileName : '';
+				$feedback->feedback = $client_message;
+				$feedback->feedback_by = Auth::user()->id;
+				$feedback->save();
+
+				$success_message = 'Email successfully sent';
+			} else {
+				$success_message = 'PDF download successfully.';
+			}
+
+		}
+
+		return response(['status' => true, 'message' => $success_message]);
+	}
+
+	//Invoice Pdf generation
+	public function generateInvoiceFinalizePDF($data, $download = false){
+		// dd($data);
+		// $html = view('invoice.templates.template11', 
+		// 		compact('invoice','project', 'settings','client', 'client_name', 'client_email'))->render();
+        $dir 	= "uploads/invoices/";
+        $pdf = PDF::loadView('invoice.templates.template11', $data)->setPaper('a4');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+        $filename = isset($data["file_name"]) ? $data['file_name'] : 'Project Progress (' . $data["invoice"]->project_name . ').pdf';
+        $dir .= $filename;
+        if ($download) {
+            return $pdf->download($filename, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            ]);
+        }
+        $pdf->save($dir);
+        return $dir;
+    }
 }
+
