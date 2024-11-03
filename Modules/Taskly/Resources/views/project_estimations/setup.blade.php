@@ -44,9 +44,6 @@
                 <div class="row">
                     <div class="col-md-12 order-lg-2">
                         <div class="card repeater table-card-full">
-
-
-
                             {{ Form::open(['route' => 'estimations.importdata', 'files' => true, 'id' => 'quote_form']) }}
                             <div class="card-body pb-0">
                                 <div class="row estimation-header">
@@ -696,9 +693,10 @@
                     @elseif ($estimation->status = 2)
                         <div class="button-wrapper-fixed">
                             <div class="button-wrapper-left"></div>
-                            <div class="button-wrapper-right"> 
+                            <div class="button-wrapper-right">
                                 @if (Auth::user()->type == 'company')
-                                    <button type="button" id="" onclick="saveTableData('preview')" class="btn btn-secondary mx-2">{{ __('Save & Complete') }}</button>
+                                    <button type="button" id="" onclick="saveTableData('preview')"
+                                        class="btn btn-secondary mx-2">{{ __('Save & Complete') }}</button>
                                 @endif
                             </div>
                         </div>
@@ -788,11 +786,15 @@
         $(document).ready(function() {
             update_all_prices();
 
-            // setInterval(function() {
-            //     if (execute_request == true) {
-            //         check_progress();
-            //     }
-            // }, 3000);
+            setInterval(function() {
+                if (execute_request == true) {
+                    check_progress();
+                }
+                $.ajax({
+                    url: "{{ route('run_all_queues') }}",
+                    type: "GET"
+                });
+            }, 3000);
 
             if ($('#final_quote_checkbox').is(':checked')) {
                 updateCellColors(final_id, null, true);
