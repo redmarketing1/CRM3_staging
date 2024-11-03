@@ -40,7 +40,8 @@ class Invoice extends Model
         'discount_apply',
         'workspace',
         'created_by',
-        'path'
+        'path',
+        'account_type'
     ];
     public static $statues = [
         'Draft',

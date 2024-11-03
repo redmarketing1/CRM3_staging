@@ -63,7 +63,7 @@ class InvoiceController extends Controller
             $customer = User::where('workspace_id', '=', getActiveWorkSpace())->where('type', 'Client')->get()->pluck('name', 'id');
 
             $status = Invoice::$statues;
-
+            
             if (Auth::user()->type != 'company') {
                 $query = Invoice::join('users', 'invoices.user_id', '=', 'users.id')
                     ->where('users.id', Auth::user()->id)->select('invoices.*')
@@ -74,7 +74,7 @@ class InvoiceController extends Controller
 
             if (!empty($request->customer)) {
 
-                $query->where('user_id', '=', $request->customer);
+                $query->where('client', '=', $request->customer);
             }
             if (!empty($request->issue_date)) {
                 $date_range = explode('to', $request->issue_date);
@@ -95,7 +95,7 @@ class InvoiceController extends Controller
             }
 
             $invoices = $query->with('customers')->orderBy('id', 'desc')->get();
-
+            
             return view('invoice.index', compact('invoices', 'customer', 'status'));
         } else {
             return redirect()->back()->with('error', __('Permission Denied.'));

@@ -1,551 +1,359 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ $settings['site_rtl'] == 'on' ? 'rtl' : '' }}">
 
 <head>
-    <title>{{ __('Progress Invoice') }}</title>
-    <style>
-        .table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 0 auto;
-            background-color: transparent;
-            color: #333;
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>New York - invoice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+        rel="stylesheet">
+
+
+    <style type="text/css">
+        :root {
+            --theme-color: #003580;
+            --white: #ffffff;
+            --black: #000000;
         }
 
-        .th,
-        .td {
-            padding: 7px 2px;
-            border-spacing: 5px;
-            word-wrap: break-word;
-            text-align: left;
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            vertical-align: top;
+        body {
+            font-family: 'Lato', sans-serif;
         }
 
-        .th {
-            background-color: #77777721;
-            font-weight: bold;
-            font-size: 12px;
-        }
-
-        .tr {
-            border-bottom: 1px dotted #d5d5d5;
-        }
-
-        .tr:last-child {
-            border-bottom: none;
+        p,
+        li,
+        ul,
+        ol {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            line-height: 1.5;
         }
 
         * {
-            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .h3_title {
-            font-size: 16px;
-            border-bottom: 2px solid;
-            margin: 20px 0 10px 0;
-            padding: 0 0px 5px 0;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .coverpage {
-            table-layout: fixed;
-            background: #FFF;
+        table tr th {
+            padding: 0.75rem;
+            text-align: left;
         }
 
-        .coverpage td,
-        .coverpage p {
+        table tr td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        table th small {
+            display: block;
             font-size: 12px;
         }
 
-        .coverpage td {
-            padding-left: 20px;
-            padding-right: 20px;
-            vertical-align: top;
-            word-break: break-all;
-            overflow-wrap: break-word;
+        .invoice-preview-main {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffff;
+            box-shadow: 0 0 10px #ddd;
         }
 
-        .coverpage td .field {
-            word-break: break-all !important;
-            overflow-wrap: break-word !important;
-            white-space: normal !important;
-            max-width: 100% !important;
-        }
-
-        .page-break {
-            page-break-after: always;
-        }
-
-        .field {
+        .invoice-logo {
+            max-width: 200px;
             width: 100%;
         }
 
-        h4 {
-            white-space: nowrap;
+        .invoice-header table td {
+            padding: 15px 30px;
         }
 
-        .progress-history {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2px;
+        .text-right {
+            text-align: right;
         }
 
-        table .progress-history-item {
-            background: #f1f1f1;
-            border-radius: 3px;
-            padding: 2px 5px !important;
-            line-height: 18px !important;
-            color: #222 !important;
+        .no-space tr td {
+            padding: 0;
         }
 
-        table .progress-history-item span:not(:last-child) {
-            /* padding-right: 2px !important;
-            margin-right: 2px !important; */
+        .vertical-align-top td {
+            vertical-align: top;
         }
 
-        table .progress-history-item:last-child {}
-
-        .last-progress-nr {
-            font-size: 18px;
-            font-weight: bold;
+        .view-qrcode {
+            max-width: 114px;
+            height: 114px;
+            margin-left: auto;
+            margin-top: 15px;
+            background: var(--white);
         }
 
-        table.coverpage.table td {
-            vertical-align: middle;
-            width: auto !important;
+        .view-qrcode img {
+            width: 100%;
+            height: 100%;
         }
 
-        table.coverpage.table .item-bottom td {
-            text-align: center;
+        .invoice-body {
+            padding: 30px 25px 0;
         }
 
-        table .last-progress-nr {
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 5px;
-            width: 71px;
-            /* padding: 1px !important; */
-            color: #000000c9;
+        table.add-border tr {
+            border-top: 1px solid var(--theme-color);
         }
 
-        table.coverpage .item-name,
-        table.coverpage .item-pos {
-            font-size: 14px;
-            font-weight: bold;
-            padding-top: 10px !important;
+        tfoot tr:first-of-type {
+            border-bottom: 1px solid var(--theme-color);
         }
 
-        table.coverpage.table .item-top td {
-            padding-top: 10px !important;
+        .total-table tr:first-of-type td {
+            padding-top: 0;
         }
 
-        /* table.coverpage.table .item-bottom td {
-            padding-bottom: 10px !important;
-        } */
-        table.coverpage .item-pos {
-            white-space: nowrap !important;
-            word-wrap: unset !important;
+        .total-table tr:first-of-type {
+            border-top: 0;
         }
 
-        table.coverpage {
-            table-layout: unset;
+        .sub-total {
+            padding-right: 0;
+            padding-left: 0;
         }
 
-        table.coverpage .final-field {
-            font-weight: bold;
-            background: transparent;
-            border-bottom: 2px dotted #ccc;
-            font-size: 15px;
-            text-align: left !important;
-            padding: 5px 5px 0;
+        .border-0 {
+            border: none !important;
         }
 
-        table.coverpage .final-details-bottom td {
-            vertical-align: bottom;
+        .invoice-summary td,
+        .invoice-summary th {
+            font-size: 13px;
+            font-weight: 600;
         }
 
-        .main-text p {
-            font-size: 14px;
+        .total-table td:last-of-type {
+            width: 146px;
         }
 
-
-        div[class*="progress-0"] {
-            color: #ddd;
+        .invoice-footer {
+            padding: 15px 20px;
         }
 
-        /*
-        div[class*="progress-1"],
-        div[class*="progress-2"],
-        div[class*="progress-3"] {
-            color: #d1e3e9 ;
+        .itm-description td {
+            padding-top: 0;
         }
-
-        div[class*="progress-4"],
-        div[class*="progress-5"],
-        div[class*="progress-6"] {
-            color: #aae9e2;
+        html[dir="rtl"] table tr td,
+        html[dir="rtl"] table tr th{
+            text-align: right;
         }
-
-
-        div[class*="progress-7"],
-        div[class*="progress-8"],
-        div[class*="progress-9"]
-        {
-            color: #9ee4af;
+        html[dir="rtl"]  .text-right{
+            text-align: left;
         }
-
-        div[class*="progress-100"] {
-            color: #66CC99 ;
+        html[dir="rtl"] .view-qrcode{
+            margin-left: 0;
+            margin-right: auto;
         }
-            */
-
-
-
-
-        td.pos-td[class*="progress-0"] {
-            background: #FFF;
+        p:not(:last-of-type){
+            margin-bottom: 15px;
         }
-
-        td.pos-td[class*="progress-1"],
-        td.pos-td[class*="progress-2"],
-        td.pos-td[class*="progress-3"] {
-            /* background: #d1e3e9;  */
-            background: #f3eecf;
-            background: #f3e9f6;
-        }
-
-        td.pos-td[class*="progress-4"],
-        td.pos-td[class*="progress-5"],
-        td.pos-td[class*="progress-6"] {
-            background: #aae9e2;
-        }
-
-        td.pos-td[class*="progress-7"],
-        td.pos-td[class*="progress-8"],
-        td.pos-td[class*="progress-9"] {
-            background: #9ee4af;
-        }
-
-        td.pos-td[class*="progress-100"] {
-            background: #66CC99;
-        }
-
-
-
-        *[class*="progress-0"] {
-            background: #FFF;
-        }
-
-        *[class*="progress-1"],
-        *[class*="progress-2"],
-        *[class*="progress-3"] {
-            /* background: #d1e3e9;  */
-            background: #f3eecf;
-            background: #f3e9f6;
-        }
-
-        *[class*="progress-4"],
-        *[class*="progress-5"],
-        *[class*="progress-6"] {
-            background: #aae9e2;
-        }
-
-        *[class*="progress-7"],
-        *[class*="progress-8"],
-        *[class*="progress-9"] {
-            background: #9ee4af;
-        }
-
-        *[class*="progress-100"] {
-            background: #66CC99;
-        }
-
-        .legend {
-            display: flex;
-            justify-content: right;
-        }
-
-        .legend span {
-            display: block;
-            white-space: nowrap !important;
-            padding: 1px 5px !important;
-            color: #000000c9;
-            font-size: 10px;
-        }
-
-        .legend span:first-child {
-            border-radius: 5px 0 0 5px;
-        }
-
-        .legend span:last-child {
-            border-radius: 0 5px 5px 0;
-        }
-
-        @page {
-            margin: 4mm;
+        .invoice-summary p{
+            margin-bottom: 0;
         }
     </style>
 </head>
 
 <body>
-    <table style="border-collapse: collapse; width: 100%; font-family: Arial; font-size: 12px; margin-bottom: 50px;" border="0" class="page-break coverpage">
-        <tbody>
-            <tr class="logo-estimate-title-class">
-                <td style="width: 25%;" colspan="2" class="logo-class">
-                    <img class="img-fluid mb-3" src="{{ get_file(sidebar_logo()) }}" alt="Dashboard-kit Logo"
-                        style="width:100%">
-                </td>
-                <td style="width: 25%; text-align: right;" colspan="2" class="construction-addrrss-class">
-                    <strong>{{ $settings['company_name'] }}<br />
-                    </strong>{{ $settings['company_address'] . ',' . $settings['company_zipcode'] . ' ' . $settings['company_city'] }}<br />{{ $settings['company_telephone'] }}<br />{{ $settings['company_email'] }}<br />
-                    @if (isset($settings['company_website']) && !empty($settings['company_website']))
-                        {{ $settings['company_website'] }}
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <td colspan="4" class="main-text" style="padding:250px 20px 50px; font-size: 14px;">
-                    <h2 style="margin-bottom: 30px; font-size:30px;">{{ __('Invoice') }}
-                        @if (!empty($invoice))
-                            @if (isset($invoice->created_at))
-                                {{ date('d.m.y', strtotime($invoice->created_at)) }}
-                            @endif
-                        @endif
-                    </h2>
-                    <p>Sehr geehrte*r {{ isset($client->salutation) ? __($client->salutation) : '' }}
-                        {{ isset($client->last_name) ? $client->last_name : '' }},
-                    </p>
-                    <p>vielen Dank für die gemeinsame Abnahme vom
-                        @if (!empty($invoice))
-                            @if (isset($invoice->created_at))
-                                <b>{{ date('d.m.y', strtotime($invoice->created_at)) }}</b>
-                            @endif
-                        @endif
-                        Ihres Bauvorhabens in
-                        <b>{{ isset($project->construction_detail->address_1) ? $project->construction_detail->address_1 : '' }},
-                            {{ isset($project->construction_detail->zip_code) ? $project->construction_detail->zip_code : '' }}
-                            {{ isset($project->construction_detail->city) ? $project->construction_detail->city : '' }}</b>.
-                        Nachfolgend erhalten Sie eine Kopie des Abnahmeprotokolls.
-                    </p>
-                </td>
-            </tr>
-            <tr class="label-auftraggeber-planer">
-                <td style="width: 25%;" colspan="2" class="label-auftraggeber">
-                    <h3 class="h3_title"><strong>{{ __('Client') }}</strong></h3>
-                </td>
-                <td style="width: 25%;" colspan="2" class="label-planer">
-                    <h3 class="h3_title"><strong>{{ __('Planner') }}</strong></h3>
-                </td>
-            </tr>
-            <tr class="auftraggeber-details">
-                <td style="width: 25%;">
-                    <div class="field">
-                        {{ isset($client->first_name) ? $client->company_name : '' }}
-                    </div>
-                    <div class="field">
-                        {{ isset($client->first_name) ? $client->first_name : '' }}
-                        {{ isset($client->last_name) ? $client->last_name : '' }}
-                    </div>
-                    <div class="field">{{ isset($client->address_1) ? $client->address_1 : '' }}</div>
-                    <div class="field">{{ isset($client->zip_code) ? $client->zip_code : '' }}
-                        {{ isset($client->city) ? $client->city : '' }}</div>
-                    <div class="field">{{ isset($client->district) ? $client->district : '' }}</div>
-                    <div class="field">{{ isset($client->state) ? $client->state : '' }}</div>
-                    @if (!empty($client->countryDetail) && isset($client->countryDetail))
-                        <div class="field">
-                            {{ !empty($client->countryDetail) ? ' ' . $client->countryDetail->name : '' }}
-                        </div>
-                    @endif
-                </td>
-                <td style="width: 25%;">
-                    <div class="field">{{ isset($client->mobile) ? $client->mobile : '' }}</div>
-                    <div class="field">{{ isset($client->email) ? $client->email : '' }}</div>
-                </td>
-                <td style="width: 25%;">
-                    <div class="field">{{-- {{planer.name}} --}}</div>
-                    <div class="field">{{-- {{planer.street}} --}}</div>
-                    <div class="field">{{-- {{planer.zip}} {{planer.city}} --}}</div>
-                    <div class="field">{{-- {{planer.country}} --}}</div>
-                </td>
-                <td style="width: 25%;">
-                    <div class="field">{{-- {{planer.contact}} --}}</div>
-                    <div class="field">{{-- {{planer.phone}} --}}</div>
-                    <div class="field">{{-- {{planer.email}} --}}</div>
-
-                </td>
-            </tr>
-            <tr class="label-projekt-zusammenfassung">
-                <td style="width: 25%;" colspan="2" class="label-projekt">
-                    <h3 class="h3_title"><strong>{{ __('Project') }}</strong></h3>
-                </td>
-                <td style="width: 25%;" colspan="2" class="label-zusammenfassung">
-                    <h3 class="h3_title"><strong>{{ __('Summary') }}</strong></h3>
-                </td>
-            </tr>
-            <tr class="project-estimate-details">
-                <td style="width: 25%;">
-                    <div class="field">
-                        {{ isset($project->construction_detail->first_name) ? $project->construction_detail->company_name : '' }}
-                    </div>
-                    <div class="field">
-                        {{ isset($project->construction_detail->first_name) ? $project->construction_detail->first_name : '' }}
-                        {{ isset($project->construction_detail->last_name) ? $project->construction_detail->last_name : '' }}
-                    </div>
-                    <div class="field">
-                        {{ isset($project->construction_detail->address_1) ? $project->construction_detail->address_1 : '' }}
-                    </div>
-                    <div class="field">
-                        {{ isset($project->construction_detail->zip_code) ? $project->construction_detail->zip_code : '' }}
-                        {{ isset($project->construction_detail->city) ? $project->construction_detail->city : '' }}
-                    </div>
-                    @if (!empty($project->construction_detail->district))
-                        <div class="field">
-                            {{ $project->construction_detail->district ?? '' }}
-                        </div>
-                    @endif
-                    @if (!empty($project->construction_detail->state))
-                        <div class="field">
-                            {{ $project->construction_detail->state ?? '' }}
-                        </div>
-                    @endif
-                    @if (!empty($project->construction_detail->countryDetail))
-                        <div class="field">
-                            {{ $project->construction_detail->countryDetail->name ?? '' }}
-                        </div>
-                    @endif
-
-                    @if (!empty($contractor))
-                        <div class="field">{{ isset($client_name) ? $client_name : '' }}</div>
-                        <div class="field">{{ $project->location }}</div>
-                    @endif
-                </td>
-                <td style="width: 25%;" class="project-address">
-                    @if (!empty($project->construction_detail->mobile) && isset($project->construction_detail->mobile))
-                        <div class="field">{{ $project->construction_detail->mobile }}</div>
-                    @endif
-                    @if (!empty($project->construction_detail->email) && isset($project->construction_detail->email))
-                        <div class="field">{{ $project->construction_detail->email }}</div>
-                    @endif
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <!--- Invoice Deails ------->
-    <table
-        style="width: 100%; font-family: Arial; font-size: 12px; margin-bottom: 50px; border: 1px solid #f1f1f1; table-layout: unset;" class="coverpage table">
-        <thead style="display: table-row-group;">
-            <tr>
-                <td colspan="5" class="main-text" style="">
-                    <h3 style="font-size:20px;">{{ __('Invoice Details') }}</h3>
-                </td>
-            </tr>
-            <tr>
-                <tr class="tr" style="border-bottom: 2px solid #FFF;">
-                    <th class="th">{{ __('POS') }}</th>
-                    <th class="th">{{ __('Name') }}</th>
-                    <th class="th">{{ __('Comments') }}</th>
-                    <th class="th">{{ __('Quantity') }}</th>
-                    <th class="th">{{ __('Single Price') }}</th>
-                    <th class="th">{{ __('Total Price') }}</th>
-                    <th class="th">{{ __('Progress') }}</th>
-                    <th class="th">{{ __('Total') }}</th>
-                </tr>
-            </tr>
-        </thead>
-        <tbody>
-            @if(isset($invoice->items) && count($invoice->items) > 0)
-                @php
-                    $group = '';
-                    $subtotal = 0;
-                @endphp
-                @foreach($invoice->items as $key => $item)
-                    {{-- @php $group = $item->group() @endphp --}}
-                    @if ($item->group->group_name)
-                        <tr class="tr" style="border-bottom: none;">
-                            <td class="th" style="text-align:right;">{{ get_group_pos($item->group->group_pos) }}</td>
-                            <td class="th" style="text-align: left;margin-left: 150px" colspan="7">
-                                <div style="width:100%;font-size: 14px; padding: 5px 0;"> {{ $item->group->group_name }}</div>
-                            </td>
-                        </tr>
-                    @endif
-                    <tr class="tr">
-                        <td class="td">{{ $item->projectEstimationProduct->pos }}</td>
-                        <td class="td">{{ $item->item }}</td>
-                        <td class="td">
-                            @foreach ($item->project_all_progress() as $progress)
-                                @php
-                                    $user_name = "";
-                                @endphp
-                                @if (isset($progress->progress_id) && !empty($progress->progress_id))
-                                    @php
-                                        $user_name = ($progress->project_progress[0]['name']) ? $progress->project_progress[0]['name'] : '';
-                                    @endphp
-                                @endif
-                                <div style="display:flex !important;">
-                                    @if(isset($progress->created_at))
-                                        {{ date('d.m.y', strtotime($progress->created_at))}}
-                                    @endif
-                                    @if(isset($user_name))
-                                        <b>- {{ $user_name }}</b>
-                                    @endif
-                                </div>
-                                @if(isset($progress->remarks))
-                                    <div style="display: flex; align-items: center;">
-                                        <progress id="file" value="{{ $progress->progress }}" max="100">
-                                        </progress>
-                                        <span style="margin-left: 8px;">{{ $progress->progress.'%' }}</span>
-                                    </div>
+    <div class="invoice-preview-main">
+        <div class="invoice-header" style="background: {{$color}};color:{{$font_color}}">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img class="invoice-logo"
+                                src="{{ $img }}"
+                                alt="">
+                        </td>
+                        <td class="text-right">
+                            <h3 style="text-transform: uppercase; font-size: 40px; font-weight: bold;">{{__('INVOICE')}}</h3>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="vertical-align-top">
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>
+                                @if($settings['company_name']){{$settings['company_name']}}@endif<br>
+                                @if($settings['company_address']){{$settings['company_address']}}@endif
+                                @if($settings['company_city']) <br> {{$settings['company_city']}}, @endif
+                                @if($settings['company_state']){{$settings['company_state']}}@endif
+                                @if($settings['company_zipcode']) - {{$settings['company_zipcode']}}@endif
+                                @if($settings['company_country']) <br>{{$settings['company_country']}}@endif <br>
+                            </p>
+                            <p>
+                                {{__('Registration Number')}} : {{$settings['registration_number']}} <br>
+                                {{__('VAT Number')}} : {{$settings['vat_number']}} <br>
+                            </p>
+                        </td>
+                        <td>
+                            <table class="no-space">
+                                <tbody>
+                                    <tr>
+                                        <td>{{ __('Number:') }} </td>
+                                        <td class="text-right">{{\App\Models\Invoice::invoiceNumberFormat($settings,$invoice->invoice)}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{__('Issue Date:') }}</td>
+                                        <td class="text-right">{{ company_date_formate($invoice->issue_date) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="view-qrcode">
+                                                {{-- <img src="Qrcode_livre.png" alt=""> --}}
+                                                <p> {!! DNS2D::getBarcodeHTML(route('pay.invoice',\Illuminate\Support\Facades\Crypt::encrypt($invoice->id)), "QRCODE",2,2) !!}</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="invoice-body">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <strong style="margin-bottom: 10px; display:block;">Bill To:</strong>
+                            <p> {{!empty($client->company_name)?$client->company_name:''}}<br>
+                                {{!empty($client->name)?$client->name:''}}<br>
+                                {{!empty($client->email)?$client->email:''}}<br>
+                                {{!empty($client->mobile)?$client->mobile:''}}<br>
+                                {{!empty($client->address)?$client->address:''}}<br>
+                                {{!empty($client->zip)?$client->zip:''}}<br>
+                                {{!empty($client->city)?$client->city:'' . ', '}} {{!empty($client->state)?$client->state:'' .', '}},{{!empty($client->country)?$client->country:''}}
+                            </p>
+                        </td>
+                        <td class="text-right">
+                            <strong style="margin-bottom: 10px; display:block;">Ship To:</strong>
+                            <p> {{!empty($client->company_name)?$client->company_name:''}}<br>
+                                {{!empty($client->name)?$client->name:''}}<br>
+                                {{!empty($client->email)?$client->email:''}}<br>
+                                {{!empty($client->mobile)?$client->mobile:''}}<br>
+                                {{!empty($client->address)?$client->address:''}}<br>
+                                {{!empty($client->zip)?$client->zip:''}}<br>
+                                {{!empty($client->city)?$client->city:'' . ', '}} {{!empty($client->state)?$client->state:'' .', '}},{{!empty($client->country)?$client->country:''}}
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="add-border invoice-summary" style="margin-top: 30px;">
+                <thead style="background-color: {{$color}};color:{{$font_color}} ">
+                    <tr>
+                        <th>{{__('Item')}}</th>
+                        <th>{{__('Quantity')}}</th>
+                        <th>{{__('Rate')}}</th>
+                        <th>{{__('Tax')}}(%)</th>
+                        <th>{{__('Discount')}}</th>
+                        <th class="">{{__('Price')}} <small>{{__('before tax & discount')}}</small></th>
+                        <th class="">{{__('Progress')}} <small>{{__('%')}}</small></th>
+                        <th class="">{{__('Payable Amount')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(isset($invoice->items) && count($invoice->items) > 0)
+                    @foreach($invoice->items as $key => $item)
+                            <tr>
+                        <td>@if(!empty($item->items))
+                                {{$item->items->name}}
+                            @elseif($item->name !="")
+                                {{$item->name}}
+                            @else
+                                No Item
+                            @endif</td>
+                        <td>{{$item->quantity}}</td>
+                        <td>{{ priceFormat($settings,$item->price)}}</td>
+                        <td>
+                            @foreach($item->itemTax as $taxes)
+                                @if(!empty($item->itemTax))
+                                <p>
+                                    <span>{{$taxes['name']}}</span>  <span>({{$taxes['rate']}})</span> <span>{{$taxes['price']}}</span>
+                                </p>
+                                @else
+                                <p>-</p>
                                 @endif
                             @endforeach
                         </td>
-                        <td class="td" style="text-align:right;">{{ $item->quantity }} {{ $item->unit }}</td>
-                        <td class="td">{{ currency_format_with_sym($item->price) }}</td>
-                        <td class="td">{{ currency_format_with_sym($item->quantity * $item->price) }}</td>
-                        <td class="td">{{ $item->progress }}%</td>
-                        <td class="td">{{ currency_format_with_sym($item->progress_amount) }}</td>
-                        @php 
-                            $subtotal += $item->progress_amount;
-                        @endphp
+                        <td>{{($item->discount!=0)? priceFormat($settings,$item->discount):'-'}}</td>
+                        <td>{{ priceFormat($settings,$item->price * $item->quantity)}}</td>
+                        <td>{{ $item->progress}}</td>
+                        <td>{{  priceFormat($settings, $item->payable)}}</td>
                     </tr>
-                @endforeach
-            @endif
-        </tbody>
-    </table>
-
-        
-    <div style="display: flex; justify-content: flex-end; width: 95%"> 
-        <table>
-            @php 
-                $grosstotal = 0;
-                $totalwithdiscount = $subtotal - $invoice->discount;
-                $tax = ($invoice->tax * $totalwithdiscount)/100; 
-                $grosstotal = $tax + $totalwithdiscount;
-            @endphp
-            <tr class="tr" style="border-bottom: 2px solid #FFF;">
-                <td class="td"><strong style="font-size: 16px">{{__('Subtotal (net)')}}:</strong></td>
-                <td>{{ currency_format_with_sym($subtotal) }}</td>
-            </tr>
-            <tr class="tr" style="border-bottom: 2px solid #FFF;">
-                <td class="td"><strong style="font-size: 16px">{{__('Discount (net)')}} (-):</strong></td>
-                <td>{{ currency_format_with_sym($invoice->discount) }}</td>
-            </tr>
-            <tr class="tr" style="border-bottom: 2px solid #FFF;">
-                <td class="td"><strong style="font-size: 16px">{{ __('Total (net) incl. cash discount') }}:</strong></td>
-                <td>{{ currency_format_with_sym($totalwithdiscount) }}</td>
-            </tr>
-            <tr class="tr" style="border-bottom: 2px solid #FFF;">
-                <td class="td"><strong style="font-size: 16px">{{ $invoice->tax }}% {{ __('VAT') }} (+):</strong></td>
-                <td>{{ currency_format_with_sym($tax) }}</td>
-            </tr>
-            <tr class="tr" style="border-bottom: 2px solid #FFF;">
-                <td class="td"><strong style="font-size: 16px">{{ __('Total (net)') }}:</strong></td>
-                <td>{{ currency_format_with_sym($grosstotal) }}</td>
-            </tr>
-        </table>
+                    @endforeach
+                    @endif
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>{{__('Total')}}</td>
+                        <td>{{$invoice->totalQuantity}}</td>
+                        <td>{{ priceFormat($settings,$invoice->totalRate)}}</td>
+                        <td>{{ priceFormat($settings,$invoice->totalTaxPrice) }}</td>
+                        <td></td>
+                        <td>{{ priceFormat($settings,$invoice->getSubTotal())}}</td>
+                        <td></td>
+                        <td>{{ priceFormat($settings,$invoice->totalPayable)}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6"></td>
+                        <td colspan="2" class="sub-total">
+                            <table class="total-table">
+                                @if($invoice->totalDiscount!=0)
+                                    <tr>
+                                        <td>{{__('Discount ').$invoice->discount}}%: </td>
+                                        <td>{{ priceFormat($settings,$invoice->totalDiscount)}}</td>
+                                    </tr>
+                                @endif
+                                @if(!empty($invoice->totalTax))
+                                <tr>
+                                    <td>{{__('Tax ').($invoice->tax==1?"19":"")}}% :</td>
+                                    <td>{{  priceFormat($settings,$invoice->totalTax)  }}</td>
+                                </tr>
+                                @endif
+                                 <tr>
+                                    <td>{{__('Total')}}:</td>
+                                    <td>{{ priceFormat($settings,$invoice->totalPayable-$invoice->totalDiscount+$invoice->totalTax)}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{__('Credit Note')}}:</td>
+                                    <td>{{ priceFormat($settings,$invoice->totalPayable-$invoice->totalDiscount+$invoice->totalTax)}}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div data-v-f2a183a6="" class="d-body1">
+                <p data-v-f2a183a6="">
+                    {{ $settings['footer_title'] }} <br>
+                    {{ $settings['footer_notes'] }}
+                </p>
+            </div>
+            <div data-v-4b3dcb8a="" class="break-25"></div>
+            <div class="invoice-footer">
+                @if(!isset($preview))
+                    @include('invoice.script');
+                @endif
+                <p>Thanks!</p>
+            </div>
+        </div>
     </div>
-    
+
 </body>
 
 </html>

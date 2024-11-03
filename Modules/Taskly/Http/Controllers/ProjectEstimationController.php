@@ -53,6 +53,9 @@ class ProjectEstimationController extends Controller
 
     public function index(Request $request)
     {
+        ini_set("max_execution_time", "-1");
+		ini_set("memory_limit", "-1");
+        
         $user = Auth::user();
         if ($user->isAbleTo('estimation manage')) {
             $query = ProjectEstimation::select("*")->with(['getProjectDetail', 'final_quote']);
