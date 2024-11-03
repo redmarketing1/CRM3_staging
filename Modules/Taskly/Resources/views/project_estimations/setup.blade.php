@@ -786,7 +786,6 @@
         $(document).ready(function() {
             update_all_prices();
 
-<<<<<<< HEAD
             setInterval(function() {
                 if (execute_request == true) {
                     check_progress();
@@ -796,13 +795,6 @@
                     type: "GET"
                 });
             }, 3000);
-=======
-             setInterval(function() {
-                 if (execute_request == true) {
-                     check_progress();
-                 }
-             }, 3000);
->>>>>>> 8368062 (from server)
 
             if ($('#final_quote_checkbox').is(':checked')) {
                 updateCellColors(final_id, null, true);
