@@ -69,7 +69,7 @@ Route::middleware('domain-check')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('start');
 
     //crons
-    Route::get('cron/execute-queues', [CronController::class, 'run_all_queues']);
+    Route::get('cron/execute-queues', [CronController::class, 'run_all_queues'])->name('run_all_queues');
 });
 Route::middleware(['auth', 'verified'])->group(function () {
 
