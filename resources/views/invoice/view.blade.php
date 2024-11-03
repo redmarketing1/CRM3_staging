@@ -706,7 +706,7 @@
                                                                 <td>{{ !empty($iteam->product_type) ? Str::ucfirst($iteam->product_type) : '--' }}</td>
                                                                 <td>{{ !empty($iteam->product()) ? $iteam->product()->name : '' }}</td>
                                                             @elseif ($invoice->invoice_module == 'taskly')
-                                                                <td>{{ !empty($iteam->product()) ? $iteam->product()->title : '' }}</td>
+                                                                <td>{{ !empty($iteam->product()) ? $iteam->product()->name : '' }}</td>
                                                             @elseif ($invoice->invoice_module == 'cmms' || $invoice->invoice_module == 'rent')
                                                                 <td>{{ !empty($iteam->product_type) ? Str::ucfirst($iteam->product_type) : '--' }}</td>
                                                                 <td>{{ !empty($iteam->product()) ? $iteam->product()->name : '' }}</td>
@@ -766,7 +766,7 @@
                                                             </td>
                                                             @endif
                                                             <td style="white-space: break-spaces;">
-                                                                {{ !empty($iteam->description) ? $iteam->description : '-' }}
+                                                                {!! !empty($iteam->description) ? $iteam->description : '-' !!}
                                                             </td>
                                                             @php
                                                                 $tr_tex =

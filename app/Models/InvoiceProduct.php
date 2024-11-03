@@ -44,7 +44,7 @@ class InvoiceProduct extends Model
             }
         } elseif (!empty($invoice) && $invoice->invoice_module == "taskly") {
             if (module_is_active('Taskly')) {
-                return  $this->hasOne(\Modules\Taskly\Entities\Task::class, 'id', 'product_id')->first();
+                return  $this->hasOne(\Modules\Taskly\Entities\ProjectEstimationProduct::class, 'id', 'product_id')->first();
             } else {
                 return [];
             }

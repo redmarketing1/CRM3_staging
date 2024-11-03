@@ -884,6 +884,8 @@ class ProjectProgressController extends Controller
 				'issue_date' 			=> date("Y-m-d H:i:s"),
 				'due_date' 				=> date("Y-m-d H:i:s", strtotime("+7Days")),
 				'send_date' 			=> date("Y-m-d H:i:s"),
+				'user_id' 			=> $estimation->project()->client,
+				'customer_id' 			=> $estimation->project()->client,
 				'client' 				=> $estimation->project()->client,
 				'project' 				=> $estimation->project()->id,
 				'progress_id'           => $main_progress->id,
@@ -923,8 +925,9 @@ class ProjectProgressController extends Controller
 				$progress_amount = 0;
 				$price = $item->price;
 				$total_price = $item->total_price;
-			
+				$qty = 0;
 				if ($new_progress > 0) {
+					$qty = ($new_progress / 100) * $item->projectEstimationProduct->quantity;
 					$progress_amount = ($new_progress / 100) * $total_price;
 				}
 			
@@ -933,13 +936,19 @@ class ProjectProgressController extends Controller
 				$invoiceProduct->invoice_id = $invoice->id;
 				$invoiceProduct->item = $item->projectEstimationProduct->name ?? '';
 				$invoiceProduct->product_id = $item->projectEstimationProduct->id ?? '';
-				$invoiceProduct->quantity = $item->projectEstimationProduct->quantity;
+				$invoiceProduct->quantity = $qty;
 				$invoiceProduct->unit = $item->projectEstimationProduct->unit;
 				$invoiceProduct->price = $price;
 				$invoiceProduct->total_price = $progress_amount;
-				$invoiceProduct->tax = $quote->tax;
+				$invoiceProduct->tax = $quote->tax == 19 ? 1 : 0;
 				$invoiceProduct->product_type = __('progress');
-				$invoiceProduct->description = $item->projectEstimationProduct->description;
+				$invoiceProduct->description = 
+					"<strong>Name:</strong> " . $item->projectEstimationProduct->name . "<br>" .
+					"<strong>Quantity:</strong> " . $item->projectEstimationProduct->quantity . " " . $item->projectEstimationProduct->unit . "<br>" .
+					"<strong>Price:</strong> " . $item->price . "<br>" .
+					"<strong>Total Price:</strong> " . $item->total_price . "<br>" .
+					"<strong>Current Progress:</strong> " . $new_progress . "<br>" .
+					"<strong>Total Progress:</strong> " . $latest_progress;
 				$invoiceProduct->progress = $new_progress;
 				$invoiceProduct->progress_amount = $progress_amount;
 				$invoiceProduct->save();
@@ -962,7 +971,7 @@ class ProjectProgressController extends Controller
 		$client_name 	= isset($client->name) ? $client->name : '';
 		$client_email 	= isset($client->email) ? $client->email : '';
 		$progressInvoiceFinalizeEmailTemplate = getNotificationTemplateData('progress-invoice');
-		$html = view('invoice.templates.template11', 
+		$html = view('invoice.templates.invoice-progress-pdf', 
 				compact('invoice','project', 'settings','client', 'client_name', 'client_email'))->render();
 		return view("taskly::project_progress.progress_invoice", compact('project','settings','html','invoice','progressInvoiceFinalizeEmailTemplate'));
 		
