@@ -38,7 +38,11 @@
 										if(!\Auth::user()->isAbleTo('estimation edit')) {
 											$setup_url = 'javascript:void(0)';
 										}
-										$project_url = route('project.show',[$estimation->project_id]);
+										if($estimation->project_id){
+											$project_url = route('project.show',[$estimation->project_id]);
+										}else{
+											$project_url = '#';
+										}
 										if(!\Auth::user()->isAbleTo('project manage')) {
 											$project_url = 'javascript:void(0)';
 										}
@@ -47,7 +51,7 @@
 										<span class="badge fix_badges bg-{{$statuesColor[$estimationStatus[$estimation->status]]}} p-2 px-3 rounded">{{$estimationStatus[$estimation->status]}}</span>
 									</td>
 									<td class="est-title">
-										<a href="{{ $project_url }}">{{ $estimation->getProjectDetail->name }}</a>
+										<a href="{{ $project_url }}">{{ isset($estimation->getProjectDetail->name) ? $estimation->getProjectDetail->name : ''  }}</a>
 									</td>
 									<td class="est-title">
 										@if($estimation->status > 1)

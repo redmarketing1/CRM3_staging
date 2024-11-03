@@ -1190,7 +1190,7 @@ class ProjectProgressController extends Controller
 					$new_path = $dir_path . $file_name;
 					File::copy($dir, $new_path);
 				}
-				$new_message = "Project Progress Finalize  : " . $quote->title;
+				$new_message = "Project Progress Invoice  : " . $invoice->invoice_id;
 				$client_message = isset($message) ? $message : $new_message;
 
 				$feedback = new ProjectClientFeedback();
@@ -1216,7 +1216,7 @@ class ProjectProgressController extends Controller
 		// $html = view('invoice.templates.template11', 
 		// 		compact('invoice','project', 'settings','client', 'client_name', 'client_email'))->render();
         $dir 	= "uploads/invoices/";
-        $pdf = PDF::loadView('invoice.templates.template11', $data)->setPaper('a4');
+        $pdf = PDF::loadView('invoice.templates.invoice-progress-pdf', $data)->setPaper('a4');
         if (!file_exists($dir)) {
             mkdir($dir, 0755, true);
         }
