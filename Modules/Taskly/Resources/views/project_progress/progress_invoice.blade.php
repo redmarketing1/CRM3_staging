@@ -91,8 +91,8 @@
                                 <div class="col-12">
                                     <div class="final-send-wrapper">
                                         <div class="mt-3">
-                                            <form action="#" id="print" method="post">
-                                                <input type="hidden" name="id" value="{{$invoice->progress_id}}">
+                                            <form action="{{route('progress.invoice.send.client')}}" id="print" method="post">
+                                                <input type="hidden" name="id" value="{{$invoice->id}}">
                                                 <input type="hidden" name="type" value="pdf">
                                                 <input type="hidden" name="subject" value="" id="print-subject">
                                                 <input type="hidden" name="client_email" id="print-client_email" value="">
@@ -106,8 +106,8 @@
                                                     {{__('Send to Client')}}
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <a href="javascript:void(0)" onclick="send_progress('{{$invoice->progress_id}}', 'email')" class="dropdown-item">{{__('Send to Client')}}</a>
-                                                    <a href="javascript:void(0)" onclick="send_progress('{{$invoice->progress_id}}', 'pdf')" class="dropdown-item">{{__('Download')}}</a>
+                                                    <a href="javascript:void(0)" onclick="send_progress('{{$invoice->id}}', 'email')" class="dropdown-item">{{__('Send to Client')}}</a>
+                                                    <a href="javascript:void(0)" onclick="send_progress('{{$invoice->id}}', 'pdf')" class="dropdown-item">{{__('Download')}}</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -133,12 +133,13 @@
                                             <div class="tagContainer"></div>
                                             <div class="tagList" class="d-none"></div>
                                         </div>
+                                        <label class="company-cc"><input type="checkbox" class="form-check-input" name="copy_to_company" value="{{ $settings['company_email'] }}" checked /> {{ __('Send copy to') }} {{ $settings['company_email'] }}</label>
                                     </div>
 
                                     <div class="row mt-3">
                                         <div class="col-10">
                                             <label for="" class="form-label">{{__('Subject')}}</label>
-                                            <input type="text" name="subject" class="form-control" id="subject" value="{estimation.title} - {{ __('CP') }} {construction.street} - {client_name} - #1{{$invoice->progress_id}} - {{ $settings['company_name'] }}">
+                                            <input type="text" name="subject" class="form-control" id="subject" value="{{ __('Invoice') }}-{{ $invoice->invoice_id }}-{{ $client_name }}-{estimation.title}-{{ $invoice->progress_id }}-{{ $settings['company_name'] }}">
                                         </div>
                                         <div class="col-2" style="align-content:center;">
                                             <span class="col-12 lright variable-box">
@@ -190,7 +191,7 @@
 </div>
 @endsection
 @push("scripts")
-{{-- <script type="application/javascript">
+<script type="application/javascript">
     const ccArray = [];
     const bccArray = [];
     function addTag() {
@@ -267,12 +268,12 @@
             id: id,
             email_text: '',
             email_text: $("#email-text").summernote('code'),
-            extra_notes: $("#extra_notes").val(),
-            pdf_top_notes: $("#pdf_top_notes").val(),
+          //  extra_notes: $("#extra_notes").val(),
+          // pdf_top_notes: $("#pdf_top_notes").val(),
             subject: $("#subject").val(),
             client_email: $("#client_email").val(),
             copy_to_company: $("input[name='copy_to_company']").is(':checked'),
-            copy_to_subcontractor: $("input[name='copy_to_subcontractor']").is(':checked'),
+        //    copy_to_subcontractor: $("input[name='copy_to_subcontractor']").is(':checked'),
             cc_email: ccArray,
             bcc_email: bccArray,
             type: type,
@@ -292,7 +293,7 @@
             return false;
         }
         $.ajax({
-            url: "{{route('progress.finalize.send.client')}}",
+            url: "{{route('progress.invoice.send.client')}}",
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify(data),
@@ -337,10 +338,10 @@
             $(this).siblings(".child-row").toggle();
         });
 
-        $("#email-text").summernote("code", `{!! $progressFinalizeEmailTemplate !!}`);
+        $("#email-text").summernote("code", `{!! $progressInvoiceFinalizeEmailTemplate !!}`);
     });
 
     init_tiny_mce('#extra_notes');
     init_tiny_mce('#pdf_top_notes');
-</script> --}}
+</script>
 @endpush
