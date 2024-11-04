@@ -897,6 +897,7 @@ class InvoiceController extends Controller
         //Set your logo
         $company_logo = get_file(sidebar_logo());
         $company_settings = getCompanyAllSetting($invoice->created_by, $invoice->workspace);
+        
         $invoice_logo = isset($company_settings['invoice_logo']) ? $company_settings['invoice_logo'] : '';
         if (isset($invoice_logo) && !empty($invoice_logo)) {
             $img  = get_file($invoice_logo);
@@ -938,7 +939,8 @@ class InvoiceController extends Controller
             $settings['invoice_template'] = isset($company_settings['invoice_template']) ? $company_settings['invoice_template'] : '';
             $settings['invoice_color'] = isset($company_settings['invoice_color']) ? $company_settings['invoice_color'] : '';
             $settings['invoice_qr_display'] = isset($company_settings['invoice_qr_display']) ? $company_settings['invoice_qr_display'] : '';
-
+            $settings['site_currency_symbol_position'] = isset($company_settings['site_currency_symbol_position']) ? $company_settings['site_currency_symbol_position'] : '';
+            $settings['defult_currancy_symbol'] = isset($company_settings['defult_currancy_symbol']) ? $company_settings['defult_currancy_symbol'] : '';
             return view('invoice.templates.' . $invoice_template, compact('invoice', 'commonCustomer','color', 'settings', 'customer', 'img', 'font_color', 'customFields', 'bank_details', 'bank_details_list'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));

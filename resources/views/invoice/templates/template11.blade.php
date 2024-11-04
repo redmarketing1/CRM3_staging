@@ -280,15 +280,17 @@
                         <td>{{$item->quantity}}</td>
                         <td>{{ priceFormat($settings,$item->price)}}</td>
                         <td>
-                            @foreach($item->itemTax as $taxes)
-                                @if(!empty($item->itemTax))
-                                <p>
-                                    <span>{{$taxes['name']}}</span>  <span>({{$taxes['rate']}})</span> <span>{{$taxes['price']}}</span>
-                                </p>
-                                @else
-                                <p>-</p>
-                                @endif
-                            @endforeach
+                            @if(!empty($item->itemTax))
+                                @foreach($item->itemTax as $taxes)
+                                    @if(!empty($item->itemTax))
+                                    <p>
+                                        <span>{{$taxes['name']}}</span>  <span>({{$taxes['rate']}})</span> <span>{{$taxes['price']}}</span>
+                                    </p>
+                                    @else
+                                    <p>-</p>
+                                    @endif
+                                @endforeach
+                            @endif
                         </td>
                         <td>{{($item->discount!=0)? priceFormat($settings,$item->discount):'-'}}</td>
                         <td>{{ priceFormat($settings,$item->price * $item->quantity)}}</td>

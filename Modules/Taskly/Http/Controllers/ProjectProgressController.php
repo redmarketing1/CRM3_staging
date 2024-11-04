@@ -893,7 +893,7 @@ class ProjectProgressController extends Controller
 				'tax' 					=> $quote->tax,
 				'discount' 				=> $quote->discount,
 				'project_estimation_id' => $estimation->id,
-				'invoice_template' 		=> 'template11',
+				'invoice_template' 		=> 'template10',
 				'workspace' 			=> getActiveWorkSpace(),
 				'created_by' 			=> Auth::user()->id,
 			]);

@@ -435,7 +435,7 @@
                         @if ($invoice->invoice_module != 'Fleet')
                             @if ($item->description != null)
                                 <tr class="border-0 itm-description ">
-                                    <td colspan="6">{{ $item->description }} </td>
+                                    <td colspan="6">{!! $item->description !!} </td>
                                 </tr>
                             @endif
                         @endif
@@ -546,14 +546,25 @@
             </table>
             <table class="add-border bank-details" style="margin-top: 30px;">
                 <thead style="background-color: var(--theme-color);color: {{ $font_color }};">
-                    <tr>
-                        <th>{{__('Name')}}</th>
-                        <th>{{ __('Bank') }}</th>
-                        <th>{{ __('Account Number') }}</th>
-                        <th>{{ __('Current Balance') }}</th>
-                        <th>{{ __('Contact Number') }}</th>
-                        <th>{{ __('Bank Address') }}</th>
-                    </tr>
+                    @if (isset($bank_details_list) && count($bank_details_list) > 0)
+                        <tr>
+                            <th>{{__('Name')}}</th>
+                            <th>{{ __('Bank') }}</th>
+                            <th>{{ __('Account Number') }}</th>
+                            <th>{{ __('Current Balance') }}</th>
+                            <th>{{ __('Contact Number') }}</th>
+                            <th>{{ __('Bank Address') }}</th>
+                        </tr>
+                    @else
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    @endif
                 </thead>
                 <tbody>
                     @if (isset($bank_details_list) && count($bank_details_list) > 0)
