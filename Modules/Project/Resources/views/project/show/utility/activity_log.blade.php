@@ -69,7 +69,7 @@
 
                             $usedTypes = $project->activities->pluck('log_type')->unique();
                         @endphp
-
+                        {{-- 
                         @foreach ($usedTypes as $logType)
                             @if (isset($activityTypes[$logType->value]))
                                 @php $config = $activityTypes[$logType->value]; @endphp
@@ -80,7 +80,7 @@
                                     <span>{{ $config['label'] }}</span>
                                 </button>
                             @endif
-                        @endforeach
+                        @endforeach --}}
                     </div>
                 </div>
                 <div class="d-inline-flex">
