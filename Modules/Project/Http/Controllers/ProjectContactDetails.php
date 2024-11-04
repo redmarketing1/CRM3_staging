@@ -3,17 +3,12 @@
 namespace Modules\Project\Http\Controllers;
 
 
-use App\Models\Content;
 use App\Models\Country;
 use Illuminate\Http\Request;
-use Google\Service\Blogger\Post;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\Taskly\Entities\Project;
-use Illuminate\Support\Facades\Storage;
-use Modules\Taskly\Entities\ActivityLog;
 use Modules\Taskly\Entities\EstimateQuote;
-use Modules\Taskly\Entities\ProjectComment;
 use Modules\Taskly\Entities\ProjectEstimation;
 
 class ProjectContactDetails extends Controller

@@ -1881,21 +1881,118 @@ $('.range-input').each(function () {
 });
 
 function GlobalSearchService() {
-    $(document).on('input', '#search-pro .input-s', function () {
-        const keywords = $(this).val().trim();
-        if (keywords.length > 3) {
-            search(keywords);
-        }
-    });
-    function search(keywords) {
-        $.ajax({
-            url: route('GlobalSearchService.index'),
-            type: "GET",
-            data: { keywords: keywords },
-            success: function (response) {
-                $('#search-results').html(response.html);
+    const config = {
+        searchInput: '#search-pro .search-input',
+        searchResults: '#search-results',
+        searchBox: '.search-input-box',
+        minLength: 2,
+        delay: 300
+    };
+
+    let lastRequest = null;
+    let searchTimeout = null;
+
+    function debounce(func, wait) {
+        return function executedFunction(...args) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    function initEvents() {
+        $(document).on('input', config.searchInput,
+            debounce(handleInput, config.delay)
+        );
+
+        $(document).on('blur', config.searchInput, handleBlur);
+
+        $(document).on('click', event => {
+            if (!$(event.target).closest('#search-pro').length) {
+                clearSearch();
             }
         });
+
+        $(document).on('keyup', event => {
+            if (event.key === 'Escape') clearSearch();
+        });
     }
+
+    function handleInput(event) {
+        const keywords = $(event.target).val().trim();
+
+        if (keywords.length >= config.minLength) {
+            performSearch(keywords);
+        } else if (keywords.length === 0) {
+            clearSearch();
+        }
+    }
+
+    function handleBlur() {
+        setTimeout(() => {
+            if (!$(config.searchResults + ':hover').length) {
+                clearSearch();
+            }
+        }, 200);
+    }
+
+    function performSearch(keywords) {
+        showLoading();
+
+        if (lastRequest) {
+            lastRequest.abort();
+        }
+
+        lastRequest = $.ajax({
+            url: route('GlobalSearchService.index'),
+            type: 'GET',
+            data: { keywords }
+        })
+            .done(handleSuccess)
+            .fail(handleError)
+            .always(hideLoading);
+    }
+
+    function handleSuccess(response) {
+        if (!response?.html) {
+            return $(config.searchResults)
+                .html('<div class="no-results">No results found</div>')
+                .show();
+        }
+
+        $(config.searchResults).html(response.html).show();
+        $(config.searchBox)
+            .addClass('has-results')
+            .find(config.searchInput);
+        $(config.searchInput).addClass('add-width');
+    }
+
+    function handleError(error) {
+        if (error.statusText === 'abort') return;
+
+        $(config.searchResults)
+            .html('<div class="search-error">An error occurred. Please try again.</div>')
+            .show();
+    }
+
+    function showLoading() {
+        $(config.searchBox).addClass('is-loading');
+        $(config.searchResults)
+            .html('<div class="search-loading">Searching...</div>')
+            .show();
+    }
+
+    function hideLoading() {
+        $(config.searchBox).removeClass('is-loading');
+    }
+
+    function clearSearch() {
+        $(config.searchInput).val('');
+        $(config.searchResults).html('').hide();
+        $(config.searchBox).removeClass('has-results');
+        $(config.searchInput).removeClass('add-width');
+    }
+
+    initEvents();
 }
+
 GlobalSearchService();

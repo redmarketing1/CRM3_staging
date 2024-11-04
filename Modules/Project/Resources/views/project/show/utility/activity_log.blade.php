@@ -69,10 +69,10 @@
 
                             $usedTypes = $project->activities->pluck('log_type')->unique();
                         @endphp
-
+                        {{-- 
                         @foreach ($usedTypes as $logType)
-                            @if (isset($activityTypes[$logType]))
-                                @php $config = $activityTypes[$logType]; @endphp
+                            @if (isset($activityTypes[$logType->value]))
+                                @php $config = $activityTypes[$logType->value]; @endphp
                                 <button @click="toggleFilter('{{ $config['type'] }}')"
                                     class="filter-btn status-{{ $config['type'] }}"
                                     :class="{ 'active': isActive('{{ $config['type'] }}') }">
@@ -80,7 +80,7 @@
                                     <span>{{ $config['label'] }}</span>
                                 </button>
                             @endif
-                        @endforeach
+                        @endforeach --}}
                     </div>
                 </div>
                 <div class="d-inline-flex">
@@ -106,87 +106,15 @@
         <div class="card-body p-3">
             <div class="activity-grid">
                 @foreach ($project->activities as $activity)
-                    @php
-                        $friendlyName = match ($activity->log_type) {
-                            'Upload File' => __('File'),
-                            'Create Milestone' => __('Milestone'),
-                            'Create Task' => __('Task'),
-                            'Create Bug' => __('Bug'),
-                            'Move' => __('Item'),
-                            'Move Bug' => __('Bug status'),
-                            'Create Invoice' => __('Invoice'),
-                            'Invite User' => __('User'),
-                            'Share with Client' => __('Shared'),
-                            'Create Timesheet' => __('Time'),
-                            'Comment Create' => __('Comment'),
-                            'Feedback Create' => __('Mail'),
-                            'Status Changed' => __('Status'),
-                            default => $activity->log_type,
-                        };
-
-                        $type = strtolower(str_replace(['Create ', ' ', 'Upload '], '', $activity->log_type));
-                    @endphp
-                    <div class="activity-item card" x-show="isActive('{{ $type }}')">
+                    <div class="activity-item card">
                         <div class="card-header d-flex align-items-center">
-                            <span
-                                class="timeline-step border 
-                                @if ($activity->log_type == 'Upload File') status-file
-                                @elseif($activity->log_type == 'Create Milestone')
-                                    status-milestone
-                                @elseif($activity->log_type == 'Create Task')
-                                    status-task
-                                @elseif($activity->log_type == 'Create Bug')
-                                    status-bug
-                                @elseif($activity->log_type == 'Move' || $activity->log_type == 'Move Bug')
-                                    status-move
-                                @elseif($activity->log_type == 'Create Invoice')
-                                    status-invoice
-                                @elseif($activity->log_type == 'Invite User')
-                                    status-user
-                                @elseif($activity->log_type == 'Share with Client')
-                                    status-share
-                                @elseif($activity->log_type == 'Create Timesheet')
-                                    status-time
-                                @elseif($activity->log_type == 'Comment Create')
-                                    status-comment
-                                @elseif($activity->log_type == 'Feedback Create')
-                                    status-feedback
-                                @elseif($activity->log_type == 'Status Changed')
-                                    status-status @endif">
-                                @if ($activity->log_type == 'Upload File')
-                                    <i class="fas fa-file"></i>
-                                @elseif($activity->log_type == 'Create Milestone')
-                                    <i class="fas fa-cubes"></i>
-                                @elseif($activity->log_type == 'Create Task')
-                                    <i class="fas fa-tasks"></i>
-                                @elseif($activity->log_type == 'Create Bug')
-                                    <i class="fas fa-bug"></i>
-                                @elseif($activity->log_type == 'Move' || $activity->log_type == 'Move Bug')
-                                    <i class="fas fa-align-justify"></i>
-                                @elseif($activity->log_type == 'Create Invoice')
-                                    <i class="fas fa-file-invoice"></i>
-                                @elseif($activity->log_type == 'Invite User')
-                                    <i class="fas fa-plus"></i>
-                                @elseif($activity->log_type == 'Share with Client')
-                                    <i class="fas fa-share"></i>
-                                @elseif($activity->log_type == 'Create Timesheet')
-                                    <i class="fas fa-clock-o"></i>
-                                @elseif($activity->log_type == 'Comment Create')
-                                    <i class="fas fa-comments"></i>
-                                @elseif($activity->log_type == 'Feedback Create')
-                                    <i class="fas fa-message"></i>
-                                @elseif($activity->log_type == 'Status Changed')
-                                    <i class="fas fa-exchange-alt"></i>
-                                @elseif($activity->log_type == 'Name Changed')
-                                    <i class="fas fa-pen-to-square"></i>
-                                @elseif($activity->log_type == 'End Date Changed')
-                                    <i class="fas fa-th"></i>
-                                @elseif($activity->log_type == 'Start Date Changed')
-                                    <i class="fas fa-th"></i>
-                                @endif
+                            <span class="timeline-step border {{ $activity->getStatusClass() }}">
+                                <i class="{{ $activity->getStatusIcon() }}"></i>
                             </span>
-                            <span class="fw-bold">{{ $friendlyName }}</span>
-                            <span>{{ $activity->created_at->diffForHumans() }}</span>
+                            <span class="fw-bold">{{ $activity->log_type }}</span>
+                            <span title="{{ $activity->created_at }}">
+                                {{ $activity->created_at->diffForHumans() }}
+                            </span>
                         </div>
                         <div class="activity-desc mb-2 card-body">
                             {!! $activity->getRemark() !!}

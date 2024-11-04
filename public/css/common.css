@@ -8618,6 +8618,7 @@ thead th {
     max-height: 300px;
     overflow: hidden;
 }
+
 .description-card .card-body:hover {
     overflow: auto;
 }
@@ -8658,6 +8659,7 @@ thead th {
     max-height: 780px;
     overflow: hidden;
 }
+
 #activity-card .card-body:hover {
     overflow: auto;
 }
@@ -8676,6 +8678,7 @@ thead th {
     background: #FFF;
     overflow: hidden;
 }
+
 #activity-card .card-body .card-body:hover {
     overflow: auto;
 }
@@ -8774,21 +8777,32 @@ span.timeline-step {
 .filter-btn i {
     font-size: 0.875rem;
 }
+
 #search-pro input.input-s {
     opacity: 1 !important;
     height: auto;
 }
+
 #search-pro .modal-body {
     background: #f5f5f5;
 }
+
 #search-results {
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: 20px;
+    position: absolute;
+    background: #fff;
+    width: 100%;
+    max-width: fit-content;
+    margin: 0;
+    padding: 10px 10px;
+    left: 8px;
+    border-top: 0 !important;
+    border: 1px solid rgba(206, 206, 206, 0.2);
 }
+
 #search-results .search-result-item {
     margin-bottom: 10px;
 }
+
 #search-results .search-result-item .card {
     margin: 0 !important;
     border: none;

@@ -7,7 +7,7 @@ use Modules\Lead\Entities\Label;
 use Modules\Taskly\Entities\Task;
 use Illuminate\Support\Facades\Auth;
 use Modules\Taskly\Entities\Timesheet;
-use Modules\Project\Entities\ActivityLog;
+use Modules\Project\Entities\ProjectActivityLogs;
 use Modules\Taskly\Entities\ProjectFile;
 use Modules\Project\Entities\ProjectDelay;
 use Modules\Taskly\Entities\EstimateQuote;
@@ -160,7 +160,7 @@ trait Relationship
 
     public function activities()
     {
-        return $this->hasMany(ActivityLog::class, 'project_id', 'id')
+        return $this->hasMany(ProjectActivityLogs::class, 'project_id', 'id')
             ->whereNot('log_type', 'Upload File')->latest();
     }
 
