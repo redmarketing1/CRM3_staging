@@ -66,13 +66,12 @@ class TrackProject
 
         ProjectActivityLogs::create([
             'user_id'    => $user->id,
-            'user_type'  => get_class($user),
             'project_id' => $this->project->id,
             'log_type'   => $logType,
-            'remark'     => json_encode([
+            'remark'     => [
                 $oldKey => $oldValue,
                 $newKey => $newValue,
-            ]),
+            ],
         ]);
     }
 }

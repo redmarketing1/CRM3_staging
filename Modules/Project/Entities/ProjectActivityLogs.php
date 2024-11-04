@@ -12,7 +12,6 @@ class ProjectActivityLogs extends Model
 
     protected $fillable = [
         'user_id',
-        'user_type',
         'project_id',
         'log_type',
         'remark',
@@ -20,11 +19,12 @@ class ProjectActivityLogs extends Model
 
     protected $casts = [
         'log_type' => LogType::class,
+        'remark'   => 'json',
     ];
 
     public function getRemark()
     {
-        $remark = json_decode($this->remark, true);
+        $remark = $this->remark;
 
         return match ($this->log_type) {
             LogType::UPLOAD_FILE        => $this->userActionRemark('Upload new file', $remark['file_name']),
@@ -44,5 +44,12 @@ class ProjectActivityLogs extends Model
             LogType::END_DATE_CHANGED   => $this->endDate($remark),
             default                     => $this->remark,
         };
+    }
+
+    public function getLogTypesAttribute()
+    {
+        return $this->pluck('log_type')
+            ->unique()
+            ->map(fn ($type) => $type->details());
     }
 }

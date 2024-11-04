@@ -24,7 +24,8 @@ trait ActivityTemplate
             LogType::CREATE_TIMESHEET        => 'status-time',
             LogType::COMMENT_CREATE          => 'status-comment',
             LogType::FEEDBACK_CREATE         => 'status-feedback',
-            LogType::STATUS_CHANGED          => 'status-status',
+            LogType::STATUS_CHANGED          => 'status-changed',
+            LogType::NAME_CHANGED            => 'name-changed',
             default                          => 'status-default',
         };
     }

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Modules\Project\Entities\Project;
 use Modules\Project\Entities\ProjectFile;
-use Modules\Taskly\Entities\ActivityLog;
 
 class ProjectFilesController extends Controller
 {

@@ -70,9 +70,9 @@
                             $usedTypes = $project->activities->pluck('log_type')->unique();
                         @endphp
 
-                        {{-- @foreach ($usedTypes as $logType)
-                            @if (isset($activityTypes[$logType]))
-                                @php $config = $activityTypes[$logType]; @endphp
+                        @foreach ($usedTypes as $logType)
+                            @if (isset($activityTypes[$logType->value]))
+                                @php $config = $activityTypes[$logType->value]; @endphp
                                 <button @click="toggleFilter('{{ $config['type'] }}')"
                                     class="filter-btn status-{{ $config['type'] }}"
                                     :class="{ 'active': isActive('{{ $config['type'] }}') }">
@@ -80,7 +80,7 @@
                                     <span>{{ $config['label'] }}</span>
                                 </button>
                             @endif
-                        @endforeach --}}
+                        @endforeach
                     </div>
                 </div>
                 <div class="d-inline-flex">
