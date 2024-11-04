@@ -10,47 +10,6 @@ use Modules\Taskly\Entities\ProjectClientFeedback;
 
 trait ActivityTemplate
 {
-    public function getStatusClass() : string
-    {
-        return match ($this->log_type) {
-            LogType::UPLOAD_FILE             => 'status-file',
-            LogType::CREATE_MILESTONE        => 'status-milestone',
-            LogType::CREATE_TASK             => 'status-task',
-            LogType::CREATE_BUG              => 'status-bug',
-            LogType::MOVE, LogType::MOVE_BUG => 'status-move',
-            LogType::CREATE_INVOICE          => 'status-invoice',
-            LogType::INVITE_USER             => 'status-user',
-            LogType::SHARE_WITH_CLIENT       => 'status-share',
-            LogType::CREATE_TIMESHEET        => 'status-time',
-            LogType::COMMENT_CREATE          => 'status-comment',
-            LogType::FEEDBACK_CREATE         => 'status-feedback',
-            LogType::STATUS_CHANGED          => 'status-changed',
-            LogType::NAME_CHANGED            => 'name-changed',
-            default                          => 'status-default',
-        };
-    }
-
-    public function getStatusIcon() : string
-    {
-        return match ($this->log_type) {
-            LogType::UPLOAD_FILE                                   => 'fas fa-file',
-            LogType::CREATE_MILESTONE                              => 'fas fa-cubes',
-            LogType::CREATE_TASK                                   => 'fas fa-tasks',
-            LogType::CREATE_BUG                                    => 'fas fa-bug',
-            LogType::MOVE, LogType::MOVE_BUG                       => 'fas fa-align-justify',
-            LogType::CREATE_INVOICE                                => 'fas fa-file-invoice',
-            LogType::INVITE_USER                                   => 'fas fa-plus',
-            LogType::SHARE_WITH_CLIENT                             => 'fas fa-share',
-            LogType::CREATE_TIMESHEET                              => 'fas fa-clock-o',
-            LogType::COMMENT_CREATE                                => 'fas fa-comments',
-            LogType::FEEDBACK_CREATE                               => 'fas fa-message',
-            LogType::STATUS_CHANGED                                => 'fas fa-exchange-alt',
-            LogType::NAME_CHANGED                                  => 'fas fa-pen-to-square',
-            LogType::END_DATE_CHANGED, LogType::START_DATE_CHANGED => 'fas fa-th',
-            default                                                => 'fas fa-question',
-        };
-    }
-
     /**
      * Format user actions with optional title.
      */
@@ -100,7 +59,6 @@ trait ActivityTemplate
         $name           = e($projectComment->commentUser->name);
 
         $html = '';
-        $html .= $projectComment->comment;
 
         if ($projectComment->file) {
             $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
@@ -124,6 +82,8 @@ trait ActivityTemplate
             }
         }
 
+        $html .= $projectComment->comment;
+
         return $html;
     }
 
@@ -137,9 +97,6 @@ trait ActivityTemplate
         $name                  = e($projectClientFeedback->feedbackUser->name);
 
         $html = '';
-        // Don't escape feedback content if you want HTML to render
-        // $html = '<p>Feedback was created by <b class="d-inline text-secondary text-sm">' . $name . '</b></p>';
-        $html .= $projectClientFeedback->feedback;  // Allow HTML content
 
         if ($projectClientFeedback->file) {
             $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
@@ -161,6 +118,10 @@ trait ActivityTemplate
 
 
         }
+
+        // Don't escape feedback content if you want HTML to render
+        // $html = '<p>Feedback was created by <b class="d-inline text-secondary text-sm">' . $name . '</b></p>';
+        $html .= $projectClientFeedback->feedback;  // Allow HTML content
 
         return $html;
     }

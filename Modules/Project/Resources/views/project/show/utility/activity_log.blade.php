@@ -1,24 +1,25 @@
-<div class="col-md-12" id="activity-card" x-data="{
-    activeFilters: new Set(['file', 'milestone', 'task', 'bug', 'move', 'invoice', 'user', 'share', 'time', 'comment', 'feedback', 'mail', 'status']),
-    toggleFilter(type) {
-        if (this.activeFilters.has(type)) {
-            this.activeFilters.delete(type);
-        } else {
-            this.activeFilters.add(type);
-        }
-    },
-    isActive(type) {
-        return this.activeFilters.has(type);
-    },
-    getActivityType(logType) {
-        return logType.toLowerCase().replace('create ', '').replace('upload ', '').replace(' ', '_');
-    }
-}">
+<div class="col-md-12" id="activity-card">
     <div class="card deta-card table-card">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="titles">
                     <h5 class="mb-0">{{ __('Activity') }}</h5>
+                </div>
+                <div class="header-filter">
+                    <div class="status-filter">
+                        @php
+                            $types = $project->activities
+                                ->unique('LogTypes.type')
+                                ->map(fn($activities) => $activities->LogTypes);
+                        @endphp
+
+                        @foreach ($types as $log)
+                            <button class="filter-btn status-{{ $log['type'] }}">
+                                <i class="fas {{ $log['icon'] }}"></i>
+                                <span>{{ $log['label'] }}</span>
+                            </button>
+                        @endforeach
+                    </div>
                 </div>
                 <div class="d-inline-flex">
                     <button class="text-muted bg-white d-sm-flex align-items-center py-0">
@@ -43,13 +44,13 @@
         <div class="card-body p-3">
             <div class="activity-grid">
                 @foreach ($project->activities as $activity)
-                    <div class="activity-item card">
+                    <div class="activity-item card {{ $activity->LogTypes['type'] }}">
                         <div class="card-header d-flex align-items-center">
-                            <span class="timeline-step border {{ $activity->getStatusClass() }}">
-                                <i class="{{ $activity->getStatusIcon() }}"></i>
+                            <span class="timeline-step border {{ $activity->LogTypes['type'] }}">
+                                <i class="{{ $activity->LogTypes['icon'] }}"></i>
                             </span>
-                            <span class="fw-bold">{{ $activity->log_type }}</span>
-                            <span title="{{ $activity->created_at }}">
+                            <span class="fw-bold">{{ $activity->LogTypes['label'] }}</span>
+                            <span class="time" title="{{ $activity->created_at }}">
                                 {{ $activity->created_at->diffForHumans() }}
                             </span>
                         </div>
