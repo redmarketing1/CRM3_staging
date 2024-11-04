@@ -15,12 +15,14 @@ enum LogType: string
     case SHARE_WITH_CLIENT  = 'Share with Client';
     case CREATE_TIMESHEET   = 'Create Timesheet';
     case COMMENT_CREATE     = 'Comment Create';
+    case COMMENT_UPDATE     = 'Comment Update';
     case FEEDBACK_CREATE    = 'Feedback Create';
     case STATUS_CHANGED     = 'Status Changed';
     case NAME_CHANGED       = 'Name Changed';
     case Date_CHANGED       = 'Date Changed';
     case END_DATE_CHANGED   = 'End Date Changed';
     case START_DATE_CHANGED = 'Start Date Changed';
+    case CREATE_NOTES       = 'Create Notes';
 
     /**
      * Method to provide additional properties for each case

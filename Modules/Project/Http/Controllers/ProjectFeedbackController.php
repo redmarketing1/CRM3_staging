@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Modules\Taskly\Entities\Project;
 use Modules\Taskly\Entities\ActivityLog;
 use Illuminate\Contracts\Support\Renderable;
+use Modules\Project\Entities\ProjectActivityLogs;
 use Modules\Taskly\Entities\ProjectClientFeedback;
 
 class ProjectFeedbackController extends Controller
@@ -73,12 +74,14 @@ class ProjectFeedbackController extends Controller
         $feedback->parent      = $request->input('parent', null);
         $feedback->save();
 
-        ActivityLog::create([
+        ProjectActivityLogs::create([
             'user_id'    => creatorId(),
-            'user_type'  => get_class(auth()->user()),
             'project_id' => $project->id,
             'log_type'   => 'Feedback updated',
-            'remark'     => json_encode(['title' => 'Project feedback post updated.', 'feedback_id' => $feedback->id]),
+            'remark'     => [
+                'title'       => 'Project feedback post updated.',
+                'feedback_id' => $feedback->id,
+            ],
         ]);
 
         return redirect()
@@ -98,15 +101,15 @@ class ProjectFeedbackController extends Controller
             $feedback->parent      = $request->input('parent', null);
             $feedback->save();
 
-            ActivityLog::create(
-                [
-                    'user_id'    => creatorId(),
-                    'user_type'  => get_class(auth()->user()),
-                    'project_id' => $project->id,
-                    'log_type'   => 'Feedback Create',
-                    'remark'     => json_encode(['title' => 'Project feedback created', 'feedback_id' => $feedback->id]),
+            ProjectActivityLogs::create([
+                'user_id'    => creatorId(),
+                'project_id' => $project->id,
+                'log_type'   => 'Feedback Create',
+                'remark'     => [
+                    'title'       => 'Project feedback created.',
+                    'feedback_id' => $feedback->id,
                 ],
-            );
+            ]);
 
             return redirect()
                 ->back()

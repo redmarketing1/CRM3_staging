@@ -11,6 +11,7 @@ use Modules\Taskly\Entities\Project;
 use Illuminate\Support\Facades\Storage;
 use Modules\Taskly\Entities\ActivityLog;
 use Modules\Taskly\Entities\ProjectComment;
+use Modules\Project\Entities\ProjectActivityLogs;
 
 class ProjectCommentController extends Controller
 {
@@ -89,12 +90,14 @@ class ProjectCommentController extends Controller
         $comment->parent     = $request->input('parent', null);
         $comment->save();
 
-        ActivityLog::create([
+        ProjectActivityLogs::create([
             'user_id'    => creatorId(),
-            'user_type'  => get_class(auth()->user()),
             'project_id' => $project->id,
-            'log_type'   => 'Comment updated',
-            'remark'     => json_encode(['title' => 'Project comment post updated.', 'project_comment_id' => $request->project_comment_id]),
+            'log_type'   => 'Comment Update',
+            'remark'     => [
+                'title'              => 'Project comment post updated.',
+                'project_comment_id' => $request->project_comment_id,
+            ],
         ]);
 
         return redirect()->back()->with('success', __('Comment updated successfully.'));
@@ -111,12 +114,14 @@ class ProjectCommentController extends Controller
             $comment->parent     = $request->input('parent', null);
             $comment->save();
 
-            ActivityLog::create([
+            ProjectActivityLogs::create([
                 'user_id'    => creatorId(),
-                'user_type'  => get_class(auth()->user()),
                 'project_id' => $project->id,
                 'log_type'   => 'Comment Create',
-                'remark'     => json_encode(['title' => 'Project comment posted.', 'project_comment_id' => $comment->id]),
+                'remark'     => [
+                    'title'              => 'Project comment created.',
+                    'project_comment_id' => $request->project_comment_id,
+                ],
             ]);
 
             return redirect()
