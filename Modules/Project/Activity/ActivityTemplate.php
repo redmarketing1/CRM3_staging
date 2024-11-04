@@ -1,71 +1,92 @@
 <?php
 
-namespace Modules\Project\Entities;
+namespace Modules\Project\Activity;
 
 use App\Models\User;
 use Modules\Lead\Entities\Label;
-use Illuminate\Database\Eloquent\Model;
+use Modules\Project\Activity\LogType;
 use Modules\Taskly\Entities\ProjectComment;
 use Modules\Taskly\Entities\ProjectClientFeedback;
 
-class ActivityLog extends Model
+trait ActivityTemplate
 {
-    protected $fillable = [
-        'user_id',
-        'user_type',
-        'project_id',
-        'log_type',
-        'remark',
-    ];
-
-    public static $user_name;
-
-    public function getRemark()
+    public function getStatusClass() : string
     {
-        $remark = json_decode($this->remark, true);
-        if (is_array($remark)) {
-            if ($this->user_name != null) {
-                $user            = $this->user;
-                $this->user_name = $user ? $user->name : '';
-            }
+        return match ($this->log_type) {
+            LogType::UPLOAD_FILE             => 'status-file',
+            LogType::CREATE_MILESTONE        => 'status-milestone',
+            LogType::CREATE_TASK             => 'status-task',
+            LogType::CREATE_BUG              => 'status-bug',
+            LogType::MOVE, LogType::MOVE_BUG => 'status-move',
+            LogType::CREATE_INVOICE          => 'status-invoice',
+            LogType::INVITE_USER             => 'status-user',
+            LogType::SHARE_WITH_CLIENT       => 'status-share',
+            LogType::CREATE_TIMESHEET        => 'status-time',
+            LogType::COMMENT_CREATE          => 'status-comment',
+            LogType::FEEDBACK_CREATE         => 'status-feedback',
+            LogType::STATUS_CHANGED          => 'status-status',
+            default                          => 'status-default',
+        };
+    }
 
-            switch ($this->log_type) {
-                case 'Upload File':
-                    return $this->user_name . ' ' . __('Upload new file') . ' <b>' . $remark['file_name'] . '</b>';
-                case 'Create Timesheet':
-                    return $this->user_name . " " . __('Create new Timesheet');
-                case 'Create Bug':
-                    return $this->user_name . ' ' . __('Create new Bug') . " <b>" . $remark['title'] . "</b>";
-                case 'Move Bug':
-                    return $this->user_name . " " . __('Move Bug') . " <b>" . $remark['title'] . "</b> " . __('from') . " " . __(ucwords($remark['old_status'])) . " " . __('to') . " " . __(ucwords($remark['new_status']));
-                case 'Invite User':
-                    $inviteUser = User::find($remark['user_id']);
-                    return $this->user_name . ' ' . __('Invite new User') . ' <b>' . ($inviteUser ? $inviteUser->name : '') . '</b>';
-                case 'Share with Client':
-                    $inviteClient = User::find($remark['client_id']);
-                    return $this->user_name . ' ' . __('Share Project with Client') . ' <b>' . ($inviteClient ? $inviteClient->name : '') . '</b>';
-                case 'Create Task':
-                    return $this->user_name . ' ' . __('Create new Task') . " <b>" . $remark['title'] . "</b>";
-                case 'Move':
-                    return $this->user_name . " " . __('Move Task') . " <b>" . $remark['title'] . "</b> " . __('from') . " " . __(ucwords($remark['old_status'])) . " " . __('to') . " " . __(ucwords($remark['new_status']));
-                case 'Create Milestone':
-                    return $this->user_name . " " . __('Create new Milestone') . " <b>" . $remark['title'] . "</b>";
-                case 'Feedback Create':
-                    return $this->feedback($remark['feedback_id']);
-                case 'Comment Create':
-                    return $this->comment($remark['project_comment_id']);
-                case 'Status Changed':
-                    return $this->status($remark);
-                case 'Name Changed':
-                    return $this->name($remark);
-                case 'Start Date Changed':
-                    return $this->startDate($remark);
-                case 'End Date Changed':
-                    return $this->endDate($remark);
-            }
-        } else {
-            return $this->remark;
-        }
+    public function getStatusIcon() : string
+    {
+        return match ($this->log_type) {
+            LogType::UPLOAD_FILE                                   => 'fas fa-file',
+            LogType::CREATE_MILESTONE                              => 'fas fa-cubes',
+            LogType::CREATE_TASK                                   => 'fas fa-tasks',
+            LogType::CREATE_BUG                                    => 'fas fa-bug',
+            LogType::MOVE, LogType::MOVE_BUG                       => 'fas fa-align-justify',
+            LogType::CREATE_INVOICE                                => 'fas fa-file-invoice',
+            LogType::INVITE_USER                                   => 'fas fa-plus',
+            LogType::SHARE_WITH_CLIENT                             => 'fas fa-share',
+            LogType::CREATE_TIMESHEET                              => 'fas fa-clock-o',
+            LogType::COMMENT_CREATE                                => 'fas fa-comments',
+            LogType::FEEDBACK_CREATE                               => 'fas fa-message',
+            LogType::STATUS_CHANGED                                => 'fas fa-exchange-alt',
+            LogType::NAME_CHANGED                                  => 'fas fa-pen-to-square',
+            LogType::END_DATE_CHANGED, LogType::START_DATE_CHANGED => 'fas fa-th',
+            default                                                => 'fas fa-question',
+        };
+    }
+
+    /**
+     * Format user actions with optional title.
+     */
+    protected function userActionRemark(string $action, string $title = '') : string
+    {
+        return __($action) . ($title ? " <b>{$title}</b>" : '');
+    }
+
+    /**
+     * Format move actions with title, old, and new statuses.
+     */
+    protected function moveRemark(string $itemType, array $remarkData) : string
+    {
+        return __("Move {$itemType}") .
+            " <b>{$remarkData['title']}</b> " . __('from') .
+            " " . __(ucwords($remarkData['old_status'])) .
+            " " . __('to') . " " . __(ucwords($remarkData['new_status']));
+    }
+
+    /**
+     * Format invite user action.
+     */
+    protected function inviteUserRemark(int $userId) : string
+    {
+        $inviteUser = User::find($userId);
+        return __('Invite new User') .
+            ' <b>' . ($inviteUser ? $inviteUser->name : __('Unknown')) . '</b>';
+    }
+
+    /**
+     * Format share with client action.
+     */
+    protected function shareWithClientRemark(int $clientId) : string
+    {
+        $inviteClient = User::find($clientId);
+        return __('Share Project with Client') .
+            ' <b>' . ($inviteClient ? $inviteClient->name : __('Unknown')) . '</b>';
     }
 
     protected function comment($commentID)

@@ -3,7 +3,7 @@
 namespace Modules\Project\Activity;
 
 use Modules\Project\Entities\Project;
-use Modules\Project\Entities\ActivityLog;
+use Modules\Project\Entities\ProjectActivityLogs;
 
 class TrackProject
 {
@@ -64,7 +64,7 @@ class TrackProject
         $oldValue = $this->project->getOriginal($field);
         $newValue = $this->project->$field;
 
-        ActivityLog::create([
+        ProjectActivityLogs::create([
             'user_id'    => $user->id,
             'user_type'  => get_class($user),
             'project_id' => $this->project->id,
