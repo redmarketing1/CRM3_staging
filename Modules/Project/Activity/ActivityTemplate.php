@@ -90,8 +90,12 @@ trait ActivityTemplate
             ' <b>' . ($inviteClient ? $inviteClient->name : __('Unknown')) . '</b>';
     }
 
-    protected function comment($commentID)
+    protected function comment($remark)
     {
+        if (empty($remark['project_comment_id']))
+            return;
+
+        $commentID      = $remark['project_comment_id'];
         $projectComment = ProjectComment::with('commentUser')->find($commentID);
         $name           = e($projectComment->commentUser->name);
 
@@ -123,8 +127,12 @@ trait ActivityTemplate
         return $html;
     }
 
-    protected function feedback($feedbackID)
+    protected function feedback($remark)
     {
+        if (empty($remark['feedback_id']))
+            return;
+
+        $feedbackID            = $remark['feedback_id'];
         $projectClientFeedback = ProjectClientFeedback::with('feedbackUser')->find($feedbackID);
         $name                  = e($projectClientFeedback->feedbackUser->name);
 
