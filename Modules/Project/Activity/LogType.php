@@ -33,72 +33,72 @@ enum LogType: string
         return match ($this) {
             self::UPLOAD_FILE       => [
                 'type'        => 'file',
-                'icon'        => 'fa-file',
+                'icon'        => 'fa fa-file',
                 'label'       => __('File'),
             ],
             self::CREATE_MILESTONE  => [
                 'type'   => 'milestone',
-                'icon'   => 'fa-cubes',
+                'icon'   => 'fa fa-cubes',
                 'label'  => __('Milestone'),
             ],
             self::CREATE_TASK       => [
                 'type'        => 'task',
-                'icon'        => 'fa-tasks',
+                'icon'        => 'fa fa-tasks',
                 'label'       => __('Task'),
             ],
             self::CREATE_BUG        => [
                 'type'         => 'bug',
-                'icon'         => 'fa-bug',
+                'icon'         => 'fa fa-bug',
                 'label'        => __('Bug'),
             ],
             self::MOVE              => [
                 'type'               => 'move',
-                'icon'               => 'fa-align-justify',
+                'icon'               => 'fa fa-align-justify',
                 'label'              => __('Status'),
             ],
             self::MOVE_BUG          => [
                 'type'           => 'move',
-                'icon'           => 'fa-align-justify',
+                'icon'           => 'fa fa-align-justify',
                 'label'          => __('Bug status'),
             ],
             self::CREATE_INVOICE    => [
                 'type'     => 'invoice',
-                'icon'     => 'fa-file-invoice',
+                'icon'     => 'fa fa-file-invoice',
                 'label'    => __('Invoice'),
             ],
             self::INVITE_USER       => [
                 'type'        => 'user',
-                'icon'        => 'fa-plus',
+                'icon'        => 'fa fa-plus',
                 'label'       => __('User'),
             ],
             self::SHARE_WITH_CLIENT => [
                 'type'  => 'share',
-                'icon'  => 'fa-share',
+                'icon'  => 'fa fa-share',
                 'label' => __('Shared'),
             ],
             self::CREATE_TIMESHEET  => [
                 'type'   => 'time',
-                'icon'   => 'fa-clock-o',
+                'icon'   => 'fa fa-clock-o',
                 'label'  => __('Time'),
             ],
             self::COMMENT_CREATE    => [
                 'type'     => 'comment',
-                'icon'     => 'fa-comments',
+                'icon'     => 'fa fa-comments',
                 'label'    => __('Comment'),
             ],
             self::FEEDBACK_CREATE   => [
                 'type'    => 'feedback',
-                'icon'    => 'fa-message',
+                'icon'    => 'fa fa-message',
                 'label'   => __('Mail'),
             ],
             self::STATUS_CHANGED    => [
                 'type'     => 'status',
-                'icon'     => 'fa-exchange-alt',
+                'icon'     => 'fa fa-exchange-alt',
                 'label'    => __('Status Changed'),
             ],
             default                 => [
                 'type'                  => 'status',
-                'icon'                  => 'fa-exchange-alt',
+                'icon'                  => 'fa fa-exchange-alt',
                 'label'                 => __('Status Changed'),
             ],
         };

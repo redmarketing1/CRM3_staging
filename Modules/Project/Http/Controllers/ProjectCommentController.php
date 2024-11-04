@@ -120,7 +120,7 @@ class ProjectCommentController extends Controller
                 'log_type'   => 'Comment Create',
                 'remark'     => [
                     'title'              => 'Project comment created.',
-                    'project_comment_id' => $request->project_comment_id,
+                    'project_comment_id' => $comment->id,
                 ],
             ]);
 

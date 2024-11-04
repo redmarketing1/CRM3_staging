@@ -68,7 +68,7 @@
                             <div class="dash-head-link me-0 search-input-box">
                                 <i class="ti ti-search"></i>
                                 <input type="search" autocomplete="new-search" class="search-input" name="search"
-                                    id="search" placeholder="{{ trans('Search any thing') }}">
+                                    id="search" placeholder="{{ trans('Search') . '...' }}">
                             </div>
                             <div id="search-results" style="display: none"></div>
                         </div>

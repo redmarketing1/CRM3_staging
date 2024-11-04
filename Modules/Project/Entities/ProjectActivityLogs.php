@@ -46,10 +46,14 @@ class ProjectActivityLogs extends Model
         };
     }
 
+    /**
+     * Accessor for log_type to return details from the enum.
+     *
+     * @return array|null
+     */
     public function getLogTypesAttribute()
     {
-        return $this->pluck('log_type')
-            ->unique()
-            ->map(fn ($type) => $type->details());
+        $value = $this->log_type->value;
+        return LogType::tryFrom($value)?->details();
     }
 }
