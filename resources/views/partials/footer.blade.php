@@ -56,28 +56,7 @@
      </div>
  </div>
 
-
- <div class="modal fade" id="search-pro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-     <div class="modal-dialog">
-         <div class="modal-content">
-             <div class="modal-body">
-                 <div class="container mt-4">
-                     <div class="input-group">
-                         <span class="input-group-text" id="basic-addon1">
-                             <i class="fa fa-search"></i>
-                         </span>
-                         <input type="search" class="form-control input-s text-2xl outline-none p-3"
-                             placeholder="Search..." aria-label="Search" aria-describedby="search-button">
-                     </div>
-                 </div>
-                 <div id="search-results"></div>
-             </div>
-         </div>
-     </div>
- </div>
-
  {!! Meta::footer() !!}
-
 
  <script>
      document.addEventListener("DOMContentLoaded", function() {

@@ -64,10 +64,13 @@
                             ->count();
                     @endphp
                     <li class="dash-h-item">
-                        <div class="dash-head-link me-0 search-input-box" data-bs-toggle="modal"
-                            data-bs-target="#search-pro">
-                            <i class="ti ti-search"></i>
-                            Search
+                        <div class="search-pro-modules" id="search-pro">
+                            <div class="dash-head-link me-0 search-input-box">
+                                <i class="ti ti-search"></i>
+                                <input type="search" autocomplete="new-search" class="search-input" name="search"
+                                    id="search" placeholder="{{ trans('Search any thing') }}">
+                            </div>
+                            <div id="search-results" style="display: none"></div>
                         </div>
                     </li>
                     <li class="dash-h-item">

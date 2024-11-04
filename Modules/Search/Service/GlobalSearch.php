@@ -3,9 +3,10 @@
 namespace Modules\Search\Service;
 
 use App\Models\User;
-use App\Models\Proposal;
+use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
 use Modules\Search\Service\MenuConfig;
+use Modules\Taskly\Entities\ProjectEstimation;
 
 class GlobalSearch
 {
@@ -16,6 +17,7 @@ class GlobalSearch
         $results = array_merge($results, $this->projects($keywords));
         // $results = array_merge($results, $this->users($keywords));
         $results = array_merge($results, $this->menus($keywords));
+        // $results = array_merge($results, $this->estimation($keywords));
 
         // Sort results by priority
         usort($results, function ($a, $b) {
@@ -27,8 +29,16 @@ class GlobalSearch
 
     private function projects($keywords)
     {
-        return Project::where('name', 'LIKE', "%{$keywords}%")
-            // ->orWhere('description', 'LIKE', "%{$keywords}%")
+        $user        = Auth::user();
+        $workspaceID = getActiveWorkSpace();
+
+        $query = ($user->type == 'company') ?
+            Project::forCompany($user->id) :
+            Project::forClient($user->id, $workspaceID);
+
+        return $query->where('is_archive', 0)
+            ->where('name', 'LIKE', "%{$keywords}%")
+            ->orWhere('description', 'LIKE', "%{$keywords}%")
             ->get()
             ->map(function ($project) {
                 return [
@@ -79,5 +89,20 @@ class GlobalSearch
         }
 
         return $results;
+    }
+
+    private function estimation($keywords)
+    {
+        $keywords = strtolower($keywords);
+        return ProjectEstimation::where('title', 'LIKE', "%{$keywords}%")
+            ->get()
+            ->map(function ($estimation) {
+                return [
+                    'type'     => 'estimation',
+                    'view'     => view('search::partials.estimation_result', compact('estimation'))->render(),
+                    'priority' => 2,
+                ];
+            })
+            ->toArray();
     }
 }
