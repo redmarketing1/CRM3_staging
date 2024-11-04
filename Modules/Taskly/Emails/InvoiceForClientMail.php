@@ -36,7 +36,7 @@ class InvoiceForClientMail extends Mailable
      */
     public function __construct($template)
     {
-     dd($template);
+    // dd($template);
         $this->sender = $template->sender;
         $this->sender_name = $template->sender_name;
         $this->subject = $template->subject;
