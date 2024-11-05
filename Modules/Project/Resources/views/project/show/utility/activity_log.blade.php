@@ -50,8 +50,8 @@
                                 <i class="{{ $activity->LogTypes['icon'] }}"></i>
                             </span>
                             <span class="fw-bold">{{ $activity->LogTypes['label'] }}</span>
-                            <span class="time" title="{{ $activity->created_at }}">
-                                {{ $activity->created_at->diffForHumans() }}
+                            <span class="time" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $activity->created_at }}">
+                            {{ $activity->created_at->diffForHumans() }}
                             </span>
                         </div>
                         <div class="activity-desc mb-2 card-body">
