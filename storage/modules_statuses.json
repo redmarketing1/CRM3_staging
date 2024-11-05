@@ -11,5 +11,6 @@
     "Project": true,
     "Backup": true,
     "Core": true,
-    "Search": true
+    "Search": true,
+    "Estimation": true
 }
