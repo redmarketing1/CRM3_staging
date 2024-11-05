@@ -85,7 +85,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="final-right-col card-body bg-gray-200 px-3" style="min-width: 350px!important;padding:20px!important">
+                    <div class="card-body bg-gray-200 px-3" style="max-width: 350px!important;padding:20px!important">
                         <div class="row">
                             <div class="col-12">
                                 <div class="col-12">

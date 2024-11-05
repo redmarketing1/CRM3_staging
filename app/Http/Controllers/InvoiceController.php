@@ -822,7 +822,7 @@ class InvoiceController extends Controller
             $item              = new \stdClass();
 
             if ($invoice->invoice_module == "taskly") {
-                $item->name        = !empty($product->product()) ? $product->product()->title : '';
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
             } elseif ($invoice->invoice_module == "account" || $invoice->invoice_module == "sales" || $invoice->invoice_module == 'cardealership' || $invoice->invoice_module == 'musicinstitute' || $invoice->invoice_module == 'machinerepair' || $invoice->invoice_module == 'newspaper' || $invoice->invoice_module == 'mobileservice' || $invoice->invoice_module == 'vehicleinspection') {
                 $item->name        = !empty($product->product()) ? $product->product()->name : '';
                 $item->product_type   = !empty($product->product_type) ? $product->product_type : '';
@@ -941,7 +941,7 @@ class InvoiceController extends Controller
             $settings['invoice_qr_display'] = isset($company_settings['invoice_qr_display']) ? $company_settings['invoice_qr_display'] : '';
             $settings['site_currency_symbol_position'] = isset($company_settings['site_currency_symbol_position']) ? $company_settings['site_currency_symbol_position'] : '';
             $settings['defult_currancy_symbol'] = isset($company_settings['defult_currancy_symbol']) ? $company_settings['defult_currancy_symbol'] : '';
-            return view('invoice.templates.' . $invoice_template, compact('invoice', 'commonCustomer','color', 'settings', 'customer', 'img', 'font_color', 'customFields', 'bank_details', 'bank_details_list'));
+            return view('invoice.templates.' . $invoice_template, compact('from_progress','invoice', 'commonCustomer','color', 'settings', 'customer', 'img', 'font_color', 'customFields', 'bank_details', 'bank_details_list'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
