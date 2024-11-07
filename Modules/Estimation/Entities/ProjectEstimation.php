@@ -2,8 +2,8 @@
 
 namespace Modules\Estimation\Entities;
 
-use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Estimation\Traits\Relationship;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProjectEstimation extends Model
 {
-    // use HasFactory, SoftDeletes, InteractsWithMedia;
+    use Relationship, HasFactory, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
         'title',
@@ -37,4 +37,14 @@ class ProjectEstimation extends Model
         'Close' => 'danger',
     ];
 
+    /**
+     * The relations to eager load on every query.
+     *
+     * @var array $with
+     */
+    protected $with = [
+        'Quote',
+        'products',
+        'estimationGroups',
+    ];
 }

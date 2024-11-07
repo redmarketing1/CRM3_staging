@@ -1,33 +1,32 @@
-<tr class="group_row group grp_no{{ $estimation_group->group_pos }}" data-group_pos="{{ $estimation_group->group_pos }}"
-    data-group="{{ $estimation_group->group_name }}" data-group_id="{{ $estimation_group->id }}"
-    data-parent_id="{{ $estimation_group->parent_id }}">
+<tr class="group_row group grp_no{{ $estimationGroup->group_pos }}" data-group_pos="{{ $estimationGroup->group_pos }}"
+    data-group="{{ $estimationGroup->group_name }}" data-group_id="{{ $estimationGroup->id }}"
+    data-parent_id="{{ $estimationGroup->parent_id }}">
+
     <td class="column_reorder" data-dt-order="disable">
         <i class="fa-solid fa-up-down reorder-item reorder_group_btn"></i>
     </td>
+
     <td class="column_checkbox grp_checkbox_td" data-dt-order="disable">
         <input type="checkbox" class="group_checkbox" data-group="Group"
-            data-group_pos="{{ $estimation_group->group_pos }}" id="SelectGroupCheckbox" name=""
-            value="{{ $estimation_group->id }}">
+            data-group_pos="{{ $estimationGroup->group_pos }}" id="SelectGroupCheckbox" name=""
+            value="{{ $estimationGroup->id }}">
     </td>
+
     <td class="column_pos grouppos">
-        {{ $estimation_group->group_pos }}
+        {{ $estimationGroup->group_pos }}
     </td>
-    @php
-        $padding_left = 0;
-        if (isset($nested)) {
-            $padding_left = $nested;
-        }
-    @endphp
-    <td colspan="4" class="column_name grouptitle border-right "
-        style="padding-left: {{ $padding_left }}px !important">
+
+    <td colspan="4" class="column_name grouptitle border-right">
         <div class="div-desc-toggle">
             <i class="desc_toggle fa fas fa-solid fa-caret-right grp-dt-control"></i>
-            <input type="text" class="form-control grouptitle-input" value="{{ $estimation_group->group_name }}">
+            <input type="text" class="form-control grouptitle-input" value="{{ $estimationGroup->group_name }}">
         </div>
     </td>
+
     @if (isset($ai_description_field))
         <td class="column_ai_description border-left-right" data-dt-order="disable"></td>
     @endif
+
     @if (isset($allQuotes) && count($allQuotes) > 0)
         @foreach ($allQuotes as $quote)
             <td class="text-right grouptotal border-left-right quote_th{{ $quote->id }}" colspan="2"
@@ -37,8 +36,10 @@
         @endforeach
     @endif
 </tr>
-@if (isset($estimation_group->estimation_products) && count($estimation_group->estimation_products) > 0)
-    @foreach ($estimation_group->estimation_products as $product)
+
+
+@if (isset($estimationGroup->estimation_products) && count($estimationGroup->estimation_products) > 0)
+    @foreach ($estimationGroup->estimation_products as $product)
         @php
             $optional_checked = $product->is_optional == 0 ? 'checked' : '';
             $comment =
@@ -64,7 +65,7 @@
                     <input type="hidden" class="form-control pos_input_{{ $product->id }}"
                         value="{{ $product->pos }}">
                 </td>
-                <td class="column_name" style="padding-left: {{ $padding_left }}px !important">
+                <td class="column_name">
                     <div class="div-desc-toggle">
                         <i class="desc_toggle fa fas fa-solid fa-caret-right dt-control"></i>
                         <input type="text" name="item[{{ $product->id }}]['name']"
@@ -198,8 +199,7 @@
                     <div class="pos-inner">{{ $product->pos }}</div><input type="hidden"
                         class="form-control pos_input_{{ $product->id }}" value="{{ $product->pos }}">
                 </td>
-                <td colspan="4" class="border-right column_name"
-                    style="padding-left: {{ $padding_left }}px !important">
+                <td colspan="4" class="border-right column_name">
                     <input type="text"
                         class="form-control comment_input_box mr-2 comment_input_{{ $product->id }}"
                         value="{{ $product->comment }}">
@@ -219,13 +219,11 @@
         @endif
     @endforeach
 @endif
-@if ($estimation_group->children_data->isNotEmpty())
-    @foreach ($estimation_group->children_data as $child)
-        @php
-            $add_padding = $padding_left + 30;
-        @endphp
+
+@if ($estimationGroup->children_data->isNotEmpty())
+    @foreach ($estimationGroup->children_data as $child)
         @include('taskly::project_estimations.partial_setup', [
-            'estimation_group' => $child,
+            'estimationGroup' => $child,
             'ai_description_field' => $ai_description_field,
             'allQuotes' => $allQuotes,
             'nested' => $add_padding,
