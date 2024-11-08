@@ -130,7 +130,7 @@
                 class="total-settings border-left-right finalize_quote{{ $quotes1->id }} markup_discount_sc{{ $quotes1->id }}">
                 <span class="dt-column-title">
                     <div id="{{ $markup_key }}_neuwest" class="totalnr {{ $markup_key }} toptotal total-markup">
-                        @if ($user->type != 'company')
+                        @if (auth()->user()->type != 'company')
                             <input type="hidden" id="{{ $markup_key }}" name="markup[{{ $markup_key }}]"
                                 data-old="{{ $markup[$markup_key]->markup }}"
                                 value="{{ currency_format_with_sym($markup[$markup_key]->markup, '', '', false) }}"
@@ -174,7 +174,7 @@
             <button id="update_pos_btn" type="button" data-bs-toggle="tooltip"
                 title="{{ __('Update POS Numbers') }}"><i class="fa-solid fa-list-ol"></i></button>
             <!-- <button class="reorder_group_btn" type="button"><i class="fa-solid fa-list"></i> {{ __('Reorder Group') }}</button> -->
-            @if ($user->type == 'company')
+            @if (auth()->user()->type == 'company')
                 @permission('estimation download option')
                     <div class="dropdown download-dropdown">
                         <span data-bs-toggle="tooltip" title="{{ __('Download') }}">
@@ -302,7 +302,7 @@
                                             class="fa-regular fa-copy"></i>{{ __('Duplicate') }}</a>
                                 </li>
                             @endpermission
-                            @if (Auth::user()->type == 'company')
+                            @if (auth()->user()->type == 'company')
                                 @if ($key > 0)
                                     <li><a class="dropdown-item" href="javascript:void(0)"
                                             onclick="duplicateColumn('{{ $quotes->id }}','{{ $quotes->title }}','{{ $quotes->user_id }}','{{ $quotes->markup }}',true)"><i
@@ -316,7 +316,7 @@
                                             class="fa-regular fa-trash-can"></i>{{ __('Delete') }}</a>
                                 </li>
                             @endif
-                            @if (Auth::user()->type == 'company')
+                            @if (auth()->user()->type == 'company')
                                 <li>
                                     <label class="dropdown-item">
                                         <input type="checkbox" id="final_quote_checkbox"
@@ -385,7 +385,7 @@
 
                 <input type="hidden" class="sc{{ $quotes->id }}_value" value="{{ $quote_title }}">
                 @php
-                    if ($user->type != 'company') {
+                    if (auth()->user()->type != 'company') {
                         $hide_options = 'hide';
                     }
                 @endphp

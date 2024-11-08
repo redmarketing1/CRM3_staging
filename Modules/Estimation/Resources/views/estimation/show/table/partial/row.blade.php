@@ -31,14 +31,14 @@
         @foreach ($allQuotes as $quote)
             <td class="text-right grouptotal border-left-right quote_th{{ $quote->id }}" colspan="2"
                 data-quote_id="{{ $quote->id }}" data-group_total="0">
-                0
+                1212
             </td>
         @endforeach
     @endif
 </tr>
 
 
-@if (isset($estimationGroup->estimation_products) && count($estimationGroup->estimation_products) > 0)
+@if (isset($estimationGroup->estimation_products))
     @foreach ($estimationGroup->estimation_products as $product)
         @php
             $optional_checked = $product->is_optional == 0 ? 'checked' : '';
@@ -92,6 +92,7 @@
                         <div class="ai-result">{{ $product->ai_description }}</div>
                     </td>
                 @endif
+
                 @if (isset($quote_items[$product->id]))
                     @foreach ($quote_items[$product->id] as $quoteItem)
                         @php

@@ -44,7 +44,27 @@ class ProjectEstimation extends Model
      */
     protected $with = [
         'Quote',
+        'project',
         'products',
         'estimationGroups',
     ];
+
+
+    /**
+     * Get status
+     * @return array
+     */
+    public function getAllStatusAttribute()
+    {
+        return self::$statues ?? [];
+    }
+
+    /**
+     * Get statusColor
+     * @return array
+     */
+    public function getStatusColorAttribute()
+    {
+        return self::$statuesColor ?? [];
+    }
 }

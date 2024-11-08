@@ -51,52 +51,31 @@ class EstimationController extends Controller
     {
         $ai_description_field = null;
         $user                 = auth()->user();
-        $company_details      = getCompanyAllSetting();
-        $company_name         = $company_details['company_name'];
-        $all_contractors      = genericGetContacts();
+        $desc_template        = SmartTemplate::where('type', 0)->first();
+
 
         Meta::prependTitle($estimation->title)->setTitle('Estiomation Detail');
-
-        $estimationStatus      = ProjectEstimation::$statues;
-        $estimationStatusColor = ProjectEstimation::$statuesColor;
-
 
         if ($user->type != 'company') {
             $estimation = ProjectEstimation::with('userQuote')->first();
         }
 
-        // $desc_template = SmartTemplate::where('type', 0)->first();
-        // if (isset($desc_template->id) && $user->type == 'company') {
-        //     foreach ($estimation_products as $product) {
-        //         if ($product->ai_description != '') {
-        //             $ai_description_field = true;
-        //             break;
-        //         }
-        //     }
-        // }
+
+        if (isset($desc_template->id) && $user->type == 'company') {
+            foreach ($estimation->products as $product) {
+                if ($product->ai_description != '') {
+                    $ai_description_field = true;
+                    break;
+                }
+            }
+        }
 
         // if (! isset($ai_description_field) && $user->type == 'company') {
         //     $sp_queues = SmartPromptQueue::where('type', 0)->where('estimation_id', $estimation->id)->count();
         //     if ($sp_queues > 0) {
         //         $ai_description_field = true;
         //     }
-        // }
-
-
-
-        if ($user->type == 'company') {
-            $projects = Project::where('created_by', '=', $user->id)->get()->pluck('name', 'id');
-        } else {
-            $projectsModel = Project::leftjoin('client_projects', 'client_projects.project_id', 'projects.id')->leftjoin('estimate_quotes', 'estimate_quotes.project_id', 'projects.id');
-            $projectsModel->where(function ($query) use ($user) {
-                $query->where('client_projects.client_id', $user->id)
-                    ->orWhere('estimate_quotes.user_id', $user->id);
-            });
-            $projectsModel->select('projects.*');
-            $projectsModel->groupBy('projects.id');
-
-            $projects = $projectsModel->get()->pluck('name', 'id');
-        }
+        // } 
 
         $project_id                    = $estimation->project_id;
         $total_prices                  = [];
@@ -128,10 +107,6 @@ class EstimationController extends Controller
                     $final_id = $quote->id;
                 }
 
-                if ($key == 0) {
-                    $first_quote_id = $quote->id;
-                }
-
                 if ($quote->final_for_client == 1) {
                     $client_final_quote_id = $quote->id;
                 }
@@ -152,14 +127,13 @@ class EstimationController extends Controller
                 'markup'              => $markup,
             ];
 
-
-
-            // foreach ($estimation_products as $key => $value) {
-            //     $quote_items_ids[] = $value->id;
-            // }
+            foreach ($estimation->products as $key => $value) {
+                $quote_items_ids[] = $value->id;
+            }
 
             $quote_items = [];
             $result      = EstimateQuoteItem::whereIn('product_id', $quote_items_ids)->with('quote')->orderBy('estimate_quote_id')->get();
+
             foreach ($result as $row) {
                 if ($user->type == "company") {
                     if (isset($row->quote->is_display) && $row->quote->is_display == 1) {
@@ -171,35 +145,18 @@ class EstimationController extends Controller
                     }
                 }
             }
-            $filters_request['order_by'] = array('field' => 'projects.created_at', 'order' => 'DESC');
-            $project_record              = Project::get_all($filters_request);
-            $all_projects                = isset($project_record['records']) ? $project_record['records'] : array();
-            $site_money_format           = site_money_format();
-            $estimationStatus            = ProjectEstimation::$statues;
-            $estimationStatusColor       = ProjectEstimation::$statuesColor;
         }
 
         return view('estimation::estimation.show.show', compact(
-            // 'estimation_products',
             'estimation',
             'total_prices',
-            'all_contractors',
             'allQuotes',
             'final_id',
-            'company_name',
-            'first_quote_id',
-            'projects',
-            'project_id',
             'smart_templates',
             'ai_description_field',
             'client_final_quote_id',
             'sub_contractor_final_quote_id',
             'quote_items',
-            'user',
-            // 'all_projects',
-            // 'site_money_format',
-            'estimationStatus',
-            'estimationStatusColor',
         ));
     }
 

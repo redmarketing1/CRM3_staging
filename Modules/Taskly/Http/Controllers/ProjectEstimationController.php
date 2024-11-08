@@ -54,8 +54,8 @@ class ProjectEstimationController extends Controller
     public function index(Request $request)
     {
         ini_set("max_execution_time", "-1");
-		ini_set("memory_limit", "-1");
-        
+        ini_set("memory_limit", "-1");
+
         $user = Auth::user();
         if ($user->isAbleTo('estimation manage')) {
             $query = ProjectEstimation::select("*")->with(['getProjectDetail', 'final_quote']);
@@ -326,6 +326,9 @@ class ProjectEstimationController extends Controller
 
                 $quote_items = array();
                 $result      = EstimateQuoteItem::whereIn('product_id', $quote_items_ids)->with('quote')->orderBy('estimate_quote_id')->get();
+               
+                
+
                 foreach ($result as $row) {
                     if ($user->type == "company") {
                         if (isset($row->quote->is_display) && $row->quote->is_display == 1) {
@@ -336,14 +339,15 @@ class ProjectEstimationController extends Controller
                             $quote_items[$row->product_id][] = $row;
                         }
                     }
-                }
+                } 
+
                 $filters_request['order_by'] = array('field' => 'projects.created_at', 'order' => 'DESC');
                 $project_record              = Project::get_all($filters_request);
                 $all_projects                = isset($project_record['records']) ? $project_record['records'] : array();
                 $site_money_format           = site_money_format();
                 $estimationStatus            = ProjectEstimation::$statues;
                 $estimationStatusColor       = ProjectEstimation::$statuesColor;
-
+ 
                 return view("taskly::project_estimations.setup", compact(
                     'encryptId',
                     'estimation_products',
@@ -1953,7 +1957,7 @@ class ProjectEstimationController extends Controller
 
     public function finalizeEstimation($id)
     {
-		
+
         Meta::prependTitle(trans('Finalize Estimations'));
 
         $id         = Crypt::decrypt($id);

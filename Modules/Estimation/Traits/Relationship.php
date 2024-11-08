@@ -16,7 +16,16 @@ trait Relationship
      */
     public function project()
     {
-        return $this->hasOne(Project::class, 'id', 'project_id')->first();
+        return $this->hasOne(Project::class, 'id', 'project_id');
+    }
+
+    /**
+     * Retrieve project from estimation 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'id', 'project_id');
     }
 
     /**

@@ -1,4 +1,4 @@
-@if ($estimation->status != 2 && $estimation->status != 3 && $user->type == 'company')
+@if ($estimation->status != 2 && $estimation->status != 3 && auth()->user()->type == 'company')
     <div class="button-wrapper-fixed">
         <div class="button-wrapper-left">
 
