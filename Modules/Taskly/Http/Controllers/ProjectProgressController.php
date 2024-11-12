@@ -19,6 +19,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceProduct;
 use App\Http\Controllers\InvoiceController;
 use App\Models\InvoicePayment;
+use App\Services\LexoOfficeService;
 use Modules\Account\Entities\BankAccount;
 use Modules\Taskly\Emails\InvoiceForClientMail;
 use Modules\Taskly\Entities\Project;
@@ -33,6 +34,11 @@ use Modules\Taskly\Entities\ProjectClientFeedback;
 
 class ProjectProgressController extends Controller
 {
+	protected $lexoffice;
+	public function __construct(LexoOfficeService $lexoffice) {
+		$this->lexoffice = $lexoffice;
+	}
+
 	public function list(Request $request)
 	{
 		$order          = $request->order;
@@ -51,7 +57,7 @@ class ProjectProgressController extends Controller
 
 		foreach ($items as $item) {
 
-			$invoice_link = '<a href="'.route('project.progress.invoice',$item->id).'" class="btn-info mx-1 btn btn-sm" title="' . __('Create Incoice') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('Create Invoice') . '"><span class=""><i class="ti ti-file-invoice"></i></span> '.__('Create Invoice').'</a>';
+			$invoice_link = '<a href="'.route('project.progress.invoice',$item->id).'" class="btn-info mx-1 btn btn-sm" target="_blank" title="' . __('Create Incoice') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('Create Invoice') . '"><span class=""><i class="ti ti-file-invoice"></i></span> '.__('Create Invoice').'</a>';
 			if($item->invoice){
 				$invoice_link = '<a href="'.route('project.progress.viewInvoice',$item->id).'" class="btn-info mx-1  btn btn-sm d-inline-flex align-items-center" target="_blank" title="' . __('View Invoice') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Invoice') . '"><span class=""><i class="ti ti-file-invoice"></i></span> '.__('View Invoice').'</a>';
 			}
@@ -908,7 +914,7 @@ class ProjectProgressController extends Controller
 				if ($item->progress) {
 					// Fetch progress records related to the current product
 					$progress = ProjectProgress::where("product_id", $item->product_id)
-						->whereDate('created_at', '<=', $main_progress->created_at->toDateString())
+						->where('created_at', '=', $main_progress->created_at)
 						->first();
 					
 					if ($progress) {
@@ -932,7 +938,7 @@ class ProjectProgressController extends Controller
 					$qty = ($new_progress / 100) * $item->projectEstimationProduct->quantity;
 					$progress_amount = ($new_progress / 100) * $total_price;
 				}
-			
+				
 				// Create new InvoiceProduct
 				$invoiceProduct = new InvoiceProduct();
 				$invoiceProduct->invoice_id = $invoice->id;
@@ -945,26 +951,25 @@ class ProjectProgressController extends Controller
 				$invoiceProduct->tax = $quote->tax == 19 ? 1 : 0;
 				$invoiceProduct->product_type = __('progress');
 				$invoiceProduct->description = 
-				"<strong>".__('Name').":</strong> " . $item->projectEstimationProduct->name . "<br>" .
-				"<strong>".__('Quantity').":</strong> " . $item->projectEstimationProduct->quantity . " " . $item->projectEstimationProduct->unit . "<br>" .
-				"<strong>".__('Price').":</strong> " . $item->price . "<br>" .
-				"<strong>".__('Total Price').":</strong> " . $item->total_price . "<br>" .
-				"<strong>".__('Current Progress').":</strong> <div style='background-color: #555; width: 100px; height: 15px; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 5px 5px;'>
+				"<strong class='pname'>".__('Name').":</strong> <span class='pname_value'>" . $item->projectEstimationProduct->name . "</span><br>" .
+				"<strong class='pquantity'>".__('Quantity').":</strong> <span class='pquantity_value'>" . $item->projectEstimationProduct->quantity . " " . $item->projectEstimationProduct->unit . "</span><br>" .
+				"<strong class='pprice'>".__('Price').":</strong> <span class='pprice_value'>" . $item->price . "</span><br>" .
+				"<strong class='ptotal'>".__('Total Price').":</strong> <span class='ptotal_value'>" . $item->total_price . "</span><br>" .
+				"<strong class='pprogress'>".__('Current Progress').":</strong> <div style='background-color: #555; width: 100px; height: 15px; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 5px 5px;'>
 					<div style='background-color: #88c0d0; width: " . $new_progress . "%; height: 100%; background-image: radial-gradient(#88c0d0 1px, transparent 1px); background-size: 5px 5px;'></div>
-				</div> ".$new_progress."%"."<br>" .
-				"<strong>".__('Total Progress').":</strong> <div style='background-color: #555; width: 100px; height: 15px; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 5px 5px;'>
+				</div> ". "<span class='progress_value'>".$new_progress."%"."</span><br>" .
+				"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <div style='background-color: #555; width: 100px; height: 15px; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 5px 5px;'>
 					<div style='background-color: #88c0d0; width: " . floatval($latest_progress) + floatval($previous_progress) . "%; height: 100%; background-image: radial-gradient(#88c0d0 1px, transparent 1px); background-size: 5px 5px;'></div>
-				</div>".floatval($latest_progress) + floatval($previous_progress) . "%";
+				</div>". "<span class='ptotalprogress_value'>".floatval($latest_progress) + floatval($previous_progress) . "%</span>";
 				$invoiceProduct->progress = $new_progress;
 				$invoiceProduct->progress_amount = $progress_amount;
 				$invoiceProduct->save();
 			}
-
+			
 			DB::commit();
-			return redirect()->route('project.show', $project_id)->with('success',__('Invoice successfully created.'));
+			return redirect()->route('project.progress.viewInvoice', $progress_id)->with('success',__('Invoice successfully created.'));
 		} catch (\Throwable $th) {
 			DB::rollback();
-			dd($th);
 			//throw $th;
 			return redirect()->back()->with('error',__('something went wrong please try again'));
 		}
@@ -1539,5 +1544,31 @@ class ProjectProgressController extends Controller
         $pdf->save($dir);
         return $dir;
     }
+
+	//send invoice to lexo office
+	public function sendInvoiceToLexoOffice($id){
+		$invoice = Invoice::with('items', 'items.group')->find($id);
+		
+		$customer = User::find($invoice->user_id);
+
+		if($invoice->is_sent_lexo){
+			return redirect()->back()->with('error',__('Invoice already sent to Lexo Office.'));
+		}
+
+		if(!$customer){
+			return redirect()->back()->with('error',__('Client not found.'));
+		}
+	
+		$contact = $this->lexoffice->fetchContact($customer);
+
+		if (is_string($contact)) {
+			// If the response is an error string from the service, return it
+			return redirect()->back()->with('error', $contact);
+		}
+
+		$storeInvoice = $this->lexoffice->storeInvoice($contact, $invoice);
+		
+		return redirect()->back()->with('success', __('Invoice sent to LexOffice successfully.'));
+	}
 }
 

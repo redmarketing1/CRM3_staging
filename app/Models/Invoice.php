@@ -41,7 +41,8 @@ class Invoice extends Model
         'workspace',
         'created_by',
         'path',
-        'account_type'
+        'account_type',
+        'is_sent_lexo',
     ];
     public static $statues = [
         'Draft',
