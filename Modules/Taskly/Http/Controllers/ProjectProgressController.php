@@ -959,8 +959,8 @@ class ProjectProgressController extends Controller
 					<div style='background-color: #88c0d0; width: " . $new_progress . "%; height: 100%; background-image: radial-gradient(#88c0d0 1px, transparent 1px); background-size: 5px 5px;'></div>
 				</div> ". "<span class='progress_value'>".$new_progress."%"."</span><br>" .
 				"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <div style='background-color: #555; width: 100px; height: 15px; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 5px 5px;'>
-					<div style='background-color: #88c0d0; width: " . floatval($latest_progress) + floatval($previous_progress) . "%; height: 100%; background-image: radial-gradient(#88c0d0 1px, transparent 1px); background-size: 5px 5px;'></div>
-				</div>". "<span class='ptotalprogress_value'>".floatval($latest_progress) + floatval($previous_progress) . "%</span>";
+					<div style='background-color: #88c0d0; width: " . floatval($new_progress) + floatval($previous_progress) . "%; height: 100%; background-image: radial-gradient(#88c0d0 1px, transparent 1px); background-size: 5px 5px;'></div>
+				</div>". "<span class='ptotalprogress_value'>".floatval($new_progress) + floatval($previous_progress) . "%</span>";
 				$invoiceProduct->progress = $new_progress;
 				$invoiceProduct->progress_amount = $progress_amount;
 				$invoiceProduct->save();
