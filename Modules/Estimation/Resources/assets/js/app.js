@@ -1,5 +1,7 @@
 import estimationShow from './estimation.show';
+import estimationIndex from './estimation.index';
 
 export default function (app) {
-    app.component('estimationShow', estimationShow);
+    estimationIndex(app);
+    estimationShow(app);
 }

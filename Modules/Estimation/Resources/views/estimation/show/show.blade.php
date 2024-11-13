@@ -19,7 +19,7 @@
 @endsection
 
 @section('content')
-    <div class="row">
+    <div class="row" x-data="estimationShow">
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
@@ -54,6 +54,7 @@
     <script src="{{ asset('Modules/Taskly/Resources/assets/js/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('Modules/Taskly/Resources/assets/js/custom.js') }}"></script>
 @endpush
+
 @push('scripts')
     <script>
         var project_estimation_id =
@@ -98,21 +99,6 @@
             //     });
             // }, 3000);
 
-            if ($('#final_quote_checkbox').is(':checked')) {
-                updateCellColors(final_id, null, true);
-            } else {
-                updateCellColors(final_id, null, false);
-            }
-            if ($('#client_quote_checkbox').is(':checked')) {
-                updateCellColors(client_final_quote_id, 'client', true);
-            } else {
-                updateCellColors(client_final_quote_id, 'client', false);
-            }
-            if ($('#sub_contractor_quote_checkbox').is(':checked')) {
-                updateCellColors(sub_contractor_final_quote_id, 'sub_contractor', true);
-            } else {
-                updateCellColors(sub_contractor_final_quote_id, 'sub_contractor', false);
-            }
 
             var tinyMCE = init_tiny_mce('#technical_description');
 
@@ -382,34 +368,7 @@
                 updatePOS();
             });
 
-            $(document).on("click", ".reorder_group_btn", function(e) {
-                e.preventDefault();
 
-                $.ajax({
-                    url: "{{ route('estimations.reorder_group_modal') }}",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        estimation_id: estimation_id
-                    }),
-                    success: function(response) {
-                        if (response.status == true) {
-                            $("#group_reorder_Modal .modal-body").html(response.html_data);
-                            $("#group_reorder_Modal").modal('show');
-
-                            $('#nestable').nestable({
-                                group: 1
-                            }).on('change', store_group_reorder);
-                        } else {
-                            toastrs("Error", response.message);
-                        }
-                    },
-                    error: function(error) {
-                        // Handle any errors that occur during the Ajax request
-                        console.error("Error sending data to the server:", error);
-                    }
-                });
-            });
 
             $('#nestable-menu').on('click', function(e) {
                 var target = $(e.target),
@@ -617,42 +576,64 @@
 
             var idx = 0;
             var group_pos = 1;
+
             for (var group in aData) {
                 $.each(quates_ids, function(key, val) {
+
                     let total_price_key = "total_price_sc" + val;
                     var sum = 0;
+
                     if ($('.quote_th' + val).length > 0) {
+
                         $.each(aData[group].total_prices, function(k, v) {
+
+                            console.log(v[total_price_key]);
+
+
                             sum = sum + v[total_price_key];
                         });
+
                     }
 
-                    $('.group_row[data-group_id="' + aData[group].group_id + '"]').find(
-                        '.grouptotal[data-quote_id="' + val + '"]').html(moneyFormatter.format(sum));
-                    $('.group_row[data-group_id="' + aData[group].group_id + '"]').find(
-                        '.grouptotal[data-quote_id="' + val + '"]').attr('data-group_total', sum);
+                    $('.group_row[data-group_id="' + aData[group].group_id + '"]')
+                        .find('.grouptotal[data-quote_id="' + val + '"]')
+                        .html(moneyFormatter.format(sum))
+                        .attr('data-group_total', sum);
+
                 });
             }
 
             $($(".group_row").get().reverse()).each(function() {
-                var group_id = $(this).data('group_id');
-                var parent_id = $(this).data('parent_id');
+
+                var group_id = $(this).data('groupID');
+                var parent_id = $(this).data('groupPosID');
+
                 $.each(quates_ids, function(key2, quate_id) {
-                    var group_total = $('.group_row[data-group_id="' + group_id + '"]').find(
-                        '.grouptotal[data-quote_id="' + quate_id + '"]').attr('data-group_total');
-                    $('.group_row[data-group_id="' + group_id + '"]').find('.grouptotal[data-quote_id="' +
-                        quate_id + '"]').html(moneyFormatter.format(group_total));
-                    var parent_total = $('.group_row[data-group_id="' + parent_id + '"]').find(
-                        '.grouptotal[data-quote_id="' + quate_id + '"]').attr('data-group_total');
+
                     var group_sub_total = 0;
+
+                    var group_total = $('.group_row[data-group_id="' + group_id + '"]')
+                        .find('.grouptotal[data-quote_id="' + quate_id + '"]')
+                        .attr('data-group_total');
+
+                    $('.group_row[data-group_id="' + group_id + '"]')
+                        .find('.grouptotal[data-quote_id="' + quate_id + '"]')
+                        .html(moneyFormatter.format(group_total));
+
+                    var parent_total = $('.group_row[data-group_id="' + parent_id + '"]')
+                        .find('.grouptotal[data-quote_id="' + quate_id + '"]')
+                        .attr('data-group_total');
+
                     group_sub_total = parseFloat(group_total) + parseFloat(parent_total);
-                    $('.group_row[data-group_id="' + parent_id + '"]').find('.grouptotal[data-quote_id="' +
-                        quate_id + '"]').html(moneyFormatter.format(group_sub_total));
-                    $('.group_row[data-group_id="' + parent_id + '"]').find('.grouptotal[data-quote_id="' +
-                        quate_id + '"]').attr('data-group_total', group_sub_total);
-                    if (quate_id == 987 && group_id == 790) {
-                        console.log(group_total);
-                    }
+
+                    $('.group_row[data-group_id="' + parent_id + '"]')
+                        .find('.grouptotal[data-quote_id="' + quate_id + '"]')
+                        .html(moneyFormatter.format(group_sub_total));
+
+                    $('.group_row[data-group_id="' + parent_id + '"]')
+                        .find('.grouptotal[data-quote_id="' + quate_id + '"]')
+                        .attr('data-group_total', group_sub_total);
+
                 });
             });
 
@@ -739,12 +720,6 @@
                 document.getElementById('sub_contractor_quote_checkbox').checked = false;
                 removeCellColors(quoteId, 'sub_contractor');
             }
-
-            if (checkbox.checked) {
-                updateCellColors(quoteId, role, true);
-            } else {
-                updateCellColors(quoteId, role, false);
-            }
         }
 
 
@@ -772,8 +747,7 @@
 
 
         function updateCellColors(id, type = null, update = true) {
-            $("#totals-table td.totalnr").css("background", '#f5f5f5');
-            $("#totals-table td.cotitle").css("background", 'rgb(229, 229, 229)');
+
             if (update && id > 0) {
                 var form_details = {
                     id: id
@@ -783,6 +757,7 @@
                         type: type
                     });
                 }
+
                 $.ajax({
                     url: "{{ route('estimations.quote.final') }}",
                     type: "POST",
@@ -1067,8 +1042,8 @@
         });
 
         function taxInfo() {
-            let estimation_title = document.getElementById("estimation_title").value;
-            let issue_date = document.getElementById("issue_date").value;
+            let estimation_title = $('#title').val();
+            let issue_date = $("issue_date").value;
 
             let all_gross = {};
             let all_gross_with_discount = {};
@@ -1226,7 +1201,6 @@
                             tableData[total_price_key] = converte_total;
                         }
                     }
-                    console.log(tableData);
                     new_table_data.push(tableData);
                 }
             });
@@ -1303,7 +1277,7 @@
         $(document).on('change', '#estimation_title, #issue_date, #technical_description', function(event) {
             event.preventDefault();
 
-            var estimation_title = $('#estimation_title').val();
+            var estimation_title = $('#title').val();
             var issue_date = $('#issue_date').val();
             // var technical_description = $('#technical_description').val();
             tinyMCE.triggerSave();
@@ -1325,26 +1299,7 @@
             });
         });
 
-        function updatePOS() {
-            $.ajax({
-                url: "{{ route('update.estimation.pos') }}",
-                type: "POST",
-                data: {
-                    estimation_id: estimation_id
-                },
-                success: function(response) {
-                    if (response.status == true) {
-                        $(".item_row").each(function(index) {
-                            if (typeof response.data[index] !== 'undefined') {
-                                var item_id = $(this).data('id');
-                                $(this).find('.pos-inner').text(response.data[index]);
-                                $('.pos_input_' + item_id).val(response.data[index]);
-                            }
-                        });
-                    }
-                }
-            });
-        }
+
 
         function handleSaveOrder() {
             let project_estimation_id = $('#estimation-edit-table').find('tr.item_row').map(function() {

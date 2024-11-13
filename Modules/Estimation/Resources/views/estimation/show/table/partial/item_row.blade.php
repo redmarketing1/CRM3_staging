@@ -1,46 +1,5 @@
-<tr class="group_row group grp_no{{ $estimation_group->group_pos }}" data-group_pos="{{ $estimation_group->group_pos }}"
-    data-group="{{ $estimation_group->group_name }}" data-group_id="{{ $estimation_group->id }}"
-    data-parent_id="{{ $estimation_group->parent_id }}">
-    <td class="column_reorder" data-dt-order="disable">
-        <i class="fa-solid fa-up-down reorder-item reorder_group_btn"></i>
-    </td>
-    <td class="column_checkbox grp_checkbox_td" data-dt-order="disable">
-        <input type="checkbox" class="group_checkbox" data-group="Group"
-            data-group_pos="{{ $estimation_group->group_pos }}" id="SelectGroupCheckbox" name=""
-            value="{{ $estimation_group->id }}">
-    </td>
-    <td class="column_pos grouppos">
-        {{ $estimation_group->group_pos }}
-    </td>
-    @php
-        $padding_left = 0;
-        if (isset($nested)) {
-            $padding_left = $nested;
-        }
-    @endphp
-    <td colspan="4" class="column_name grouptitle border-right "
-        style="padding-left: {{ $padding_left }}px !important">
-        <div class="div-desc-toggle">
-            <i class="desc_toggle fa fas fa-solid fa-caret-right grp-dt-control"></i>
-            <input type="text" class="form-control grouptitle-input" value="{{ $estimation_group->group_name }}">
-        </div>
-    </td>
-    @if (isset($ai_description_field))
-        <td class="column_ai_description border-left-right" data-dt-order="disable"></td>
-    @endif
-    @if (isset($allQuotes) && count($allQuotes) > 0)
-        @foreach ($allQuotes as $quote)
-            <td class="text-right grouptotal border-left-right quote_th{{ $quote->id }}" colspan="2"
-                data-quote_id="{{ $quote->id }}" data-group_total="0">
-                0
-            </td>
-        @endforeach
-    @endif
-</tr>
-
-
-@if (isset($estimation_group->estimation_products) && count($estimation_group->estimation_products) > 0)
-    @foreach ($estimation_group->estimation_products as $product)
+@if (isset($estimationGroup->estimation_products))
+    @foreach ($estimationGroup->estimation_products as $product)
         @php
             $optional_checked = $product->is_optional == 0 ? 'checked' : '';
             $comment =
@@ -66,7 +25,7 @@
                     <input type="hidden" class="form-control pos_input_{{ $product->id }}"
                         value="{{ $product->pos }}">
                 </td>
-                <td class="column_name" style="padding-left: {{ $padding_left }}px !important">
+                <td class="column_name">
                     <div class="div-desc-toggle">
                         <i class="desc_toggle fa fas fa-solid fa-caret-right dt-control"></i>
                         <input type="text" name="item[{{ $product->id }}]['name']"
@@ -93,6 +52,7 @@
                         <div class="ai-result">{{ $product->ai_description }}</div>
                     </td>
                 @endif
+
                 @if (isset($quote_items[$product->id]))
                     @foreach ($quote_items[$product->id] as $quoteItem)
                         @php
@@ -192,18 +152,15 @@
                 data-group_pos="{{ $product->group->group_pos }}" data-type="{{ $product->type }}">
                 <td class="column_reorder"><i class="fa fa-bars reorder-item"></i></td>
                 <td class="column_checkbox">
-                    <input type="checkbox" name="multi_id"
-                        class="item_selection  grp_checkbox{{ $product->group_id }}" value="{{ $product->id }}"
-                        onchange="selected_quote_items()">
+                    <input type="checkbox" name="multi_id" class="item_selection  grp_checkbox{{ $product->group_id }}"
+                        value="{{ $product->id }}" onchange="selected_quote_items()">
                 </td>
                 <td class="column_pos">
                     <div class="pos-inner">{{ $product->pos }}</div><input type="hidden"
                         class="form-control pos_input_{{ $product->id }}" value="{{ $product->pos }}">
                 </td>
-                <td colspan="4" class="border-right column_name"
-                    style="padding-left: {{ $padding_left }}px !important">
-                    <input type="text"
-                        class="form-control comment_input_box mr-2 comment_input_{{ $product->id }}"
+                <td colspan="4" class="border-right column_name">
+                    <input type="text" class="form-control comment_input_box mr-2 comment_input_{{ $product->id }}"
                         value="{{ $product->comment }}">
                 </td>
                 @if (isset($ai_description_field))
@@ -219,15 +176,5 @@
                 @endif
             </tr>
         @endif
-    @endforeach
-@endif
-@if ($estimation_group->children_data->isNotEmpty())
-    @foreach ($estimation_group->children_data as $child)
-        @include('taskly::project_estimations.partial_setup', [
-            'estimation_group' => $child,
-            'ai_description_field' => $ai_description_field,
-            'allQuotes' => $allQuotes,
-            'nested' => 0,
-        ])
     @endforeach
 @endif

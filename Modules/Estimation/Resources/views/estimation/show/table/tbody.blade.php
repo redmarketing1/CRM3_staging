@@ -6,4 +6,8 @@
             'allQuotes' => $allQuotes,
         ])
     @endforeach
+
+    <template x-for="(item, index) in items" :key="index">
+        @include('estimation::estimation.show.table.prepend.add_item')
+    </template>
 </tbody>

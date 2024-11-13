@@ -3520,22 +3520,6 @@ button#save-button.saving {
     border: 2px solid #6fb255;
 }
 
-.button-wrapper-fixed {
-    display: flex;
-    justify-content: space-between;
-    bottom: 0 !important;
-    left: 285px !important;
-    background: #FFF;
-    position: fixed;
-    padding: 5px 15px;
-    width: calc(100% - 285px - 54px);
-    margin-right: 50px;
-    box-sizing: border-box;
-    align-items: center;
-    z-index: 99;
-    border-top: 2px solid #eaeaea;
-}
-
 .estimation-edit-table-wrapper {
     position: relative !important;
     margin: 0;
@@ -4782,8 +4766,8 @@ tfoot th input,
 .total-line-top .total-discount input,
 .total-line-top .total-markup input,
 .total-line-top .total-discount select {
-    font-size: 13px;
-    padding: 4px !important;
+    font-size: 16px;
+    padding: 6px 8px !important;
     border: 2px solid #e1e1e1;
     border-radius: 5px;
 }
@@ -5922,19 +5906,16 @@ table#estimation-edit-table thead th.total-company-title {
 }
 
 .button-wrapper-fixed {
-    display: flex;
+    /* display: flex;
     justify-content: space-between;
     bottom: 0 !important;
     left: 285px !important;
+    position: fixed; */
     background: #FFF;
-    position: fixed;
-    padding: 5px 15px;
-    width: calc(100% - 285px - 54px);
-    margin-right: 50px;
-    box-sizing: border-box;
-    align-items: center;
-    z-index: 99;
-    border-top: 2px solid #eaeaea;
+    width: 100%;
+    border-top: 1px solid #eaeaea;
+    text-align: right;
+    padding: 20px 10px;
 }
 
 .button-wrapper-left {
@@ -6965,7 +6946,7 @@ tr#contractors_row th,
 .group_row td {
     position: sticky !important;
     top: 0 !important;
-    z-index: 3;
+    z-index: 0;
 }
 
 #net_with_discount_row th {
@@ -7995,12 +7976,14 @@ span.select2-selection.select2-selection--multiple {
 }
 
 #estimation-edit-table .dropdown-menu.show {
-    position: absolute !important;
-    bottom: 10px !important;
-    top: unset !important;
-    left: unset !important;
-    right: 25px !important;
-    transform: unset !important;
+    width: auto;
+    background: #ffffff;
+    display: block;
+    text-align: center;
+}
+
+#estimation-edit-table .table-col-customized {
+    padding: 15px 20px 15px 30px;
 }
 
 .dropdown-menu .dropdown-item {
@@ -8795,7 +8778,8 @@ span.timeline-step {
     border-top: 0 !important;
     border: 1px solid rgba(206, 206, 206, 0.2);
     column-gap: 10px;
-   }
+}
+
 #search-results .search-result-item {
     margin-bottom: 10px;
 }

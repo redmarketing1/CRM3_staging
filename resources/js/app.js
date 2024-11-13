@@ -1,14 +1,25 @@
-import { createApp } from 'vue';
-import EstimationApp from '../../Modules/Estimation/Resources/assets/js/app.js';
+import Alpine from 'alpinejs'
+window.Alpine = Alpine
 
-const app = createApp({});
 
-EstimationApp(app);
+document.addEventListener('DOMContentLoaded', () => {
+    import('../../Modules/Estimation/Resources/assets/js/estimation.show')
+        .then(() => {
+            Alpine.start()
+        });
+});
 
-app.mount('#app');
+// import { createApp } from 'vue';
+// import EstimationApp from '../../Modules/Estimation/Resources/assets/js/app.js';
 
-$.ajaxSetup({
-    headers: {
-        "X-CSRF-TOKEN": $('[name="csrf-token"]').attr('content'),
-    },
-}); 
+// const app = createApp({});
+
+// EstimationApp(app);
+
+// app.mount('#app');
+
+// $.ajaxSetup({
+//     headers: {
+//         "X-CSRF-TOKEN": $('[name="csrf-token"]').attr('content'),
+//     },
+// }); 

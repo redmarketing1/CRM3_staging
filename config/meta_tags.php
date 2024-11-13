@@ -135,6 +135,10 @@ return [
         ],
         // Foter script
         [
+            'url'  => '/assets/js/app.js',
+            'name' => 'vue.app',
+        ],
+        [
             'url'  => '/js/jquery.validate.min.js',
             'name' => 'jquery.validate',
         ],

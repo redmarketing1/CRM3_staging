@@ -85,6 +85,7 @@ class EstimationController extends Controller
         $sub_contractor_final_quote_id = 0;
         $first_quote_id                = 0;
         $smart_templates               = SmartTemplate::get();
+        $quote_items                   = [];
         $quote_items_ids               = [];
 
         if ($user->type != 'company') {
@@ -131,8 +132,8 @@ class EstimationController extends Controller
                 $quote_items_ids[] = $value->id;
             }
 
-            $quote_items = [];
-            $result      = EstimateQuoteItem::whereIn('product_id', $quote_items_ids)->with('quote')->orderBy('estimate_quote_id')->get();
+
+            $result = EstimateQuoteItem::whereIn('product_id', $quote_items_ids)->with('quote')->orderBy('estimate_quote_id')->get();
 
             foreach ($result as $row) {
                 if ($user->type == "company") {
