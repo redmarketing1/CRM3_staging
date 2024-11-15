@@ -411,7 +411,6 @@ class InvoiceController extends Controller
 
     public function edit($e_id)
     {
-
         if (module_is_active('ProductService')) {
             if (Auth::user()->isAbleTo('invoice edit')) {
                 try {

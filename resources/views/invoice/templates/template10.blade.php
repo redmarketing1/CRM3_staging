@@ -377,6 +377,7 @@
                         @if($invoice->invoice_module != "Fleet")
                             <th>{{ __('Item') }}</th>
                             <th>{{ __('Quantity') }}</th>
+                            <th>{{ __('Unit') }}</th>
                         @endif
                         <th>{{ __('Rate') }}</th>
                         @if($invoice->invoice_module == "Fleet")
@@ -398,9 +399,19 @@
                             <td>{{ !empty($item->product_type) ? Str::ucfirst($item->product_type) : '--' }}
                             </td>
                         @endif
-                        <td>{!! $item->description !!}</td>
+                        @if ($invoice->invoice_module == 'taskly')
+                            <td>
+                                @if(!empty($item->name))
+                                    {{ $item->name }}
+                                @endif
+                                @if(!empty($item->description))
+                                   <br> {!! $item->description !!}
+                                @endif
+                            </td>
+                        @endif
                         @if ($invoice->invoice_module != 'Fleet')
                             <td>{{ $item->quantity }}</td>
+                            <td>{{ $item->unit }}</td>
                         @endif
                         <td>{{ currency_format_with_sym($item->price, $invoice->created_by, $invoice->workspace) }}
                         </td>
@@ -453,7 +464,7 @@
                         <td>-</td>
                         <td>-</td>
                     <tr class="border-0 itm-description ">
-                        <td colspan="6">-</td>
+                        <td colspan="7">-</td>
                     </tr>
                     </tr>
                     @endif
@@ -470,7 +481,7 @@
                             <td></td>
                         @else
                             <td>{{ $invoice->totalQuantity }}</td>
-
+                            <td>-</td>
                             <td>{{ currency_format_with_sym($invoice->totalRate, $invoice->created_by, $invoice->workspace) }}
                             </td>
                             <td>{{ currency_format_with_sym($invoice->totalDiscount, $invoice->created_by, $invoice->workspace) }}
@@ -489,7 +500,7 @@
                             }
                         @endphp
                         <td colspan="{{$colspan}}"></td>
-                        <td colspan="2" class="sub-total">
+                        <td colspan="4" class="sub-total">
                             <table class="total-table">
                                 @if ($invoice->invoice_module != 'Fleet')
 
