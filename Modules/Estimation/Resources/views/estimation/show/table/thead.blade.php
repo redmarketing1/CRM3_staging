@@ -1,15 +1,15 @@
 <thead>
     <tr class="total-line-top no-sort" id="net_with_discount_row">
-        <th colspan="4" class="toplabel buttons-top" data-dt-order="disable">
+        <th colspan="4" class="toplabel buttons-top">
+            {{-- empty column --}}
         </th>
 
-        <th colspan="3" class="toplabel total-net-discount" data-dt-order="disable">
+        <th colspan="3" class="toplabel total-net-discount">
             {{ __('Net incl. Discount') }}
         </th>
 
         @if (isset($ai_description_field))
-            <th id="" rowspan="5" class="border-left-right toptotal ai-head column_ai_description"
-                data-dt-order="disable">
+            <th rowspan="5" class="border-left-right toptotal ai-head column_ai_description">
                 <button type="button" class="btn_replace_descriptions d-none"
                     data-bs-whatever="{{ __('Replace with AI description') }}">
                     <!-- <i class="fa-solid fa-retweet"></i><br> -->
@@ -19,60 +19,48 @@
         @endif
 
         @foreach ($total_prices['net_with_discount'] as $net_with_discount_key => $net_with_discount)
-            <th colspan="2" id="{{ $net_with_discount_key }}_neuwest"
-                class="totalnr {{ $net_with_discount_key }} toptotal total-net-discount border-left-right"
-                data-dt-order="disable">
+            <th colspan="2" class="totalnr toptotal total-net-discount border-left-right">
                 <div id="{{ $net_with_discount_key }}" class="">
                     {{ currency_format_with_sym($net_with_discount) }}
                 </div>
-                <input type="hidden" id="{{ $net_with_discount_key }}_value" name="{{ $net_with_discount_key }}"
-                    value="{{ $net_with_discount }}">
             </th>
         @endforeach
     </tr>
 
     <tr class="total-line-top no-fixed-header no-sort" id="gross_with_discount_row">
-
-        <th colspan="4" rowspan="4" class="toplabel buttons-top" data-dt-order="disable">
+        <th colspan="4" rowspan="4" class="toplabel buttons-top">
+            {{-- empty column --}}
         </th>
 
-        <th colspan="3" class="toplabel total-gross-discount" data-dt-order="disable">
+        <th colspan="3" class="toplabel total-gross-discount">
             {{ __('Gross incl. Discount') }}
         </th>
 
         @foreach ($total_prices['gross_with_discount'] as $gross_with_discount_key => $gross_with_discount)
-            <th colspan="2" id="{{ $gross_with_discount_key }}_neuwest"
-                class="totalnr {{ $gross_with_discount_key }} toptotal total-gross-discount border-left-right"
-                data-dt-order="disable">
+            <th colspan="2" class="totalnr toptotal total-gross-discount border-left-right">
                 <div id="{{ $gross_with_discount_key }}" class="">
                     {{ currency_format_with_sym($gross_with_discount) }}
                 </div>
-                <input type="hidden" id="{{ $gross_with_discount_key }}_value" name="{{ $gross_with_discount_key }}"
-                    value="{{ $gross_with_discount }}">
             </th>
         @endforeach
     </tr>
 
-
     <tr class="total-line-top no-fixed-header no-sort" id="net_row1">
-        <th colspan="3" class="toplabel total-net" data-dt-order="disable">
+        <th colspan="3" class="toplabel total-net">
             {{ __('Net') }}
         </th>
 
         @foreach ($total_prices['net'] as $net_key => $net)
-            <th colspan="2" id="{{ $net_key }}_neuwest"
-                class="totalnr {{ $net_key }} toptotal total-net border-left-right" data-dt-order="disable">
+            <th colspan="2" class="totalnr {{ $net_key }} toptotal total-net border-left-right">
                 <div id="{{ $net_key }}" class="">
                     {{ currency_format_with_sym($net) }}
                 </div>
-                <input type="hidden" id="{{ $net_key }}_value" name="{{ $net_key }}"
-                    value="{{ $net }}">
             </th>
         @endforeach
     </tr>
 
     <tr class="total-line-top no-fixed-header" id="gross_row">
-        <th colspan="3" class="toplabel total-gross no-sort" data-dt-order="disable">
+        <th colspan="3" class="toplabel total-gross no-sort">
             {{ __('Gross (incl. VAT)') }}
         </th>
 
@@ -87,8 +75,7 @@
                 $gross_key = 'gross_sc' . $quotes1->id;
             @endphp
             <th colspan="2"
-                class="toptotal total-gross border-left-right finalize_quote{{ $quotes1->id }} gross_tax_sc{{ $quotes1->id }}"
-                data-dt-order="disable">
+                class="toptotal total-gross border-left-right finalize_quote{{ $quotes1->id }} gross_tax_sc{{ $quotes1->id }}">
                 <span class="dt-column-title">
                     <div id="{{ $tax_key }}_neuwest"
                         class="totalnr {{ $tax_key }} toptotal total-discount total-vat-input">
@@ -114,7 +101,9 @@
     </tr>
 
     <tr class="total-line-top totalsetting no-fixed-header" id="discount_row">
-        <th colspan="3" class="toplabel total-discount" data-dt-order="disable"></th>
+        <th colspan="3" class="toplabel total-discount">
+            {{-- empty column --}}
+        </th>
 
         @php
             $markup = $total_prices['markup'];
@@ -126,7 +115,7 @@
                 $discount_key = 'discount_sc' . $quotes1->id;
                 $type = 'quote';
             @endphp
-            <th colspan="2" data-dt-order="disable"
+            <th colspan="2"
                 class="total-settings border-left-right finalize_quote{{ $quotes1->id }} markup_discount_sc{{ $quotes1->id }}">
                 <span class="dt-column-title">
                     <div id="{{ $markup_key }}_neuwest" class="totalnr {{ $markup_key }} toptotal total-markup">
@@ -164,15 +153,12 @@
     </tr>
 
     <tr class="total-line-top" id="contractors_row">
-        <th colspan="7" class="toplabel buttons-top" data-dt-order="disable">
+        <th colspan="7" class="toplabel buttons-top">
             <div class="tools-btn">
 
                 <div class="search mb-10">
-                    <input type="text" placeholder="{{ __('Search') }}..." class="w-50 px-3" id="table-search">
-                    <input type="hidden" name="" id="remove_item_ids" value="">
-                    <input type="hidden" name="" id="remove_group_ids" value="">
-                    <input type="hidden" name="" id="duplicate_item_ids" value="">
-                    <input type="hidden" name="" id="duplicate_group_ids" value="">
+                    <input type="search" placeholder="{{ __('Search') }}..." class="w-50 px-3" id="table-search"
+                        x-model="searchQuery">
                 </div>
 
                 <div class="d-flex gap-2 mb-2 mt-3 align-items-center">
@@ -284,26 +270,30 @@
                         </div> --}}
 
                         @permission('estimation add item option')
-                            <button type="button" @click="addItem"><i class="fa-solid fa-plus"></i>
+                            <button type="button" @click="addItem('item')">
+                                <i class="fa-solid fa-plus"></i>
                                 {{ __('Item') }}
                             </button>
                         @endpermission
 
                         @permission('estimation add group option')
-                            <button type="button" id="add_estimation_group_btn"><i class="fa-solid fa-plus"></i>
+                            <button type="button" @click="addItem('group')">
+                                <i class="fa-solid fa-plus"></i>
                                 {{ __('Group') }}
                             </button>
                         @endpermission
 
                         @permission('estimation add comment option')
-                            <button type="button" id="add_estimation_comment_btn"><i class="fa-solid fa-plus"></i>
+                            <button type="button" @click="addItem('comment')">
+                                <i class="fa-solid fa-plus"></i>
                                 {{ __('Comment') }}
                             </button>
                         @endpermission
 
                         @permission('estimation remove option')
-                            <button type="button" id="remove_items_btn">
-                                <i class="fa-solid fa-plus"></i> {{ __('Remove') }}
+                            <button type="button" @click="removeItem">
+                                <i class="fa-solid fa-plus"></i>
+                                {{ __('Remove') }}
                             </button>
                         @endpermission
                     @endif
@@ -314,7 +304,7 @@
         @if (isset($ai_description_field))
             <th id=""
                 class="total-main-title total-company-title border-left-right text-nowrap column_ai_description"
-                data-orderable="false" data-dt-order="disable">
+                data-orderable="false">
                 <span>{{ isset($desc_template->title) ? $desc_template->title : '' }}</span>
                 @if (!empty($queues_result) && count($queues_result) > 0)
                     <div class="row m-1 ai-progress-bar">
@@ -328,7 +318,8 @@
                                                 style="width: {{ $qrow['completed_percentage'] }}%"
                                                 aria-valuenow="{{ $qrow['completed_percentage'] }}" aria-valuemin="0"
                                                 aria-valuemax="100">
-                                                {{ $qrow['completed_percentage'] }}%</div>
+                                                {{ $qrow['completed_percentage'] }}%
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -341,8 +332,7 @@
 
         @foreach ($allQuotes as $key => $quotes)
             <th colspan="2" data-orderable="false"
-                class="total-main-title total-company-title border-left-right finalize_quote_title{{ $quotes->id }} title_sc{{ $quotes->id }} {{ $quotes->title }}"
-                data-dt-order="disable">
+                class="total-main-title total-company-title border-left-right finalize_quote_title{{ $quotes->id }} title_sc{{ $quotes->id }} {{ $quotes->title }}">
                 @php
                     //	$quote_title = $quotes->title;
                     $quote_title = isset($quotes->subContractor->name) ? $quotes->subContractor->name : $quotes->title;
@@ -433,9 +423,10 @@
                                             data-id="{{ $qrow['smart_template_id'] }}">
                                             <div class="progress-bar {{ $progress_class }}" role="progressbar"
                                                 style="width: {{ $qrow['completed_percentage'] }}%"
-                                                aria-valuenow="{{ $qrow['completed_percentage'] }}"
-                                                aria-valuemin="0" aria-valuemax="100">
-                                                {{ $qrow['completed_percentage'] }}%</div>
+                                                aria-valuenow="{{ $qrow['completed_percentage'] }}" aria-valuemin="0"
+                                                aria-valuemax="100">
+                                                {{ $qrow['completed_percentage'] }}%
+                                            </div>
                                         </div>
                                     </div>
                                     <span class="CellWithComment {{ $info_icon }}">
@@ -459,48 +450,49 @@
     </tr>
 
     <tr id="estimation-edit-table-thead">
-        <th class="column_reorder" data-dt-order="disable">
+        <th class="column_reorder">
         </th>
 
-        <th class="column_checkbox" data-dt-order="disable">
-            <input type="checkbox" class="SelectAllCheckbox" name="" value="">
+        <th class="column_checkbox">
+            <input type="checkbox" class="SelectAllCheckbox" x-model="selectAll">
         </th>
 
-        <th class="column_pos" data-dt-order="disable">
+        <th class="column_pos">
             {{ __('Pos') }}
         </th>
 
-        <th class="column_group" data-dt-order="disable">
+        <th class="column_group">
             {{ __('Group Name') }}
         </th>
 
-        <th class="column_name" data-dt-order="disable">
+        <th class="column_name">
             <i class="fa-solid fa-indent expand_more show_all"></i>
             {{ __('Name') }}
         </th>
 
-        <th class="column_quantity" data-dt-order="disable">
+        <th class="column_quantity">
             {{ __('Quantity') }}
         </th>
 
-        <th class="column_unit" data-dt-order="disable">
+        <th class="column_unit">
             {{ __('Unit') }}
         </th>
 
-        <th class="column_optional border-right" data-dt-order="disable">{{ __('Opt') }}
+        <th class="column_optional border-right">
+            {{ __('Opt') }}
         </th>
 
         @if (isset($ai_description_field))
-            <th class="column_ai_description border-left-right" data-dt-order="disable">
+            <th class="column_ai_description border-left-right">
                 {{ __('Auto Description') }}
             </th>
         @endif
 
         @foreach ($allQuotes as $key => $quotes)
-            <th class="column_single_price border-left quote_th{{ $quotes->id }}" data-dt-order="disable">
+            <th class="column_single_price border-left quote_th{{ $quotes->id }}">
                 {{ __('Single Price') }}
             </th>
-            <th class="column_total_price border-right quote_th{{ $quotes->id }}" data-dt-order="disable">
+            <th class="column_total_price border-right quote_th{{ $quotes->id }}">
                 {{ __('Total Price') }}
             </th>
         @endforeach

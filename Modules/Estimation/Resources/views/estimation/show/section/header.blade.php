@@ -7,6 +7,7 @@
             </div>
         </fieldset>
     </div>
+
     <div class="col-md-3">
         <fieldset @if ($estimation->status == 2) disabled @endif>
             <div class="form-group">
@@ -15,6 +16,7 @@
             </div>
         </fieldset>
     </div>
+
     <div class="col-md-3">
         <fieldset @if ($estimation->status == 2) disabled @endif>
             <div class="form-group">
@@ -24,6 +26,7 @@
             </div>
         </fieldset>
     </div>
+
     <div class="col-md-2">
         <div class="form-group not-disable">
             <label for="status" class="d-block form-label">{{ trans('Status') }}</label>
@@ -43,6 +46,7 @@
             </div>
         </div>
     </div>
+
     @if (empty($estimation->products))
         <div class="align-items-center col-md-3 d-flex import-excel-box w-auto">
             <div class="form-group">

@@ -3,10 +3,13 @@
 namespace Modules\Estimation\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Fxcjahid\LaravelAssetsManager\Traits\AddsAsset;
 
 
 class EstimationServiceProvider extends ServiceProvider
 {
+    use AddsAsset;
+
     /**
      * @var string $moduleName
      */
@@ -28,6 +31,10 @@ class EstimationServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+
+        // $this->addAssets('estimation.show', [
+        //     'estimation.show.js',
+        // ]);
     }
 
     /**
@@ -52,7 +59,7 @@ class EstimationServiceProvider extends ServiceProvider
             module_path($this->moduleName, 'Config/config.php') => config_path($this->moduleNameLower . '.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            module_path($this->moduleName, 'Config/config.php'), $this->moduleNameLower
+            module_path($this->moduleName, 'Config/config.php'), $this->moduleNameLower,
         );
     }
 
@@ -68,7 +75,7 @@ class EstimationServiceProvider extends ServiceProvider
         $sourcePath = module_path($this->moduleName, 'Resources/views');
 
         $this->publishes([
-            $sourcePath => $viewPath
+            $sourcePath => $viewPath,
         ], ['views', $this->moduleNameLower . '-module-views']);
 
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->moduleNameLower);
@@ -102,7 +109,7 @@ class EstimationServiceProvider extends ServiceProvider
         return [];
     }
 
-    private function getPublishableViewPaths(): array
+    private function getPublishableViewPaths() : array
     {
         $paths = [];
         foreach (config('view.paths') as $path) {

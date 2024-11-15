@@ -4,12 +4,10 @@
 
     <td class="column_reorder" data-dt-order="disable">
         <i class="fa-solid fa-up-down reorder-item reorder_group_btn"></i>
-    </td>
+    </td> 
 
-    <td class="column_checkbox grp_checkbox_td" data-dt-order="disable">
-        <input type="checkbox" class="group_checkbox" data-group="Group"
-            data-group_pos="{{ $estimationGroup->group_pos }}" id="SelectGroupCheckbox" name=""
-            value="{{ $estimationGroup->id }}">
+    <td class="column_checkbox">
+        <input type="checkbox" class="item_selection">
     </td>
 
     <td class="column_pos grouppos">

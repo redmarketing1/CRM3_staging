@@ -7986,6 +7986,15 @@ span.select2-selection.select2-selection--multiple {
     padding: 15px 20px 15px 30px;
 }
 
+#estimation-edit-table .child-row {
+    display: none;
+    background-color: #f8f9fa;
+}
+
+#estimation-edit-table .child-row.show {
+    display: table-row!important;
+}
+
 .dropdown-menu .dropdown-item {
     text-wrap: wrap;
     padding-left: 43px;

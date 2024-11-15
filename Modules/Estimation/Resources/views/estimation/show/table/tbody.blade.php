@@ -6,8 +6,20 @@
             'allQuotes' => $allQuotes,
         ])
     @endforeach
-
-    <template x-for="(item, index) in items" :key="index">
-        @include('estimation::estimation.show.table.prepend.add_item')
-    </template>
 </tbody>
+
+<template x-for="(item, index) in items" :key="item.id">
+    <tbody>
+        <template x-if="item.type === 'item'">
+            @include('estimation::estimation.show.table.prepend.add_item')
+        </template>
+
+        <template x-if="item.type === 'group'">
+            @include('estimation::estimation.show.table.prepend.add_group')
+        </template>
+
+        <template x-if="item.type === 'comment'">
+            @include('estimation::estimation.show.table.prepend.add_comment')
+        </template>
+    </tbody>
+</template>
