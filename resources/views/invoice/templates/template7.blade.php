@@ -313,16 +313,17 @@
                     <tr>
                         @if($invoice->invoice_module != 'Fleet')
                         <td>
-                            @if (!empty($customer->billing_name) && !empty($customer->billing_address) && !empty($customer->billing_zip))
+                            @if (!empty($customer) && !empty($customer) && !empty($customer))
                                 <strong style="margin-bottom: 10px; display:block;">{{ __('Bill To') }}:</strong>
                                 <p>
-                                    {{ !empty($customer->billing_name) ? $customer->billing_name : '' }}<br>
-                                    {{ !empty($customer->billing_address) ? $customer->billing_address : '' }}<br>
-                                    {{ !empty($customer->billing_city) ? $customer->billing_city . ' ,' : '' }}
-                                    {{ !empty($customer->billing_state) ? $customer->billing_state . ' ,' : '' }}
-                                    {{ !empty($customer->billing_zip) ? $customer->billing_zip : '' }}<br>
-                                    {{ !empty($customer->billing_country) ? $customer->billing_country : '' }}<br>
-                                    {{ !empty($customer->billing_phone) ? $customer->billing_phone : '' }}<br>
+                                    {{ !empty($customer->first_name) ? $customer->first_name : '' }} {{ !empty($customer->last_name) ? $customer->last_name : '' }}<br>
+                                    {{ !empty($customer->address_1) ? $customer->address_1 : '' }} , {{ !empty($customer->address_2) ? $customer->address_2 : '' }}<br>
+                                    {{ !empty($customer->zip_code) ? $customer->zip_code . ' ,' : '' }}
+                                    {{ !empty($customer->city) ? $customer->city . ' ,' : '' }}
+                                    {{ !empty($customer->state) ? $customer->state . ' ,' : '' }}
+                                    {{ !empty($customer->country) ? $customer->country : '' }}<br>
+                                    {{ !empty($customer->phone) ? $customer->phone : '' }}<br>
+                                    {{ !empty($customer->email) ? $customer->email : '' }}<br>
                                 </p>
                             @endif
                         </td>
@@ -374,6 +375,7 @@
                         @if($invoice->invoice_module != "Fleet")
                             <th>{{ __('Item') }}</th>
                             <th>{{ __('Quantity') }}</th>
+                            <th>{{ __('Unit') }}</th>
                         @endif
                         <th>{{ __('Rate') }}</th>
                         @if($invoice->invoice_module == "Fleet")
@@ -395,9 +397,19 @@
                             <td>{{ !empty($item->product_type) ? Str::ucfirst($item->product_type) : '--' }}
                             </td>
                         @endif
-                        <td>{{ $item->name }}</td>
+                        @if ($invoice->invoice_module == 'taskly')
+                            <td>
+                                @if(!empty($item->name))
+                                    {{ $item->name }}
+                                @endif
+                                @if(!empty($item->description))
+                                   <br> {!! $item->description !!}
+                                @endif
+                            </td>
+                        @endif
                         @if ($invoice->invoice_module != 'Fleet')
                             <td>{{ $item->quantity }}</td>
+                            <td>{{ $item->unit }}</td>
                         @endif
                         <td>{{ currency_format_with_sym($item->price, $invoice->created_by, $invoice->workspace) }}
                         </td>
@@ -467,7 +479,7 @@
                             <td></td>
                         @else
                             <td>{{ $invoice->totalQuantity }}</td>
-
+                            <td>-</td>
                             <td>{{ currency_format_with_sym($invoice->totalRate, $invoice->created_by, $invoice->workspace) }}
                             </td>
                             <td>{{ currency_format_with_sym($invoice->totalDiscount, $invoice->created_by, $invoice->workspace) }}
@@ -486,7 +498,7 @@
                             }
                         @endphp
                         <td colspan="{{$colspan}}"></td>
-                        <td colspan="2" class="sub-total">
+                        <td colspan="4" class="sub-total">
                             <table class="total-table">
                                 @if ($invoice->invoice_module != 'Fleet')
 

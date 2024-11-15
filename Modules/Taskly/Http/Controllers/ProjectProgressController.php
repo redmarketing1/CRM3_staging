@@ -21,6 +21,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Models\InvoicePayment;
 use App\Services\LexoOfficeService;
 use Modules\Account\Entities\BankAccount;
+use Modules\ProductService\Entities\Tax;
 use Modules\Taskly\Emails\InvoiceForClientMail;
 use Modules\Taskly\Entities\Project;
 use Modules\Taskly\Entities\ProjectEstimation;
@@ -879,6 +880,9 @@ class ProjectProgressController extends Controller
 			$project_id = $main_progress->project_id;
 			$estimation = ProjectEstimation::find($main_progress->estimation_id);
 			$quote 	= EstimateQuote::where("project_estimation_id", $main_progress->estimation_id)->where("is_final", 1)->first();
+			$tax = Tax::where('rate', $quote->tax)->first();
+			$discount = $quote->discount;
+			
 			if (!$quote) {
 				return redirect()->back()->with('error', __('Quote not found.'));
 			}
@@ -898,8 +902,8 @@ class ProjectProgressController extends Controller
 				'project' 				=> $estimation->project()->id,
 				'progress_id'           => $main_progress->id,
 				'type' 					=> __('Progress'),
-				'tax' 					=> $quote->tax,
-				'discount' 				=> $quote->discount,
+				'tax' 					=> 0,
+				'discount' 				=> $discount,
 				'project_estimation_id' => $estimation->id,
 				'invoice_template' 		=> 'template10',
 				'workspace' 			=> getActiveWorkSpace(),
@@ -938,6 +942,10 @@ class ProjectProgressController extends Controller
 					$qty = ($new_progress / 100) * $item->projectEstimationProduct->quantity;
 					$progress_amount = ($new_progress / 100) * $total_price;
 				}
+
+				
+				$currentProgressBar = $this->getProgressBar($new_progress);
+				$totalProgressBar = $this->getProgressBar(floatval($new_progress) + floatval($previous_progress));
 				
 				// Create new InvoiceProduct
 				$invoiceProduct = new InvoiceProduct();
@@ -948,19 +956,15 @@ class ProjectProgressController extends Controller
 				$invoiceProduct->unit = $item->projectEstimationProduct->unit;
 				$invoiceProduct->price = $price;
 				$invoiceProduct->total_price = $progress_amount;
-				$invoiceProduct->tax = $quote->tax == 19 ? 1 : 0;
+				$invoiceProduct->tax =  0;
 				$invoiceProduct->product_type = __('progress');
 				$invoiceProduct->description = 
-				"<strong class='pname'>".__('Name').":</strong> <span class='pname_value'>" . $item->projectEstimationProduct->name . "</span><br>" .
-				"<strong class='pquantity'>".__('Quantity').":</strong> <span class='pquantity_value'>" . $item->projectEstimationProduct->quantity . " " . $item->projectEstimationProduct->unit . "</span><br>" .
-				"<strong class='pprice'>".__('Price').":</strong> <span class='pprice_value'>" . $item->price . "</span><br>" .
-				"<strong class='ptotal'>".__('Total Price').":</strong> <span class='ptotal_value'>" . $item->total_price . "</span><br>" .
-				"<strong class='pprogress'>".__('Current Progress').":</strong> <div style='background-color: #555; width: 100px; height: 15px; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 5px 5px;'>
-					<div style='background-color: #88c0d0; width: " . $new_progress . "%; height: 100%; background-image: radial-gradient(#88c0d0 1px, transparent 1px); background-size: 5px 5px;'></div>
-				</div> ". "<span class='progress_value'>".$new_progress."%"."</span><br>" .
-				"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <div style='background-color: #555; width: 100px; height: 15px; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 5px 5px;'>
-					<div style='background-color: #88c0d0; width: " . floatval($new_progress) + floatval($previous_progress) . "%; height: 100%; background-image: radial-gradient(#88c0d0 1px, transparent 1px); background-size: 5px 5px;'></div>
-				</div>". "<span class='ptotalprogress_value'>".floatval($new_progress) + floatval($previous_progress) . "%</span>";
+    			"<strong class='pname'>".__('Name').":</strong> <span class='pname_value'>" . $item->projectEstimationProduct->name . "</span><br>" .
+    			"<strong class='pquantity'>".__('Quantity').":</strong> <span class='pquantity_value'>" . $item->projectEstimationProduct->quantity . " " . $item->projectEstimationProduct->unit . "</span><br>" .
+    			"<strong class='pprice'>".__('Price').":</strong> <span class='pprice_value'>" . $item->price . "</span><br>" .
+    			"<strong class='ptotal'>".__('Total Price').":</strong> <span class='ptotal_value'>" . $item->total_price . "</span><br>" .
+    			"<strong class='pprogress'>".__('Current Progress').":</strong> <span class='progress_value'>" . $currentProgressBar . " (" . $new_progress . "%)</span><br>" .
+    			"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <span class='ptotalprogress_value'>" . $totalProgressBar . " (" . (floatval($new_progress) + floatval($previous_progress)) . "%)</span>";
 				$invoiceProduct->progress = $new_progress;
 				$invoiceProduct->progress_amount = $progress_amount;
 				$invoiceProduct->save();
@@ -1037,6 +1041,7 @@ class ProjectProgressController extends Controller
                 $item->name        = !empty($product->product_name) ? $product->product_name : '';
             }
             $item->quantity    = $product->quantity;
+			$item->unit    = $product->unit;
             $item->tax         = $product->tax;
             $item->discount    = $product->discount;
             $item->price       = $product->price;
@@ -1570,5 +1575,12 @@ class ProjectProgressController extends Controller
 		
 		return redirect()->back()->with('success', __('Invoice sent to LexOffice successfully.'));
 	}
+
+	function getProgressBar($percentage) {
+		$filledBlocks = round($percentage / 10); // Each block represents 10%
+		$emptyBlocks = 10 - $filledBlocks;
+		return str_repeat('█', $filledBlocks) . str_repeat('░', $emptyBlocks);
+	}
+	
 }
 
