@@ -65,15 +65,15 @@ class LexoOfficeService
         if ($customer->company_name) {
             // Send company data with contact person
             $payload['company'] = [
-                'name' => $customer->company_name,
-                'taxNumber' => $customer->tax_number ?? null,
+                'name' => $customer->company_name ?? null,
+                'taxNumber' => $customer->tax_number ?? '12345',
                 'vatRegistrationId' => null,
                 'allowTaxFreeInvoices' => false,
                 'contactPersons' => [
                     [
                         'salutation' => isset($customerSalutation) ? $customerSalutation : 'Herr/Frau',
-                        'firstName' => $customer->first_name,
-                        'lastName' => $customer->last_name,
+                        'firstName' => $customer->first_name ?? null,
+                        'lastName' => $customer->last_name ?? null,
                         'primary' => true,
                         'emailAddress' => $customer->email,
                         'phoneNumber' => $customer->phone ?? $customer->mobile_no ?? ''
