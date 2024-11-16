@@ -1,10 +1,16 @@
 <tbody>
     @foreach ($estimation->estimationGroups ?? [] as $estimationGroups)
-        @include('estimation::estimation.show.table.partial.row', [
+        @include('estimation::estimation.show.table.partial.item_group', [
             'estimationGroup' => $estimationGroups,
-            'ai_description_field' => $ai_description_field,
-            'allQuotes' => $allQuotes,
         ])
+
+        @foreach ($estimationGroups->estimation_products ?? [] as $product)
+            @includeWhen($product->type == 'item', 'estimation::estimation.show.table.partial.item_row', [
+                'product' => $product,
+            ])
+
+            @includeWhen($product->type == 'comment', 'estimation::estimation.show.table.partial.item_comment')
+        @endforeach
     @endforeach
 </tbody>
 
