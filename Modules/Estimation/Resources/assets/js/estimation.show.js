@@ -89,33 +89,42 @@ Alpine.data('estimationShow', () => ({
     },
 
     calculateTotals() {
+        // Reset totals
         this.totals = {};
 
-        // Reset group totals
-        Object.keys(this.groups).forEach(groupId => {
-            this.totals[groupId] = 0;
-        });
+        // Initialize group totals
+        document.querySelectorAll('tr.group_row').forEach(groupRow => {
+            const groupId = groupRow.dataset.groupid;
+            if (!groupId) return;
 
-        // Calculate item totals and update group totals
-        Object.entries(this.items).forEach(([itemId, item]) => {
-            if (!item.optional) {
-                const total = this.calculateItemTotal(itemId);
-                if (item.groupId && this.totals[item.groupId] !== undefined) {
-                    this.totals[item.groupId] += total;
-                }
+            // Calculate total for this group
+            const groupTotal = this.calculateGroupTotal(groupId);
+            this.totals[groupId] = groupTotal;
+
+            // Update the display
+            const totalCell = groupRow.querySelector('.text-right');
+            if (totalCell) {
+                totalCell.textContent = this.formatCurrency(groupTotal);
+            }
+
+            // Update group data
+            if (this.groups[groupId]) {
+                this.groups[groupId].total = groupTotal;
+            }
+        });
+    },
+
+    calculateGroupTotal(groupId) {
+        let total = 0;
+        document.querySelectorAll(`tr.item_row[data-groupid="${groupId}"]`).forEach(itemRow => {
+            if (!itemRow.querySelector('.item-optional')?.checked) {
+                const quantity = this.parseNumber(itemRow.querySelector('.item-quantity')?.value || '0');
+                const price = this.parseNumber(itemRow.querySelector('.item-price')?.value || '0');
+                total += quantity * price;
             }
         });
 
-        // Update group total displays
-        Object.entries(this.totals).forEach(([groupId, total]) => {
-            const groupRow = document.querySelector(`tr[data-groupid="${groupId}"]`);
-            if (groupRow) {
-                const totalCell = groupRow.querySelector('.text-right');
-                if (totalCell) {
-                    totalCell.textContent = this.formatCurrency(total);
-                }
-            }
-        });
+        return total;
     },
 
     formatDecimal(value) {

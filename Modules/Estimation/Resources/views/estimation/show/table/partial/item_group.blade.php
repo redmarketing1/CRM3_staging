@@ -1,4 +1,4 @@
-<tr class="group_row group" x-data data-groupID="{{ $estimationGroup->id }}">
+<tr class="group_row group" x-data data-groupid="{{ $estimationGroup->id }}">
 
     <td class="column_reorder">
         <i class="fa-solid fa-up-down reorder-item reorder_group_btn"></i>
@@ -18,9 +18,6 @@
     </td>
 
     <td class="text-right border-left-right" colspan="2"
-        x-text="totals[{{ $estimationGroup->id }}] !== undefined ? 
-               formatCurrency(totals[{{ $estimationGroup->id }}]) : 
-               '{{ currency_format_with_sym($estimationGroup->TotalGroupPrice) }}'">
-        {{ currency_format_with_sym($estimationGroup->TotalGroupPrice) }}
+        x-text="formatCurrency(calculateGroupTotal('{{ $estimationGroup->id }}'))">
     </td>
 </tr>

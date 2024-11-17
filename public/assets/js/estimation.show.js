@@ -102,39 +102,43 @@ Alpine.data('estimationShow', function () {
     },
     calculateTotals: function calculateTotals() {
       var _this3 = this;
+      // Reset totals
       this.totals = {};
 
-      // Reset group totals
-      Object.keys(this.groups).forEach(function (groupId) {
-        _this3.totals[groupId] = 0;
-      });
+      // Initialize group totals
+      document.querySelectorAll('tr.group_row').forEach(function (groupRow) {
+        var groupId = groupRow.dataset.groupid;
+        if (!groupId) return;
 
-      // Calculate item totals and update group totals
-      Object.entries(this.items).forEach(function (_ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-          itemId = _ref2[0],
-          item = _ref2[1];
-        if (!item.optional) {
-          var total = _this3.calculateItemTotal(itemId);
-          if (item.groupId && _this3.totals[item.groupId] !== undefined) {
-            _this3.totals[item.groupId] += total;
-          }
+        // Calculate total for this group
+        var groupTotal = _this3.calculateGroupTotal(groupId);
+        _this3.totals[groupId] = groupTotal;
+
+        // Update the display
+        var totalCell = groupRow.querySelector('.text-right');
+        if (totalCell) {
+          totalCell.textContent = _this3.formatCurrency(groupTotal);
+        }
+
+        // Update group data
+        if (_this3.groups[groupId]) {
+          _this3.groups[groupId].total = groupTotal;
         }
       });
-
-      // Update group total displays
-      Object.entries(this.totals).forEach(function (_ref3) {
-        var _ref4 = _slicedToArray(_ref3, 2),
-          groupId = _ref4[0],
-          total = _ref4[1];
-        var groupRow = document.querySelector("tr[data-groupid=\"".concat(groupId, "\"]"));
-        if (groupRow) {
-          var totalCell = groupRow.querySelector('.text-right');
-          if (totalCell) {
-            totalCell.textContent = _this3.formatCurrency(total);
-          }
+    },
+    calculateGroupTotal: function calculateGroupTotal(groupId) {
+      var _this4 = this;
+      var total = 0;
+      document.querySelectorAll("tr.item_row[data-groupid=\"".concat(groupId, "\"]")).forEach(function (itemRow) {
+        var _itemRow$querySelecto;
+        if (!((_itemRow$querySelecto = itemRow.querySelector('.item-optional')) !== null && _itemRow$querySelecto !== void 0 && _itemRow$querySelecto.checked)) {
+          var _itemRow$querySelecto2, _itemRow$querySelecto3;
+          var quantity = _this4.parseNumber(((_itemRow$querySelecto2 = itemRow.querySelector('.item-quantity')) === null || _itemRow$querySelecto2 === void 0 ? void 0 : _itemRow$querySelecto2.value) || '0');
+          var price = _this4.parseNumber(((_itemRow$querySelecto3 = itemRow.querySelector('.item-price')) === null || _itemRow$querySelecto3 === void 0 ? void 0 : _itemRow$querySelecto3.value) || '0');
+          total += quantity * price;
         }
       });
+      return total;
     },
     formatDecimal: function formatDecimal(value) {
       return new Intl.NumberFormat('de-DE', {
@@ -171,19 +175,19 @@ Alpine.data('estimationShow', function () {
     },
     filterTable: function filterTable() {
       var searchTerm = this.searchQuery.toLowerCase();
-      Object.entries(this.items).forEach(function (_ref5) {
-        var _ref6 = _slicedToArray(_ref5, 2),
-          itemId = _ref6[0],
-          item = _ref6[1];
+      Object.entries(this.items).forEach(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+          itemId = _ref2[0],
+          item = _ref2[1];
         var row = document.querySelector("tr[data-itemid=\"".concat(itemId, "\"]"));
         if (row) {
           row.style.display = item.name.toLowerCase().includes(searchTerm) || item.pos.toLowerCase().includes(searchTerm) ? '' : 'none';
         }
       });
-      Object.entries(this.groups).forEach(function (_ref7) {
-        var _ref8 = _slicedToArray(_ref7, 2),
-          groupId = _ref8[0],
-          group = _ref8[1];
+      Object.entries(this.groups).forEach(function (_ref3) {
+        var _ref4 = _slicedToArray(_ref3, 2),
+          groupId = _ref4[0],
+          group = _ref4[1];
         var row = document.querySelector("tr[data-groupid=\"".concat(groupId, "\"]"));
         if (row) {
           row.style.display = group.name.toLowerCase().includes(searchTerm) || group.pos.toLowerCase().includes(searchTerm) ? '' : 'none';
@@ -191,7 +195,7 @@ Alpine.data('estimationShow', function () {
       });
     },
     initializeSortable: function initializeSortable() {
-      var _this4 = this;
+      var _this5 = this;
       $("#estimation-edit-table").sortable({
         items: 'tbody tr',
         cursor: 'pointer',
@@ -203,12 +207,12 @@ Alpine.data('estimationShow', function () {
           ui.item.addClass("selected");
         },
         stop: function stop() {
-          return _this4.updatePOSNumbers();
+          return _this5.updatePOSNumbers();
         }
       });
     },
     initializeLastNumbers: function initializeLastNumbers() {
-      var _this5 = this;
+      var _this6 = this;
       var posNumbers = new Set();
       document.querySelectorAll('.pos-inner').forEach(function (element) {
         var pos = element.textContent.trim();
@@ -220,20 +224,20 @@ Alpine.data('estimationShow', function () {
             itemNum = _pos$split2[1];
           var groupNumber = parseInt(groupNum);
           var itemNumber = parseInt(itemNum);
-          _this5.lastGroupNumber = Math.max(_this5.lastGroupNumber, groupNumber);
-          if (!_this5.lastItemNumbers[groupNumber] || itemNumber > _this5.lastItemNumbers[groupNumber]) {
+          _this6.lastGroupNumber = Math.max(_this6.lastGroupNumber, groupNumber);
+          if (!_this6.lastItemNumbers[groupNumber] || itemNumber > _this6.lastItemNumbers[groupNumber]) {
             // Ensure item numbers stay within 2 digits (max 99)
-            _this5.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
+            _this6.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
           }
         }
       });
       document.querySelectorAll('.grouppos').forEach(function (element) {
         var groupNum = parseInt(element.textContent.trim());
-        _this5.lastGroupNumber = Math.max(_this5.lastGroupNumber, groupNum);
+        _this6.lastGroupNumber = Math.max(_this6.lastGroupNumber, groupNum);
       });
     },
     addItem: function addItem(type) {
-      var _this6 = this;
+      var _this7 = this;
       var timestamp = Date.now();
       this.newItems[timestamp] = {
         id: timestamp,
@@ -243,12 +247,12 @@ Alpine.data('estimationShow', function () {
         expanded: false
       };
       this.$nextTick(function () {
-        _this6.initializeSortable();
-        _this6.updatePOSNumbers();
+        _this7.initializeSortable();
+        _this7.updatePOSNumbers();
       });
     },
     removeItem: function removeItem() {
-      var _this7 = this;
+      var _this8 = this;
       var selectedCheckboxes = document.querySelectorAll('.item_selection:checked');
       if (selectedCheckboxes.length === 0) {
         toastrs("Error", "Please select checkbox to continue delete");
@@ -268,10 +272,10 @@ Alpine.data('estimationShow', function () {
             var row = checkbox.closest('tr');
             if (row.classList.contains('group_row')) {
               groupIds.push(row.dataset.groupid);
-              delete _this7.groups[row.dataset.groupid];
+              delete _this8.groups[row.dataset.groupid];
             } else {
               itemIds.push(row.dataset.itemid);
-              delete _this7.items[row.dataset.itemid];
+              delete _this8.items[row.dataset.itemid];
             }
             row.remove();
           });
@@ -288,13 +292,13 @@ Alpine.data('estimationShow', function () {
               group_ids: groupIds
             })
           });
-          _this7.calculateTotals();
-          _this7.updatePOSNumbers();
+          _this8.calculateTotals();
+          _this8.updatePOSNumbers();
         }
       });
     },
     updatePOSNumbers: function updatePOSNumbers() {
-      var _this8 = this;
+      var _this9 = this;
       var currentGroupPos = 0;
       var itemCountInGroup = 0;
       var lastGroupId = null;
@@ -305,16 +309,16 @@ Alpine.data('estimationShow', function () {
           lastGroupId = row.dataset.groupid;
           var groupPos = currentGroupPos.toString().padStart(2, '0');
           row.querySelector('.grouppos').textContent = "".concat(groupPos);
-          if (_this8.groups[lastGroupId]) {
-            _this8.groups[lastGroupId].pos = groupPos;
+          if (_this9.groups[lastGroupId]) {
+            _this9.groups[lastGroupId].pos = groupPos;
           }
         } else if (row.classList.contains('item_row') || row.classList.contains('item_comment')) {
           itemCountInGroup++;
           var itemPos = "".concat(currentGroupPos.toString().padStart(2, '0'), ".").concat(itemCountInGroup.toString().padStart(2, '0'));
           row.querySelector('.pos-inner').textContent = itemPos;
           var itemId = row.dataset.itemid || row.dataset.commentid;
-          if (_this8.items[itemId]) {
-            _this8.items[itemId].pos = itemPos;
+          if (_this9.items[itemId]) {
+            _this9.items[itemId].pos = itemPos;
           }
         }
       });

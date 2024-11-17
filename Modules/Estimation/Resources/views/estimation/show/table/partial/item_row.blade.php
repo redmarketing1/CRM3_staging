@@ -1,4 +1,4 @@
-<tr class="item_row" data-itemID="{{ $product->id }}">
+<tr class="item_row" x-data data-groupid="{{ $estimationGroup->id }}" data-itemID="{{ $product->id }}">
     <td class="column_reorder">
         <i class="fa fa-bars reorder-item"></i>
     </td>
