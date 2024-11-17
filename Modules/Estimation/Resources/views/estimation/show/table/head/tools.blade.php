@@ -5,10 +5,6 @@
     </div>
 
     <div class="d-flex gap-2 mb-2 mt-3 align-items-center">
-        <button type="button" data-bs-toggle="tooltip" title="{{ __('Update POS Numbers') }}"
-            x-on:click="updatePOS({{ $estimation->id }})">
-            <i class="fa-solid fa-list-ol"></i>
-        </button>
 
         {{-- <button class="reorder_group_btn" @click="reorderGroup" type="button" data-bs-toggle="tooltip"
                         title="{{ __('Reorder Group') }}">

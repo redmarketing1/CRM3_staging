@@ -10,12 +10,8 @@
     {{ __('Edit Estimation') }}
 @endsection
 @push('css')
-    <link
-        href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-        rel="stylesheet" />
-    <link rel="stylesheet"
-        href="{{ asset('Modules/Taskly/Resources/assets/css/custom.css') }}"
-        type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('Modules/Taskly/Resources/assets/css/custom.css') }}" type="text/css" />
 @endpush
 @section('page-breadcrumb')
     <a href="{{ route('project.index') }}">{{ __('All Project') }}</a>,
@@ -23,7 +19,7 @@
 @endsection
 
 @section('content')
-    <div class="row" x-data="estimationShow">
+    <div class="row" x-cloak x-data="estimationShow">
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
@@ -51,18 +47,11 @@
 @endsection
 
 @push('scripts')
-    <script
-        src="{{ asset('Modules/Taskly/Resources/assets/js/jquery-ui.min.js') }}">
-    </script>
+    <script src="{{ asset('Modules/Taskly/Resources/assets/js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('js/jquery.repeater.min.js') }}"></script>
-    <script
-        src="{{ asset('Modules/Taskly/Resources/assets/libs/select2/dist/js/select2.min.js') }}">
-    </script>
-    <script
-        src="{{ asset('Modules/Taskly/Resources/assets/js/jquery.nestable.js') }}">
-    </script>
-    <script src="{{ asset('Modules/Taskly/Resources/assets/js/custom.js') }}">
-    </script>
+    <script src="{{ asset('Modules/Taskly/Resources/assets/libs/select2/dist/js/select2.min.js') }}"></script>
+    <script src="{{ asset('Modules/Taskly/Resources/assets/js/jquery.nestable.js') }}"></script>
+    <script src="{{ asset('Modules/Taskly/Resources/assets/js/custom.js') }}"></script>
 @endpush
 {{-- 
 @push('scripts')

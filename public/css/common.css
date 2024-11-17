@@ -149,6 +149,10 @@ th.border-left-right.finalized_sub_contractor_quote {
     color: #ffffff;
 }
 
+#estimation-edit-table {
+    user-select: none !important;
+}
+
 #estimation-edit-table .column_group,
 #estimation-edit-table .description_row {
     display: none;
@@ -7992,7 +7996,7 @@ span.select2-selection.select2-selection--multiple {
 }
 
 #estimation-edit-table .child-row.show {
-    display: table-row!important;
+    display: table-row !important;
 }
 
 .dropdown-menu .dropdown-item {

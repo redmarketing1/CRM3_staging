@@ -14,7 +14,7 @@
     @endforeach
 </tbody>
 
-<template x-for="(item, index) in items" :key="item.id">
+<template x-for="(item, index) in newItems" :key="item.id">
     <tbody>
         <template x-if="item.type === 'item'">
             @include('estimation::estimation.show.table.prepend.add_item')

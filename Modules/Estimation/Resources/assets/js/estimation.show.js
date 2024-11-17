@@ -1,7 +1,8 @@
-const { vModelCheckbox } = require("vue");
-
 Alpine.data('estimationShow', () => ({
-    items: [],
+    items: {},
+    newItems: {},
+    groups: {},
+    totals: {},
     expandedRows: {},
     lastGroupNumber: 0,
     lastItemNumbers: {},
@@ -9,87 +10,112 @@ Alpine.data('estimationShow', () => ({
     selectAll: false,
 
     init() {
-        this.items = [];
-        this.initializeSortable();
+        this.initializeData();
         this.initializeLastNumbers();
-        this.setupCalculations();
+        this.initializeSortable();
 
+        this.$watch('items', () => this.calculateTotals(), { deep: true });
         this.$watch('searchQuery', () => this.filterTable());
         this.$watch('selectAll', (value) => this.checkboxAll(value));
     },
 
-    /**
-     * Watch for changes in quantity, price, and optional checkbox
-     */
-    setupCalculations() {
-        this.$nextTick(() => {
-            document.querySelectorAll('.item_row').forEach(row => {
-                const qtyInput = row.querySelector('.row_qty');
-                const priceInput = row.querySelector('.row_price');
-                const optionalCheck = row.querySelector('.select_optional');
+    initializeData() {
+        // Reset all data structures
+        this.items = {};
+        this.groups = {};
+        this.lastGroupNumber = 0;
+        this.lastItemNumbers = {};
 
-                qtyInput?.addEventListener('blur', (e) => {
-                    const rawValue = e.target.value.replace(/[^\d,-]/g, '');
-                    this.calculateRowTotal(row);
-                    qtyInput.value = this.formatDecimal(this.parseNumber(rawValue));
-                });
+        // Process groups first without modifying POS
+        document.querySelectorAll('tr.group_row').forEach((groupRow) => {
+            const groupId = groupRow.dataset.groupid;
+            const groupPos = groupRow.querySelector('.grouppos').textContent.trim();
+            const groupNumber = parseInt(groupPos);
 
-                qtyInput?.addEventListener('keyup', (e) => {
-                    if (e.key === 'Enter') {
-                        e.target.blur();
-                    }
-                });
+            this.groups[groupId] = {
+                id: groupId,
+                pos: groupPos,
+                name: groupRow.querySelector('.grouptitle-input').value,
+                total: this.parseNumber(groupRow.querySelector('.text-right').textContent),
+                itemCount: 0
+            };
 
-                priceInput?.addEventListener('blur', (e) => {
-                    const rawValue = e.target.value.replace(/[^\d,-]/g, '');
-                    this.calculateRowTotal(row);
-                    priceInput.value = this.formatDecimal(this.parseNumber(rawValue));
-                });
-
-                priceInput?.addEventListener('keyup', (e) => {
-                    if (e.key === 'Enter') {
-                        e.target.blur();
-                    }
-                });
-
-                optionalCheck?.addEventListener('change', () => this.calculateRowTotal(row));
-            });
+            this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
         });
+
+        // Process items and comments without modifying POS
+        document.querySelectorAll('tr.item_row, tr.item_comment').forEach((row) => {
+            const isComment = row.classList.contains('item_comment');
+            const itemId = isComment ? row.dataset.commentid : row.dataset.itemid;
+            const groupId = row.closest('tbody').querySelector('tr.group_row').dataset.groupid;
+
+            if (isComment) {
+                this.items[itemId] = {
+                    id: itemId,
+                    type: 'comment',
+                    groupId: groupId,
+                    pos: row.querySelector('.pos-inner').textContent.trim(),
+                    content: row.querySelector('.column_name input').value,
+                    expanded: false
+                };
+            } else {
+                this.items[itemId] = {
+                    id: itemId,
+                    type: 'item',
+                    groupId: groupId,
+                    pos: row.querySelector('.pos-inner').textContent.trim(),
+                    name: row.querySelector('.item-name').value,
+                    quantity: this.parseNumber(row.querySelector('.item-quantity').value),
+                    price: this.parseNumber(row.querySelector('.item-price').value),
+                    optional: row.querySelector('.item-optional').checked,
+                    unit: row.querySelector('.item-unit').value
+                };
+            }
+
+            this.groups[groupId].itemCount++;
+        });
+
+        // Now update all POS numbers once
+        this.updatePOSNumbers();
+
+        // Calculate totals
+        this.calculateTotals();
     },
 
-    calculateRowTotal(row) {
-        const quantity = this.parseNumber(row.querySelector('.row_qty').value);
-        const price = this.parseNumber(row.querySelector('.row_price').value);
-        const isOptional = row.querySelector('.select_optional').checked;
-        const totalCell = row.querySelector('.column_total_price');
-
-        const total = isOptional ? 0 : quantity * price;
-        totalCell.textContent = this.formatCurrency(total);
-
-        this.updateGroupTotals();
+    calculateItemTotal(itemId) {
+        const item = this.items[itemId];
+        if (!item || item.optional) return 0;
+        return item.quantity * item.price;
     },
 
-    updateGroupTotals() {
-        document.querySelectorAll('.group_row').forEach(groupRow => {
-            const groupPos = groupRow.dataset.group_pos;
-            let groupTotal = 0;
+    calculateTotals() {
+        this.totals = {};
 
-            // Sum all non-optional items in this group
-            document.querySelectorAll(`.item_row[data-group_pos="${groupPos}"]`).forEach(itemRow => {
-                if (!itemRow.querySelector('.select_optional').checked) {
-                    const total = this.parseNumber(itemRow.querySelector('.column_total_price').textContent);
-                    groupTotal += total;
+        // Reset group totals
+        Object.keys(this.groups).forEach(groupId => {
+            this.totals[groupId] = 0;
+        });
+
+        // Calculate item totals and update group totals
+        Object.entries(this.items).forEach(([itemId, item]) => {
+            if (!item.optional) {
+                const total = this.calculateItemTotal(itemId);
+                if (item.groupId && this.totals[item.groupId] !== undefined) {
+                    this.totals[item.groupId] += total;
                 }
-            });
-
-            // Update group total
-            const groupTotalCell = groupRow.querySelector('.grouptotal');
-            groupTotalCell.textContent = this.formatCurrency(groupTotal);
+            }
         });
-    },
 
-    parseNumber(value) {
-        return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
+        // Update group total displays
+        Object.entries(this.totals).forEach(([groupId, total]) => {
+            const groupRow = document.querySelector(`tr[data-groupid="${groupId}"]`);
+            if (groupRow) {
+                const totalCell = groupRow.querySelector('.text-right');
+                if (totalCell) {
+                    totalCell.textContent = this.formatCurrency(total);
+                }
+            }
+        });
     },
 
     formatDecimal(value) {
@@ -106,41 +132,112 @@ Alpine.data('estimationShow', () => ({
         }).format(value);
     },
 
-    formatNumber(value) {
-        return new Intl.NumberFormat('de-DE', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }).format(value);
+    parseNumber(value) {
+        if (typeof value === 'number') return value;
+        return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
+    },
+
+    handleInputBlur(event, type) {
+        const value = event.target.value;
+        const parsedValue = this.parseNumber(value);
+        event.target.value = type === 'quantity' ? this.formatDecimal(parsedValue) : this.formatCurrency(parsedValue);
+
+        const row = event.target.closest('tr');
+        const itemId = row.dataset.itemid;
+
+        if (this.items[itemId]) {
+            this.items[itemId][type] = parsedValue;
+            this.calculateTotals();
+        }
+    },
+
+    handleOptionalChange(event, itemId) {
+        if (this.items[itemId]) {
+            this.items[itemId].optional = event.target.checked;
+            this.calculateTotals();
+        }
+    },
+
+    filterTable() {
+        const searchTerm = this.searchQuery.toLowerCase();
+        Object.entries(this.items).forEach(([itemId, item]) => {
+            const row = document.querySelector(`tr[data-itemid="${itemId}"]`);
+            if (row) {
+                row.style.display = item.name.toLowerCase().includes(searchTerm) ||
+                    item.pos.toLowerCase().includes(searchTerm) ? '' : 'none';
+            }
+        });
+
+        Object.entries(this.groups).forEach(([groupId, group]) => {
+            const row = document.querySelector(`tr[data-groupid="${groupId}"]`);
+            if (row) {
+                row.style.display = group.name.toLowerCase().includes(searchTerm) ||
+                    group.pos.toLowerCase().includes(searchTerm) ? '' : 'none';
+            }
+        });
+    },
+
+    initializeSortable() {
+        $("#estimation-edit-table").sortable({
+            items: 'tbody tr',
+            cursor: 'pointer',
+            axis: 'y',
+            dropOnEmpty: true,
+            handle: '.fa-bars, .fa-up-down',
+            animation: 150,
+            start: function (e, ui) {
+                ui.item.addClass("selected");
+            },
+            stop: () => this.updatePOSNumbers()
+        });
+    },
+
+    initializeLastNumbers() {
+        const posNumbers = new Set();
+
+        document.querySelectorAll('.pos-inner').forEach(element => {
+            const pos = element.textContent.trim();
+            if (pos) {
+                posNumbers.add(pos);
+                const [groupNum, itemNum] = pos.split('.');
+                const groupNumber = parseInt(groupNum);
+                const itemNumber = parseInt(itemNum);
+
+                this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
+
+                if (!this.lastItemNumbers[groupNumber] || itemNumber > this.lastItemNumbers[groupNumber]) {
+                    // Ensure item numbers stay within 2 digits (max 99)
+                    this.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
+                }
+            }
+        });
+
+        document.querySelectorAll('.grouppos').forEach(element => {
+            const groupNum = parseInt(element.textContent.trim());
+            this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNum);
+        });
     },
 
     addItem(type) {
-        let pos;
-        if (type === 'group') {
-            this.lastGroupNumber++;
-            pos = `${this.lastGroupNumber.toString().padStart(2, '0')}`;
-            this.lastItemNumbers[this.lastGroupNumber] = 0;
-        } else {
-            // For items and comments
-            const currentGroup = this.lastGroupNumber;
-            this.lastItemNumbers[currentGroup] = (this.lastItemNumbers[currentGroup] || 0) + 1;
-            pos = `${currentGroup.toString().padStart(2, '0')}.${this.lastItemNumbers[currentGroup].toString().padStart(2, '0')}`;
-        }
+        const timestamp = Date.now();
 
-        const newItem = {
-            id: Date.now(),
+        this.newItems[timestamp] = {
+            id: timestamp,
             type: type,
-            pos: pos
+            quantity: 0,
+            optional: false,
+            expanded: false
         };
-
-        this.items.push(newItem);
+        this.$nextTick(() => {
+            this.initializeSortable();
+            this.updatePOSNumbers();
+        });
     },
 
     removeItem() {
-
-        const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"].item_selection:checked');
-
-        if (selectedCheckboxes.length == 0) {
-            toastrs("Error", "Please select checkbox to contiune delete");
+        const selectedCheckboxes = document.querySelectorAll('.item_selection:checked');
+        if (selectedCheckboxes.length === 0) {
+            toastrs("Error", "Please select checkbox to continue delete");
             return;
         }
 
@@ -148,40 +245,76 @@ Alpine.data('estimationShow', () => ({
             title: 'Confirmation Delete',
             text: 'Really! You want to remove them? You can\'t undo',
             showCancelButton: true,
-            confirmButtonText: `Yes, Delete it`,
+            confirmButtonText: 'Yes, Delete it',
             cancelButtonText: "No, cancel",
         }).then((result) => {
             if (result.isConfirmed) {
-                selectedCheckboxes.forEach(element => {
-                    const parentElement = element.closest('tr');
-                    const parentID = parentElement.dataset.id ?? null;
+                const itemIds = [];
+                const groupIds = [];
 
-                    parentElement.remove();
-                    $('.SelectAllCheckbox').prop('checked', false)
-
-                    $.ajax({
-                        url: route('estimations.remove_items.estimate'),
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify({
-                            estimation_id: estimation_id,
-                            item_ids: item_ids,
-                            group_ids: group_ids
-                        }),
-                        success: function (response) {
-                            console.log(response);
-                        }
-                    });
-
+                selectedCheckboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    if (row.classList.contains('group_row')) {
+                        groupIds.push(row.dataset.groupid);
+                        delete this.groups[row.dataset.groupid];
+                    } else {
+                        itemIds.push(row.dataset.itemid);
+                        delete this.items[row.dataset.itemid];
+                    }
+                    row.remove();
                 });
+
+                document.querySelector('.SelectAllCheckbox').checked = false;
+
+                fetch(route('estimations.remove_items.estimate'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        estimation_id: window.estimation_id,
+                        item_ids: itemIds,
+                        group_ids: groupIds
+                    })
+                });
+
+                this.calculateTotals();
+                this.updatePOSNumbers();
             }
         });
     },
 
-    getPosNumber(index) {
-        const groupCounter = Math.floor(index / 100) + 1;
-        const itemCounter = (index % 100) + 1;
-        return `${groupCounter.toString().padStart(2, '0')}.${itemCounter.toString().padStart(2, '0')}`;
+    updatePOSNumbers() {
+        let currentGroupPos = 0;
+        let itemCountInGroup = 0;
+        let lastGroupId = null;
+
+        document.querySelectorAll('tr').forEach(row => {
+            if (row.classList.contains('group_row')) {
+                currentGroupPos++;
+                itemCountInGroup = 0;
+                lastGroupId = row.dataset.groupid;
+
+                const groupPos = currentGroupPos.toString().padStart(2, '0');
+                row.querySelector('.grouppos').textContent = `${groupPos}`;
+
+                if (this.groups[lastGroupId]) {
+                    this.groups[lastGroupId].pos = groupPos;
+                }
+            }
+            else if (row.classList.contains('item_row') || row.classList.contains('item_comment')) {
+                itemCountInGroup++;
+                const itemPos = `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`;
+
+                row.querySelector('.pos-inner').textContent = itemPos;
+
+                const itemId = row.dataset.itemid || row.dataset.commentid;
+                if (this.items[itemId]) {
+                    this.items[itemId].pos = itemPos;
+                }
+            }
+        });
     },
 
     toggleDescription(index, event) {
@@ -193,109 +326,9 @@ Alpine.data('estimationShow', () => ({
         return this.expandedRows[index] || false;
     },
 
-    initializeSortable() {
-        const tbody = document.querySelector("#estimation-edit-table tbody");
-        if (tbody && typeof Sortable !== 'undefined') {
-            new Sortable(tbody, {
-                handle: '.fa-bars',
-                animation: 150,
-                onEnd: () => {
-                    this.updatePOSNumbers();
-                }
-            });
-        }
-    },
-
-    initializeLastNumbers() {
-        // Get all existing POS numbers from backend-loaded items
-        const existingPosElements = document.querySelectorAll('.pos-inner');
-        existingPosElements.forEach(element => {
-            const pos = element.textContent.trim();
-            if (pos) {
-                const [groupNum, itemNum] = pos.split('.');
-                const groupNumber = parseInt(groupNum);
-                const itemNumber = parseInt(itemNum);
-
-                // Update last group number
-                this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
-
-                // Update last item number for this group
-                if (!this.lastItemNumbers[groupNumber] || itemNumber > this.lastItemNumbers[groupNumber]) {
-                    this.lastItemNumbers[groupNumber] = itemNumber;
-                }
-            }
-        });
-    },
-
-    updatePOSNumbers() {
-        this.items.forEach((item, index) => {
-            const posNumber = this.getPosNumber(index);
-            const row = document.querySelector(`tr[data-id="${index}"] .pos-inner`);
-            if (row) row.textContent = posNumber;
-        });
-    },
-
-    filterTable() {
-        const filter = this.searchQuery.toUpperCase();
-        const table = document.getElementById('estimation-edit-table');
-        const rows = table.getElementsByTagName('tr');
-
-        for (let i = 0; i < rows.length; i++) {
-            const cells = rows[i].getElementsByTagName('td');
-            let shouldDisplay = false;
-
-            // Process all cells in the row
-            for (let j = 0; j < cells.length; j++) {
-                const cellContent = cells[j].innerHTML;
-                if (cellContent.toUpperCase().indexOf(filter) > -1) {
-                    shouldDisplay = true;
-                    break;
-                }
-            }
-
-            rows[i].style.display = shouldDisplay ? '' : 'none';
-        }
-    },
-
     checkboxAll(value) {
         document.querySelectorAll('.item_selection').forEach(checkbox => {
             checkbox.checked = value;
         });
-        document.querySelectorAll('.group_checkbox').forEach(checkbox => {
-            checkbox.checked = value;
-        });
-    }
-}))
-
-
-
-$("#estimation-edit-table").sortable({
-    items: 'tr.item_row',
-    cursor: 'pointer',
-    axis: 'y',
-    dropOnEmpty: false,
-    start: function (e, ui) {
-        ui.item.addClass("selected");
     },
-    stop: function (e, ui) {
-        var item_id = $(ui.item).data('id');
-        var description_row = $(
-            '.description_row[data-id="' +
-            item_id + '"]');
-        $('.description_row[data-id="' + item_id +
-            '"]').remove();
-        description_row.insertAfter($(ui.item));
-
-        var group_pos = $(ui.item).prevAll(
-            "tr.group_row:first").data(
-                'group_pos');
-        var group_id = $(ui.item).prevAll(
-            "tr.group_row:first").data(
-                'group_id');
-        $(ui.item).attr('data-group_pos',
-            group_pos);
-        $(ui.item).attr('data-group_id', group_id);
-
-        ui.item.removeClass("selected");
-    }
-});
+})); 
