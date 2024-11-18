@@ -1,4 +1,4 @@
-<tr class="item_row comment_row" :data-id="index" data-type="comment">
+<tr class="item_comment" :data-id="item.id" :data-itemid="item.id" :data-groupid="item.groupId" data-type="comment">
 
     <td class="column_reorder">
         <i class="fa fa-bars reorder-item"></i>
@@ -13,7 +13,7 @@
     </td>
 
     <td colspan="4" class="border-right column_name">
-        <input type="text" name="[item][name]" class="form-control" value="{{ trans('Write your Comment') }}">
+        <input type="text" name="[item][name]" class="form-control item-description" :value="item.content">
     </td>
 
     @foreach ($allQuotes as $quotes)
