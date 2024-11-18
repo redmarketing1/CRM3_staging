@@ -1,4 +1,5 @@
-<tr class="item_row parent-row" :data-itemid="item.id" :data-groupid="item.groupId" data-type="item">
+<tr class="item_row parent-row" :data-id="item.id" :data-itemid="item.id" :data-groupid="item.groupId"
+    data-type="item">
 
     <td class="column_reorder">
         <i class="fa fa-bars reorder-item"></i>
@@ -22,7 +23,7 @@
 
     <td class="column_quantity">
         <input type="text" class="form-control row_qty" :value="formatDecimal(item.quantity || 0)"
-            x-on:blur="handleInputBlur($event, 'quantity')">
+            @blur="handleInputBlur($event, 'quantity')">
     </td>
 
     <td class="column_unit">
@@ -30,18 +31,17 @@
     </td>
 
     <td class="column_optional border-right">
-        <input type="checkbox" name="optional[]" class="select_optional" :checked="item.id.optional"
+        <input type="checkbox" name="optional[]" class="select_optional" :checked="item.optional"
             x-on:change="handleOptionalChange($event, item.id)">
     </td>
 
     @foreach ($allQuotes as $quotes)
         <td class="column_single_price border-left">
             <input type="text" class="form-control row_price" :value="formatCurrency(item.price || 0)"
-                x-on:blur="handleInputBlur($event, 'price')">
+                @blur="handleInputBlur($event, 'price')">
         </td>
-        <td class="column_total_price border-right"
-            x-text="item.optional ? '-' : formatCurrency(calculateItemTotal(item.id))">
-            0,00
+        <td class="column_total_price border-right" x-text="calculateItemTotal(item.id)">
+            -
         </td>
     @endforeach
 </tr>

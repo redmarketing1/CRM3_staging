@@ -96,18 +96,19 @@ Alpine.data('estimationShow', function () {
       this.calculateTotals();
     },
     calculateItemTotal: function calculateItemTotal(itemId) {
-      var item = this.items[itemId];
+      // Check both items and newItems
+      var item = this.items[itemId] || this.newItems[itemId];
       if (!item || item.optional) return 0;
-      return item.quantity * item.price;
+      return (item.quantity || 0) * (item.price || 0);
     },
     calculateTotals: function calculateTotals() {
       var _this3 = this;
       // Reset totals
       this.totals = {};
 
-      // Initialize group totals
+      // Initialize group totals for both existing and new groups
       document.querySelectorAll('tr.group_row').forEach(function (groupRow) {
-        var groupId = groupRow.dataset.groupid;
+        var groupId = groupRow.dataset.id || groupRow.dataset.groupid;
         if (!groupId) return;
 
         // Calculate total for this group
@@ -129,6 +130,8 @@ Alpine.data('estimationShow', function () {
     calculateGroupTotal: function calculateGroupTotal(groupId) {
       var _this4 = this;
       var total = 0;
+
+      // Calculate for existing items
       document.querySelectorAll("tr.item_row[data-groupid=\"".concat(groupId, "\"]")).forEach(function (itemRow) {
         var _itemRow$querySelecto;
         if (!((_itemRow$querySelecto = itemRow.querySelector('.item-optional')) !== null && _itemRow$querySelecto !== void 0 && _itemRow$querySelecto.checked)) {
@@ -136,6 +139,13 @@ Alpine.data('estimationShow', function () {
           var quantity = _this4.parseNumber(((_itemRow$querySelecto2 = itemRow.querySelector('.item-quantity')) === null || _itemRow$querySelecto2 === void 0 ? void 0 : _itemRow$querySelecto2.value) || '0');
           var price = _this4.parseNumber(((_itemRow$querySelecto3 = itemRow.querySelector('.item-price')) === null || _itemRow$querySelecto3 === void 0 ? void 0 : _itemRow$querySelecto3.value) || '0');
           total += quantity * price;
+        }
+      });
+
+      // Calculate for new items in this group
+      Object.values(this.newItems).forEach(function (item) {
+        if (item.groupId === groupId && !item.optional && item.type === 'item') {
+          total += (item.quantity || 0) * (item.price || 0);
         }
       });
       return total;
@@ -161,16 +171,23 @@ Alpine.data('estimationShow', function () {
       var parsedValue = this.parseNumber(value);
       event.target.value = type === 'quantity' ? this.formatDecimal(parsedValue) : this.formatCurrency(parsedValue);
       var row = event.target.closest('tr');
-      var itemId = row.dataset.itemid;
+      var itemId = row.dataset.id || row.dataset.itemid;
+
+      // Update both items and newItems
       if (this.items[itemId]) {
         this.items[itemId][type] = parsedValue;
-        this.calculateTotals();
       }
+      if (this.newItems[itemId]) {
+        this.newItems[itemId][type] = parsedValue;
+      }
+      this.calculateTotals();
     },
     handleOptionalChange: function handleOptionalChange(event, itemId) {
-      console.log(this.items);
       if (this.items[itemId]) {
         this.items[itemId].optional = event.target.checked;
+        if (this.newItems[itemId]) {
+          this.newItems[itemId].optional = event.target.checked;
+        }
         this.calculateTotals();
       }
     },
@@ -287,24 +304,31 @@ Alpine.data('estimationShow', function () {
     addItem: function addItem(type) {
       var _this7 = this;
       var timestamp = Date.now();
-      this.newItems[timestamp] = {
+      var GroupRow = document.querySelectorAll('tr.group_row');
+      var lastGroupRow = GroupRow[GroupRow.length - 1];
+      var currentGroupId = lastGroupRow ? lastGroupRow.dataset.groupid : null;
+      if (!currentGroupId) return; // Need a group to add items
+
+      var newItem = {
         id: timestamp,
         type: type,
+        groupId: currentGroupId,
+        name: type === 'comment' ? 'New Comment' : 'New Item',
         quantity: 0,
+        price: 0,
+        unit: '',
         optional: false,
-        expanded: false
+        expanded: false,
+        pos: ''
       };
-      this.items[timestamp] = {
-        id: timestamp,
-        type: type,
-        name: type,
-        quantity: 0,
-        optional: false,
-        expanded: false
-      };
+
+      // Add to both collections
+      this.items[timestamp] = newItem;
+      this.newItems[timestamp] = newItem;
       this.$nextTick(function () {
         _this7.initializeSortable();
         _this7.updatePOSNumbers();
+        _this7.calculateTotals();
       });
     },
     removeItem: function removeItem() {

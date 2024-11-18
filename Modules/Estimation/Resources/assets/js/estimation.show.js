@@ -83,18 +83,19 @@ Alpine.data('estimationShow', () => ({
     },
 
     calculateItemTotal(itemId) {
-        const item = this.items[itemId];
+        // Check both items and newItems
+        const item = this.items[itemId] || this.newItems[itemId];
         if (!item || item.optional) return 0;
-        return item.quantity * item.price;
+        return (item.quantity || 0) * (item.price || 0);
     },
 
     calculateTotals() {
         // Reset totals
         this.totals = {};
 
-        // Initialize group totals
+        // Initialize group totals for both existing and new groups
         document.querySelectorAll('tr.group_row').forEach(groupRow => {
-            const groupId = groupRow.dataset.groupid;
+            const groupId = groupRow.dataset.id || groupRow.dataset.groupid;
             if (!groupId) return;
 
             // Calculate total for this group
@@ -116,11 +117,20 @@ Alpine.data('estimationShow', () => ({
 
     calculateGroupTotal(groupId) {
         let total = 0;
+
+        // Calculate for existing items
         document.querySelectorAll(`tr.item_row[data-groupid="${groupId}"]`).forEach(itemRow => {
             if (!itemRow.querySelector('.item-optional')?.checked) {
                 const quantity = this.parseNumber(itemRow.querySelector('.item-quantity')?.value || '0');
                 const price = this.parseNumber(itemRow.querySelector('.item-price')?.value || '0');
                 total += quantity * price;
+            }
+        });
+
+        // Calculate for new items in this group
+        Object.values(this.newItems).forEach(item => {
+            if (item.groupId === groupId && !item.optional && item.type === 'item') {
+                total += (item.quantity || 0) * (item.price || 0);
             }
         });
 
@@ -152,19 +162,25 @@ Alpine.data('estimationShow', () => ({
         event.target.value = type === 'quantity' ? this.formatDecimal(parsedValue) : this.formatCurrency(parsedValue);
 
         const row = event.target.closest('tr');
-        const itemId = row.dataset.itemid;
+        const itemId = row.dataset.id || row.dataset.itemid;
 
+        // Update both items and newItems
         if (this.items[itemId]) {
             this.items[itemId][type] = parsedValue;
-            this.calculateTotals();
         }
+        if (this.newItems[itemId]) {
+            this.newItems[itemId][type] = parsedValue;
+        }
+
+        this.calculateTotals();
     },
 
     handleOptionalChange(event, itemId) {
-        console.log(this.items);
-
         if (this.items[itemId]) {
             this.items[itemId].optional = event.target.checked;
+            if (this.newItems[itemId]) {
+                this.newItems[itemId].optional = event.target.checked;
+            }
             this.calculateTotals();
         }
     },
@@ -281,27 +297,34 @@ Alpine.data('estimationShow', () => ({
 
     addItem(type) {
         const timestamp = Date.now();
+        const GroupRow = document.querySelectorAll('tr.group_row');
+        const lastGroupRow = GroupRow[GroupRow.length - 1];
+        const currentGroupId = lastGroupRow ? lastGroupRow.dataset.groupid : null;
 
-        this.newItems[timestamp] = {
+
+        if (!currentGroupId) return; // Need a group to add items
+
+        const newItem = {
             id: timestamp,
             type: type,
+            groupId: currentGroupId,
+            name: type === 'comment' ? 'New Comment' : 'New Item',
             quantity: 0,
-            optional: false,
-            expanded: false
-        };
-
-        this.items[timestamp] = {
-            id: timestamp,
-            type: type,
-            name: type,
-            quantity: 0,
+            price: 0,
+            unit: '',
             optional: false,
             expanded: false,
+            pos: ''
         };
+
+        // Add to both collections
+        this.items[timestamp] = newItem;
+        this.newItems[timestamp] = newItem;
 
         this.$nextTick(() => {
             this.initializeSortable();
             this.updatePOSNumbers();
+            this.calculateTotals();
         });
     },
 
