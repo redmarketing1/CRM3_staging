@@ -23,11 +23,18 @@ Alpine.data('estimationShow', function () {
     lastItemNumbers: {},
     searchQuery: '',
     selectAll: false,
+    contextMenu: {
+      show: false,
+      x: 0,
+      y: 0,
+      selectedRowId: null
+    },
     init: function init() {
       var _this = this;
       this.initializeData();
-      this.initializeLastNumbers();
       this.initializeSortable();
+      this.initializeLastNumbers();
+      this.initializeContextMenu();
       this.$watch('items', function () {
         return _this.calculateTotals();
       }, {
@@ -38,6 +45,11 @@ Alpine.data('estimationShow', function () {
       });
       this.$watch('selectAll', function (value) {
         return _this.checkboxAll(value);
+      });
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.context-menu')) {
+          _this.showContextMenu = false;
+        }
       });
     },
     initializeData: function initializeData() {
@@ -317,7 +329,7 @@ Alpine.data('estimationShow', function () {
         id: timestamp,
         type: type,
         groupId: currentGroupId,
-        name: type === 'comment' ? 'New Comment' : 'New Item',
+        name: type + " name",
         quantity: 0,
         price: 0,
         unit: '',
@@ -418,6 +430,153 @@ Alpine.data('estimationShow', function () {
       document.querySelectorAll('.item_selection').forEach(function (checkbox) {
         checkbox.checked = value;
       });
+    },
+    initializeContextMenu: function initializeContextMenu() {
+      var _this10 = this;
+      var handleContextMenu = function handleContextMenu(e) {
+        var row = e.target.closest('tr.item_row, tr.group_row');
+        if (!row) return;
+        e.preventDefault();
+
+        // Get viewport dimensions
+        var viewportWidth = window.innerWidth;
+        var viewportHeight = window.innerHeight;
+
+        // Calculate position
+        var x = e.clientX;
+        var y = e.clientY;
+        if (x + 160 > viewportWidth) x = viewportWidth - 160;
+        if (y + 160 > viewportHeight) y = viewportHeight - 160;
+        _this10.contextMenu = {
+          show: true,
+          x: x,
+          y: y,
+          selectedRowId: row.dataset.id || row.dataset.itemid || row.dataset.groupid
+        };
+      };
+
+      // Use event delegation
+      document.querySelector('#estimation-edit-table').addEventListener('contextmenu', handleContextMenu);
+    },
+    moveRow: function moveRow(direction, rowId) {
+      var row = document.querySelector("tr[data-id=\"".concat(rowId, "\"], tr[data-itemid=\"").concat(rowId, "\"], tr[data-groupid=\"").concat(rowId, "\"]"));
+      if (!row) return;
+      if (direction === 'up') {
+        var prevRow = row.previousElementSibling;
+        if (prevRow) {
+          row.parentNode.insertBefore(row, prevRow);
+        }
+      } else {
+        var nextRow = row.nextElementSibling;
+        if (nextRow) {
+          row.parentNode.insertBefore(nextRow, row);
+        }
+      }
+
+      // Update POS numbers and totals
+      this.updatePOSNumbers();
+      this.calculateTotals();
+      this.contextMenu.show = false;
+    },
+    duplicateRow: function duplicateRow(rowId) {
+      var _originalRow$querySel,
+        _originalRow$querySel2,
+        _originalRow$querySel3,
+        _originalRow$querySel4,
+        _originalRow$querySel5,
+        _this11 = this;
+      var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], tr[data-itemid=\"").concat(rowId, "\"], tr[data-groupid=\"").concat(rowId, "\"]"));
+      if (!originalRow) return;
+      var timestamp = Date.now();
+      var isGroup = originalRow.classList.contains('group_row');
+      var groupId = isGroup ? null : originalRow.dataset.groupid;
+      var type = originalRow.dataset.type;
+      var name = ((_originalRow$querySel = originalRow.querySelector('.item-name, .grouptitle-input')) === null || _originalRow$querySel === void 0 ? void 0 : _originalRow$querySel.value) + " - copy " || 0;
+      var quantity = parseInt(((_originalRow$querySel2 = originalRow.querySelector('.item-quantity')) === null || _originalRow$querySel2 === void 0 ? void 0 : _originalRow$querySel2.value) || '0');
+      var unit = ((_originalRow$querySel3 = originalRow.querySelector('.item-unit')) === null || _originalRow$querySel3 === void 0 ? void 0 : _originalRow$querySel3.value) || 'unknown';
+      var optional = ((_originalRow$querySel4 = originalRow.querySelector('.item-optional')) === null || _originalRow$querySel4 === void 0 ? void 0 : _originalRow$querySel4.checked) || false;
+      var price = parseInt(((_originalRow$querySel5 = originalRow.querySelector('.item-price')) === null || _originalRow$querySel5 === void 0 ? void 0 : _originalRow$querySel5.value) || '0');
+      if (isGroup) {
+        var newItem = {
+          id: timestamp,
+          type: 'group',
+          name: name,
+          total: 0,
+          expanded: false
+        };
+
+        // Add to both collections
+        this.items[timestamp] = newItem;
+        this.newItems[timestamp] = newItem;
+      } else {
+        // Get values from original row
+        var _newItem = {
+          id: timestamp,
+          type: type,
+          groupId: groupId,
+          name: name,
+          quantity: quantity,
+          unit: unit,
+          optional: optional,
+          price: price,
+          expanded: false
+        };
+
+        // Add to both collections
+        this.items[timestamp] = _newItem;
+        this.newItems[timestamp] = _newItem;
+      }
+
+      // Ensure proper order
+      this.$nextTick(function () {
+        // Find the new row and move it after the original
+        var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], tr[data-itemid=\"").concat(timestamp, "\"]"));
+        if (newRow && originalRow.nextSibling) {
+          originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
+        }
+        _this11.updatePOSNumbers();
+        _this11.calculateTotals();
+        _this11.initializeContextMenu();
+      });
+      this.contextMenu.show = false;
+    },
+    removeRowFromMenu: function removeRowFromMenu(rowId) {
+      var _this12 = this;
+      Swal.fire({
+        title: 'Confirmation Delete',
+        text: 'Really! You want to remove this item? You can\'t undo',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Delete it',
+        cancelButtonText: "No, cancel"
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          var row = document.querySelector("tr[data-id=\"".concat(rowId, "\"], tr[data-itemid=\"").concat(rowId, "\"], tr[data-groupid=\"").concat(rowId, "\"]"));
+          if (!row) return;
+          if (row.classList.contains('group_row')) {
+            // If it's a group, also remove all its items
+            var groupId = row.dataset.groupid;
+            document.querySelectorAll("tr[data-groupid=\"".concat(groupId, "\"]")).forEach(function (itemRow) {
+              var itemId = itemRow.dataset.itemid;
+              delete _this12.items[itemId];
+              delete _this12.newItems[itemId];
+              itemRow.remove();
+            });
+            delete _this12.groups[groupId];
+          } else {
+            // Remove single item
+            var itemId = row.dataset.itemid || row.dataset.id;
+            delete _this12.items[itemId];
+            delete _this12.newItems[itemId];
+          }
+          row.remove();
+          _this12.updatePOSNumbers();
+          _this12.calculateTotals();
+
+          // Handle UI updates
+          document.querySelector('.SelectAllCheckbox').checked = false;
+        }
+      });
+      this.contextMenu.show = false;
     }
   };
 });

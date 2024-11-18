@@ -153,6 +153,45 @@ th.border-left-right.finalized_sub_contractor_quote {
     user-select: none !important;
 }
 
+.estimation-show .context-menu {
+    min-width: 160px;
+    background: #fefefe;
+    box-shadow: 4px 6px 10px 1px rgb(0 0 0 / 14%);
+    border-radius: 4px;
+    overflow: hidden;
+    width: auto;
+    padding: 0;
+    border: 1px solid #f1f1f1;
+}
+
+.estimation-show .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 16px;
+    text-align: left;
+    transition: background-color 0.2s;
+    font-size: 14px;
+    font-weight: 400;
+    color: #090033;
+    border-bottom: 1px solid #f1f1f1;
+    background: none;
+    cursor: pointer;
+    filter: none !important;
+}
+
+
+.estimation-show .menu-item i {
+    width: 16px;
+    font-size: 12px;
+}
+
+.estimation-show tr.item_row,
+.estimation-show tr.group_row {
+    cursor: context-menu;
+}
+
 #estimation-edit-table .column_group,
 #estimation-edit-table .description_row {
     display: none;

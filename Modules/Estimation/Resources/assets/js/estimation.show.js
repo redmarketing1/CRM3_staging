@@ -8,15 +8,28 @@ Alpine.data('estimationShow', () => ({
     lastItemNumbers: {},
     searchQuery: '',
     selectAll: false,
+    contextMenu: {
+        show: false,
+        x: 0,
+        y: 0,
+        selectedRowId: null
+    },
 
     init() {
         this.initializeData();
-        this.initializeLastNumbers();
         this.initializeSortable();
+        this.initializeLastNumbers();
+        this.initializeContextMenu();
 
         this.$watch('items', () => this.calculateTotals(), { deep: true });
         this.$watch('searchQuery', () => this.filterTable());
         this.$watch('selectAll', (value) => this.checkboxAll(value));
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.context-menu')) {
+                this.showContextMenu = false;
+            }
+        });
     },
 
     initializeData() {
@@ -308,7 +321,7 @@ Alpine.data('estimationShow', () => ({
             id: timestamp,
             type: type,
             groupId: currentGroupId,
-            name: type === 'comment' ? 'New Comment' : 'New Item',
+            name: type + ` name`,
             quantity: 0,
             price: 0,
             unit: '',
@@ -425,4 +438,159 @@ Alpine.data('estimationShow', () => ({
             checkbox.checked = value;
         });
     },
-})); 
+
+    initializeContextMenu() {
+        const handleContextMenu = (e) => {
+            const row = e.target.closest('tr.item_row, tr.group_row');
+            if (!row) return;
+
+            e.preventDefault();
+
+            // Get viewport dimensions
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
+            // Calculate position
+            let x = e.clientX;
+            let y = e.clientY;
+
+            if (x + 160 > viewportWidth) x = viewportWidth - 160;
+            if (y + 160 > viewportHeight) y = viewportHeight - 160;
+
+            this.contextMenu = {
+                show: true,
+                x: x,
+                y: y,
+                selectedRowId: row.dataset.id || row.dataset.itemid || row.dataset.groupid
+            };
+        };
+
+        // Use event delegation
+        document.querySelector('#estimation-edit-table').addEventListener('contextmenu', handleContextMenu);
+    },
+
+    moveRow(direction, rowId) {
+        const row = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-groupid="${rowId}"]`);
+        if (!row) return;
+
+        if (direction === 'up') {
+            const prevRow = row.previousElementSibling;
+            if (prevRow) {
+                row.parentNode.insertBefore(row, prevRow);
+            }
+        } else {
+            const nextRow = row.nextElementSibling;
+            if (nextRow) {
+                row.parentNode.insertBefore(nextRow, row);
+            }
+        }
+
+        // Update POS numbers and totals
+        this.updatePOSNumbers();
+        this.calculateTotals();
+        this.contextMenu.show = false;
+    },
+
+    duplicateRow(rowId) {
+        const originalRow = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-groupid="${rowId}"]`);
+        if (!originalRow) return;
+
+        const timestamp = Date.now();
+        const isGroup = originalRow.classList.contains('group_row');
+        const groupId = isGroup ? null : originalRow.dataset.groupid;
+        const type = originalRow.dataset.type;
+        const name = originalRow.querySelector('.item-name, .grouptitle-input')?.value + ` - copy ` || 'Default Name (copy)';
+        const quantity = parseInt(originalRow.querySelector('.item-quantity')?.value || '0');
+        const unit = originalRow.querySelector('.item-unit')?.value || 'unknown';
+        const optional = originalRow.querySelector('.item-optional')?.checked || false;
+        const price = parseInt(originalRow.querySelector('.item-price')?.value || '0');
+
+
+        if (isGroup) {
+            const newItem = {
+                id: timestamp,
+                type: 'group',
+                name: name,
+                total: 0,
+                expanded: false
+            };
+
+            // Add to both collections
+            this.items[timestamp] = newItem;
+            this.newItems[timestamp] = newItem;
+        } else {
+            // Get values from original row
+            const newItem = {
+                id: timestamp,
+                type: type,
+                groupId: groupId,
+                name: name,
+                quantity: quantity,
+                unit: unit,
+                optional: optional,
+                price: price,
+                expanded: false
+            };
+
+            // Add to both collections
+            this.items[timestamp] = newItem;
+            this.newItems[timestamp] = newItem;
+        }
+
+        // Ensure proper order
+        this.$nextTick(() => {
+            // Find the new row and move it after the original
+            const newRow = document.querySelector(`tr[data-id="${timestamp}"], tr[data-itemid="${timestamp}"]`);
+            if (newRow && originalRow.nextSibling) {
+                originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
+            }
+
+            this.updatePOSNumbers();
+            this.calculateTotals();
+            this.initializeContextMenu();
+        });
+
+        this.contextMenu.show = false;
+    },
+
+    removeRowFromMenu(rowId) {
+        Swal.fire({
+            title: 'Confirmation Delete',
+            text: 'Really! You want to remove this item? You can\'t undo',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete it',
+            cancelButtonText: "No, cancel",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const row = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-groupid="${rowId}"]`);
+                if (!row) return;
+
+                if (row.classList.contains('group_row')) {
+                    // If it's a group, also remove all its items
+                    const groupId = row.dataset.groupid;
+                    document.querySelectorAll(`tr[data-groupid="${groupId}"]`).forEach(itemRow => {
+                        const itemId = itemRow.dataset.itemid;
+                        delete this.items[itemId];
+                        delete this.newItems[itemId];
+                        itemRow.remove();
+                    });
+                    delete this.groups[groupId];
+                } else {
+                    // Remove single item
+                    const itemId = row.dataset.itemid || row.dataset.id;
+                    delete this.items[itemId];
+                    delete this.newItems[itemId];
+                }
+
+                row.remove();
+                this.updatePOSNumbers();
+                this.calculateTotals();
+
+                // Handle UI updates
+                document.querySelector('.SelectAllCheckbox').checked = false;
+            }
+        });
+
+        this.contextMenu.show = false;
+    }
+}));

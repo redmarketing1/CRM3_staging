@@ -19,7 +19,7 @@
 @endsection
 
 @section('content')
-    <div class="row" x-cloak x-data="estimationShow">
+    <div class="row estimation-show" x-cloak x-data="estimationShow">
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
@@ -40,6 +40,26 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="context-menu" x-show="contextMenu.show"
+            :style="`position: fixed; left: ${contextMenu.x}px; top: ${contextMenu.y}px; z-index: 1000;`"
+            @click.outside="contextMenu.show = false">
+            <button @click="moveRow('up', contextMenu.selectedRowId)" class="menu-item">
+                <i class="fas fa-arrow-up"></i>
+                Move Up
+            </button>
+            <button @click="moveRow('down', contextMenu.selectedRowId)" class="menu-item">
+                <i class="fas fa-arrow-down"></i>
+                Move Down
+            </button>
+            <button @click="duplicateRow(contextMenu.selectedRowId)" class="menu-item">
+                <i class="fas fa-copy"></i>
+                Duplicate
+            </button>
+            <button @click="removeRowFromMenu(contextMenu.selectedRowId)" class="menu-item text-red-600">
+                <i class="fas fa-trash"></i>
+                Remove
+            </button>
         </div>
     </div>
 

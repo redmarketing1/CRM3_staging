@@ -1,4 +1,4 @@
-<tr class="group group_row" :data-id="index" data-type="group">
+<tr class="group group_row" :data-id="item.id" :data-itemid="item.id" :data-groupid="item.groupId" data-type="group">
 
     <td class="column_reorder">
         <i class="fa-solid fa-up-down reorder-item reorder_group_btn"></i>
@@ -13,8 +13,7 @@
     <td colspan="4" class="column_name grouptitle border-right">
         <div class="div-desc-toggle">
             <i class="fa fas fa-solid fa-caret-right"></i>
-            <input type="text" class="form-control grouptitle-input" value="{{ trans('Group Name') }}"
-                autocomplete="off">
+            <input type="text" class="form-control grouptitle-input" :value="item.name" autocomplete="off">
         </div>
     </td>
 

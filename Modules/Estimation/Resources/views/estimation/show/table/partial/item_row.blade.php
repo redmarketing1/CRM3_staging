@@ -1,4 +1,4 @@
-<tr class="item_row" x-data data-groupid="{{ $estimationGroup->id }}" data-itemID="{{ $product->id }}">
+<tr class="item_row" x-data data-groupid="{{ $estimationGroup->id }}" data-itemID="{{ $product->id }}" data-type="item">
     <td class="column_reorder">
         <i class="fa fa-bars reorder-item"></i>
     </td>
@@ -43,12 +43,7 @@
         </td>
 
         <td class="column_total_price border-right"
-            x-text="items[{{ $product->id }}] ? 
-               (items[{{ $product->id }}].optional ? '-' : 
-               formatCurrency(calculateItemTotal({{ $product->id }})))
-: 
-               '{{ currency_format_with_sym($product->is_optional ? 0 : $quoteItem->total_price) }}'">
-            {{ currency_format_with_sym($product->is_optional ? 0 : $quoteItem->total_price) }}
+            x-text="items[{{ $product->id }}].optional ? '-' : formatCurrency(calculateItemTotal({{ $product->id }}))">
         </td>
     @endforeach
 </tr>
