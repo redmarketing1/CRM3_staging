@@ -460,10 +460,11 @@ Alpine.data('estimationShow', function () {
     },
     duplicateRow: function duplicateRow(rowId) {
       var _this10 = this;
-      var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], tr[data-itemid=\"").concat(rowId, "\"], tr[data-groupid=\"").concat(rowId, "\"]"));
+      var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], \n                                                 tr[data-itemid=\"").concat(rowId, "\"], \n                                                 tr[data-commentid=\"").concat(rowId, "\"], \n                                                 tr[data-groupid=\"").concat(rowId, "\"]"));
       if (!originalRow) return;
       var timestamp = Date.now();
       var isGroup = originalRow.classList.contains('group_row');
+      var isComment = originalRow.classList.contains('item_comment');
       var groupId = isGroup ? null : originalRow.dataset.groupid;
       if (isGroup) {
         // Duplicate group
@@ -489,10 +490,20 @@ Alpine.data('estimationShow', function () {
           total: 0,
           itemCount: 0
         };
+      } else if (isComment) {
+        var _newItem = {
+          id: timestamp,
+          type: 'comment',
+          groupId: groupId,
+          content: originalRow.querySelector('.item-description').value,
+          expanded: false
+        };
+        this.items[timestamp] = _newItem;
+        this.newItems[timestamp] = _newItem;
       } else {
         var _originalRow$querySel, _originalRow$querySel2, _originalRow$querySel3, _originalRow$querySel4, _originalRow$querySel5;
         // Get values from original row
-        var _newItem = {
+        var _newItem2 = {
           id: timestamp,
           type: originalRow.classList.contains('item_comment') ? 'comment' : 'item',
           groupId: groupId,
@@ -505,8 +516,8 @@ Alpine.data('estimationShow', function () {
         };
 
         // Add to collections
-        this.items[timestamp] = _newItem;
-        this.newItems[timestamp] = _newItem;
+        this.items[timestamp] = _newItem2;
+        this.newItems[timestamp] = _newItem2;
 
         // Update group item count
         if (this.groups[groupId]) {
@@ -515,7 +526,7 @@ Alpine.data('estimationShow', function () {
       }
       this.$nextTick(function () {
         // Find the new row and move it after the original
-        var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], tr[data-itemid=\"").concat(timestamp, "\"]"));
+        var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], tr[data-itemid=\"").concat(timestamp, "\"], tr[data-commentid=\"").concat(timestamp, "\"]"));
         if (newRow && originalRow.nextSibling) {
           originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
         }

@@ -481,11 +481,15 @@ Alpine.data('estimationShow', () => ({
     },
 
     duplicateRow(rowId) {
-        const originalRow = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-groupid="${rowId}"]`);
+        const originalRow = document.querySelector(`tr[data-id="${rowId}"], 
+                                                 tr[data-itemid="${rowId}"], 
+                                                 tr[data-commentid="${rowId}"], 
+                                                 tr[data-groupid="${rowId}"]`);
         if (!originalRow) return;
 
         const timestamp = Date.now();
         const isGroup = originalRow.classList.contains('group_row');
+        const isComment = originalRow.classList.contains('item_comment');
         const groupId = isGroup ? null : originalRow.dataset.groupid;
 
         if (isGroup) {
@@ -513,7 +517,20 @@ Alpine.data('estimationShow', () => ({
                 total: 0,
                 itemCount: 0
             };
-        } else {
+        } else if (isComment) {
+
+            const newItem = {
+                id: timestamp,
+                type: 'comment',
+                groupId: groupId,
+                content: originalRow.querySelector('.item-description').value,
+                expanded: false
+            };
+
+            this.items[timestamp] = newItem;
+            this.newItems[timestamp] = newItem;
+        }
+        else {
             // Get values from original row
             const newItem = {
                 id: timestamp,
@@ -539,7 +556,7 @@ Alpine.data('estimationShow', () => ({
 
         this.$nextTick(() => {
             // Find the new row and move it after the original
-            const newRow = document.querySelector(`tr[data-id="${timestamp}"], tr[data-itemid="${timestamp}"]`);
+            const newRow = document.querySelector(`tr[data-id="${timestamp}"], tr[data-itemid="${timestamp}"], tr[data-commentid="${timestamp}"]`);
             if (newRow && originalRow.nextSibling) {
                 originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
             }
