@@ -314,7 +314,6 @@ Alpine.data('estimationShow', function () {
         type: type,
         groupId: currentGroupId,
         name: type + " name",
-        content: "write your ".concat(type, "..."),
         quantity: 0,
         price: 0,
         unit: '',
@@ -457,30 +456,62 @@ Alpine.data('estimationShow', function () {
     },
     duplicateRow: function duplicateRow(rowId) {
       var _this10 = this;
-      var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], \n                                                 tr[data-itemid=\"").concat(rowId, "\"], \n                                                 tr[data-commentid=\"").concat(rowId, "\"], \n                                                 tr[data-groupid=\"").concat(rowId, "\"]"));
+      var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], tr[data-itemid=\"").concat(rowId, "\"], tr[data-groupid=\"").concat(rowId, "\"]"));
       if (!originalRow) return;
       var timestamp = Date.now();
       var isGroup = originalRow.classList.contains('group_row');
-      var isComment = originalRow.classList.contains('item_comment');
       var groupId = isGroup ? null : originalRow.dataset.groupid;
       if (isGroup) {
-        // Group duplication logic remains the same...
-      } else if (isComment) {
-        // Handle comment duplication
+        // Duplicate group
+        var groupName = originalRow.querySelector('.grouptitle-input').value;
+        var newGroupId = "group_".concat(timestamp);
         var newItem = {
           id: timestamp,
-          type: 'comment',
-          groupId: groupId,
-          content: originalRow.querySelector('.item-description').value,
+          type: 'group',
+          name: "".concat(groupName, " - copy"),
+          total: 0,
           expanded: false
         };
+
+        // Add to collections
         this.items[timestamp] = newItem;
         this.newItems[timestamp] = newItem;
+
+        // Add to groups
+        this.groups[newGroupId] = {
+          id: newGroupId,
+          pos: '',
+          name: "".concat(groupName, " - copy"),
+          total: 0,
+          itemCount: 0
+        };
       } else {
-        // Regular item duplication logic remains the same...
+        var _originalRow$querySel, _originalRow$querySel2, _originalRow$querySel3, _originalRow$querySel4, _originalRow$querySel5;
+        // Get values from original row
+        var _newItem = {
+          id: timestamp,
+          type: originalRow.classList.contains('item_comment') ? 'comment' : 'item',
+          groupId: groupId,
+          name: ((_originalRow$querySel = originalRow.querySelector('.item-name')) === null || _originalRow$querySel === void 0 ? void 0 : _originalRow$querySel.value) + ' - copy',
+          quantity: this.parseNumber(((_originalRow$querySel2 = originalRow.querySelector('.item-quantity')) === null || _originalRow$querySel2 === void 0 ? void 0 : _originalRow$querySel2.value) || '0'),
+          unit: ((_originalRow$querySel3 = originalRow.querySelector('.item-unit')) === null || _originalRow$querySel3 === void 0 ? void 0 : _originalRow$querySel3.value) || '',
+          optional: ((_originalRow$querySel4 = originalRow.querySelector('.item-optional')) === null || _originalRow$querySel4 === void 0 ? void 0 : _originalRow$querySel4.checked) || false,
+          price: this.parseNumber(((_originalRow$querySel5 = originalRow.querySelector('.item-price')) === null || _originalRow$querySel5 === void 0 ? void 0 : _originalRow$querySel5.value) || '0'),
+          expanded: false
+        };
+
+        // Add to collections
+        this.items[timestamp] = _newItem;
+        this.newItems[timestamp] = _newItem;
+
+        // Update group item count
+        if (this.groups[groupId]) {
+          this.groups[groupId].itemCount++;
+        }
       }
       this.$nextTick(function () {
-        var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], \n                                                tr[data-itemid=\"").concat(timestamp, "\"], \n                                                tr[data-commentid=\"").concat(timestamp, "\"]"));
+        // Find the new row and move it after the original
+        var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], tr[data-itemid=\"").concat(timestamp, "\"]"));
         if (newRow && originalRow.nextSibling) {
           originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
         }
@@ -500,19 +531,29 @@ Alpine.data('estimationShow', function () {
         cancelButtonText: "No, cancel"
       }).then(function (result) {
         if (result.isConfirmed) {
-          var row = document.querySelector("tr[data-id=\"".concat(rowId, "\"], \n                                                 tr[data-itemid=\"").concat(rowId, "\"], \n                                                 tr[data-commentid=\"").concat(rowId, "\"], \n                                                 tr[data-groupid=\"").concat(rowId, "\"]"));
+          var row = document.querySelector("tr[data-id=\"".concat(rowId, "\"], tr[data-itemid=\"").concat(rowId, "\"], tr[data-groupid=\"").concat(rowId, "\"]"));
           if (!row) return;
           if (row.classList.contains('group_row')) {
-            // Group deletion logic remains the same...
+            // If it's a group, also remove all its items
+            var groupId = row.dataset.groupid;
+            document.querySelectorAll("tr[data-groupid=\"".concat(groupId, "\"]")).forEach(function (itemRow) {
+              var itemId = itemRow.dataset.itemid;
+              delete _this11.items[itemId];
+              delete _this11.newItems[itemId];
+              itemRow.remove();
+            });
+            delete _this11.groups[groupId];
           } else {
-            // Remove single item or comment
-            var itemId = row.dataset.itemid || row.dataset.commentid || row.dataset.id;
+            // Remove single item
+            var itemId = row.dataset.itemid || row.dataset.id;
             delete _this11.items[itemId];
             delete _this11.newItems[itemId];
           }
           row.remove();
           _this11.updatePOSNumbers();
           _this11.calculateTotals();
+
+          // Handle UI updates
           document.querySelector('.SelectAllCheckbox').checked = false;
         }
       });

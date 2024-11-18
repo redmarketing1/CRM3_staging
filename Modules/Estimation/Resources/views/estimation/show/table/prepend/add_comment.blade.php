@@ -13,7 +13,8 @@
     </td>
 
     <td colspan="4" class="border-right column_name">
-        <input type="text" name="[item][name]" class="form-control item-description" :value="item.content">
+        <input type="text" name="[item][name]" class="form-control item-description"
+            :value="item.content || 'write your comment'">
     </td>
 
     @foreach ($allQuotes as $quotes)

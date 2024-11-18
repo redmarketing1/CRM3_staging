@@ -313,7 +313,6 @@ Alpine.data('estimationShow', () => ({
             type: type,
             groupId: currentGroupId,
             name: type + ` name`,
-            content: `write your ${type}...`,
             quantity: 0,
             price: 0,
             unit: '',
@@ -482,39 +481,65 @@ Alpine.data('estimationShow', () => ({
     },
 
     duplicateRow(rowId) {
-        const originalRow = document.querySelector(`tr[data-id="${rowId}"], 
-                                                 tr[data-itemid="${rowId}"], 
-                                                 tr[data-commentid="${rowId}"], 
-                                                 tr[data-groupid="${rowId}"]`);
+        const originalRow = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-groupid="${rowId}"]`);
         if (!originalRow) return;
 
         const timestamp = Date.now();
         const isGroup = originalRow.classList.contains('group_row');
-        const isComment = originalRow.classList.contains('item_comment');
         const groupId = isGroup ? null : originalRow.dataset.groupid;
 
         if (isGroup) {
-            // Group duplication logic remains the same...
-        } else if (isComment) {
-            // Handle comment duplication
+            // Duplicate group
+            const groupName = originalRow.querySelector('.grouptitle-input').value;
+            const newGroupId = `group_${timestamp}`;
+
             const newItem = {
                 id: timestamp,
-                type: 'comment',
-                groupId: groupId,
-                content: originalRow.querySelector('.item-description').value,
+                type: 'group',
+                name: `${groupName} - copy`,
+                total: 0,
                 expanded: false
             };
 
+            // Add to collections
             this.items[timestamp] = newItem;
             this.newItems[timestamp] = newItem;
+
+            // Add to groups
+            this.groups[newGroupId] = {
+                id: newGroupId,
+                pos: '',
+                name: `${groupName} - copy`,
+                total: 0,
+                itemCount: 0
+            };
         } else {
-            // Regular item duplication logic remains the same...
+            // Get values from original row
+            const newItem = {
+                id: timestamp,
+                type: originalRow.classList.contains('item_comment') ? 'comment' : 'item',
+                groupId: groupId,
+                name: originalRow.querySelector('.item-name')?.value + ' - copy',
+                quantity: this.parseNumber(originalRow.querySelector('.item-quantity')?.value || '0'),
+                unit: originalRow.querySelector('.item-unit')?.value || '',
+                optional: originalRow.querySelector('.item-optional')?.checked || false,
+                price: this.parseNumber(originalRow.querySelector('.item-price')?.value || '0'),
+                expanded: false
+            };
+
+            // Add to collections
+            this.items[timestamp] = newItem;
+            this.newItems[timestamp] = newItem;
+
+            // Update group item count
+            if (this.groups[groupId]) {
+                this.groups[groupId].itemCount++;
+            }
         }
 
         this.$nextTick(() => {
-            const newRow = document.querySelector(`tr[data-id="${timestamp}"], 
-                                                tr[data-itemid="${timestamp}"], 
-                                                tr[data-commentid="${timestamp}"]`);
+            // Find the new row and move it after the original
+            const newRow = document.querySelector(`tr[data-id="${timestamp}"], tr[data-itemid="${timestamp}"]`);
             if (newRow && originalRow.nextSibling) {
                 originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
             }
@@ -536,17 +561,22 @@ Alpine.data('estimationShow', () => ({
             cancelButtonText: "No, cancel",
         }).then((result) => {
             if (result.isConfirmed) {
-                const row = document.querySelector(`tr[data-id="${rowId}"], 
-                                                 tr[data-itemid="${rowId}"], 
-                                                 tr[data-commentid="${rowId}"], 
-                                                 tr[data-groupid="${rowId}"]`);
+                const row = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-groupid="${rowId}"]`);
                 if (!row) return;
 
                 if (row.classList.contains('group_row')) {
-                    // Group deletion logic remains the same...
+                    // If it's a group, also remove all its items
+                    const groupId = row.dataset.groupid;
+                    document.querySelectorAll(`tr[data-groupid="${groupId}"]`).forEach(itemRow => {
+                        const itemId = itemRow.dataset.itemid;
+                        delete this.items[itemId];
+                        delete this.newItems[itemId];
+                        itemRow.remove();
+                    });
+                    delete this.groups[groupId];
                 } else {
-                    // Remove single item or comment
-                    const itemId = row.dataset.itemid || row.dataset.commentid || row.dataset.id;
+                    // Remove single item
+                    const itemId = row.dataset.itemid || row.dataset.id;
                     delete this.items[itemId];
                     delete this.newItems[itemId];
                 }
@@ -555,6 +585,7 @@ Alpine.data('estimationShow', () => ({
                 this.updatePOSNumbers();
                 this.calculateTotals();
 
+                // Handle UI updates
                 document.querySelector('.SelectAllCheckbox').checked = false;
             }
         });

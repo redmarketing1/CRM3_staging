@@ -5,7 +5,7 @@
     </td>
 
     <td class="column_checkbox">
-        <input type="checkbox" class="item_selection">
+        <input type="checkbox" class="item_selection" @change="handleGroupSelection($event, item.groupId)">
     </td>
 
     <td class="column_pos grouppos"></td>
