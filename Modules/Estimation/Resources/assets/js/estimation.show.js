@@ -161,6 +161,8 @@ Alpine.data('estimationShow', () => ({
     },
 
     handleOptionalChange(event, itemId) {
+        console.log(this.items);
+
         if (this.items[itemId]) {
             this.items[itemId].optional = event.target.checked;
             this.calculateTotals();
@@ -197,7 +199,57 @@ Alpine.data('estimationShow', () => ({
             start: function (e, ui) {
                 ui.item.addClass("selected");
             },
-            stop: () => this.updatePOSNumbers()
+            stop: (event, ui) => {
+                const movedRow = ui.item[0];
+
+                // Only process if it's an item or comment row
+                if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
+                    // Find the closest previous group row
+                    let currentRow = movedRow.previousElementSibling;
+                    let newGroupRow = null;
+
+                    while (currentRow && !newGroupRow) {
+                        if (currentRow.classList.contains('group_row')) {
+                            newGroupRow = currentRow;
+                        }
+                        currentRow = currentRow.previousElementSibling;
+                    }
+
+                    if (newGroupRow) {
+                        const newGroupId = newGroupRow.dataset.id || newGroupRow.dataset.groupid;
+                        const itemId = movedRow.dataset.id || movedRow.dataset.itemid || movedRow.dataset.commentid;
+                        const oldGroupId = this.items[itemId]?.groupId;
+
+                        // Only update if group actually changed
+                        if (oldGroupId && oldGroupId !== newGroupId) {
+                            // Decrease old group count
+                            if (this.groups[oldGroupId]) {
+                                this.groups[oldGroupId].itemCount = Math.max(0, (this.groups[oldGroupId].itemCount || 1) - 1);
+                            }
+
+                            // Increase new group count
+                            if (this.groups[newGroupId]) {
+                                this.groups[newGroupId].itemCount = (this.groups[newGroupId].itemCount || 0) + 1;
+                            }
+
+                            // Update item's groupId in all relevant places
+                            if (this.items[itemId]) {
+                                this.items[itemId].groupId = newGroupId;
+                            }
+                            if (this.newItems[itemId]) {
+                                this.newItems[itemId].groupId = newGroupId;
+                            }
+
+                            // Update the DOM element's groupId
+                            movedRow.dataset.groupid = newGroupId;
+                        }
+                    }
+                }
+
+                // Update positions and recalculate totals
+                this.updatePOSNumbers();
+                this.calculateTotals();
+            }
         });
     },
 
@@ -237,6 +289,16 @@ Alpine.data('estimationShow', () => ({
             optional: false,
             expanded: false
         };
+
+        this.items[timestamp] = {
+            id: timestamp,
+            type: type,
+            name: type,
+            quantity: 0,
+            optional: false,
+            expanded: false,
+        };
+
         this.$nextTick(() => {
             this.initializeSortable();
             this.updatePOSNumbers();

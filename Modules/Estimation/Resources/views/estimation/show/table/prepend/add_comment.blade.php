@@ -1,4 +1,4 @@
-<tr class="item_comment" :data-id="index" data-type="comment">
+<tr class="item_row comment_row" :data-id="index" data-type="comment">
 
     <td class="column_reorder">
         <i class="fa fa-bars reorder-item"></i>

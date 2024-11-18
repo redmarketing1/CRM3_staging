@@ -1,4 +1,4 @@
-<tr class="item_row parent-row" :data-id="item.id" data-type="item">
+<tr class="item_row parent-row" :data-itemid="item.id" :data-groupid="item.groupId" data-type="item">
 
     <td class="column_reorder">
         <i class="fa fa-bars reorder-item"></i>
@@ -21,7 +21,7 @@
     </td>
 
     <td class="column_quantity">
-        <input type="text" class="form-control row_qty" value="0,00"
+        <input type="text" class="form-control row_qty" :value="formatDecimal(item.quantity || 0)"
             x-on:blur="handleInputBlur($event, 'quantity')">
     </td>
 
@@ -36,11 +36,11 @@
 
     @foreach ($allQuotes as $quotes)
         <td class="column_single_price border-left">
-            <input type="text" class="form-control row_price" value="0,00"
+            <input type="text" class="form-control row_price" :value="formatCurrency(item.price || 0)"
                 x-on:blur="handleInputBlur($event, 'price')">
         </td>
         <td class="column_total_price border-right"
-            xxx-text="newItems[item.id] ? (newItems[item.id].optional ? '-' : formatCurrency(calculateItemTotal(item.id))) : '0,00">
+            x-text="item.optional ? '-' : formatCurrency(calculateItemTotal(item.id))">
             0,00
         </td>
     @endforeach
