@@ -104,11 +104,18 @@ Alpine.data('estimationShow', () => ({
         this.calculateTotals();
     },
 
-    calculateItemTotal(itemId) {
-        // Check both items and newItems
+    calculateItemTotal(itemId, priceColumnIndex = 0) {
         const item = this.items[itemId] || this.newItems[itemId];
         if (!item || item.optional) return 0;
-        return (item.quantity || 0) * (item.price || 0);
+
+        const row = document.querySelector(`tr[data-itemid="${itemId}"]`);
+        if (!row) return 0;
+
+        const quantity = this.parseNumber(row.querySelector('.item-quantity')?.value || '0');
+        const priceInputs = row.querySelectorAll('.item-price');
+        const price = this.parseNumber(priceInputs[priceColumnIndex]?.value || '0');
+
+        return quantity * price;
     },
 
     calculateTotals() {
@@ -116,51 +123,72 @@ Alpine.data('estimationShow', () => ({
         this.totals = {};
 
         // Process groups sequentially
-        let currentGroupId = null;
+        document.querySelectorAll('tr.group_row').forEach(row => {
+            const groupId = row.dataset.groupid;
+            if (!groupId) return;
 
-        document.querySelectorAll('tr').forEach(row => {
-            if (row.classList.contains('group_row')) {
-                currentGroupId = row.dataset.groupid;
+            // Calculate totals for this group
+            this.calculateGroupTotal(groupId);
 
-                // Calculate total for this group
-                const groupTotal = this.calculateGroupTotal(currentGroupId);
-                this.totals[currentGroupId] = groupTotal;
-
-                // Update the display
-                const totalCell = row.querySelector('.text-right');
-                if (totalCell) {
-                    totalCell.textContent = this.formatCurrency(groupTotal);
-                }
-
-                // Update group data
-                if (this.groups[currentGroupId]) {
-                    this.groups[currentGroupId].total = groupTotal;
-                }
+            // Update group data
+            if (this.groups[groupId]) {
+                // Store the first total value in the group data
+                this.groups[groupId].total = this.parseNumber(
+                    row.querySelector('.text-right.grouptotal')?.textContent || '0'
+                );
             }
         });
     },
 
     calculateGroupTotal(groupId) {
-        let total = 0;
+        let totals = {};  // Store totals for each quote column
 
-        // Find all immediate child items of this group
+        // Find the group row
         const groupRow = document.querySelector(`tr.group_row[data-groupid="${groupId}"]`);
         if (!groupRow) return 0;
 
-        // Get all items until next group row
+        // Get all item rows until next group row
         let currentRow = groupRow.nextElementSibling;
         while (currentRow && !currentRow.classList.contains('group_row')) {
             if (currentRow.classList.contains('item_row')) {
+                const itemId = currentRow.dataset.itemid;
                 if (!currentRow.querySelector('.item-optional')?.checked) {
+                    // Get quantity once since it's the same for all columns
                     const quantity = this.parseNumber(currentRow.querySelector('.item-quantity')?.value || '0');
-                    const price = this.parseNumber(currentRow.querySelector('.item-price')?.value || '0');
-                    total += quantity * price;
+
+                    // Get all price inputs for this row
+                    const priceInputs = currentRow.querySelectorAll('.item-price');
+
+                    // Calculate total for each price column
+                    priceInputs.forEach((priceInput, index) => {
+                        if (!totals[index]) totals[index] = 0;
+                        const price = this.parseNumber(priceInput.value || '0');
+                        totals[index] += quantity * price;
+
+                        // Update individual item total
+                        const totalCell = currentRow.querySelectorAll('.column_total_price')[index];
+                        if (totalCell) {
+                            totalCell.textContent = this.formatCurrency(quantity * price);
+                        }
+                    });
+                } else {
+                    // If item is optional, set all totals to '-'
+                    currentRow.querySelectorAll('.column_total_price').forEach(cell => {
+                        cell.textContent = '-';
+                    });
                 }
             }
             currentRow = currentRow.nextElementSibling;
         }
 
-        return total;
+        // Update all total cells in the group row
+        const totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
+        totalCells.forEach((cell, index) => {
+            cell.textContent = this.formatCurrency(totals[index] || 0);
+        });
+
+        // Return the first total for backwards compatibility
+        return totals[0] || 0;
     },
 
     formatDecimal(value) {
@@ -189,15 +217,22 @@ Alpine.data('estimationShow', () => ({
 
         const row = event.target.closest('tr');
         const itemId = row.dataset.id || row.dataset.itemid;
+        const groupId = row.dataset.groupid;
 
-        // Update both items and newItems
-        if (this.items[itemId]) {
-            this.items[itemId][type] = parsedValue;
-        }
-        if (this.newItems[itemId]) {
-            this.newItems[itemId][type] = parsedValue;
+        if (type === 'quantity') {
+            // Update quantity in data model
+            if (this.items[itemId]) {
+                this.items[itemId].quantity = parsedValue;
+            }
+            if (this.newItems[itemId]) {
+                this.newItems[itemId].quantity = parsedValue;
+            }
         }
 
+        // Trigger recalculation of totals
+        if (groupId) {
+            this.calculateGroupTotal(groupId);
+        }
         this.calculateTotals();
     },
 

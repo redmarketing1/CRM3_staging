@@ -121,10 +121,16 @@ Alpine.data('estimationShow', function () {
       this.calculateTotals();
     },
     calculateItemTotal: function calculateItemTotal(itemId) {
-      // Check both items and newItems
+      var _row$querySelector, _priceInputs$priceCol;
+      var priceColumnIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       var item = this.items[itemId] || this.newItems[itemId];
       if (!item || item.optional) return 0;
-      return (item.quantity || 0) * (item.price || 0);
+      var row = document.querySelector("tr[data-itemid=\"".concat(itemId, "\"]"));
+      if (!row) return 0;
+      var quantity = this.parseNumber(((_row$querySelector = row.querySelector('.item-quantity')) === null || _row$querySelector === void 0 ? void 0 : _row$querySelector.value) || '0');
+      var priceInputs = row.querySelectorAll('.item-price');
+      var price = this.parseNumber(((_priceInputs$priceCol = priceInputs[priceColumnIndex]) === null || _priceInputs$priceCol === void 0 ? void 0 : _priceInputs$priceCol.value) || '0');
+      return quantity * price;
     },
     calculateTotals: function calculateTotals() {
       var _this3 = this;
@@ -132,50 +138,76 @@ Alpine.data('estimationShow', function () {
       this.totals = {};
 
       // Process groups sequentially
-      var currentGroupId = null;
-      document.querySelectorAll('tr').forEach(function (row) {
-        if (row.classList.contains('group_row')) {
-          currentGroupId = row.dataset.groupid;
+      document.querySelectorAll('tr.group_row').forEach(function (row) {
+        var groupId = row.dataset.groupid;
+        if (!groupId) return;
 
-          // Calculate total for this group
-          var groupTotal = _this3.calculateGroupTotal(currentGroupId);
-          _this3.totals[currentGroupId] = groupTotal;
+        // Calculate totals for this group
+        _this3.calculateGroupTotal(groupId);
 
-          // Update the display
-          var totalCell = row.querySelector('.text-right');
-          if (totalCell) {
-            totalCell.textContent = _this3.formatCurrency(groupTotal);
-          }
-
-          // Update group data
-          if (_this3.groups[currentGroupId]) {
-            _this3.groups[currentGroupId].total = groupTotal;
-          }
+        // Update group data
+        if (_this3.groups[groupId]) {
+          var _row$querySelector2;
+          // Store the first total value in the group data
+          _this3.groups[groupId].total = _this3.parseNumber(((_row$querySelector2 = row.querySelector('.text-right.grouptotal')) === null || _row$querySelector2 === void 0 ? void 0 : _row$querySelector2.textContent) || '0');
         }
       });
     },
     calculateGroupTotal: function calculateGroupTotal(groupId) {
-      var total = 0;
+      var _this4 = this;
+      var totals = {}; // Store totals for each quote column
 
-      // Find all immediate child items of this group
+      // Find the group row
       var groupRow = document.querySelector("tr.group_row[data-groupid=\"".concat(groupId, "\"]"));
       if (!groupRow) return 0;
 
-      // Get all items until next group row
+      // Get all item rows until next group row
       var currentRow = groupRow.nextElementSibling;
-      while (currentRow && !currentRow.classList.contains('group_row')) {
+      var _loop = function _loop() {
         if (currentRow.classList.contains('item_row')) {
           var _currentRow$querySele;
+          var itemId = currentRow.dataset.itemid;
           if (!((_currentRow$querySele = currentRow.querySelector('.item-optional')) !== null && _currentRow$querySele !== void 0 && _currentRow$querySele.checked)) {
-            var _currentRow$querySele2, _currentRow$querySele3;
-            var quantity = this.parseNumber(((_currentRow$querySele2 = currentRow.querySelector('.item-quantity')) === null || _currentRow$querySele2 === void 0 ? void 0 : _currentRow$querySele2.value) || '0');
-            var price = this.parseNumber(((_currentRow$querySele3 = currentRow.querySelector('.item-price')) === null || _currentRow$querySele3 === void 0 ? void 0 : _currentRow$querySele3.value) || '0');
-            total += quantity * price;
+            var _currentRow$querySele2;
+            // Get quantity once since it's the same for all columns
+            var quantity = _this4.parseNumber(((_currentRow$querySele2 = currentRow.querySelector('.item-quantity')) === null || _currentRow$querySele2 === void 0 ? void 0 : _currentRow$querySele2.value) || '0');
+
+            // Get all price inputs for this row
+            var priceInputs = currentRow.querySelectorAll('.item-price');
+
+            // Calculate total for each price column
+            priceInputs.forEach(function (priceInput, index) {
+              if (!totals[index]) totals[index] = 0;
+              var price = _this4.parseNumber(priceInput.value || '0');
+              totals[index] += quantity * price;
+
+              // Update individual item total
+              var totalCell = currentRow.querySelectorAll('.column_total_price')[index];
+              if (totalCell) {
+                totalCell.textContent = _this4.formatCurrency(quantity * price);
+              }
+            });
+          } else {
+            // If item is optional, set all totals to '-'
+            currentRow.querySelectorAll('.column_total_price').forEach(function (cell) {
+              cell.textContent = '-';
+            });
           }
         }
         currentRow = currentRow.nextElementSibling;
+      };
+      while (currentRow && !currentRow.classList.contains('group_row')) {
+        _loop();
       }
-      return total;
+
+      // Update all total cells in the group row
+      var totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
+      totalCells.forEach(function (cell, index) {
+        cell.textContent = _this4.formatCurrency(totals[index] || 0);
+      });
+
+      // Return the first total for backwards compatibility
+      return totals[0] || 0;
     },
     formatDecimal: function formatDecimal(value) {
       return new Intl.NumberFormat('de-DE', {
@@ -199,13 +231,20 @@ Alpine.data('estimationShow', function () {
       event.target.value = type === 'quantity' ? this.formatDecimal(parsedValue) : this.formatCurrency(parsedValue);
       var row = event.target.closest('tr');
       var itemId = row.dataset.id || row.dataset.itemid;
-
-      // Update both items and newItems
-      if (this.items[itemId]) {
-        this.items[itemId][type] = parsedValue;
+      var groupId = row.dataset.groupid;
+      if (type === 'quantity') {
+        // Update quantity in data model
+        if (this.items[itemId]) {
+          this.items[itemId].quantity = parsedValue;
+        }
+        if (this.newItems[itemId]) {
+          this.newItems[itemId].quantity = parsedValue;
+        }
       }
-      if (this.newItems[itemId]) {
-        this.newItems[itemId][type] = parsedValue;
+
+      // Trigger recalculation of totals
+      if (groupId) {
+        this.calculateGroupTotal(groupId);
       }
       this.calculateTotals();
     },
@@ -240,7 +279,7 @@ Alpine.data('estimationShow', function () {
       });
     },
     initializeSortable: function initializeSortable() {
-      var _this4 = this;
+      var _this5 = this;
       $("#estimation-edit-table").sortable({
         items: 'tbody tr',
         cursor: 'pointer',
@@ -274,23 +313,23 @@ Alpine.data('estimationShow', function () {
               movedRow.dataset.groupid = newGroupId;
 
               // Update data structures
-              if (_this4.items[itemId]) {
-                _this4.items[itemId].groupId = newGroupId;
+              if (_this5.items[itemId]) {
+                _this5.items[itemId].groupId = newGroupId;
               }
-              if (_this4.newItems[itemId]) {
-                _this4.newItems[itemId].groupId = newGroupId;
+              if (_this5.newItems[itemId]) {
+                _this5.newItems[itemId].groupId = newGroupId;
               }
             }
           }
 
           // Recalculate everything
-          _this4.updatePOSNumbers();
-          _this4.calculateTotals();
+          _this5.updatePOSNumbers();
+          _this5.calculateTotals();
         }
       });
     },
     initializeLastNumbers: function initializeLastNumbers() {
-      var _this5 = this;
+      var _this6 = this;
       var posNumbers = new Set();
       document.querySelectorAll('.pos-inner').forEach(function (element) {
         var pos = element.textContent.trim();
@@ -302,20 +341,20 @@ Alpine.data('estimationShow', function () {
             itemNum = _pos$split2[1];
           var groupNumber = parseInt(groupNum);
           var itemNumber = parseInt(itemNum);
-          _this5.lastGroupNumber = Math.max(_this5.lastGroupNumber, groupNumber);
-          if (!_this5.lastItemNumbers[groupNumber] || itemNumber > _this5.lastItemNumbers[groupNumber]) {
+          _this6.lastGroupNumber = Math.max(_this6.lastGroupNumber, groupNumber);
+          if (!_this6.lastItemNumbers[groupNumber] || itemNumber > _this6.lastItemNumbers[groupNumber]) {
             // Ensure item numbers stay within 2 digits (max 99)
-            _this5.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
+            _this6.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
           }
         }
       });
       document.querySelectorAll('.grouppos').forEach(function (element) {
         var groupNum = parseInt(element.textContent.trim());
-        _this5.lastGroupNumber = Math.max(_this5.lastGroupNumber, groupNum);
+        _this6.lastGroupNumber = Math.max(_this6.lastGroupNumber, groupNum);
       });
     },
     addItem: function addItem(type) {
-      var _this6 = this;
+      var _this7 = this;
       var targetRowId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var timestamp = Date.now();
       var currentGroupId;
@@ -359,16 +398,16 @@ Alpine.data('estimationShow', function () {
             _targetRow.parentNode.insertBefore(newRow, _targetRow.nextSibling);
           }
         }
-        _this6.initializeSortable();
-        _this6.updatePOSNumbers();
-        _this6.calculateTotals();
+        _this7.initializeSortable();
+        _this7.updatePOSNumbers();
+        _this7.calculateTotals();
       });
       if (targetRowId) {
         this.contextMenu.show = false;
       }
     },
     removeItem: function removeItem() {
-      var _this7 = this;
+      var _this8 = this;
       var selectedCheckboxes = document.querySelectorAll('.item_selection:checked');
       if (selectedCheckboxes.length === 0) {
         toastrs("Error", "Please select checkbox to continue delete");
@@ -388,10 +427,10 @@ Alpine.data('estimationShow', function () {
             var row = checkbox.closest('tr');
             if (row.classList.contains('group_row')) {
               groupIds.push(row.dataset.groupid);
-              delete _this7.groups[row.dataset.groupid];
+              delete _this8.groups[row.dataset.groupid];
             } else {
               itemIds.push(row.dataset.itemid);
-              delete _this7.items[row.dataset.itemid];
+              delete _this8.items[row.dataset.itemid];
             }
             row.remove();
           });
@@ -408,13 +447,13 @@ Alpine.data('estimationShow', function () {
               group_ids: groupIds
             })
           });
-          _this7.calculateTotals();
-          _this7.updatePOSNumbers();
+          _this8.calculateTotals();
+          _this8.updatePOSNumbers();
         }
       });
     },
     updatePOSNumbers: function updatePOSNumbers() {
-      var _this8 = this;
+      var _this9 = this;
       var currentGroupPos = 0;
       var itemCountInGroup = 0;
       var lastGroupId = null;
@@ -425,16 +464,16 @@ Alpine.data('estimationShow', function () {
           lastGroupId = row.dataset.groupid;
           var groupPos = currentGroupPos.toString().padStart(2, '0');
           row.querySelector('.grouppos').textContent = "".concat(groupPos);
-          if (_this8.groups[lastGroupId]) {
-            _this8.groups[lastGroupId].pos = groupPos;
+          if (_this9.groups[lastGroupId]) {
+            _this9.groups[lastGroupId].pos = groupPos;
           }
         } else if (row.classList.contains('item_row') || row.classList.contains('item_comment')) {
           itemCountInGroup++;
           var itemPos = "".concat(currentGroupPos.toString().padStart(2, '0'), ".").concat(itemCountInGroup.toString().padStart(2, '0'));
           row.querySelector('.pos-inner').textContent = itemPos;
           var itemId = row.dataset.itemid || row.dataset.commentid;
-          if (_this8.items[itemId]) {
-            _this8.items[itemId].pos = itemPos;
+          if (_this9.items[itemId]) {
+            _this9.items[itemId].pos = itemPos;
           }
         }
       });
@@ -447,7 +486,7 @@ Alpine.data('estimationShow', function () {
       return this.expandedRows[index] || false;
     },
     initializeContextMenu: function initializeContextMenu() {
-      var _this9 = this;
+      var _this10 = this;
       document.querySelector('#estimation-edit-table').addEventListener('contextmenu', function (e) {
         // Include comment rows in selection
         var row = e.target.closest('tr.item_row, tr.group_row, tr.item_comment');
@@ -459,7 +498,7 @@ Alpine.data('estimationShow', function () {
         var y = e.clientY;
         if (x + 160 > viewportWidth) x = viewportWidth - 160;
         if (y + 160 > viewportHeight) y = viewportHeight - 160;
-        _this9.contextMenu = {
+        _this10.contextMenu = {
           show: true,
           x: x,
           y: y,
@@ -486,7 +525,7 @@ Alpine.data('estimationShow', function () {
       this.contextMenu.show = false;
     },
     duplicateRow: function duplicateRow(rowId) {
-      var _this10 = this;
+      var _this11 = this;
       var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], \n                                                 tr[data-itemid=\"").concat(rowId, "\"], \n                                                 tr[data-commentid=\"").concat(rowId, "\"], \n                                                 tr[data-groupid=\"").concat(rowId, "\"]"));
       if (!originalRow) return;
       var timestamp = Date.now();
@@ -557,14 +596,14 @@ Alpine.data('estimationShow', function () {
         if (newRow && originalRow.nextSibling) {
           originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
         }
-        _this10.updatePOSNumbers();
-        _this10.calculateTotals();
-        _this10.initializeContextMenu();
+        _this11.updatePOSNumbers();
+        _this11.calculateTotals();
+        _this11.initializeContextMenu();
       });
       this.contextMenu.show = false;
     },
     removeRowFromMenu: function removeRowFromMenu(rowId) {
-      var _this11 = this;
+      var _this12 = this;
       Swal.fire({
         title: 'Confirmation Delete',
         text: 'Really! You want to remove this item? You can\'t undo',
@@ -580,20 +619,20 @@ Alpine.data('estimationShow', function () {
             var groupId = row.dataset.groupid;
             document.querySelectorAll("tr[data-groupid=\"".concat(groupId, "\"]")).forEach(function (itemRow) {
               var itemId = itemRow.dataset.itemid;
-              delete _this11.items[itemId];
-              delete _this11.newItems[itemId];
+              delete _this12.items[itemId];
+              delete _this12.newItems[itemId];
               itemRow.remove();
             });
-            delete _this11.groups[groupId];
+            delete _this12.groups[groupId];
           } else {
             // Remove single item
             var itemId = row.dataset.itemid || row.dataset.id;
-            delete _this11.items[itemId];
-            delete _this11.newItems[itemId];
+            delete _this12.items[itemId];
+            delete _this12.newItems[itemId];
           }
           row.remove();
-          _this11.updatePOSNumbers();
-          _this11.calculateTotals();
+          _this12.updatePOSNumbers();
+          _this12.calculateTotals();
 
           // Handle UI updates
           document.querySelector('.SelectAllCheckbox').checked = false;
@@ -622,7 +661,7 @@ Alpine.data('estimationShow', function () {
       });
     },
     initializeColumnVisibility: function initializeColumnVisibility() {
-      var _this12 = this;
+      var _this13 = this;
       // Initialize column visibility from localStorage if available
       var savedVisibility = localStorage.getItem('columnVisibility');
       if (savedVisibility) {
@@ -637,14 +676,14 @@ Alpine.data('estimationShow', function () {
           var quoteId = e.target.dataset.quoteid;
           if (columnClass === 'quote_th' && quoteId) {
             // Handle quote columns specifically
-            _this12.columnVisibility[columnClass] = e.target.checked;
-            _this12.applyColumnVisibility(quoteId);
+            _this13.columnVisibility[columnClass] = e.target.checked;
+            _this13.applyColumnVisibility(quoteId);
           } else {
             // Handle regular columns
-            _this12.columnVisibility[columnClass] = e.target.checked;
-            _this12.applyColumnVisibility();
+            _this13.columnVisibility[columnClass] = e.target.checked;
+            _this13.applyColumnVisibility();
           }
-          _this12.saveColumnVisibility();
+          _this13.saveColumnVisibility();
         });
       });
     },

@@ -34,7 +34,7 @@
     </td>
 
     @foreach ($quoteItems->get($product->id, []) as $quoteItem)
-        <td class="column_single_price border-left" data-cardQuoteID="{{ $product->id }}">
+        <td class="column_single_price border-left" data-cardQuoteID="{{ $estimationGroup->id }}">
             <div class="d-flex">
                 <input type="text" class="form-control item-price"
                     value="{{ currency_format_with_sym($quoteItem->price) }}"
