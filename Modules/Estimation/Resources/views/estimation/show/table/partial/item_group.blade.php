@@ -18,7 +18,7 @@
     </td>
 
     @foreach ($allQuotes as $quote)
-        <td class="text-right grouptotal border-left-right" colspan="2"
+        <td class="text-right grouptotal border-left-right" colspan="2" data-cardQuoteID="{{ $quote->id }}"
             x-text="formatCurrency(calculateGroupTotal('{{ $estimationGroup->id }}'))">
         </td>
     @endforeach

@@ -4,8 +4,9 @@
     </th>
 
     @foreach ($allQuotes as $quotes)
-        <th colspan="2" class="totalnr toptotal total-net border-left-right" data-cardQuoteID="{{ $quotes->id }}">
-            {{ currency_format_with_sym($quotes->net) }}
+        <th colspan="2" class="totalnr toptotal total-net border-left-right" data-cardQuoteID="{{ $quotes->id }}"
+            x-text="calculateTotalNetAmount({{ $quotes->id }})">
+            -
         </th>
     @endforeach
 </tr>

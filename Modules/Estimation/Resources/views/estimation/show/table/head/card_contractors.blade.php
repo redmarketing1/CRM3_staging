@@ -36,9 +36,7 @@
             class="total-main-title text-center">
 
             <div class="font-bold text-lg">
-                <div>
-                    {{ $quotes->subContractor->name ?? $quotes->title }}
-                </div>
+                <span> {{ $quotes->subContractor->name ?? $quotes->title }} </span>
                 <div class="company-total-settings">
                     <i class="ti ti-settings float-end" id="dropdownMenuButton{{ $quotes->id }}"
                         data-bs-toggle="dropdown" aria-expanded="false"></i>

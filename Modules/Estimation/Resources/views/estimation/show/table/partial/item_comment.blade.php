@@ -17,7 +17,7 @@
     </td>
 
     @foreach ($allQuotes as $quote)
-        <td class="column_single_price border-left">-</td>
-        <td class="column_total_price border-right">-</td>
+        <td class="column_single_price border-left" data-cardQuoteID="{{ $quote->id }}">-</td>
+        <td class="column_total_price border-right" data-cardQuoteID="{{ $quote->id }}">-</td>
     @endforeach
 </tr>

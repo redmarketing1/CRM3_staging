@@ -17,9 +17,7 @@
                     </select>
                 </div>
                 <div class="totalnr total-gross-total">
-                    <div class="">
-                        {{ currency_format_with_sym($quote->gross_with_discount) }}
-                    </div>
+                    -
                 </div>
             </span>
         </th>
