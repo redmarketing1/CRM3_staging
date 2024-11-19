@@ -299,12 +299,28 @@ Alpine.data('estimationShow', () => ({
         });
     },
 
-    addItem(type) {
+    addItem(type, targetRowId = null) {
         const timestamp = Date.now();
-        const GroupRow = document.querySelectorAll('tr.group_row');
-        const lastGroupRow = GroupRow[GroupRow.length - 1];
-        const currentGroupId = lastGroupRow ? lastGroupRow.dataset.groupid : null;
+        let currentGroupId;
 
+        if (targetRowId) {
+            // Context menu: add after specific row
+            const targetRow = document.querySelector(`tr[data-id="${targetRowId}"], 
+                                                   tr[data-itemid="${targetRowId}"], 
+                                                   tr[data-commentid="${targetRowId}"], 
+                                                   tr[data-groupid="${targetRowId}"]`);
+            if (!targetRow) return;
+
+            // Get group ID from target row or nearest group
+            currentGroupId = targetRow.classList.contains('group_row') ?
+                targetRow.dataset.groupid :
+                targetRow.dataset.groupid;
+        } else {
+            // Regular add: add to last group
+            const GroupRow = document.querySelectorAll('tr.group_row');
+            const lastGroupRow = GroupRow[GroupRow.length - 1];
+            currentGroupId = lastGroupRow ? lastGroupRow.dataset.groupid : null;
+        }
 
         if (!currentGroupId) return; // Need a group to add items
 
@@ -326,10 +342,27 @@ Alpine.data('estimationShow', () => ({
         this.newItems[timestamp] = newItem;
 
         this.$nextTick(() => {
+            if (targetRowId) {
+                // Move new item after target row if context menu was used
+                const targetRow = document.querySelector(`tr[data-id="${targetRowId}"], 
+                                                       tr[data-itemid="${targetRowId}"], 
+                                                       tr[data-commentid="${targetRowId}"], 
+                                                       tr[data-groupid="${targetRowId}"]`);
+                const newRow = document.querySelector(`tr[data-id="${timestamp}"], 
+                                                    tr[data-itemid="${timestamp}"]`);
+                if (newRow && targetRow.nextSibling) {
+                    targetRow.parentNode.insertBefore(newRow, targetRow.nextSibling);
+                }
+            }
+
             this.initializeSortable();
             this.updatePOSNumbers();
             this.calculateTotals();
         });
+
+        if (targetRowId) {
+            this.contextMenu.show = false;
+        }
     },
 
     removeItem() {
@@ -422,12 +455,6 @@ Alpine.data('estimationShow', () => ({
 
     isExpanded(index) {
         return this.expandedRows[index] || false;
-    },
-
-    checkboxAll(value) {
-        document.querySelectorAll('.item_selection').forEach(checkbox => {
-            checkbox.checked = value;
-        });
     },
 
     initializeContextMenu() {
@@ -608,5 +635,28 @@ Alpine.data('estimationShow', () => ({
         });
 
         this.contextMenu.show = false;
-    }
+    },
+
+    handleGroupSelection(event, groupId) {
+        const checked = event.target.checked;
+        const groupRow = event.target.closest('tr.group_row');
+
+        if (!groupRow) return;
+
+        // Get all items until next group row
+        let currentRow = groupRow.nextElementSibling;
+        while (currentRow && !currentRow.classList.contains('group_row')) {
+            const checkbox = currentRow.querySelector('.item_selection');
+            if (checkbox) {
+                checkbox.checked = checked;
+            }
+            currentRow = currentRow.nextElementSibling;
+        }
+    },
+
+    checkboxAll(value) {
+        document.querySelectorAll('.item_selection').forEach(checkbox => {
+            checkbox.checked = value;
+        });
+    },
 }));

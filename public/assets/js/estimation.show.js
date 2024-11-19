@@ -303,10 +303,22 @@ Alpine.data('estimationShow', function () {
     },
     addItem: function addItem(type) {
       var _this6 = this;
+      var targetRowId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var timestamp = Date.now();
-      var GroupRow = document.querySelectorAll('tr.group_row');
-      var lastGroupRow = GroupRow[GroupRow.length - 1];
-      var currentGroupId = lastGroupRow ? lastGroupRow.dataset.groupid : null;
+      var currentGroupId;
+      if (targetRowId) {
+        // Context menu: add after specific row
+        var targetRow = document.querySelector("tr[data-id=\"".concat(targetRowId, "\"], \n                                                   tr[data-itemid=\"").concat(targetRowId, "\"], \n                                                   tr[data-commentid=\"").concat(targetRowId, "\"], \n                                                   tr[data-groupid=\"").concat(targetRowId, "\"]"));
+        if (!targetRow) return;
+
+        // Get group ID from target row or nearest group
+        currentGroupId = targetRow.classList.contains('group_row') ? targetRow.dataset.groupid : targetRow.dataset.groupid;
+      } else {
+        // Regular add: add to last group
+        var GroupRow = document.querySelectorAll('tr.group_row');
+        var lastGroupRow = GroupRow[GroupRow.length - 1];
+        currentGroupId = lastGroupRow ? lastGroupRow.dataset.groupid : null;
+      }
       if (!currentGroupId) return; // Need a group to add items
 
       var newItem = {
@@ -326,10 +338,21 @@ Alpine.data('estimationShow', function () {
       this.items[timestamp] = newItem;
       this.newItems[timestamp] = newItem;
       this.$nextTick(function () {
+        if (targetRowId) {
+          // Move new item after target row if context menu was used
+          var _targetRow = document.querySelector("tr[data-id=\"".concat(targetRowId, "\"], \n                                                       tr[data-itemid=\"").concat(targetRowId, "\"], \n                                                       tr[data-commentid=\"").concat(targetRowId, "\"], \n                                                       tr[data-groupid=\"").concat(targetRowId, "\"]"));
+          var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], \n                                                    tr[data-itemid=\"").concat(timestamp, "\"]"));
+          if (newRow && _targetRow.nextSibling) {
+            _targetRow.parentNode.insertBefore(newRow, _targetRow.nextSibling);
+          }
+        }
         _this6.initializeSortable();
         _this6.updatePOSNumbers();
         _this6.calculateTotals();
       });
+      if (targetRowId) {
+        this.contextMenu.show = false;
+      }
     },
     removeItem: function removeItem() {
       var _this7 = this;
@@ -409,11 +432,6 @@ Alpine.data('estimationShow', function () {
     },
     isExpanded: function isExpanded(index) {
       return this.expandedRows[index] || false;
-    },
-    checkboxAll: function checkboxAll(value) {
-      document.querySelectorAll('.item_selection').forEach(function (checkbox) {
-        checkbox.checked = value;
-      });
     },
     initializeContextMenu: function initializeContextMenu() {
       var _this9 = this;
@@ -569,6 +587,26 @@ Alpine.data('estimationShow', function () {
         }
       });
       this.contextMenu.show = false;
+    },
+    handleGroupSelection: function handleGroupSelection(event, groupId) {
+      var checked = event.target.checked;
+      var groupRow = event.target.closest('tr.group_row');
+      if (!groupRow) return;
+
+      // Get all items until next group row
+      var currentRow = groupRow.nextElementSibling;
+      while (currentRow && !currentRow.classList.contains('group_row')) {
+        var checkbox = currentRow.querySelector('.item_selection');
+        if (checkbox) {
+          checkbox.checked = checked;
+        }
+        currentRow = currentRow.nextElementSibling;
+      }
+    },
+    checkboxAll: function checkboxAll(value) {
+      document.querySelectorAll('.item_selection').forEach(function (checkbox) {
+        checkbox.checked = value;
+      });
     }
   };
 });
