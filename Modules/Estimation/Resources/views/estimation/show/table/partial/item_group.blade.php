@@ -17,7 +17,9 @@
         </div>
     </td>
 
-    <td class="text-right grouptotal border-left-right" colspan="2"
-        x-text="formatCurrency(calculateGroupTotal('{{ $estimationGroup->id }}'))">
-    </td>
+    @foreach ($allQuotes as $quote)
+        <td class="text-right grouptotal border-left-right" colspan="2"
+            x-text="formatCurrency(calculateGroupTotal('{{ $estimationGroup->id }}'))">
+        </td>
+    @endforeach
 </tr>

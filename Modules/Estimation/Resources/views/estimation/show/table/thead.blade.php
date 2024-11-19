@@ -1,9 +1,9 @@
- <thead>
-     @include('estimation::estimation.show.table.head.net_discount_row')
-     @include('estimation::estimation.show.table.head.gross_discount_row')
-     @include('estimation::estimation.show.table.head.net_profits_row')
-     @include('estimation::estimation.show.table.head.gross_row')
-     @include('estimation::estimation.show.table.head.discount_row')
-     @include('estimation::estimation.show.table.head.card_contractors')
-     @include('estimation::estimation.show.table.head.heading')
- </thead>
+<thead>
+    @include('estimation::estimation.show.table.head.net_discount_row')
+    @include('estimation::estimation.show.table.head.gross_discount_row')
+    @include('estimation::estimation.show.table.head.net_profits_row')
+    @include('estimation::estimation.show.table.head.gross_row')
+    @include('estimation::estimation.show.table.head.discount_row')
+    @include('estimation::estimation.show.table.head.card_contractors')
+    @include('estimation::estimation.show.table.head.heading')
+</thead>

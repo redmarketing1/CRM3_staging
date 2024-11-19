@@ -32,21 +32,14 @@
     @endif
 
     @foreach ($allQuotes as $key => $quotes)
-        <th colspan="2" data-orderable="false"
-            class="total-main-title total-company-title border-left-right finalize_quote_title{{ $quotes->id }} title_sc{{ $quotes->id }} {{ $quotes->title }}">
-            @php
-                //	$quote_title = $quotes->title;
-                $quote_title = isset($quotes->subContractor->name) ? $quotes->subContractor->name : $quotes->title;
-                // if($key == 0) {
-                // 	$quote_title = $company_name;
-                // }
-                $hide_options = '';
-            @endphp
-            <div class="total-company-title-inner">
-                <span class="sc{{ $quotes->id }}">
-                    {{ $quote_title }}
-                </span>
-                <div class="company-total-settings {{ $hide_options }}">
+        <th colspan="2" data-orderable="false" data-cardQuoteID="{{ $quotes->id }}"
+            class="total-main-title text-center">
+
+            <div class="font-bold text-lg">
+                <div>
+                    {{ $quotes->subContractor->name ?? $quotes->title }}
+                </div>
+                <div class="company-total-settings">
                     <i class="ti ti-settings float-end" id="dropdownMenuButton{{ $quotes->id }}"
                         data-bs-toggle="dropdown" aria-expanded="false"></i>
                     <ul class="dropdown-menu quote_options{{ $quotes->id }}"
@@ -66,12 +59,12 @@
                                 </li>
                             @endif
                         @endif
-                 
-                            <li class="delete"><a class="dropdown-item" href="javascript:void(0)"
-                                    onclick="deleteColumn('{{ $quotes->id }}',this)"><i
-                                        class="fa-regular fa-trash-can"></i>{{ __('Delete') }}</a>
-                            </li>
-                   
+
+                        <li class="delete"><a class="dropdown-item" href="javascript:void(0)"
+                                onclick="deleteColumn('{{ $quotes->id }}',this)"><i
+                                    class="fa-regular fa-trash-can"></i>{{ __('Delete') }}</a>
+                        </li>
+
                         @if (auth()->user()->type == 'company')
                             <li>
                                 <label class="dropdown-item">
@@ -138,13 +131,6 @@
                     @endforeach
                 </div>
             @endif
-
-            <input type="hidden" class="sc{{ $quotes->id }}_value" value="{{ $quote_title }}">
-            @php
-                if (auth()->user()->type != 'company') {
-                    $hide_options = 'hide';
-                }
-            @endphp
         </th>
     @endforeach
 </tr>

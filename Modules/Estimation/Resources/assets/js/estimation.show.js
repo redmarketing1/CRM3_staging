@@ -14,12 +14,21 @@ Alpine.data('estimationShow', () => ({
         y: 0,
         selectedRowId: null
     },
+    columnVisibility: {
+        column_pos: true,
+        column_name: true,
+        column_quantity: true,
+        column_unit: true,
+        column_optional: true,
+        quote_th: true  // Assuming 1930 is your quote ID
+    },
 
     init() {
         this.initializeData();
         this.initializeSortable();
         this.initializeLastNumbers();
         this.initializeContextMenu();
+        this.initializeColumnVisibility();
 
         this.$watch('items', () => this.calculateTotals(), { deep: true });
         this.$watch('searchQuery', () => this.filterTable());
@@ -659,4 +668,80 @@ Alpine.data('estimationShow', () => ({
             checkbox.checked = value;
         });
     },
-}));
+
+    initializeColumnVisibility() {
+        // Initialize column visibility from localStorage if available
+        const savedVisibility = localStorage.getItem('columnVisibility');
+        if (savedVisibility) {
+            this.columnVisibility = JSON.parse(savedVisibility);
+            this.applyColumnVisibility();
+        }
+
+        // Add event listeners for checkbox changes
+        document.querySelectorAll('.column-toggle').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+
+                const columnClass = e.target.dataset.column;
+                const quoteId = e.target.dataset.quoteid;
+
+                if (columnClass === 'quote_th' && quoteId) {
+                    // Handle quote columns specifically
+                    this.columnVisibility[columnClass] = e.target.checked;
+                    this.applyColumnVisibility(quoteId);
+                } else {
+                    // Handle regular columns
+                    this.columnVisibility[columnClass] = e.target.checked;
+                    this.applyColumnVisibility();
+                }
+
+                this.saveColumnVisibility();
+            });
+        });
+    },
+
+    applyColumnVisibility(quoteId = null) {
+        // Apply visibility to regular columns
+        Object.entries(this.columnVisibility).forEach(([columnClass, isVisible]) => {
+
+            if (columnClass === 'quote_th' && quoteId) {
+                // Handle quote columns
+                const elements = document.querySelectorAll(
+                    `.quote_th${quoteId}, ` +
+                    `[data-cardquoteid="${quoteId}"]`
+                );
+
+                console.log(elements);
+
+                elements.forEach(el => {
+                    el.style.display = isVisible ? '' : 'none';
+                });
+            } else {
+                const elements = document.querySelectorAll(`.${columnClass}`);
+                elements.forEach(el => {
+                    if (el.closest('td, th')) {
+                        el.closest('td, th').style.display = isVisible ? '' : 'none';
+                    }
+                });
+            }
+        });
+    },
+
+    saveColumnVisibility() {
+        localStorage.setItem('columnVisibility', JSON.stringify(this.columnVisibility));
+    },
+
+    toggleColumn(columnClass, quoteId = null) {
+        this.columnVisibility[columnClass] = !this.columnVisibility[columnClass];
+        this.applyColumnVisibility(quoteId);
+        this.saveColumnVisibility();
+
+        // Update checkbox state
+        const selector = quoteId
+            ? `.column-toggle[data-column="${columnClass}"][data-quote="${quoteId}"]`
+            : `.column-toggle[data-column="${columnClass}"]`;
+        const checkbox = document.querySelector(selector);
+        if (checkbox) {
+            checkbox.checked = this.columnVisibility[columnClass];
+        }
+    }
+})); 

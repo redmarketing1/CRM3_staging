@@ -34,7 +34,7 @@
     </td>
 
     @foreach ($quoteItems->get($product->id, []) as $quoteItem)
-        <td class="column_single_price border-left">
+        <td class="column_single_price border-left" data-cardQuoteID="{{ $product->id }}">
             <div class="d-flex">
                 <input type="text" class="form-control item-price"
                     value="{{ currency_format_with_sym($quoteItem->price) }}"
@@ -42,7 +42,7 @@
             </div>
         </td>
 
-        <td class="column_total_price border-right"
+        <td class="column_total_price border-right" data-cardQuoteID="{{ $product->id }}"
             x-text="items[{{ $product->id }}].optional ? '-' : formatCurrency(calculateItemTotal({{ $product->id }}))">
         </td>
     @endforeach

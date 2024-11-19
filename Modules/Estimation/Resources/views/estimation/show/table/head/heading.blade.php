@@ -37,10 +37,10 @@
     @endif
 
     @foreach ($allQuotes as $quote)
-        <th class="column_single_price border-left quote_th{{ $quote->id }}">
+        <th class="column_single_price border-left" data-cardQuoteID="{{ $quote->id }}">
             {{ __('Single Price') }}
         </th>
-        <th class="column_total_price border-right quote_th{{ $quote->id }}">
+        <th class="column_total_price border-right" data-cardQuoteID="{{ $quote->id }}">
             {{ __('Total Price') }}
         </th>
     @endforeach

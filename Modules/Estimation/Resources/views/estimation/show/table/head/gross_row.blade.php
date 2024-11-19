@@ -4,7 +4,7 @@
     </th>
 
     @foreach ($allQuotes as $quote)
-        <th colspan="2" class="toptotal total-gross border-left-right">
+        <th colspan="2" class="toptotal total-gross border-left-right" data-cardQuoteID="{{ $quote->id }}">
             <span class="dt-column-title">
                 <div class="totalnr toptotal total-discount total-vat-input">
                     <select name="tax[]">
