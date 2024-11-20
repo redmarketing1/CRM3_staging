@@ -398,6 +398,19 @@ Alpine.data('estimationShow', () => ({
                     group.pos.toLowerCase().includes(searchTerm) ? '' : 'none';
             }
         });
+
+        document.querySelectorAll('tr.item_comment').forEach(row => {
+            const commentInput = row.querySelector('.item-description');
+            const posElement = row.querySelector('.pos-inner');
+
+            if (commentInput && posElement) {
+                const commentText = commentInput.value.toLowerCase();
+                const posText = posElement.textContent.toLowerCase();
+
+                row.style.display = commentText.includes(searchTerm) ||
+                    posText.includes(searchTerm) ? '' : 'none';
+            }
+        });
     },
 
     initializeSortable() {
