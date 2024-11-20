@@ -3912,7 +3912,7 @@ span.feedback-preview {
 .column-dropdown .dropdown-menu.show {
     display: flex;
     flex-wrap: wrap;
-    width: 500px;
+    max-width: 500px;
     justify-content: center;
 }
 
@@ -8927,7 +8927,20 @@ table.table tr.top-quote.subcontractor_final_quote:hover {
     border: none !important
 }
 
+table.table tr.top-quote.client_final_quote
+{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+/* 
+table.table tr.top-quote.subcontractor_final_quote {
+    top: 124px !important;!i;!;
+}
 
+table.table tr.top-quote.only_final_quotes_profit {
+    top: 202px;
+} */
 
 
 
