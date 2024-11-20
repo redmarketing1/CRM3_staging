@@ -23,7 +23,7 @@
                         {{ __('Cash Discount') }}
                     </div>
                     <div class="total-discount-input">
-                        <input type="text" name="discount" class="form-control"
+                        <input type="text" name="discount" class="form-control cash-discount"
                             value="{{ currency_format_with_sym($quote->discount, '', '', false) }}">
                     </div>
                 </div>

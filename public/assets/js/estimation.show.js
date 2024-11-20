@@ -4,10 +4,14 @@
   \*******************************************************************/
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 Alpine.data('estimationShow', function () {
   return {
     items: {},
@@ -40,8 +44,15 @@ Alpine.data('estimationShow', function () {
       this.initializeLastNumbers();
       this.initializeContextMenu();
       this.initializeColumnVisibility();
+      this.initializeCardCalculations();
       this.$watch('items', function () {
-        return _this.calculateTotals();
+        _this.calculateTotals();
+        var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
+          return el.dataset.cardquoteid;
+        })));
+        cardQuoteIds.forEach(function (cardQuoteId) {
+          return _this.calculateCardTotals(cardQuoteId);
+        });
       }, {
         deep: true
       });
@@ -151,13 +162,9 @@ Alpine.data('estimationShow', function () {
     },
     calculateGroupTotal: function calculateGroupTotal(groupId) {
       var _this4 = this;
-      var totals = {}; // Store totals for each quote column
-
-      // Find the group row
+      var totals = {};
       var groupRow = document.querySelector("tr.group_row[data-groupid=\"".concat(groupId, "\"]"));
       if (!groupRow) return 0;
-
-      // Get all item rows until next group row
       var currentRow = groupRow.nextElementSibling;
       var _loop = function _loop() {
         if (currentRow.classList.contains('item_row')) {
@@ -165,26 +172,18 @@ Alpine.data('estimationShow', function () {
           var itemId = currentRow.dataset.itemid;
           if (!((_currentRow$querySele = currentRow.querySelector('.item-optional')) !== null && _currentRow$querySele !== void 0 && _currentRow$querySele.checked)) {
             var _currentRow$querySele2;
-            // Get quantity once since it's the same for all columns
             var quantity = _this4.parseNumber(((_currentRow$querySele2 = currentRow.querySelector('.item-quantity')) === null || _currentRow$querySele2 === void 0 ? void 0 : _currentRow$querySele2.value) || '0');
-
-            // Get all price inputs for this row
             var priceInputs = currentRow.querySelectorAll('.item-price');
-
-            // Calculate total for each price column
             priceInputs.forEach(function (priceInput, index) {
               if (!totals[index]) totals[index] = 0;
               var price = _this4.parseNumber(priceInput.value || '0');
               totals[index] += quantity * price;
-
-              // Update individual item total
               var totalCell = currentRow.querySelectorAll('.column_total_price')[index];
               if (totalCell) {
                 totalCell.textContent = _this4.formatCurrency(quantity * price);
               }
             });
           } else {
-            // If item is optional, set all totals to '-'
             currentRow.querySelectorAll('.column_total_price').forEach(function (cell) {
               cell.textContent = '-';
             });
@@ -196,14 +195,105 @@ Alpine.data('estimationShow', function () {
         _loop();
       }
 
-      // Update all total cells in the group row
+      // Update group totals and trigger card totals update
       var totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
       totalCells.forEach(function (cell, index) {
         cell.textContent = _this4.formatCurrency(totals[index] || 0);
+
+        // Get card quote ID and trigger update
+        var cardQuoteId = cell.dataset.cardquoteid;
+        if (cardQuoteId) {
+          _this4.calculateCardTotals(cardQuoteId);
+        }
+      });
+      return totals[0] || 0;
+    },
+    calculateCardTotals: function calculateCardTotals(cardQuoteId) {
+      var _this5 = this;
+      var subtotal = 0;
+
+      // Sum all group totals for this card
+      var groupTotalCells = document.querySelectorAll("td[data-cardquoteid=\"".concat(cardQuoteId, "\"].grouptotal"));
+      groupTotalCells.forEach(function (cell) {
+        subtotal += _this5.parseNumber(cell.textContent);
       });
 
-      // Return the first total for backwards compatibility
-      return totals[0] || 0;
+      // Get markup value
+      var markupInput = document.querySelector("input[name=\"markup\"][value]:not([value=\"\"])[data-cardquoteid=\"".concat(cardQuoteId, "\"]"));
+      var markup = this.parseNumber((markupInput === null || markupInput === void 0 ? void 0 : markupInput.value) || '0');
+
+      // Get cash discount value
+      var discountInput = document.querySelector("input[name=\"discount\"][data-cardquoteid=\"".concat(cardQuoteId, "\"]"));
+      var cashDiscount = this.parseNumber((discountInput === null || discountInput === void 0 ? void 0 : discountInput.value) || '0');
+
+      // Get VAT rate
+      var vatSelect = document.querySelector("select[name=\"tax[]\"][data-cardquoteid=\"".concat(cardQuoteId, "\"]"));
+      var vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
+
+      // Calculate totals
+      var netAmount = subtotal + markup;
+      var discountAmount = netAmount * cashDiscount / 100;
+      var netWithDiscount = netAmount - discountAmount;
+      var vatAmount = netWithDiscount * vatRate;
+      var grossWithDiscount = netWithDiscount + vatAmount;
+
+      // Update UI totals
+      this.updateCardTotalUI(cardQuoteId, {
+        netAmount: netAmount,
+        netWithDiscount: netWithDiscount,
+        grossWithDiscount: grossWithDiscount,
+        subtotal: subtotal
+      });
+    },
+    updateCardTotalUI: function updateCardTotalUI(cardQuoteId, totals) {
+      // Update Net incl. Discount
+      var netDiscountElement = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-net-discount"));
+      if (netDiscountElement) {
+        netDiscountElement.textContent = this.formatCurrency(totals.netWithDiscount);
+      }
+
+      // Update Gross incl. Discount
+      var grossDiscountElement = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-gross-discount"));
+      if (grossDiscountElement) {
+        grossDiscountElement.textContent = this.formatCurrency(totals.grossWithDiscount);
+      }
+
+      // Update Net
+      var netElement = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-net"));
+      if (netElement) {
+        netElement.textContent = this.formatCurrency(totals.netAmount);
+      }
+
+      // Update Gross total
+      var grossElement = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"] .total-gross-total"));
+      if (grossElement) {
+        grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
+      }
+    },
+    initializeCardCalculations: function initializeCardCalculations() {
+      var _this6 = this;
+      // Get all card quote IDs
+      var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
+        return el.dataset.cardquoteid;
+      })));
+
+      // Calculate initial totals
+      cardQuoteIds.forEach(function (cardQuoteId) {
+        _this6.calculateCardTotals(cardQuoteId);
+      });
+
+      // Add event listeners for changes
+      document.addEventListener('change', function (e) {
+        var _target$closest;
+        var target = e.target;
+        var cardQuoteId = (_target$closest = target.closest('[data-cardquoteid]')) === null || _target$closest === void 0 ? void 0 : _target$closest.dataset.cardquoteid;
+        if (!cardQuoteId) return;
+
+        // Check if the change is relevant for recalculation
+        if (target.matches('input[name="markup"]') || target.matches('input[name="discount"]') || target.matches('select[name="tax[]"]') || target.matches('.item-price') || target.matches('.item-quantity') || target.matches('.item-optional')) {
+          _this6.calculateCardTotals(cardQuoteId);
+        }
+      });
     },
     formatDecimal: function formatDecimal(value) {
       return new Intl.NumberFormat('de-DE', {
@@ -275,7 +365,7 @@ Alpine.data('estimationShow', function () {
       });
     },
     initializeSortable: function initializeSortable() {
-      var _this5 = this;
+      var _this7 = this;
       $("#estimation-edit-table").sortable({
         items: 'tbody tr',
         cursor: 'pointer',
@@ -309,23 +399,23 @@ Alpine.data('estimationShow', function () {
               movedRow.dataset.groupid = newGroupId;
 
               // Update data structures
-              if (_this5.items[itemId]) {
-                _this5.items[itemId].groupId = newGroupId;
+              if (_this7.items[itemId]) {
+                _this7.items[itemId].groupId = newGroupId;
               }
-              if (_this5.newItems[itemId]) {
-                _this5.newItems[itemId].groupId = newGroupId;
+              if (_this7.newItems[itemId]) {
+                _this7.newItems[itemId].groupId = newGroupId;
               }
             }
           }
 
           // Recalculate everything
-          _this5.updatePOSNumbers();
-          _this5.calculateTotals();
+          _this7.updatePOSNumbers();
+          _this7.calculateTotals();
         }
       });
     },
     initializeLastNumbers: function initializeLastNumbers() {
-      var _this6 = this;
+      var _this8 = this;
       var posNumbers = new Set();
       document.querySelectorAll('.pos-inner').forEach(function (element) {
         var pos = element.textContent.trim();
@@ -337,20 +427,20 @@ Alpine.data('estimationShow', function () {
             itemNum = _pos$split2[1];
           var groupNumber = parseInt(groupNum);
           var itemNumber = parseInt(itemNum);
-          _this6.lastGroupNumber = Math.max(_this6.lastGroupNumber, groupNumber);
-          if (!_this6.lastItemNumbers[groupNumber] || itemNumber > _this6.lastItemNumbers[groupNumber]) {
+          _this8.lastGroupNumber = Math.max(_this8.lastGroupNumber, groupNumber);
+          if (!_this8.lastItemNumbers[groupNumber] || itemNumber > _this8.lastItemNumbers[groupNumber]) {
             // Ensure item numbers stay within 2 digits (max 99)
-            _this6.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
+            _this8.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
           }
         }
       });
       document.querySelectorAll('.grouppos').forEach(function (element) {
         var groupNum = parseInt(element.textContent.trim());
-        _this6.lastGroupNumber = Math.max(_this6.lastGroupNumber, groupNum);
+        _this8.lastGroupNumber = Math.max(_this8.lastGroupNumber, groupNum);
       });
     },
     addItem: function addItem(type) {
-      var _this7 = this;
+      var _this9 = this;
       var targetRowId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var timestamp = Date.now();
       var currentGroupId;
@@ -394,16 +484,16 @@ Alpine.data('estimationShow', function () {
             _targetRow.parentNode.insertBefore(newRow, _targetRow.nextSibling);
           }
         }
-        _this7.initializeSortable();
-        _this7.updatePOSNumbers();
-        _this7.calculateTotals();
+        _this9.initializeSortable();
+        _this9.updatePOSNumbers();
+        _this9.calculateTotals();
       });
       if (targetRowId) {
         this.contextMenu.show = false;
       }
     },
     removeItem: function removeItem() {
-      var _this8 = this;
+      var _this10 = this;
       var selectedCheckboxes = document.querySelectorAll('.item_selection:checked');
       if (selectedCheckboxes.length === 0) {
         toastrs("Error", "Please select checkbox to continue delete");
@@ -423,10 +513,10 @@ Alpine.data('estimationShow', function () {
             var row = checkbox.closest('tr');
             if (row.classList.contains('group_row')) {
               groupIds.push(row.dataset.groupid);
-              delete _this8.groups[row.dataset.groupid];
+              delete _this10.groups[row.dataset.groupid];
             } else {
               itemIds.push(row.dataset.itemid);
-              delete _this8.items[row.dataset.itemid];
+              delete _this10.items[row.dataset.itemid];
             }
             row.remove();
           });
@@ -443,13 +533,13 @@ Alpine.data('estimationShow', function () {
               group_ids: groupIds
             })
           });
-          _this8.calculateTotals();
-          _this8.updatePOSNumbers();
+          _this10.calculateTotals();
+          _this10.updatePOSNumbers();
         }
       });
     },
     updatePOSNumbers: function updatePOSNumbers() {
-      var _this9 = this;
+      var _this11 = this;
       var currentGroupPos = 0;
       var itemCountInGroup = 0;
       var lastGroupId = null;
@@ -460,16 +550,16 @@ Alpine.data('estimationShow', function () {
           lastGroupId = row.dataset.groupid;
           var groupPos = currentGroupPos.toString().padStart(2, '0');
           row.querySelector('.grouppos').textContent = "".concat(groupPos);
-          if (_this9.groups[lastGroupId]) {
-            _this9.groups[lastGroupId].pos = groupPos;
+          if (_this11.groups[lastGroupId]) {
+            _this11.groups[lastGroupId].pos = groupPos;
           }
         } else if (row.classList.contains('item_row') || row.classList.contains('item_comment')) {
           itemCountInGroup++;
           var itemPos = "".concat(currentGroupPos.toString().padStart(2, '0'), ".").concat(itemCountInGroup.toString().padStart(2, '0'));
           row.querySelector('.pos-inner').textContent = itemPos;
           var itemId = row.dataset.itemid || row.dataset.commentid;
-          if (_this9.items[itemId]) {
-            _this9.items[itemId].pos = itemPos;
+          if (_this11.items[itemId]) {
+            _this11.items[itemId].pos = itemPos;
           }
         }
       });
@@ -482,7 +572,7 @@ Alpine.data('estimationShow', function () {
       return this.expandedRows[index] || false;
     },
     initializeContextMenu: function initializeContextMenu() {
-      var _this10 = this;
+      var _this12 = this;
       document.querySelector('#estimation-edit-table').addEventListener('contextmenu', function (e) {
         // Include comment rows in selection
         var row = e.target.closest('tr.item_row, tr.group_row, tr.item_comment');
@@ -494,7 +584,7 @@ Alpine.data('estimationShow', function () {
         var y = e.clientY;
         if (x + 160 > viewportWidth) x = viewportWidth - 160;
         if (y + 160 > viewportHeight) y = viewportHeight - 160;
-        _this10.contextMenu = {
+        _this12.contextMenu = {
           show: true,
           x: x,
           y: y,
@@ -521,7 +611,7 @@ Alpine.data('estimationShow', function () {
       this.contextMenu.show = false;
     },
     duplicateRow: function duplicateRow(rowId) {
-      var _this11 = this;
+      var _this13 = this;
       var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], \n                                                 tr[data-itemid=\"").concat(rowId, "\"], \n                                                 tr[data-commentid=\"").concat(rowId, "\"], \n                                                 tr[data-groupid=\"").concat(rowId, "\"]"));
       if (!originalRow) return;
       var timestamp = Date.now();
@@ -592,14 +682,14 @@ Alpine.data('estimationShow', function () {
         if (newRow && originalRow.nextSibling) {
           originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
         }
-        _this11.updatePOSNumbers();
-        _this11.calculateTotals();
-        _this11.initializeContextMenu();
+        _this13.updatePOSNumbers();
+        _this13.calculateTotals();
+        _this13.initializeContextMenu();
       });
       this.contextMenu.show = false;
     },
     removeRowFromMenu: function removeRowFromMenu(rowId) {
-      var _this12 = this;
+      var _this14 = this;
       Swal.fire({
         title: 'Confirmation Delete',
         text: 'Really! You want to remove this item? You can\'t undo',
@@ -615,20 +705,20 @@ Alpine.data('estimationShow', function () {
             var groupId = row.dataset.groupid;
             document.querySelectorAll("tr[data-groupid=\"".concat(groupId, "\"]")).forEach(function (itemRow) {
               var itemId = itemRow.dataset.itemid;
-              delete _this12.items[itemId];
-              delete _this12.newItems[itemId];
+              delete _this14.items[itemId];
+              delete _this14.newItems[itemId];
               itemRow.remove();
             });
-            delete _this12.groups[groupId];
+            delete _this14.groups[groupId];
           } else {
             // Remove single item
             var itemId = row.dataset.itemid || row.dataset.id;
-            delete _this12.items[itemId];
-            delete _this12.newItems[itemId];
+            delete _this14.items[itemId];
+            delete _this14.newItems[itemId];
           }
           row.remove();
-          _this12.updatePOSNumbers();
-          _this12.calculateTotals();
+          _this14.updatePOSNumbers();
+          _this14.calculateTotals();
 
           // Handle UI updates
           document.querySelector('.SelectAllCheckbox').checked = false;
@@ -657,7 +747,7 @@ Alpine.data('estimationShow', function () {
       });
     },
     initializeColumnVisibility: function initializeColumnVisibility() {
-      var _this13 = this;
+      var _this15 = this;
       // Initialize column visibility from localStorage if available
       var savedVisibility = localStorage.getItem('columnVisibility');
       if (savedVisibility) {
@@ -672,14 +762,14 @@ Alpine.data('estimationShow', function () {
           var quoteId = e.target.dataset.quoteid;
           if (columnClass === 'quote_th' && quoteId) {
             // Handle quote columns specifically
-            _this13.columnVisibility[columnClass] = e.target.checked;
-            _this13.applyColumnVisibility(quoteId);
+            _this15.columnVisibility[columnClass] = e.target.checked;
+            _this15.applyColumnVisibility(quoteId);
           } else {
             // Handle regular columns
-            _this13.columnVisibility[columnClass] = e.target.checked;
-            _this13.applyColumnVisibility();
+            _this15.columnVisibility[columnClass] = e.target.checked;
+            _this15.applyColumnVisibility();
           }
-          _this13.saveColumnVisibility();
+          _this15.saveColumnVisibility();
         });
       });
     },

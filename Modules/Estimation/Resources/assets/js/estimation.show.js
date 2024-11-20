@@ -29,8 +29,14 @@ Alpine.data('estimationShow', () => ({
         this.initializeLastNumbers();
         this.initializeContextMenu();
         this.initializeColumnVisibility();
+        this.initializeCardCalculations();
 
-        this.$watch('items', () => this.calculateTotals(), { deep: true });
+        this.$watch('items', () => {
+            this.calculateTotals();
+            const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
+            cardQuoteIds.forEach(cardQuoteId => this.calculateCardTotals(cardQuoteId));
+        }, { deep: true });
+
         this.$watch('searchQuery', () => this.filterTable());
         this.$watch('selectAll', (value) => this.checkboxAll(value));
 
@@ -141,38 +147,29 @@ Alpine.data('estimationShow', () => ({
     },
 
     calculateGroupTotal(groupId) {
-        let totals = {};  // Store totals for each quote column
-
-        // Find the group row
+        let totals = {};
         const groupRow = document.querySelector(`tr.group_row[data-groupid="${groupId}"]`);
         if (!groupRow) return 0;
 
-        // Get all item rows until next group row
         let currentRow = groupRow.nextElementSibling;
         while (currentRow && !currentRow.classList.contains('group_row')) {
             if (currentRow.classList.contains('item_row')) {
                 const itemId = currentRow.dataset.itemid;
                 if (!currentRow.querySelector('.item-optional')?.checked) {
-                    // Get quantity once since it's the same for all columns
                     const quantity = this.parseNumber(currentRow.querySelector('.item-quantity')?.value || '0');
-
-                    // Get all price inputs for this row
                     const priceInputs = currentRow.querySelectorAll('.item-price');
 
-                    // Calculate total for each price column
                     priceInputs.forEach((priceInput, index) => {
                         if (!totals[index]) totals[index] = 0;
                         const price = this.parseNumber(priceInput.value || '0');
                         totals[index] += quantity * price;
 
-                        // Update individual item total
                         const totalCell = currentRow.querySelectorAll('.column_total_price')[index];
                         if (totalCell) {
                             totalCell.textContent = this.formatCurrency(quantity * price);
                         }
                     });
                 } else {
-                    // If item is optional, set all totals to '-'
                     currentRow.querySelectorAll('.column_total_price').forEach(cell => {
                         cell.textContent = '-';
                     });
@@ -181,14 +178,112 @@ Alpine.data('estimationShow', () => ({
             currentRow = currentRow.nextElementSibling;
         }
 
-        // Update all total cells in the group row
+        // Update group totals and trigger card totals update
         const totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
         totalCells.forEach((cell, index) => {
             cell.textContent = this.formatCurrency(totals[index] || 0);
+
+            // Get card quote ID and trigger update
+            const cardQuoteId = cell.dataset.cardquoteid;
+            if (cardQuoteId) {
+                this.calculateCardTotals(cardQuoteId);
+            }
         });
 
-        // Return the first total for backwards compatibility
         return totals[0] || 0;
+    },
+
+    calculateCardTotals(cardQuoteId) {
+        let subtotal = 0;
+
+        // Sum all group totals for this card
+        const groupTotalCells = document.querySelectorAll(`td[data-cardquoteid="${cardQuoteId}"].grouptotal`);
+        groupTotalCells.forEach(cell => {
+            subtotal += this.parseNumber(cell.textContent);
+        });
+
+        // Get markup value
+        const markupInput = document.querySelector(`input[name="markup"][value]:not([value=""])[data-cardquoteid="${cardQuoteId}"]`);
+        const markup = this.parseNumber(markupInput?.value || '0');
+
+        // Get cash discount value
+        const discountInput = document.querySelector(`input[name="discount"][data-cardquoteid="${cardQuoteId}"]`);
+        const cashDiscount = this.parseNumber(discountInput?.value || '0');
+
+        // Get VAT rate
+        const vatSelect = document.querySelector(`select[name="tax[]"][data-cardquoteid="${cardQuoteId}"]`);
+        const vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
+
+        // Calculate totals
+        const netAmount = subtotal + markup;
+        const discountAmount = (netAmount * cashDiscount) / 100;
+        const netWithDiscount = netAmount - discountAmount;
+        const vatAmount = netWithDiscount * vatRate;
+        const grossWithDiscount = netWithDiscount + vatAmount;
+
+        // Update UI totals
+        this.updateCardTotalUI(cardQuoteId, {
+            netAmount,
+            netWithDiscount,
+            grossWithDiscount,
+            subtotal
+        });
+    },
+
+    updateCardTotalUI(cardQuoteId, totals) {
+        // Update Net incl. Discount
+        const netDiscountElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net-discount`);
+        if (netDiscountElement) {
+            netDiscountElement.textContent = this.formatCurrency(totals.netWithDiscount);
+        }
+
+        // Update Gross incl. Discount
+        const grossDiscountElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-gross-discount`);
+        if (grossDiscountElement) {
+            grossDiscountElement.textContent = this.formatCurrency(totals.grossWithDiscount);
+        }
+
+        // Update Net
+        const netElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net`);
+        if (netElement) {
+            netElement.textContent = this.formatCurrency(totals.netAmount);
+        }
+
+        // Update Gross total
+        const grossElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"] .total-gross-total`);
+        if (grossElement) {
+            grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
+        }
+    },
+
+    initializeCardCalculations() {
+        // Get all card quote IDs
+        const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
+
+        // Calculate initial totals
+        cardQuoteIds.forEach(cardQuoteId => {
+            this.calculateCardTotals(cardQuoteId);
+        });
+
+        // Add event listeners for changes
+        document.addEventListener('change', (e) => {
+            const target = e.target;
+            const cardQuoteId = target.closest('[data-cardquoteid]')?.dataset.cardquoteid;
+
+            if (!cardQuoteId) return;
+
+            // Check if the change is relevant for recalculation
+            if (
+                target.matches('input[name="markup"]') ||
+                target.matches('input[name="discount"]') ||
+                target.matches('select[name="tax[]"]') ||
+                target.matches('.item-price') ||
+                target.matches('.item-quantity') ||
+                target.matches('.item-optional')
+            ) {
+                this.calculateCardTotals(cardQuoteId);
+            }
+        });
     },
 
     formatDecimal(value) {
