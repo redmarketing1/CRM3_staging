@@ -22555,9 +22555,9 @@ body .table thead th {
     font-size: 12px;
 }
 
-.table-hover tbody tr:hover {
+/* .table-hover tbody tr:hover {
     background-color: rgba(81, 69, 157, 0.03);
-}
+} */
 
 .dataTable-table>tbody>tr>td,
 .dataTable-table>tbody>tr>th,
@@ -29768,11 +29768,6 @@ body.anim-slip-from-top.modal-open .dash-header {
 
 /* Zebra-striping */
 .table-striped tbody tr:nth-of-type(2n+1) {
-    background-color: rgba(81, 69, 157, 0.03);
-}
-
-/* Hover effect */
-.table-hover tbody tr:hover {
     background-color: rgba(81, 69, 157, 0.03);
 }
 

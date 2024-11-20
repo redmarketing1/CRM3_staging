@@ -288,7 +288,7 @@ td.pos-td[class*="progress-100"] {
             </tr>
             <tr>
                 <td colspan="4" class="main-text" style="padding:250px 20px 50px; font-size: 14px;">
-                    <h2 style="margin-bottom: 30px; font-size:30px;">{{ __('Project Progress from')}} 
+                    <h2 style="margin-bottom: 30px; font-size:30px;">{{ __('Project Progress')}} {{ __('from')}} 
                         @if (!empty($progress_main_details))
                             @if(isset($progress_main_details->created_at))
                                 {{ date('d.m.y', strtotime($progress_main_details->created_at)) }}
@@ -482,7 +482,7 @@ td.pos-td[class*="progress-100"] {
         <thead style="display: table-row-group;">
         <tr>
                 <td colspan="5" class="main-text" style="">
-                    <h3 style="font-size:20px;">{{ __('Project Progress Details')}}</h3>    
+                    <h3 style="font-size:20px;">{{ __('Project Progress')}} {{ __('Details')}}</h3>    
                 </td>
                  {{-- <td colspan="2" class="legend-td">
                         <div class="legend" style="display:flex;">
@@ -505,7 +505,7 @@ td.pos-td[class*="progress-100"] {
                 <th class="th">{{ __('Remaining') }}</th>  --}}
                 <th class="th">{{__('Comments')}}</th>
                 <th class="th">{{__('Quantity')}}</th>
-                <th class="th">{{__('Signature')}}</th>
+                <th class="th">{{__('Signature')}} / {{__('Confirmation')}}</th>
             </tr>
         </thead>
         <tbody>

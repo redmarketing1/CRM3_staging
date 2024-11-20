@@ -99,10 +99,6 @@
 				width: 100%;
 			}
 
-			h4 {
-				white-space: nowrap;
-			}
-
 			.ctotal {
 				font-size: 16px;
 				font-weight: bold;
@@ -299,7 +295,7 @@
 		</table>
 			
 		<h4 style="margin-bottom: 20px; font-weight: normal;" class="estim-address-text-info"><b>{{ $estimation->title }}</b> -
-			{{ $estimation->project()->name }} - {{ isset($client->address_1) ? $client->address_1 : '' }}
+			{{ $estimation->project()->name }} - {{ !empty($project->construction_detail->address_1) ? $project->construction_detail->address_1 : '' }}
 		</h4>
 
 		<table style="width: 100%;margin:0 0 100px 0; " class="table calctable estimation-preview-table">
