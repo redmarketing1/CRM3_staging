@@ -914,14 +914,6 @@ Alpine.data('estimationShow', () => ({
     },
 
     initializeColumnVisibility() {
-
-        const savedVisibility = localStorage.getItem('columnVisibility');
-        if (savedVisibility) {
-            this.columnVisibility = JSON.parse(savedVisibility);
-            this.applyColumnVisibility();
-        }
-
-
         document.querySelectorAll('.column-toggle').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
 

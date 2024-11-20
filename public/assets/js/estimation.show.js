@@ -775,11 +775,6 @@ Alpine.data('estimationShow', function () {
     },
     initializeColumnVisibility: function initializeColumnVisibility() {
       var _this16 = this;
-      var savedVisibility = localStorage.getItem('columnVisibility');
-      if (savedVisibility) {
-        this.columnVisibility = JSON.parse(savedVisibility);
-        this.applyColumnVisibility();
-      }
       document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
         checkbox.addEventListener('change', function (e) {
           var columnClass = e.target.dataset.column;
