@@ -726,7 +726,25 @@ Alpine.data('estimationShow', () => ({
 
     toggleDescription(index, event) {
         event.stopPropagation();
+
+        if (!this.expandedRows) {
+            this.expandedRows = {};
+        }
+
         this.expandedRows[index] = !this.expandedRows[index];
+
+        const parentRow = event.target.closest('tr');
+        const childRow = document.querySelector(`tr.item_child[data-id="${index}"]`);
+
+        if (childRow) {
+            childRow.style.display = this.expandedRows[index] ? 'table-row' : 'none';
+
+            const icon = parentRow.querySelector('.desc_toggle');
+            if (icon) {
+                icon.classList.toggle('fa-caret-right');
+                icon.classList.toggle('fa-caret-down');
+            }
+        }
     },
 
     isExpanded(index) {

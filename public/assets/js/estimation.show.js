@@ -352,6 +352,15 @@ Alpine.data('estimationShow', function () {
           row.style.display = group.name.toLowerCase().includes(searchTerm) || group.pos.toLowerCase().includes(searchTerm) ? '' : 'none';
         }
       });
+      document.querySelectorAll('tr.item_comment').forEach(function (row) {
+        var commentInput = row.querySelector('.item-description');
+        var posElement = row.querySelector('.pos-inner');
+        if (commentInput && posElement) {
+          var commentText = commentInput.value.toLowerCase();
+          var posText = posElement.textContent.toLowerCase();
+          row.style.display = commentText.includes(searchTerm) || posText.includes(searchTerm) ? '' : 'none';
+        }
+      });
     },
     initializeSortable: function initializeSortable() {
       var _this8 = this;
@@ -621,7 +630,20 @@ Alpine.data('estimationShow', function () {
     },
     toggleDescription: function toggleDescription(index, event) {
       event.stopPropagation();
+      if (!this.expandedRows) {
+        this.expandedRows = {};
+      }
       this.expandedRows[index] = !this.expandedRows[index];
+      var parentRow = event.target.closest('tr');
+      var childRow = document.querySelector("tr.item_child[data-id=\"".concat(index, "\"]"));
+      if (childRow) {
+        childRow.style.display = this.expandedRows[index] ? 'table-row' : 'none';
+        var icon = parentRow.querySelector('.desc_toggle');
+        if (icon) {
+          icon.classList.toggle('fa-caret-right');
+          icon.classList.toggle('fa-caret-down');
+        }
+      }
     },
     isExpanded: function isExpanded(index) {
       return this.expandedRows[index] || false;
