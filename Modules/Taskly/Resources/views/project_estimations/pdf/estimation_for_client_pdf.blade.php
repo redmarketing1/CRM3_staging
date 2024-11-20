@@ -78,7 +78,6 @@
             page-break-after: always;
         }
         .field {width: 100%;}
-        h4 {white-space: nowrap;}
         .ctotal {font-size: 16px; font-weight: bold; margin: 10px 0;}
         .ctotal.sum {white-space: nowrap; vertical-align: bottom;}
 
@@ -245,7 +244,7 @@
 						{{ $project->construction_detail->countryDetail->name ?? ''}}
 					</div>
 				@endif
-				<div class="project-title mt-2" style="margin-top:20px;"><b>{{ __('Project') }}: {{ $estimation->project()->title }}</b></div>
+				<div class="project-title mt-2" style="margin-top:20px;"><b>{{ __('Project') }}: {{ $estimation->project()->name }}</b></div>
 				@if ($contractor)
 					<div class="field">{{ isset($client_name) ? $client_name : '' }}</div>
 					<div class="field">{{ $project->location }}</div>
@@ -339,8 +338,8 @@
 
 <div style="page-break-before: always;"></div>
 	<h4 style="margin-bottom: 20px; font-weight: normal;" class="estim-address-text-info"><b>{{ $estimation->title }}</b> -
-		{{ $project->title }} - {{ isset($project->construction_detail) ? $project->construction_detail->address_1." - ".$project->construction_detail->city : "" }}
-	</h4>
+			{{ $estimation->project()->name }} - {{ !empty($project->construction_detail->address_1) ? $project->construction_detail->address_1 : '' }}
+		</h4>
 	<table style="width: 100%;margin:0 0 100px 0; " class="table calctable">
 		<thead>
 		<tr class="tr" style="border-bottom: 2px solid #FFF;">

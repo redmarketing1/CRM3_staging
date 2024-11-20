@@ -79,12 +79,14 @@
                 </div>
             </div>
             <div class="mediainfo">
-                <span class="filedate">{{ \Auth::user()->dateFormat($file->created_at) }}</span>
                 <span class="filename">
                     <a href="{{ get_file('uploads/projects/') . '/' . $file->file_name }}" target="_blank"
                         data-title="{{ $file->file_name }}" class="file-{{ strtoupper($file_extension) }}">
-                        {{ $file->file }}</span>
-                </a>
+                        {{ $file->file_name }}
+                    </a>
+                </span>
+                <span class="filedate">{{ \Auth::user()->dateFormat($file->created_at) }}</span>
+                
 
             </div>
         </div>

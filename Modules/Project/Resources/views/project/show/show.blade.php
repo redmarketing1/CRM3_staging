@@ -230,7 +230,7 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
 @endpush
 @section('content')
-    <div class="row">
+    <div class="row pt-0">
         <div class="col-sm-12">
             <div class="row">
                 @include('project::project.show.utility.header')

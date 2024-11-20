@@ -48,7 +48,7 @@
                                 <th>{{ __('Action') }}</th>
                             </thead>
                             <tbody>
-                                @foreach ($project_estimations as $estimation)
+                               @foreach ($project_estimations->sortByDesc('updated_at') as $estimation)
                                     <tr>
                                         @php
                                             $setup_url = route(
@@ -68,6 +68,29 @@
                                                 href="{{ route('estimations.setup.estimate', \Crypt::encrypt($estimation->id)) }}">
                                                 {{ $estimation->title }}
                                             </a>
+                                             <div class="user-group projectusers">
+                                                        @foreach ($estimation->all_quotes_list as $row)
+                                                            @php
+                                                                $quote_status = '';
+                                                                if ($row->is_display == 1) {
+                                                                    $border_color = '#6FD943';
+                                                                    $quote_status = __('Quote Submitted');
+                                                                } else {
+                                                                    $border_color = '';
+                                                                    $quote_status = __('Invited');
+                                                                }
+                                                            @endphp
+                                                            @if(!empty($row->user))
+                                                                <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
+                                                                    class="subc"
+                                                                    style="border:4px solid {{ $border_color }} !important"
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
+                                                                    data-user_id="{{ $row->user->id }}"
+                                                                    data-estimation_id="{{ $estimation->id }}">
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
                                         </td>
                                         <td class="text-right">
                                             {{ company_date_formate($estimation->issue_date) }}</td>
@@ -114,13 +137,7 @@
                                 $same_final_estimations = 1;
                             }
                         @endphp
-                        @if (isset($project->client_final_quote->project_estimation_id))
-                            <div class="row mb-2">
-                                <div class="col-md-12">
-                                    <h6>{{ __('Final Estimations') }}</h6>
-                                </div>
-                            </div>
-                        @endif
+                        
                         <table class="table table-bordered estimation-list px-2" id="{{-- estimation-table --}}">
                             <thead>
                                 <th class="select"></th>
@@ -142,25 +159,29 @@
                                 }
                             @endphp
                             <tbody class="only_final_quotes {{ $only_final_display }}">
-                                @php
+                               @php
                                     $final_quote_list = [];
-                                    $profit_gross = 0;
-                                    $profit_gross_with_discount = 0;
-                                    $profit_net = 0;
-                                    $profit_net_with_discount = 0;
-                                    $profit_discount = 0;
+                                    
+                                    // Initialize client values
+                                    $client_gross = isset($project->client_final_quote->gross) ? $project->client_final_quote->gross : 0;
+                                    $client_gross_with_discount = isset($project->client_final_quote->gross_with_discount) ? $project->client_final_quote->gross_with_discount : 0;
+                                    $client_net = isset($project->client_final_quote->net) ? $project->client_final_quote->net : 0;
+                                    $client_net_with_discount = isset($project->client_final_quote->net_with_discount) ? $project->client_final_quote->net_with_discount : 0;
+                                    $client_discount = isset($project->client_final_quote->discount) ? $project->client_final_quote->discount : 0;
 
-                                    $client_gross = 0;
-                                    $client_gross_with_discount = 0;
-                                    $client_net = 0;
-                                    $client_net_with_discount = 0;
-                                    $client_discount = 0;
+                                    // Initialize subcontractor values
+                                    $sub_contractor_gross = isset($project->sub_contractor_final_quote->gross) ? $project->sub_contractor_final_quote->gross : 0;
+                                    $sub_contractor_gross_with_discount = isset($project->sub_contractor_final_quote->gross_with_discount) ? $project->sub_contractor_final_quote->gross_with_discount : 0;
+                                    $sub_contractor_net = isset($project->sub_contractor_final_quote->net) ? $project->sub_contractor_final_quote->net : 0;
+                                    $sub_contractor_net_with_discount = isset($project->sub_contractor_final_quote->net_with_discount) ? $project->sub_contractor_final_quote->net_with_discount : 0;
+                                    $sub_contractor_discount = isset($project->sub_contractor_final_quote->discount) ? $project->sub_contractor_final_quote->discount : 0;
 
-                                    $sub_contractor_gross = 0;
-                                    $sub_contractor_gross_with_discount = 0;
-                                    $sub_contractor_net = 0;
-                                    $sub_contractor_net_with_discount = 0;
-                                    $sub_contractor_discount = 0;
+                                    // Calculate profit values
+                                    $profit_gross = floatval($client_gross) - floatval($sub_contractor_gross);
+                                    $profit_gross_with_discount = floatval($client_gross_with_discount) - floatval($sub_contractor_gross_with_discount);
+                                    $profit_net = floatval($client_net) - floatval($sub_contractor_net);
+                                    $profit_net_with_discount = floatval($client_net_with_discount) - floatval($sub_contractor_net_with_discount);
+                                    $profit_discount = floatval($client_discount) - floatval($sub_contractor_discount);
                                 @endphp
                                 @if (isset($project->client_final_quote->id) && isset($project->client_final_quote->estimation))
                                     @php
@@ -183,7 +204,9 @@
                                             ? $client_final_quote->discount
                                             : 0;
                                     @endphp
-                                    <tr class="client_final_quote">
+                                     
+                                    
+                                    <tr class="top-quote client_final_quote">
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input type="checkbox" class="estimation_selection" id="estimation_check_0"
@@ -193,10 +216,9 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span
-                                                class="badge fix_badges client-final-badge rounded">{{ __('Client Final Quote') }}</span>
-                                            <span
-                                                class="badge fix_badges bg {{ $estimationStatus[$estimation->status] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
+                                            
+                                            <span class="badge fix_badges bg {{ $estimationStatus[$estimation->status] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
+                                                
                                         </td>
                                         <td style="font-weight:600;">
                                             @if ($estimation->status > 1)
@@ -204,12 +226,15 @@
                                                     href="{{ route('estimations.setup.estimate', \Crypt::encrypt($estimation->id)) }}">
                                                     {{ $estimation->title }}
                                                 </a>
+                                               
                                             @else
                                                 <a
                                                     href="{{ route('estimations.setup.estimate', \Crypt::encrypt($estimation->id)) }}">
                                                     {{ $estimation->title }}
                                                 </a>
+                                                
                                             @endif
+                                            <span class="badge fix_badges client-final-badge rounded">{{ __('Client Final Quote') }}</span>
                                             @if (!empty($queues_result))
                                                 @foreach ($queues_result['estimation_queues_list'] as $qrow)
                                                     @if ($qrow['completed_percentage'] >= 0)
@@ -223,6 +248,30 @@
                                                     @endif
                                                 @endforeach
                                             @endif
+                                             <div class="user-group projectusers">
+                                                        @foreach ($estimation->all_quotes_list as $row)
+                                                            @php
+                                                                $quote_status = '';
+                                                                if ($row->is_display == 1) {
+                                                                    $border_color = '#6FD943';
+                                                                    $quote_status = __('Quote Submitted');
+                                                                } else {
+                                                                    $border_color = '';
+                                                                    $quote_status = __('Invited');
+                                                                }
+                                                            @endphp
+                                                            @if(!empty($row->user))
+                                                                <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
+                                                                    class="subc"
+                                                                    style="border:4px solid {{ $border_color }} !important"
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
+                                                                    data-user_id="{{ $row->user->id }}"
+                                                                    data-estimation_id="{{ $estimation->id }}">
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                            
                                         </td>
                                         <td class="text-right">
                                             {{ currency_format_with_sym($client_final_quote->net_with_discount) }}
@@ -275,30 +324,7 @@
                                                         </div>
                                                     @endpermission
                                                 @endif
-                                                <div>
-                                                    <div class="user-group projectusers">
-                                                        @foreach ($estimation->all_quotes_list as $row)
-                                                            @php
-                                                                $quote_status = '';
-                                                                if ($row->is_display == 1) {
-                                                                    $border_color = '#6FD943';
-                                                                    $quote_status = __('Quote Submitted');
-                                                                } else {
-                                                                    $border_color = '';
-                                                                    $quote_status = __('Invited');
-                                                                }
-                                                            @endphp
-                                                            @if(!empty($row->user))
-                                                                <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
-                                                                    class="subc"
-                                                                    style="border:4px solid {{ $border_color }} !important"
-                                                                    data-bs-toggle="tooltip"
-                                                                    title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
-                                                                    data-user_id="{{ $row->user->id }}"
-                                                                    data-estimation_id="{{ $estimation->id }}">
-                                                            @endif
-                                                        @endforeach
-                                                    </div>
+                                               
                                         </td>
                                     </tr>
                                 @endif
@@ -327,7 +353,7 @@
                                             ? $sub_contractor_final_quote->discount
                                             : 0;
                                     @endphp
-                                    <tr class="subcontractor_final_quote">
+                                    <tr class="top-quote subcontractor_final_quote">
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input type="checkbox" class="estimation_selection"
@@ -337,10 +363,9 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span
-                                                class="badge fix_badges sc-final-badge rounded">{{ __('Subcontractor Final Quote') }}</span>
-                                            <span
-                                                class="badge fix_badges bg {{ $estimationStatus[$estimation->status] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
+                                            
+                                            <span class="badge fix_badges bg {{ $estimationStatus[$estimation->status] }} p-2 px-3 rounded">{{ $estimationStatus[$estimation->status] }}</span>
+                                                
                                         </td>
                                         <td style="font-weight:600;">
                                             @if ($estimation->status > 1)
@@ -353,7 +378,32 @@
                                                     href="{{ route('estimations.setup.estimate', \Crypt::encrypt($estimation->id)) }}">
                                                     {{ $estimation->title }}
                                                 </a>
+                                               
                                             @endif
+                                             <span class="badge fix_badges sc-final-badge rounded">{{ __('Subcontractor Final Quote') }}</span>
+                                              <div class="user-group projectusers">
+                                                        @foreach ($estimation->all_quotes_list as $row)
+                                                            @php
+                                                                $quote_status = '';
+                                                                if ($row->is_display == 1) {
+                                                                    $border_color = '#6FD943';
+                                                                    $quote_status = __('Quote Submitted');
+                                                                } else {
+                                                                    $border_color = '';
+                                                                    $quote_status = __('Invited');
+                                                                }
+                                                            @endphp
+                                                            @if(!empty($row->user))
+                                                                <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
+                                                                    class="subc"
+                                                                    style="border:4px solid {{ $border_color }} !important"
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
+                                                                    data-user_id="{{ $row->user->id }}"
+                                                                    data-estimation_id="{{ $estimation->id }}">
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
                                         </td>
                                         <td class="text-right">
                                             {{ currency_format_with_sym($sub_contractor_final_quote->net_with_discount) }}
@@ -407,65 +457,46 @@
                                                     @endpermission
                                                 @endif
                                             </div>
-                                            <div class="user-group projectusers">
-                                                @foreach ($estimation->all_quotes_list as $row)
-                                                    @php
-                                                        $quote_status = '';
-                                                        if ($row->is_display == 1) {
-                                                            $border_color = '#6FD943';
-                                                            $quote_status = __('Quote Submitted');
-                                                        } else {
-                                                            $border_color = '';
-                                                            $quote_status = __('Invited');
-                                                        }
-                                                    @endphp
-                                                    @if(!empty($row->user))
-                                                        <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
-                                                            class="subc"
-                                                            style="border:4px solid {{ $border_color }} !important"
-                                                            data-bs-toggle="tooltip"
-                                                            title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
-                                                            data-user_id="{{ $row->user->id }}"
-                                                            data-estimation_id="{{ $estimation->id }}">
-                                                    @endif
-                                                @endforeach
-                                            </div>
+                                            
                                         </td>
                                     </tr>
                                 @endif
-                                <tr class="only_final_quotes_profit">
-                                    @php
-                                        $profit_gross = floatval($client_gross) - floatval($sub_contractor_gross);
-                                        $profit_gross_with_discount =
-                                            floatval($client_gross_with_discount) -
-                                            floatval($sub_contractor_gross_with_discount);
-                                        $profit_net = floatval($client_net) - floatval($sub_contractor_net);
-                                        $profit_net_with_discount =
-                                            floatval($client_net_with_discount) -
-                                            floatval($sub_contractor_net_with_discount);
-                                        $profit_discount =
-                                            floatval($client_discount) - floatval($sub_contractor_discount);
-                                    @endphp
-                                    <th colspan="2"></th>
-                                    <th><b>{{ __('Profit') }}:</b></th>
-                                    <th class="text-right net-discount">
-                                        {{ currency_format_with_sym($profit_net_with_discount) }}</th>
-                                    <th class="text-right gross-discount">
-                                        {{ currency_format_with_sym($profit_gross_with_discount) }}</th>
-                                    <th class="text-right discount">
-                                        <!-- {{ number_format($profit_discount, 2, ',', '.') }} % -->
-                                    </th>
-                                    <th></th>
-                                    <th colspan="2"></th>
-                                </tr>
-                                <tr class="other-estimations-row">
+                                    @if (isset($project->client_final_quote->id) && isset($project->sub_contractor_final_quote->id))
+                                    <tr class="top-quote only_final_quotes_profit">
+                                        @php
+                                            $profit_gross = floatval($client_gross) - floatval($sub_contractor_gross);
+                                            $profit_gross_with_discount =
+                                                floatval($client_gross_with_discount) -
+                                                floatval($sub_contractor_gross_with_discount);
+                                            $profit_net = floatval($client_net) - floatval($sub_contractor_net);
+                                            $profit_net_with_discount =
+                                                floatval($client_net_with_discount) -
+                                                floatval($sub_contractor_net_with_discount);
+                                            $profit_discount =
+                                                floatval($client_discount) - floatval($sub_contractor_discount);
+                                        @endphp
+                                        <th colspan="2"></th>
+                                        <th><b>{{ __('Profit') }}:</b></th>
+                                        <th class="text-right net-discount">
+                                            {{ currency_format_with_sym($profit_net_with_discount) }}</th>
+                                        <th class="text-right gross-discount">
+                                            {{ currency_format_with_sym($profit_gross_with_discount) }}</th>
+                                        <th class="text-right discount">
+                                            <!-- {{ number_format($profit_discount, 2, ',', '.') }} % -->
+                                        </th>
+                                        <th></th>
+                                        <th colspan="2"></th>
+                                    </tr>
+                                    @endif
+                                
+                                {{-- <tr class="other-estimations-row">
                                     <td colspan="8">
                                         <h6>{{ __('Other Estimations') }}</h6>
                                     </td>
-                                </tr>
+                                </tr> --}}
                             </tbody>
                             <tbody class="all_estimations">
-                                @foreach ($project_estimations as $e_key => $estimation)
+                                @foreach ($project_estimations->sortByDesc('updated_at') as $e_key => $estimation)
                                     @if (isset($estimation->id))
                                         @if (!in_array($estimation->id, $final_quote_list))
                                             @php
@@ -532,6 +563,29 @@
                                                             {{ $estimation->title }}
                                                         </a>
                                                     @endif
+                                                     <div class="user-group projectusers">
+                                                        @foreach ($estimation->all_quotes_list as $row)
+                                                            @php
+                                                                $quote_status = '';
+                                                                if ($row->is_display == 1) {
+                                                                    $border_color = '#6FD943';
+                                                                    $quote_status = __('Quote Submitted');
+                                                                } else {
+                                                                    $border_color = '';
+                                                                    $quote_status = __('Invited');
+                                                                }
+                                                            @endphp
+                                                            @if(!empty($row->user))
+                                                                <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
+                                                                    class="subc"
+                                                                    style="border:4px solid {{ $border_color }} !important"
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
+                                                                    data-user_id="{{ $row->user->id }}"
+                                                                    data-estimation_id="{{ $estimation->id }}">
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
                                                 </td>
                                                 @if ($is_selected_quote > 0 && isset($estimation->final_quote->id))
                                                     @if ($same_final_estimations > 0)
@@ -567,7 +621,7 @@
                                                         %</td>
                                                 @endif
                                                 <td class="text-right">
-                                                    {{ company_date_formate($estimation->issue_date) }}</td>
+                                                    {{ date('d.m.Y H:i', strtotime($estimation->updated_at)) }}</td>
                                                 <td class="actions">
                                                     @if (\Auth::user()->type == 'company')
                                                         <div class="icons-div">
@@ -610,29 +664,7 @@
                                                                 </div>
                                                             @endpermission
                                                         </div>
-                                                        <div class="user-group projectusers">
-                                                            @foreach ($estimation->all_quotes_list as $row)
-                                                                @php
-                                                                    $quote_status = '';
-                                                                    if ($row->is_display == 1) {
-                                                                        $border_color = '#6FD943';
-                                                                        $quote_status = __('Quote Submitted');
-                                                                    } else {
-                                                                        $border_color = '';
-                                                                        $quote_status = __('Invited');
-                                                                    }
-                                                                @endphp
-                                                                @if(!empty($row->user))
-                                                                    <img @if (!empty($row->user->avatar)) src="{{ get_file($row->user->avatar) }}" @else avatar="{{ $row->user->name }}" @endif
-                                                                        class="subc"
-                                                                        style="border:4px solid {{ $border_color }} !important"
-                                                                        data-bs-toggle="tooltip"
-                                                                        title="{{ $row->user->name . ' - ' . ucfirst($quote_status) }}"
-                                                                        data-user_id="{{ $row->user->id }}"
-                                                                        data-estimation_id="{{ $estimation->id }}">
-                                                                @endif
-                                                            @endforeach
-                                                        </div>
+                                                        
                                                     @endif
                                                 </td>
                                             </tr>
