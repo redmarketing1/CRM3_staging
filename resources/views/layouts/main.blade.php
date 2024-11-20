@@ -9,7 +9,7 @@
 </head>
 
 <body class="{{ $bodyClasses }}" data-theme-color="{{ $themeColorCode }}" style="{{ $style }}">
- 
+
     <div class="loader-bg">
         <div class="loader-track">
             <div class="loader-fill">
@@ -18,7 +18,7 @@
     </div>
     @include('partials.sidebar')
     @include('partials.header')
-    <section class="dash-container">
+    <section class="dash-container" id="app">
         <div class="dash-content">
             @include('partials.breadcrumb')
             @yield('content')

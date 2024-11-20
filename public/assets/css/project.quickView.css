@@ -1,1 +1,215 @@
-#card2{right:-61px}#card1,#card2{width:48%}#dropBox,#useradd-8{display:flex}#dropBox{align-items:center;border:2px dashed #ccc;cursor:pointer;height:100px;justify-content:center;margin-top:20px!important;text-align:center;width:100%}#dropBox:hover{border-color:#4caf50}#fileInput{display:none}#previewContainer{display:flex;flex-wrap:wrap;justify-content:center;margin-top:20px}.preview{margin:10px;max-height:150px;max-width:100%}.container{cursor:pointer;display:block;font-size:22px;margin-bottom:25px!important;padding-left:35px;position:relative;-webkit-user-select:none;-moz-user-select:none;user-select:none}.container input{cursor:pointer;height:0;opacity:0;position:absolute;width:0}.checkmark{background-color:rgba(var(--bs-danger-rgb),var(--bs-bg-opacity))!important;height:15px;left:11px;position:absolute;top:0;width:15px}.header_buttons .checkmark{background-color:#0427e9!important}.checkmark:after{content:"";display:none;position:absolute}.container input:checked~.checkmark:after{display:block}.container .checkmark:after{border:solid #fff;border-width:0 3px 3px 0;height:10px;left:9px;top:5px;transform:rotate(45deg);width:5px}.default_file .header_buttons .action-btn,.selected_image .actionbuttons .bg-danger{visibility:visible}.progress-step{position:relative!important}.flex-div span{display:flex}#progress-table tr.group,#progress-table tr.group:hover{background-color:rgba(0,0,0,.1)!important}.address-class span,.client_invoice_address span,.construction_detail_address span{display:block}.progress-signature .sign_btn_block{display:flex;justify-content:space-between}.progress-signature .sign_btn_block_small{display:flex;gap:1px}.progress-signature .progress_final_clear_sig,.progress-signature .progress_final_clear_sig:hover{background:none!important;border:none!important;color:#333!important;margin-top:1px!important}.item-signature .progress_amount{background:#fff!important;border:1px solid #d8d8d8!important;margin-top:5px!important;padding:10px!important}.dash-sidebar .dash-submenu .dash-link{padding:5px 30px 5px 65px!important}#progressdropBox{align-items:center;border:2px dashed #ccc!important;cursor:pointer;display:flex;height:100px!important;justify-content:center;text-align:center;width:100%}#progressdropBox:hover{border-color:#4caf50!important}.item-signature .progress_files{margin-top:10px!important}.progressfileInput{display:none}.progress_files_row .progress_mediaimg{padding:10px!important}.progress_files_row .lightbox-link{display:block!important;margin:0 auto!important}.progress_files_row .mediabox .mediainfo{text-align:center!important}.progress_files_row .preview{margin:10px!important}.media-body a .fileprev{margin:0 auto!important}.progress_files_row #progress_bulk_delete_form .btn-primary{background:#48494b!important;color:#fff!important;padding:5px 10px!important}.progress_files_row #progress_bulk_delete_form .btn-primary i{color:#fff!important}
+#card2 {
+  right: -61px;
+  width: 48%;
+}
+
+#card1 {
+  width: 48%;
+}
+
+#useradd-8 {
+  display: flex;
+}
+
+#dropBox {
+  width: 100%;
+  height: 100px;
+  margin-top: 20px !important;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+#dropBox:hover {
+  border-color: #4CAF50;
+}
+
+#fileInput {
+  display: none;
+}
+
+#previewContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.preview {
+  max-width: 100%;
+  max-height: 150px;
+  margin: 10px;
+}
+
+/* The container */
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 25px !important;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 11px;
+  height: 15px;
+  width: 15px;
+  background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.header_buttons .checkmark {
+  background-color: #0427e9 !important;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+.selected_image .actionbuttons .bg-danger,
+.default_file .header_buttons .action-btn {
+  visibility: visible;
+}
+
+.progress-step {
+  position: relative !important;
+}
+
+.flex-div span {
+  display: flex;
+}
+
+#progress-table tr.group,
+#progress-table tr.group:hover {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.construction_detail_address span,
+.client_invoice_address span,
+.address-class span {
+  display: block;
+}
+
+.progress-signature .sign_btn_block {
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-signature .sign_btn_block_small {
+  display: flex;
+  gap: 1px;
+}
+
+.progress-signature .progress_final_clear_sig,
+.progress-signature .progress_final_clear_sig:hover {
+  color: #333 !important;
+  background: none !important;
+  border: none !important;
+  margin-top: 1px !important;
+}
+
+.item-signature .progress_amount {
+  border: 1px solid #d8d8d8 !important;
+  padding: 10px !important;
+  background: #ffffff !important;
+  margin-top: 5px !important;
+}
+
+.dash-sidebar .dash-submenu .dash-link {
+  padding: 5px 30px 5px 65px !important;
+}
+
+#progressdropBox {
+  width: 100%;
+  height: 100px !important;
+  border: 2px dashed #ccc !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+#progressdropBox:hover {
+  border-color: #4CAF50 !important;
+}
+
+.item-signature .progress_files {
+  margin-top: 10px !important;
+}
+
+.progressfileInput {
+  display: none;
+}
+
+.progress_files_row .progress_mediaimg {
+  padding: 10px !important;
+}
+
+.progress_files_row .progress_mediaimg {
+  padding: 10px !important;
+}
+
+.progress_files_row .lightbox-link {
+  margin: 0 auto !important;
+  display: block !important;
+}
+
+.progress_files_row .mediabox .mediainfo {
+  text-align: center !important;
+}
+
+.progress_files_row .preview {
+  margin: 10px !important;
+}
+
+.media-body a .fileprev {
+  margin: 0 auto !important;
+}
+
+.progress_files_row #progress_bulk_delete_form .btn-primary {
+  background: #48494B !important;
+  padding: 5px 10px !important;
+  color: #fff !important;
+}
+
+.progress_files_row #progress_bulk_delete_form .btn-primary i {
+  color: #fff !important;
+}

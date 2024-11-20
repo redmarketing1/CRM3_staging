@@ -2012,3 +2012,7 @@ fieldset[disabled] .not-disable>* {
     justify-content: space-between;
     row-gap: 11px;
 }
+
+[x-cloak] {
+    display: none !important;
+}
