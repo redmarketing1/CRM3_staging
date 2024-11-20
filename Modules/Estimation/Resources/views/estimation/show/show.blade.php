@@ -20,7 +20,7 @@
                                 @include('estimation::estimation.show.table.index')
                             </div>
 
-                            {{-- @include('estimation::estimation.show.section.description') --}}
+                            @include('estimation::estimation.show.section.description')
                             @include('estimation::estimation.show.section.footer')
 
                             {{ Form::close() }}

@@ -1,10 +1,10 @@
-<div class="tools-btn">
+<div class="tools-btn m-b-10">
 
-    <div class="search mb-10">
-        <input type="search" placeholder="{{ __('Search') }}..." class="w-50 px-3" id="table-search" x-model="searchQuery">
+    <div class="d-inline-block mb-10 mr-2 search">
+        <input type="search" placeholder="{{ __('Search') }}..." class="px-3" id="table-search" x-model="searchQuery">
     </div>
 
-    <div class="d-flex gap-2 mb-2 mt-3 align-items-center">
+    <div class="align-items-center d-inline-flex gap-2 m-l-25">
 
         {{-- <button class="reorder_group_btn" @click="reorderGroup" type="button" data-bs-toggle="tooltip"
                         title="{{ __('Reorder Group') }}">
@@ -41,7 +41,7 @@
                 </div>
             @endpermission
 
-            <div class="dropdown column-dropdown">
+            {{-- <div class="dropdown column-dropdown">
                 <div title="{{ __('Show / Hide Columns') }}">
                     <a class="dropdown-toggle" data-bs-toggle="dropdown" data-bs-placement="top" href="#"
                         role="button" aria-haspopup="false" aria-expanded="false">
@@ -96,39 +96,11 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <button type="button" @click="toggleFullScreen">
                 <i class="fa-solid fa-expand"></i>
             </button>
-
-            @permission('estimation add item option')
-                <button type="button" @click="addItem('item')">
-                    <i class="fa-solid fa-plus"></i>
-                    {{ __('Item') }}
-                </button>
-            @endpermission
-
-            @permission('estimation add group option')
-                <button type="button" @click="addItem('group')">
-                    <i class="fa-solid fa-plus"></i>
-                    {{ __('Group') }}
-                </button>
-            @endpermission
-
-            @permission('estimation add comment option')
-                <button type="button" @click="addItem('comment')">
-                    <i class="fa-solid fa-plus"></i>
-                    {{ __('Comment') }}
-                </button>
-            @endpermission
-
-            @permission('estimation remove option')
-                <button type="button" @click="removeItem">
-                    <i class="fa-solid fa-plus"></i>
-                    {{ __('Remove') }}
-                </button>
-            @endpermission
         @endif
     </div>
 </div>

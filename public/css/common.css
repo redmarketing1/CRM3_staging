@@ -5448,9 +5448,11 @@ span.select2-selection textarea {
 .mediainfo span {
     display: block;
 }
+
 .mediainfo span.filename {
- color: #555;
+    color: #555;
 }
+
 .mediainfo span.filedate {
     background: transparent;
     border-radius: 5px;
@@ -5935,16 +5937,10 @@ table#estimation-edit-table thead th.total-company-title {
 }
 
 .button-wrapper-fixed {
-    /* display: flex;
-    justify-content: space-between;
-    bottom: 0 !important;
-    left: 285px !important;
-    position: fixed; */
-    background: #FFF;
-    width: 100%;
     border-top: 1px solid #eaeaea;
-    text-align: right;
-    padding: 20px 10px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .button-wrapper-left {
@@ -6824,9 +6820,11 @@ body.project.show .card-body {
     /* padding-bottom: 0 !important;
     border-bottom: 15px solid #FFF; */
 }
+
 body.project.show .card-body:hover {
     overflow: auto;
 }
+
 body.project.show .description-card .card-body {
     max-height: 300px;
 }
@@ -8626,9 +8624,11 @@ button.btn.badge {
 .simplebar-content .tab-content ul.tab-submenu li a {
     width: auto !important;
 }
+
 .dash-container {
     top: 60px !important;
 }
+
 .dash-container .dash-content {
     padding: 15px !important;
 }
@@ -8839,32 +8839,38 @@ span.timeline-step {
 #search-results .search-result-item .card:hover {
     border: 2px solid #ddd;
 }
-table.table  tr.top-quote {
+
+table.table tr.top-quote {
     border: 10px solid #FFF;
 }
 
 table.table tr.top-quote.client_final_quote {
     border-bottom: unset;
 }
-table.table tr.top-quote.subcontractor_final_quote
-{
+
+table.table tr.top-quote.subcontractor_final_quote {
     border-top: unset;
     border-bottom: unset;
 }
+
 table.table tr.top-quote.only_final_quotes_profit {
     border-top: unset;
- }
+}
+
 table.table tr.top-quote.only_final_quotes_profit th {
     background: #f7f7f7;
     padding-top: 15px;
     padding-bottom: 30px;
 }
+
 table.table tr.top-quote.client_final_quote td {
     padding-top: 30px;
 }
+
 .sc-final-badge {
     background: #FFAB00;
 }
+
 .client-final-badge {
     background: #70A15D;
 }
@@ -8872,17 +8878,20 @@ table.table tr.top-quote.client_final_quote td {
 table.table tr.top-quote .only_final_quotes a {
     font-weight: normal;
 }
+
 table.table tr.top-quote.client_final_quote,
 table.table tr.top-quote.client_final_quote:hover {
     background: #daf6ff !important;
 }
+
 table.table tr.top-quote.subcontractor_final_quote,
 table.table tr.top-quote.subcontractor_final_quote:hover {
     background: #f9e7f1 !important;
 }
+
 .lang-flag {
     border: 1px solid #eee;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-item.d-flex {
@@ -8893,22 +8902,28 @@ table.table tr.top-quote.subcontractor_final_quote:hover {
     transform: scale(1.1);
     transition: transform 0.2s ease;
 }
+
 .dropdown .dropdown-item {
     display: flex;
     flex-wrap: wrap;
     flex-flow: row;
 }
-.remove_workspace:hover *{color: red;}
+
+.remove_workspace:hover * {
+    color: red;
+}
+
 .workspace-edit-icon {
     position: absolute;
     right: 10px;
     padding: 0 !important;
     background: #e1e1e1;
 }
-.workspace-edit-icon a{
-margin:0 !important;
-padding: 5px;
-border: none !important
+
+.workspace-edit-icon a {
+    margin: 0 !important;
+    padding: 5px;
+    border: none !important
 }
 
 
@@ -9066,7 +9081,9 @@ border: none !important
     .table thead th {
         overflow-wrap: anywhere;
     }
+
     .search-input-box .search-input {
         width: 50px !important;
     }
+
     /************************************+ MEDIA QUERIES ONLY ********************************************/

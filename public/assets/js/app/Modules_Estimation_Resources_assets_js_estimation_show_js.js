@@ -79,6 +79,11 @@ Alpine.data('estimationShow', function () {
           icon.className = _this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
         }
       });
+      document.addEventListener('keydown', function (e) {
+        if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-price')) {
+          _this.handleInputBlur(e);
+        }
+      });
     },
     initializeFullScreen: function initializeFullScreen() {
       var _this2 = this;
@@ -298,6 +303,11 @@ Alpine.data('estimationShow', function () {
       return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
     },
     handleInputBlur: function handleInputBlur(event, type) {
+      if (event.type === 'keydown') {
+        if (event.key !== 'Enter') return;
+        type = event.target.classList.contains('item-quantity') ? 'quantity' : 'price';
+        event.target.blur();
+      }
       var value = event.target.value;
       var parsedValue = this.parseNumber(value);
       event.target.value = type === 'quantity' ? this.formatDecimal(parsedValue) : this.formatCurrency(parsedValue);

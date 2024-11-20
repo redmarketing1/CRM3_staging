@@ -36,11 +36,11 @@
     </td>
 
     @foreach ($allQuotes as $quotes)
-        <td class="column_single_price border-left">
+        <td class="column_single_price border-left" data-cardQuoteID="{{ $quotes->id }}">
             <input type="text" class="form-control row_price item-price" :value="formatCurrency(item.price || 0)"
                 @blur="handleInputBlur($event, 'price')">
         </td>
-        <td class="column_total_price border-right"
+        <td class="column_total_price border-right" data-cardQuoteID="{{ $quotes->id }}"
             x-text="items[item.id].optional ? '-' : formatCurrency(calculateItemTotal(item.id))">
             -
         </td>

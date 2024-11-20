@@ -54,6 +54,12 @@ Alpine.data('estimationShow', () => ({
                 icon.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
             }
         });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-price')) {
+                this.handleInputBlur(e);
+            }
+        });
     },
 
     initializeFullScreen() {
@@ -336,6 +342,12 @@ Alpine.data('estimationShow', () => ({
     },
 
     handleInputBlur(event, type) {
+        if (event.type === 'keydown') {
+            if (event.key !== 'Enter') return;
+            type = event.target.classList.contains('item-quantity') ? 'quantity' : 'price';
+            event.target.blur();
+        }
+
         const value = event.target.value;
         const parsedValue = this.parseNumber(value);
         event.target.value = type === 'quantity' ? this.formatDecimal(parsedValue) : this.formatCurrency(parsedValue);
@@ -345,7 +357,6 @@ Alpine.data('estimationShow', () => ({
         const groupId = row.dataset.groupid;
 
         if (type === 'quantity') {
-
             if (this.items[itemId]) {
                 this.items[itemId].quantity = parsedValue;
             }
@@ -353,7 +364,6 @@ Alpine.data('estimationShow', () => ({
                 this.newItems[itemId].quantity = parsedValue;
             }
         }
-
 
         if (groupId) {
             this.calculateGroupTotal(groupId);

@@ -18,7 +18,7 @@
     </td>
 
     @foreach ($allQuotes as $quotes)
-        <td colspan="2" class="text-right grouptotal border-left-right">
+        <td colspan="2" class="text-right grouptotal border-left-right" data-cardQuoteID="{{ $quotes->id }}">
             {{ currency_format_with_sym(00) }}
         </td>
     @endforeach
