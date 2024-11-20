@@ -264,7 +264,7 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::get('progress/invoice/{progress_id}',[ProjectProgressController::class, 'progress_invoice'])->name('project.progress.invoice');
     Route::get('progress/view-invoice/{progress_id}',[ProjectProgressController::class, 'view_progress_invoice'])->name('project.progress.viewInvoice');
     Route::post('progress/invoice/send-client', [ProjectProgressController::class, 'sendInvoiceFinalizeClient'])->name('progress.invoice.send.client');
-
+    Route::get('progress/invoice/send-lexo/{invoice_id}', [ProjectProgressController::class, 'sendInvoiceToLexoOffice'])->name('progress.invoice.send.lexo');
     // Project Progress
     Route::post('progress/list', [ProjectProgressController::class, 'list'])->name('progress.list');
 

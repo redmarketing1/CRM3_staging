@@ -18,6 +18,10 @@ use App\Models\Email;
 use App\Models\Invoice;
 use App\Models\InvoiceProduct;
 use App\Http\Controllers\InvoiceController;
+use App\Models\InvoicePayment;
+use App\Services\LexoOfficeService;
+use Modules\Account\Entities\BankAccount;
+use Modules\ProductService\Entities\Tax;
 use Modules\Taskly\Emails\InvoiceForClientMail;
 use Modules\Taskly\Entities\Project;
 use Modules\Taskly\Entities\ProjectEstimation;
@@ -31,6 +35,11 @@ use Modules\Taskly\Entities\ProjectClientFeedback;
 
 class ProjectProgressController extends Controller
 {
+	protected $lexoffice;
+	public function __construct(LexoOfficeService $lexoffice) {
+		$this->lexoffice = $lexoffice;
+	}
+
 	public function list(Request $request)
 	{
 		$order          = $request->order;
@@ -49,7 +58,7 @@ class ProjectProgressController extends Controller
 
 		foreach ($items as $item) {
 
-			$invoice_link = '<a href="'.route('project.progress.invoice',$item->id).'" class="btn-info mx-1 btn btn-sm" title="' . __('Create Incoice') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('Create Invoice') . '"><span class=""><i class="ti ti-file-invoice"></i></span> '.__('Create Invoice').'</a>';
+			$invoice_link = '<a href="'.route('project.progress.invoice',$item->id).'" class="btn-info mx-1 btn btn-sm" target="_blank" title="' . __('Create Incoice') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('Create Invoice') . '"><span class=""><i class="ti ti-file-invoice"></i></span> '.__('Create Invoice').'</a>';
 			if($item->invoice){
 				$invoice_link = '<a href="'.route('project.progress.viewInvoice',$item->id).'" class="btn-info mx-1  btn btn-sm d-inline-flex align-items-center" target="_blank" title="' . __('View Invoice') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Invoice') . '"><span class=""><i class="ti ti-file-invoice"></i></span> '.__('View Invoice').'</a>';
 			}
@@ -871,6 +880,9 @@ class ProjectProgressController extends Controller
 			$project_id = $main_progress->project_id;
 			$estimation = ProjectEstimation::find($main_progress->estimation_id);
 			$quote 	= EstimateQuote::where("project_estimation_id", $main_progress->estimation_id)->where("is_final", 1)->first();
+			$tax = Tax::where('rate', $quote->tax)->first();
+			$discount = $quote->discount;
+			
 			if (!$quote) {
 				return redirect()->back()->with('error', __('Quote not found.'));
 			}
@@ -890,8 +902,8 @@ class ProjectProgressController extends Controller
 				'project' 				=> $estimation->project()->id,
 				'progress_id'           => $main_progress->id,
 				'type' 					=> __('Progress'),
-				'tax' 					=> $quote->tax,
-				'discount' 				=> $quote->discount,
+				'tax' 					=> 0,
+				'discount' 				=> $discount,
 				'project_estimation_id' => $estimation->id,
 				'invoice_template' 		=> 'template10',
 				'workspace' 			=> getActiveWorkSpace(),
@@ -902,7 +914,7 @@ class ProjectProgressController extends Controller
 			foreach ($quoteItem as $item) {
 				$latest_progress = 0;
 				$previous_progress = 0;
-			
+				$overallprog = 0;
 				if ($item->progress) {
 					// Fetch progress records related to the current product
 					$progress = ProjectProgress::where("product_id", $item->product_id)
@@ -916,11 +928,11 @@ class ProjectProgressController extends Controller
 							->skip(1) // Skip the latest one to get the previous
 							->first();
 					}
-			
+					
 					$latest_progress = isset($progress) ? $progress->progress : 0;
 					$previous_progress = isset($old_progress) ? $old_progress->progress : 0;
 				}
-			
+				
 				$new_progress = floatval($latest_progress) - floatval($previous_progress);
 				$progress_amount = 0;
 				$price = $item->price;
@@ -930,7 +942,11 @@ class ProjectProgressController extends Controller
 					$qty = ($new_progress / 100) * $item->projectEstimationProduct->quantity;
 					$progress_amount = ($new_progress / 100) * $total_price;
 				}
-			
+
+				
+				$currentProgressBar = $this->getProgressBar($new_progress);
+				$totalProgressBar = $this->getProgressBar(floatval($new_progress) + floatval($previous_progress));
+				
 				// Create new InvoiceProduct
 				$invoiceProduct = new InvoiceProduct();
 				$invoiceProduct->invoice_id = $invoice->id;
@@ -940,24 +956,24 @@ class ProjectProgressController extends Controller
 				$invoiceProduct->unit = $item->projectEstimationProduct->unit;
 				$invoiceProduct->price = $price;
 				$invoiceProduct->total_price = $progress_amount;
-				$invoiceProduct->tax = $quote->tax == 19 ? 1 : 0;
+				$invoiceProduct->tax =  0;
 				$invoiceProduct->product_type = __('progress');
 				$invoiceProduct->description = 
-					"<strong>Name:</strong> " . $item->projectEstimationProduct->name . "<br>" .
-					"<strong>Quantity:</strong> " . $item->projectEstimationProduct->quantity . " " . $item->projectEstimationProduct->unit . "<br>" .
-					"<strong>Price:</strong> " . $item->price . "<br>" .
-					"<strong>Total Price:</strong> " . $item->total_price . "<br>" .
-					"<strong>Current Progress:</strong> " . $new_progress . "<br>" .
-					"<strong>Total Progress:</strong> " . $latest_progress;
+    			"<strong class='pname'>".__('Name').":</strong> <span class='pname_value'>" . $item->projectEstimationProduct->name . "</span><br>" .
+    			"<strong class='pquantity'>".__('Quantity').":</strong> <span class='pquantity_value'>" . $item->projectEstimationProduct->quantity . " " . $item->projectEstimationProduct->unit . "</span><br>" .
+    			"<strong class='pprice'>".__('Price').":</strong> <span class='pprice_value'>" . $item->price . "</span><br>" .
+    			"<strong class='ptotal'>".__('Total Price').":</strong> <span class='ptotal_value'>" . $item->total_price . "</span><br>" .
+    			"<strong class='pprogress'>".__('Current Progress').":</strong> <span class='progress_value'>" . $currentProgressBar . " (" . $new_progress . "%)</span><br>" .
+    			"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <span class='ptotalprogress_value'>" . $totalProgressBar . " (" . (floatval($new_progress) + floatval($previous_progress)) . "%)</span>";
 				$invoiceProduct->progress = $new_progress;
 				$invoiceProduct->progress_amount = $progress_amount;
 				$invoiceProduct->save();
 			}
+			
 			DB::commit();
-			return redirect()->route('project.show', $project_id)->with('success',__('Invoice successfully created.'));
+			return redirect()->route('project.progress.viewInvoice', $progress_id)->with('success',__('Invoice successfully created.'));
 		} catch (\Throwable $th) {
 			DB::rollback();
-			dd($th);
 			//throw $th;
 			return redirect()->back()->with('error',__('something went wrong please try again'));
 		}
@@ -966,13 +982,166 @@ class ProjectProgressController extends Controller
 	public function view_progress_invoice($progress_id){
 		$invoice = Invoice::where('progress_id',$progress_id)->with('items', 'items.group')->first();
 		$project 		=  Project::where('id',$invoice->project)->first();
-		$settings 		= getCompanyAllSetting($project->created_by, $project->workspace);
 		$client 		= $project->client_data;
 		$client_name 	= isset($client->name) ? $client->name : '';
 		$client_email 	= isset($client->email) ? $client->email : '';
 		$progressInvoiceFinalizeEmailTemplate = getNotificationTemplateData('progress-invoice');
-		$html = view('invoice.templates.invoice-progress-pdf', 
-				compact('invoice','project', 'settings','client', 'client_name', 'client_email'))->render();
+		$bank_accounts = InvoicePayment::where('invoice_id', $invoice->id)->get()->pluck('account_id');
+        $bank_details = BankAccount::whereIn('id', $bank_accounts)->get();
+		$bank_details_list = [];
+        foreach ($bank_details as $bank_detail) {
+            $bankDetail = new \stdClass();
+            $bankDetail->holder_name = $bank_detail->holder_name;
+            $bankDetail->bank_name = $bank_detail->bank_name;
+            $bankDetail->account_number = $bank_detail->account_number;
+            $bankDetail->opening_balance = $bank_detail->opening_balance;
+            $bankDetail->contact_number = $bank_detail->contact_number;
+            $bankDetail->bank_address = $bank_detail->bank_address;
+
+            $bank_details_list[] = $bankDetail;
+        }
+
+		if (module_is_active('Account')) {
+            $customer         = \Modules\Account\Entities\Customer::where('user_id', $invoice->user_id)->first();
+        } else {
+            $customer         = User::where('id', $invoice->user_id)->first();
+        }
+
+		$items         = [];
+        $totalTaxPrice = 0;
+        $totalQuantity = 0;
+        $totalRate     = 0;
+        $totalDiscount = 0;
+        $taxesData     = [];
+
+		foreach ($invoice->items as $product) {
+            $item              = new \stdClass();
+
+            if ($invoice->invoice_module == "taskly") {
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
+            } elseif ($invoice->invoice_module == "account" || $invoice->invoice_module == "sales" || $invoice->invoice_module == 'cardealership' || $invoice->invoice_module == 'musicinstitute' || $invoice->invoice_module == 'machinerepair' || $invoice->invoice_module == 'newspaper' || $invoice->invoice_module == 'mobileservice' || $invoice->invoice_module == 'vehicleinspection') {
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
+                $item->product_type   = !empty($product->product_type) ? $product->product_type : '';
+            } elseif ($invoice->invoice_module == "cmms") {
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
+                $item->product_type   = !empty($product->product_type) ? $product->product_type : '';
+            } elseif ($invoice->invoice_module == "rent") {
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
+                $item->product_type   = !empty($product->product_type) ? $product->product_type : '';
+            } elseif ($invoice->invoice_module == "lms") {
+                $item->name        = !empty($product->product()) ? $product->product()->title : '';
+            } elseif ($invoice->invoice_module == 'childcare' || $invoice->invoice_module == 'legalcase') {
+                $item->name        = !empty($product->product_name) ? $product->product_name : '';
+            } elseif ($invoice->invoice_module == 'Fleet') {
+                $item->name        = !empty($product->product()) ? $product->product()->distance : 0;
+            } elseif ($invoice->invoice_module == "musicinstitute") {
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
+                $item->product_type   = !empty($product->product_type) ? $product->product_type : '';
+            } elseif ($invoice->invoice_module == "RestaurantMenu") {
+                $item->name        = !empty($product->product_name) ? $product->product_name : '';
+            }
+            $item->quantity    = $product->quantity;
+			$item->unit    = $product->unit;
+            $item->tax         = $product->tax;
+            $item->discount    = $product->discount;
+            $item->price       = $product->price;
+            $item->description = $product->description;
+            $totalQuantity += $item->quantity;
+            $totalRate     += $item->price;
+            $totalDiscount += $item->discount;
+            if (module_is_active('ProductService')) {
+                $taxes = \Modules\ProductService\Entities\Tax::tax($product->tax);
+                $itemTaxes = [];
+                $tax_price = 0;
+                if (!empty($item->tax)) {
+                    foreach ($taxes as $tax) {
+                        $taxPrice      = Invoice::taxRate($tax->rate, $item->price, $item->quantity, $item->discount);
+                        $tax_price  += $taxPrice;
+                        $totalTaxPrice += $taxPrice;
+
+                        $itemTax['name']  = $tax->name;
+                        $itemTax['rate']  = $tax->rate . '%';
+                        $itemTax['price'] = currency_format_with_sym($taxPrice, $invoice->created_by);
+                        $itemTaxes[]      = $itemTax;
+
+                        if (array_key_exists($tax->name, $taxesData)) {
+                            $taxesData[$tax->name] = $taxesData[$tax->name] + $taxPrice;
+                        } else {
+                            $taxesData[$tax->name] = $taxPrice;
+                        }
+                    }
+                    $item->itemTax = $itemTaxes;
+                    $item->tax_price = $tax_price;
+                } else {
+                    $item->itemTax = [];
+                }
+                $items[] = $item;
+            }
+        }
+        $invoice->itemData      = $items;
+        $invoice->totalTaxPrice = $totalTaxPrice;
+        $invoice->totalQuantity = $totalQuantity;
+        $invoice->totalRate     = $totalRate;
+        $invoice->totalDiscount = $totalDiscount;
+        $invoice->taxesData     = $taxesData;
+        if (module_is_active('CustomField')) {
+            $invoice->customField = \Modules\CustomField\Entities\CustomField::getData($invoice, 'Base', 'Invoice');
+            $customFields             = \Modules\CustomField\Entities\CustomField::where('workspace_id', '=', $invoice->workspace)->where('module', '=', 'Base')->where('sub_module', 'Invoice')->get();
+        } else {
+            $customFields = null;
+        }
+
+        //Set your logo
+        $company_logo = get_file(sidebar_logo());
+        $company_settings = getCompanyAllSetting($invoice->created_by, $invoice->workspace);
+        
+        $invoice_logo = isset($company_settings['invoice_logo']) ? $company_settings['invoice_logo'] : '';
+        if (isset($invoice_logo) && !empty($invoice_logo)) {
+            $img  = get_file($invoice_logo);
+        } else {
+            $img  = $company_logo;
+        }
+
+        $commonCustomer = [];
+        if ($invoice->invoice_module == 'Fleet') {
+            $user =  User::find($invoice->user_id);
+
+            $commonCustomer['name'] = $user->name;
+            $commonCustomer['email'] = $user->email;
+        }
+
+        if ($invoice) {
+            $color      = '#' . (!empty($company_settings['invoice_color']) ? $company_settings['invoice_color'] : 'ffffff');
+            $font_color = User::getFontColor($color);
+            if (!empty($invoice->invoice_template)) {
+                $invoice_template = $invoice->invoice_template;
+            } else {
+                $invoice_template  = (!empty($company_settings['invoice_template']) ? $company_settings['invoice_template'] : 'template1');
+            }
+            $settings['site_rtl'] = isset($company_settings['site_rtl']) ? $company_settings['site_rtl'] : '';
+            $settings['company_name'] = isset($company_settings['company_name']) ? $company_settings['company_name'] : '';
+            $settings['company_email'] = isset($company_settings['company_email']) ? $company_settings['company_email'] : '';
+            $settings['company_telephone'] = isset($company_settings['company_telephone']) ? $company_settings['company_telephone'] : '';
+            $settings['company_address'] = isset($company_settings['company_address']) ? $company_settings['company_address'] : '';
+            $settings['company_city'] = isset($company_settings['company_city']) ? $company_settings['company_city'] : '';
+            $settings['company_state'] = isset($company_settings['company_state']) ? $company_settings['company_state'] : '';
+            $settings['company_zipcode'] = isset($company_settings['company_zipcode']) ? $company_settings['company_zipcode'] : '';
+            $settings['company_country'] = isset($company_settings['company_country']) ? $company_settings['company_country'] : '';
+            $settings['registration_number'] = isset($company_settings['registration_number']) ? $company_settings['registration_number'] : '';
+            $settings['tax_type'] = isset($company_settings['tax_type']) ? $company_settings['tax_type'] : '';
+            $settings['vat_number'] = isset($company_settings['vat_number']) ? $company_settings['vat_number'] : '';
+            $settings['footer_title'] = isset($company_settings['invoice_footer_title']) ? $company_settings['invoice_footer_title'] : '';
+            $settings['footer_notes'] = isset($company_settings['invoice_footer_notes']) ? $company_settings['invoice_footer_notes'] : '';
+            $settings['shipping_display'] = isset($company_settings['invoice_shipping_display']) ? $company_settings['invoice_shipping_display'] : '';
+            $settings['invoice_template'] = isset($company_settings['invoice_template']) ? $company_settings['invoice_template'] : '';
+            $settings['invoice_color'] = isset($company_settings['invoice_color']) ? $company_settings['invoice_color'] : '';
+            $settings['invoice_qr_display'] = isset($company_settings['invoice_qr_display']) ? $company_settings['invoice_qr_display'] : '';
+            $settings['site_currency_symbol_position'] = isset($company_settings['site_currency_symbol_position']) ? $company_settings['site_currency_symbol_position'] : '';
+            $settings['defult_currancy_symbol'] = isset($company_settings['defult_currancy_symbol']) ? $company_settings['defult_currancy_symbol'] : '';
+
+		}
+		$preview = true;
+		$html = view('invoice.templates.' . $invoice_template, compact('preview','invoice', 'commonCustomer','color', 'settings', 'customer', 'img', 'font_color', 'customFields', 'bank_details', 'bank_details_list'))->render();
 		return view("taskly::project_progress.progress_invoice", compact('project','settings','html','invoice','progressInvoiceFinalizeEmailTemplate'));
 		
 	}
@@ -1212,11 +1381,160 @@ class ProjectProgressController extends Controller
 
 	//Invoice Pdf generation
 	public function generateInvoiceFinalizePDF($data, $download = false){
-		// dd($data);
-		// $html = view('invoice.templates.template11', 
-		// 		compact('invoice','project', 'settings','client', 'client_name', 'client_email'))->render();
-        $dir 	= "uploads/invoices/";
-        $pdf = PDF::loadView('invoice.templates.invoice-progress-pdf', $data)->setPaper('a4');
+		$invoice = $data['invoice'];
+		$company_logo = get_file(sidebar_logo());
+        $company_settings = getCompanyAllSetting($invoice->created_by, $invoice->workspace);
+		$invoice_logo = isset($company_settings['invoice_logo']) ? $company_settings['invoice_logo'] : '';
+        if (isset($invoice_logo) && !empty($invoice_logo)) {
+            $img  = get_file($invoice_logo);
+        } else {
+            $img  = $company_logo;
+        }
+		
+		$bank_accounts = InvoicePayment::where('invoice_id', $invoice->id)->get()->pluck('account_id');
+        $bank_details = BankAccount::whereIn('id', $bank_accounts)->get();
+		$bank_details_list = [];
+        foreach ($bank_details as $bank_detail) {
+            $bankDetail = new \stdClass();
+            $bankDetail->holder_name = $bank_detail->holder_name;
+            $bankDetail->bank_name = $bank_detail->bank_name;
+            $bankDetail->account_number = $bank_detail->account_number;
+            $bankDetail->opening_balance = $bank_detail->opening_balance;
+            $bankDetail->contact_number = $bank_detail->contact_number;
+            $bankDetail->bank_address = $bank_detail->bank_address;
+
+            $bank_details_list[] = $bankDetail;
+        }
+
+		if (module_is_active('Account')) {
+            $customer         = \Modules\Account\Entities\Customer::where('user_id', $invoice->user_id)->first();
+        } else {
+            $customer         = User::where('id', $invoice->user_id)->first();
+        }
+
+		$items         = [];
+        $totalTaxPrice = 0;
+        $totalQuantity = 0;
+        $totalRate     = 0;
+        $totalDiscount = 0;
+        $taxesData     = [];
+
+		foreach ($invoice->items as $product) {
+            $item              = new \stdClass();
+
+            if ($invoice->invoice_module == "taskly") {
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
+            } elseif ($invoice->invoice_module == "account" || $invoice->invoice_module == "sales" || $invoice->invoice_module == 'cardealership' || $invoice->invoice_module == 'musicinstitute' || $invoice->invoice_module == 'machinerepair' || $invoice->invoice_module == 'newspaper' || $invoice->invoice_module == 'mobileservice' || $invoice->invoice_module == 'vehicleinspection') {
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
+                $item->product_type   = !empty($product->product_type) ? $product->product_type : '';
+            } elseif ($invoice->invoice_module == "cmms") {
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
+                $item->product_type   = !empty($product->product_type) ? $product->product_type : '';
+            } elseif ($invoice->invoice_module == "rent") {
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
+                $item->product_type   = !empty($product->product_type) ? $product->product_type : '';
+            } elseif ($invoice->invoice_module == "lms") {
+                $item->name        = !empty($product->product()) ? $product->product()->title : '';
+            } elseif ($invoice->invoice_module == 'childcare' || $invoice->invoice_module == 'legalcase') {
+                $item->name        = !empty($product->product_name) ? $product->product_name : '';
+            } elseif ($invoice->invoice_module == 'Fleet') {
+                $item->name        = !empty($product->product()) ? $product->product()->distance : 0;
+            } elseif ($invoice->invoice_module == "musicinstitute") {
+                $item->name        = !empty($product->product()) ? $product->product()->name : '';
+                $item->product_type   = !empty($product->product_type) ? $product->product_type : '';
+            } elseif ($invoice->invoice_module == "RestaurantMenu") {
+                $item->name        = !empty($product->product_name) ? $product->product_name : '';
+            }
+            $item->quantity    = $product->quantity;
+            $item->tax         = $product->tax;
+            $item->discount    = $product->discount;
+            $item->price       = $product->price;
+            $item->description = $product->description;
+            $totalQuantity += $item->quantity;
+            $totalRate     += $item->price;
+            $totalDiscount += $item->discount;
+            if (module_is_active('ProductService')) {
+                $taxes = \Modules\ProductService\Entities\Tax::tax($product->tax);
+                $itemTaxes = [];
+                $tax_price = 0;
+                if (!empty($item->tax)) {
+                    foreach ($taxes as $tax) {
+                        $taxPrice      = Invoice::taxRate($tax->rate, $item->price, $item->quantity, $item->discount);
+                        $tax_price  += $taxPrice;
+                        $totalTaxPrice += $taxPrice;
+
+                        $itemTax['name']  = $tax->name;
+                        $itemTax['rate']  = $tax->rate . '%';
+                        $itemTax['price'] = currency_format_with_sym($taxPrice, $invoice->created_by);
+                        $itemTaxes[]      = $itemTax;
+
+                        if (array_key_exists($tax->name, $taxesData)) {
+                            $taxesData[$tax->name] = $taxesData[$tax->name] + $taxPrice;
+                        } else {
+                            $taxesData[$tax->name] = $taxPrice;
+                        }
+                    }
+                    $item->itemTax = $itemTaxes;
+                    $item->tax_price = $tax_price;
+                } else {
+                    $item->itemTax = [];
+                }
+                $items[] = $item;
+            }
+        }
+        $invoice->itemData      = $items;
+        $invoice->totalTaxPrice = $totalTaxPrice;
+        $invoice->totalQuantity = $totalQuantity;
+        $invoice->totalRate     = $totalRate;
+        $invoice->totalDiscount = $totalDiscount;
+        $invoice->taxesData     = $taxesData;
+        if (module_is_active('CustomField')) {
+            $invoice->customField = \Modules\CustomField\Entities\CustomField::getData($invoice, 'Base', 'Invoice');
+            $customFields             = \Modules\CustomField\Entities\CustomField::where('workspace_id', '=', $invoice->workspace)->where('module', '=', 'Base')->where('sub_module', 'Invoice')->get();
+        } else {
+            $customFields = null;
+        }
+
+        $commonCustomer = [];
+        if ($invoice->invoice_module == 'Fleet') {
+            $user =  User::find($invoice->user_id);
+
+            $commonCustomer['name'] = $user->name;
+            $commonCustomer['email'] = $user->email;
+        }
+		if ($invoice) {
+            $color      = '#' . (!empty($company_settings['invoice_color']) ? $company_settings['invoice_color'] : 'ffffff');
+            $font_color = User::getFontColor($color);
+            if (!empty($invoice->invoice_template)) {
+                $invoice_template = $invoice->invoice_template;
+            } else {
+                $invoice_template  = (!empty($company_settings['invoice_template']) ? $company_settings['invoice_template'] : 'template1');
+            }
+            $settings['site_rtl'] = isset($company_settings['site_rtl']) ? $company_settings['site_rtl'] : '';
+            $settings['company_name'] = isset($company_settings['company_name']) ? $company_settings['company_name'] : '';
+            $settings['company_email'] = isset($company_settings['company_email']) ? $company_settings['company_email'] : '';
+            $settings['company_telephone'] = isset($company_settings['company_telephone']) ? $company_settings['company_telephone'] : '';
+            $settings['company_address'] = isset($company_settings['company_address']) ? $company_settings['company_address'] : '';
+            $settings['company_city'] = isset($company_settings['company_city']) ? $company_settings['company_city'] : '';
+            $settings['company_state'] = isset($company_settings['company_state']) ? $company_settings['company_state'] : '';
+            $settings['company_zipcode'] = isset($company_settings['company_zipcode']) ? $company_settings['company_zipcode'] : '';
+            $settings['company_country'] = isset($company_settings['company_country']) ? $company_settings['company_country'] : '';
+            $settings['registration_number'] = isset($company_settings['registration_number']) ? $company_settings['registration_number'] : '';
+            $settings['tax_type'] = isset($company_settings['tax_type']) ? $company_settings['tax_type'] : '';
+            $settings['vat_number'] = isset($company_settings['vat_number']) ? $company_settings['vat_number'] : '';
+            $settings['footer_title'] = isset($company_settings['invoice_footer_title']) ? $company_settings['invoice_footer_title'] : '';
+            $settings['footer_notes'] = isset($company_settings['invoice_footer_notes']) ? $company_settings['invoice_footer_notes'] : '';
+            $settings['shipping_display'] = isset($company_settings['invoice_shipping_display']) ? $company_settings['invoice_shipping_display'] : '';
+            $settings['invoice_template'] = isset($company_settings['invoice_template']) ? $company_settings['invoice_template'] : '';
+            $settings['invoice_color'] = isset($company_settings['invoice_color']) ? $company_settings['invoice_color'] : '';
+            $settings['invoice_qr_display'] = isset($company_settings['invoice_qr_display']) ? $company_settings['invoice_qr_display'] : '';
+            $settings['site_currency_symbol_position'] = isset($company_settings['site_currency_symbol_position']) ? $company_settings['site_currency_symbol_position'] : '';
+            $settings['defult_currancy_symbol'] = isset($company_settings['defult_currancy_symbol']) ? $company_settings['defult_currancy_symbol'] : '';
+
+		}
+		$preview = true;
+		$dir 	= "uploads/invoices/";
+        $pdf = PDF::loadView('invoice.templates.'.$invoice_template, compact('preview','invoice', 'commonCustomer','color', 'settings', 'customer', 'img', 'font_color', 'customFields', 'bank_details', 'bank_details_list'))->setPaper('a4');
         if (!file_exists($dir)) {
             mkdir($dir, 0755, true);
         }
@@ -1231,5 +1549,38 @@ class ProjectProgressController extends Controller
         $pdf->save($dir);
         return $dir;
     }
+
+	//send invoice to lexo office
+	public function sendInvoiceToLexoOffice($id){
+		$invoice = Invoice::with('items', 'items.group')->find($id);
+		
+		$customer = User::find($invoice->user_id);
+
+		if($invoice->is_sent_lexo){
+			return redirect()->back()->with('error',__('Invoice already sent to Lexo Office.'));
+		}
+
+		if(!$customer){
+			return redirect()->back()->with('error',__('Client not found.'));
+		}
+	
+		$contact = $this->lexoffice->fetchContact($customer);
+
+		if (is_string($contact)) {
+			// If the response is an error string from the service, return it
+			return redirect()->back()->with('error', $contact);
+		}
+
+		$storeInvoice = $this->lexoffice->storeInvoice($contact, $invoice);
+		
+		return redirect()->back()->with('success', __('Invoice sent to LexOffice successfully.'));
+	}
+
+	function getProgressBar($percentage) {
+		$filledBlocks = round($percentage / 10); // Each block represents 10%
+		$emptyBlocks = 10 - $filledBlocks;
+		return str_repeat('█', $filledBlocks) . str_repeat('░', $emptyBlocks);
+	}
+	
 }
 

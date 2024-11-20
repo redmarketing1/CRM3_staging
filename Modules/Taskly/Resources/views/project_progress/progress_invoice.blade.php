@@ -85,7 +85,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="final-right-col card-body bg-gray-200 px-3" style="min-width: 350px!important;padding:20px!important">
+                    <div class="card-body bg-gray-200 px-3" style="max-width: 350px!important;padding:20px!important">
                         <div class="row">
                             <div class="col-12">
                                 <div class="col-12">
@@ -101,6 +101,7 @@
                                                 <input type="hidden" name="pdf_top_notes" id="print-pdf-top-notes" value="">
                                                 @csrf
                                             </form>
+                                            </a>
                                             <div class="btn-group float-end">
                                                 <button class="btn bg-primary text-white btn-icon rounded-pill dropdown-toggle final-send-btn" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     {{__('Send to Client')}}
@@ -108,6 +109,7 @@
                                                 <div class="dropdown-menu">
                                                     <a href="javascript:void(0)" onclick="send_progress('{{$invoice->id}}', 'email')" class="dropdown-item">{{__('Send to Client')}}</a>
                                                     <a href="javascript:void(0)" onclick="send_progress('{{$invoice->id}}', 'pdf')" class="dropdown-item">{{__('Download')}}</a>
+                                                    <a href="{{ route('progress.invoice.send.lexo', $invoice->id) }}" class="dropdown-item">{{__('Send to Lexo Office')}}</a>
                                                 </div>
                                             </div>
                                         </div>
