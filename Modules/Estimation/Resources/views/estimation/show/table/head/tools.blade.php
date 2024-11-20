@@ -98,6 +98,10 @@
                 </div>
             </div>
 
+            <button type="button" @click="toggleFullScreen">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+
             @permission('estimation add item option')
                 <button type="button" @click="addItem('item')">
                     <i class="fa-solid fa-plus"></i>

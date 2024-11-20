@@ -153,6 +153,10 @@ th.border-left-right.finalized_sub_contractor_quote {
     user-select: none !important;
 }
 
+.estimation-show {
+    overflow-y: auto;
+}
+
 .estimation-show .context-menu {
     min-width: 160px;
     background: #fefefe;

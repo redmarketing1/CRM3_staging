@@ -8,6 +8,7 @@ Alpine.data('estimationShow', () => ({
     lastItemNumbers: {},
     searchQuery: '',
     selectAll: false,
+    isFullScreen: false,
     contextMenu: {
         show: false,
         x: 0,
@@ -45,6 +46,37 @@ Alpine.data('estimationShow', () => ({
                 this.showContextMenu = false;
             }
         });
+
+        document.addEventListener('fullscreenchange', () => {
+            this.isFullScreen = !!document.fullscreenElement;
+            const icon = document.querySelector('.fa-expand, .fa-compress');
+            if (icon) {
+                icon.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+            }
+        });
+    },
+
+    initializeFullScreen() {
+        document.addEventListener('fullscreenchange', () => {
+            this.isFullScreen = !!document.fullscreenElement;
+            const btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
+            if (btn) {
+                btn.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+            }
+        });
+    },
+
+    toggleFullScreen() {
+        const estimationSection = document.querySelector('.estimation-show');
+        if (!estimationSection) return;
+
+        if (!document.fullscreenElement) {
+            estimationSection.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable fullscreen: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
     },
 
     initializeData() {
