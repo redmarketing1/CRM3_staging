@@ -21,7 +21,7 @@ Alpine.data('estimationShow', () => ({
         column_quantity: true,
         column_unit: true,
         column_optional: true,
-        quote_th: true  // Assuming 1930 is your quote ID
+        quote_th: true
     },
 
     init() {
@@ -80,13 +80,13 @@ Alpine.data('estimationShow', () => ({
     },
 
     initializeData() {
-        // Reset all data structures
+
         this.items = {};
         this.groups = {};
         this.lastGroupNumber = 0;
         this.lastItemNumbers = {};
 
-        // Process groups first without modifying POS
+
         document.querySelectorAll('tr.group_row').forEach((groupRow) => {
             const groupId = groupRow.dataset.groupid;
             const groupPos = groupRow.querySelector('.grouppos').textContent.trim();
@@ -103,7 +103,7 @@ Alpine.data('estimationShow', () => ({
             this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
         });
 
-        // Process items and comments without modifying POS
+
         document.querySelectorAll('tr.item_row, tr.item_comment').forEach((row) => {
             const isComment = row.classList.contains('item_comment');
             const itemId = isComment ? row.dataset.commentid : row.dataset.itemid;
@@ -135,10 +135,10 @@ Alpine.data('estimationShow', () => ({
             this.groups[groupId].itemCount++;
         });
 
-        // Now update all POS numbers once
+
         this.updatePOSNumbers();
 
-        // Calculate totals
+
         this.calculateTotals();
     },
 
@@ -157,20 +157,18 @@ Alpine.data('estimationShow', () => ({
     },
 
     calculateTotals() {
-        // Reset totals
+
         this.totals = {};
 
-        // Process groups sequentially
+
         document.querySelectorAll('tr.group_row').forEach(row => {
             const groupId = row.dataset.groupid;
             if (!groupId) return;
 
-            // Calculate totals for this group
             this.calculateGroupTotal(groupId);
 
-            // Update group data
+
             if (this.groups[groupId]) {
-                // Store the first total value in the group data
                 this.groups[groupId].total = this.parseNumber(
                     row.querySelector('.text-right.grouptotal')?.textContent || '0'
                 );
@@ -210,12 +208,12 @@ Alpine.data('estimationShow', () => ({
             currentRow = currentRow.nextElementSibling;
         }
 
-        // Update group totals and trigger card totals update
+
         const totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
         totalCells.forEach((cell, index) => {
             cell.textContent = this.formatCurrency(totals[index] || 0);
 
-            // Get card quote ID and trigger update
+
             const cardQuoteId = cell.dataset.cardquoteid;
             if (cardQuoteId) {
                 this.calculateCardTotals(cardQuoteId);
@@ -228,32 +226,32 @@ Alpine.data('estimationShow', () => ({
     calculateCardTotals(cardQuoteId) {
         let subtotal = 0;
 
-        // Sum all group totals for this card
+
         const groupTotalCells = document.querySelectorAll(`td[data-cardquoteid="${cardQuoteId}"].grouptotal`);
         groupTotalCells.forEach(cell => {
             subtotal += this.parseNumber(cell.textContent);
         });
 
-        // Get markup value
+
         const markupInput = document.querySelector(`input[name="markup"][value]:not([value=""])[data-cardquoteid="${cardQuoteId}"]`);
         const markup = this.parseNumber(markupInput?.value || '0');
 
-        // Get cash discount value
+
         const discountInput = document.querySelector(`input[name="discount"][data-cardquoteid="${cardQuoteId}"]`);
         const cashDiscount = this.parseNumber(discountInput?.value || '0');
 
-        // Get VAT rate
+
         const vatSelect = document.querySelector(`select[name="tax[]"][data-cardquoteid="${cardQuoteId}"]`);
         const vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
 
-        // Calculate totals
+
         const netAmount = subtotal + markup;
         const discountAmount = (netAmount * cashDiscount) / 100;
         const netWithDiscount = netAmount - discountAmount;
         const vatAmount = netWithDiscount * vatRate;
         const grossWithDiscount = netWithDiscount + vatAmount;
 
-        // Update UI totals
+
         this.updateCardTotalUI(cardQuoteId, {
             netAmount,
             netWithDiscount,
@@ -263,25 +261,25 @@ Alpine.data('estimationShow', () => ({
     },
 
     updateCardTotalUI(cardQuoteId, totals) {
-        // Update Net incl. Discount
+
         const netDiscountElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net-discount`);
         if (netDiscountElement) {
             netDiscountElement.textContent = this.formatCurrency(totals.netWithDiscount);
         }
 
-        // Update Gross incl. Discount
+
         const grossDiscountElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-gross-discount`);
         if (grossDiscountElement) {
             grossDiscountElement.textContent = this.formatCurrency(totals.grossWithDiscount);
         }
 
-        // Update Net
+
         const netElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net`);
         if (netElement) {
             netElement.textContent = this.formatCurrency(totals.netAmount);
         }
 
-        // Update Gross total
+
         const grossElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"] .total-gross-total`);
         if (grossElement) {
             grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
@@ -289,22 +287,22 @@ Alpine.data('estimationShow', () => ({
     },
 
     initializeCardCalculations() {
-        // Get all card quote IDs
+
         const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
 
-        // Calculate initial totals
+
         cardQuoteIds.forEach(cardQuoteId => {
             this.calculateCardTotals(cardQuoteId);
         });
 
-        // Add event listeners for changes
+
         document.addEventListener('change', (e) => {
             const target = e.target;
             const cardQuoteId = target.closest('[data-cardquoteid]')?.dataset.cardquoteid;
 
             if (!cardQuoteId) return;
 
-            // Check if the change is relevant for recalculation
+
             if (
                 target.matches('input[name="markup"]') ||
                 target.matches('input[name="discount"]') ||
@@ -347,7 +345,7 @@ Alpine.data('estimationShow', () => ({
         const groupId = row.dataset.groupid;
 
         if (type === 'quantity') {
-            // Update quantity in data model
+
             if (this.items[itemId]) {
                 this.items[itemId].quantity = parsedValue;
             }
@@ -356,7 +354,7 @@ Alpine.data('estimationShow', () => ({
             }
         }
 
-        // Trigger recalculation of totals
+
         if (groupId) {
             this.calculateGroupTotal(groupId);
         }
@@ -406,9 +404,9 @@ Alpine.data('estimationShow', () => ({
             stop: (event, ui) => {
                 const movedRow = ui.item[0];
 
-                // Only process if it's an item or comment row
+
                 if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
-                    // Find the closest previous group row
+
                     let currentRow = movedRow.previousElementSibling;
                     let newGroupRow = null;
 
@@ -424,10 +422,10 @@ Alpine.data('estimationShow', () => ({
                         const itemId = movedRow.dataset.itemid || movedRow.dataset.id;
                         const oldGroupId = movedRow.dataset.groupid;
 
-                        // Always update the group ID
+
                         movedRow.dataset.groupid = newGroupId;
 
-                        // Update data structures
+
                         if (this.items[itemId]) {
                             this.items[itemId].groupId = newGroupId;
                         }
@@ -437,7 +435,7 @@ Alpine.data('estimationShow', () => ({
                     }
                 }
 
-                // Recalculate everything
+
                 this.updatePOSNumbers();
                 this.calculateTotals();
             }
@@ -458,7 +456,7 @@ Alpine.data('estimationShow', () => ({
                 this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
 
                 if (!this.lastItemNumbers[groupNumber] || itemNumber > this.lastItemNumbers[groupNumber]) {
-                    // Ensure item numbers stay within 2 digits (max 99)
+
                     this.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
                 }
             }
@@ -474,26 +472,112 @@ Alpine.data('estimationShow', () => ({
         const timestamp = Date.now();
         let currentGroupId;
 
-        if (targetRowId) {
-            // Context menu: add after specific row
-            const targetRow = document.querySelector(`tr[data-id="${targetRowId}"], 
-                                                   tr[data-itemid="${targetRowId}"], 
-                                                   tr[data-commentid="${targetRowId}"], 
-                                                   tr[data-groupid="${targetRowId}"]`);
-            if (!targetRow) return;
+        // Check if table is completely empty
+        const hasAnyGroups = document.querySelectorAll('tr.group_row').length > 0;
 
-            // Get group ID from target row or nearest group
-            currentGroupId = targetRow.classList.contains('group_row') ?
-                targetRow.dataset.groupid :
-                targetRow.dataset.groupid;
+        // If table is empty, always create a group first with an item
+        if (!hasAnyGroups) {
+            // Create group
+            const groupTimestamp = Date.now();
+            currentGroupId = `group_${groupTimestamp}`;
+
+            const newGroup = {
+                id: groupTimestamp,
+                type: 'group',
+                name: 'New Group',
+                total: 0,
+                expanded: false,
+                pos: ''
+            };
+
+            // Add group to collections
+            this.items[groupTimestamp] = newGroup;
+            this.newItems[groupTimestamp] = newGroup;
+
+            this.groups[currentGroupId] = {
+                id: currentGroupId,
+                pos: '',
+                name: 'New Group',
+                total: 0,
+                itemCount: 0
+            };
+
+            // Create child item
+            const itemTimestamp = Date.now() + 1;
+            const newItem = {
+                id: itemTimestamp,
+                type: 'item',
+                groupId: currentGroupId,
+                name: 'New Item',
+                quantity: 0,
+                price: 0,
+                unit: '',
+                optional: false,
+                expanded: false,
+                pos: ''
+            };
+
+            // Add item to collections
+            this.items[itemTimestamp] = newItem;
+            this.newItems[itemTimestamp] = newItem;
+
+            this.$nextTick(() => {
+                this.initializeSortable();
+                this.updatePOSNumbers();
+                this.calculateTotals();
+            });
+
+            return;
+        }
+
+        // Normal flow for non-empty table
+        if (type === 'group') {
+            currentGroupId = `group_${timestamp}`;
+            const newItem = {
+                id: timestamp,
+                type: 'group',
+                name: `Group name`,
+                total: 0,
+                expanded: false,
+                pos: ''
+            };
+
+            this.items[timestamp] = newItem;
+            this.newItems[timestamp] = newItem;
+
+            this.groups[currentGroupId] = {
+                id: currentGroupId,
+                pos: '',
+                name: 'Group name',
+                total: 0,
+                itemCount: 0
+            };
+
+            this.$nextTick(() => {
+                this.initializeSortable();
+                this.updatePOSNumbers();
+                this.calculateTotals();
+            });
+
+            return;
+        }
+
+        // For items and comments in non-empty table
+        if (targetRowId) {
+            const targetRow = document.querySelector(`tr[data-id="${targetRowId}"], 
+                                               tr[data-itemid="${targetRowId}"], 
+                                               tr[data-commentid="${targetRowId}"], 
+                                               tr[data-groupid="${targetRowId}"]`);
+            if (targetRow) {
+                currentGroupId = targetRow.classList.contains('group_row') ?
+                    targetRow.dataset.groupid :
+                    targetRow.dataset.groupid;
+            }
         } else {
-            // Regular add: add to last group
             const GroupRow = document.querySelectorAll('tr.group_row');
             const lastGroupRow = GroupRow[GroupRow.length - 1];
             currentGroupId = lastGroupRow ? lastGroupRow.dataset.groupid : null;
         }
-
-        if (!currentGroupId) return; // Need a group to add items
 
         const newItem = {
             id: timestamp,
@@ -508,19 +592,17 @@ Alpine.data('estimationShow', () => ({
             pos: ''
         };
 
-        // Add to both collections
         this.items[timestamp] = newItem;
         this.newItems[timestamp] = newItem;
 
         this.$nextTick(() => {
             if (targetRowId) {
-                // Move new item after target row if context menu was used
                 const targetRow = document.querySelector(`tr[data-id="${targetRowId}"], 
-                                                       tr[data-itemid="${targetRowId}"], 
-                                                       tr[data-commentid="${targetRowId}"], 
-                                                       tr[data-groupid="${targetRowId}"]`);
+                                                   tr[data-itemid="${targetRowId}"], 
+                                                   tr[data-commentid="${targetRowId}"], 
+                                                   tr[data-groupid="${targetRowId}"]`);
                 const newRow = document.querySelector(`tr[data-id="${timestamp}"], 
-                                                    tr[data-itemid="${timestamp}"]`);
+                                                tr[data-itemid="${timestamp}"]`);
                 if (newRow && targetRow.nextSibling) {
                     targetRow.parentNode.insertBefore(newRow, targetRow.nextSibling);
                 }
@@ -630,7 +712,7 @@ Alpine.data('estimationShow', () => ({
 
     initializeContextMenu() {
         document.querySelector('#estimation-edit-table').addEventListener('contextmenu', (e) => {
-            // Include comment rows in selection
+
             const row = e.target.closest('tr.item_row, tr.group_row, tr.item_comment');
             if (!row) return;
 
@@ -691,7 +773,7 @@ Alpine.data('estimationShow', () => ({
         const groupId = isGroup ? null : originalRow.dataset.groupid;
 
         if (isGroup) {
-            // Duplicate group
+
             const groupName = originalRow.querySelector('.grouptitle-input').value;
             const newGroupId = `group_${timestamp}`;
 
@@ -703,11 +785,11 @@ Alpine.data('estimationShow', () => ({
                 expanded: false
             };
 
-            // Add to collections
+
             this.items[timestamp] = newItem;
             this.newItems[timestamp] = newItem;
 
-            // Add to groups
+
             this.groups[newGroupId] = {
                 id: newGroupId,
                 pos: '',
@@ -729,7 +811,7 @@ Alpine.data('estimationShow', () => ({
             this.newItems[timestamp] = newItem;
         }
         else {
-            // Get values from original row
+
             const newItem = {
                 id: timestamp,
                 type: originalRow.classList.contains('item_comment') ? 'comment' : 'item',
@@ -742,18 +824,18 @@ Alpine.data('estimationShow', () => ({
                 expanded: false
             };
 
-            // Add to collections
+
             this.items[timestamp] = newItem;
             this.newItems[timestamp] = newItem;
 
-            // Update group item count
+
             if (this.groups[groupId]) {
                 this.groups[groupId].itemCount++;
             }
         }
 
         this.$nextTick(() => {
-            // Find the new row and move it after the original
+
             const newRow = document.querySelector(`tr[data-id="${timestamp}"], tr[data-itemid="${timestamp}"], tr[data-commentid="${timestamp}"]`);
             if (newRow && originalRow.nextSibling) {
                 originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
@@ -780,7 +862,7 @@ Alpine.data('estimationShow', () => ({
                 if (!row) return;
 
                 if (row.classList.contains('group_row')) {
-                    // If it's a group, also remove all its items
+
                     const groupId = row.dataset.groupid;
                     document.querySelectorAll(`tr[data-groupid="${groupId}"]`).forEach(itemRow => {
                         const itemId = itemRow.dataset.itemid;
@@ -790,7 +872,7 @@ Alpine.data('estimationShow', () => ({
                     });
                     delete this.groups[groupId];
                 } else {
-                    // Remove single item
+
                     const itemId = row.dataset.itemid || row.dataset.id;
                     delete this.items[itemId];
                     delete this.newItems[itemId];
@@ -800,7 +882,7 @@ Alpine.data('estimationShow', () => ({
                 this.updatePOSNumbers();
                 this.calculateTotals();
 
-                // Handle UI updates
+
                 document.querySelector('.SelectAllCheckbox').checked = false;
             }
         });
@@ -814,7 +896,7 @@ Alpine.data('estimationShow', () => ({
 
         if (!groupRow) return;
 
-        // Get all items until next group row
+
         let currentRow = groupRow.nextElementSibling;
         while (currentRow && !currentRow.classList.contains('group_row')) {
             const checkbox = currentRow.querySelector('.item_selection');
@@ -832,14 +914,14 @@ Alpine.data('estimationShow', () => ({
     },
 
     initializeColumnVisibility() {
-        // Initialize column visibility from localStorage if available
+
         const savedVisibility = localStorage.getItem('columnVisibility');
         if (savedVisibility) {
             this.columnVisibility = JSON.parse(savedVisibility);
             this.applyColumnVisibility();
         }
 
-        // Add event listeners for checkbox changes
+
         document.querySelectorAll('.column-toggle').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
 
@@ -847,11 +929,11 @@ Alpine.data('estimationShow', () => ({
                 const quoteId = e.target.dataset.quoteid;
 
                 if (columnClass === 'quote_th' && quoteId) {
-                    // Handle quote columns specifically
+
                     this.columnVisibility[columnClass] = e.target.checked;
                     this.applyColumnVisibility(quoteId);
                 } else {
-                    // Handle regular columns
+
                     this.columnVisibility[columnClass] = e.target.checked;
                     this.applyColumnVisibility();
                 }
@@ -862,11 +944,11 @@ Alpine.data('estimationShow', () => ({
     },
 
     applyColumnVisibility(quoteId = null) {
-        // Apply visibility to regular columns
+
         Object.entries(this.columnVisibility).forEach(([columnClass, isVisible]) => {
 
             if (columnClass === 'quote_th' && quoteId) {
-                // Handle quote columns
+
                 const elements = document.querySelectorAll(
                     `.quote_th${quoteId}, ` +
                     `[data-cardquoteid="${quoteId}"]`
@@ -897,7 +979,7 @@ Alpine.data('estimationShow', () => ({
         this.applyColumnVisibility(quoteId);
         this.saveColumnVisibility();
 
-        // Update checkbox state
+
         const selector = quoteId
             ? `.column-toggle[data-column="${columnClass}"][data-quote="${quoteId}"]`
             : `.column-toggle[data-column="${columnClass}"]`;

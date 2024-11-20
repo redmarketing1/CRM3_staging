@@ -36,7 +36,7 @@ Alpine.data('estimationShow', function () {
       column_quantity: true,
       column_unit: true,
       column_optional: true,
-      quote_th: true // Assuming 1930 is your quote ID
+      quote_th: true
     },
     init: function init() {
       var _this = this;
@@ -99,13 +99,10 @@ Alpine.data('estimationShow', function () {
     },
     initializeData: function initializeData() {
       var _this3 = this;
-      // Reset all data structures
       this.items = {};
       this.groups = {};
       this.lastGroupNumber = 0;
       this.lastItemNumbers = {};
-
-      // Process groups first without modifying POS
       document.querySelectorAll('tr.group_row').forEach(function (groupRow) {
         var groupId = groupRow.dataset.groupid;
         var groupPos = groupRow.querySelector('.grouppos').textContent.trim();
@@ -119,8 +116,6 @@ Alpine.data('estimationShow', function () {
         };
         _this3.lastGroupNumber = Math.max(_this3.lastGroupNumber, groupNumber);
       });
-
-      // Process items and comments without modifying POS
       document.querySelectorAll('tr.item_row, tr.item_comment').forEach(function (row) {
         var isComment = row.classList.contains('item_comment');
         var itemId = isComment ? row.dataset.commentid : row.dataset.itemid;
@@ -149,11 +144,7 @@ Alpine.data('estimationShow', function () {
         }
         _this3.groups[groupId].itemCount++;
       });
-
-      // Now update all POS numbers once
       this.updatePOSNumbers();
-
-      // Calculate totals
       this.calculateTotals();
     },
     calculateItemTotal: function calculateItemTotal(itemId) {
@@ -170,21 +161,13 @@ Alpine.data('estimationShow', function () {
     },
     calculateTotals: function calculateTotals() {
       var _this4 = this;
-      // Reset totals
       this.totals = {};
-
-      // Process groups sequentially
       document.querySelectorAll('tr.group_row').forEach(function (row) {
         var groupId = row.dataset.groupid;
         if (!groupId) return;
-
-        // Calculate totals for this group
         _this4.calculateGroupTotal(groupId);
-
-        // Update group data
         if (_this4.groups[groupId]) {
           var _row$querySelector2;
-          // Store the first total value in the group data
           _this4.groups[groupId].total = _this4.parseNumber(((_row$querySelector2 = row.querySelector('.text-right.grouptotal')) === null || _row$querySelector2 === void 0 ? void 0 : _row$querySelector2.textContent) || '0');
         }
       });
@@ -223,13 +206,9 @@ Alpine.data('estimationShow', function () {
       while (currentRow && !currentRow.classList.contains('group_row')) {
         _loop();
       }
-
-      // Update group totals and trigger card totals update
       var totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
       totalCells.forEach(function (cell, index) {
         cell.textContent = _this5.formatCurrency(totals[index] || 0);
-
-        // Get card quote ID and trigger update
         var cardQuoteId = cell.dataset.cardquoteid;
         if (cardQuoteId) {
           _this5.calculateCardTotals(cardQuoteId);
@@ -240,33 +219,21 @@ Alpine.data('estimationShow', function () {
     calculateCardTotals: function calculateCardTotals(cardQuoteId) {
       var _this6 = this;
       var subtotal = 0;
-
-      // Sum all group totals for this card
       var groupTotalCells = document.querySelectorAll("td[data-cardquoteid=\"".concat(cardQuoteId, "\"].grouptotal"));
       groupTotalCells.forEach(function (cell) {
         subtotal += _this6.parseNumber(cell.textContent);
       });
-
-      // Get markup value
       var markupInput = document.querySelector("input[name=\"markup\"][value]:not([value=\"\"])[data-cardquoteid=\"".concat(cardQuoteId, "\"]"));
       var markup = this.parseNumber((markupInput === null || markupInput === void 0 ? void 0 : markupInput.value) || '0');
-
-      // Get cash discount value
       var discountInput = document.querySelector("input[name=\"discount\"][data-cardquoteid=\"".concat(cardQuoteId, "\"]"));
       var cashDiscount = this.parseNumber((discountInput === null || discountInput === void 0 ? void 0 : discountInput.value) || '0');
-
-      // Get VAT rate
       var vatSelect = document.querySelector("select[name=\"tax[]\"][data-cardquoteid=\"".concat(cardQuoteId, "\"]"));
       var vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
-
-      // Calculate totals
       var netAmount = subtotal + markup;
       var discountAmount = netAmount * cashDiscount / 100;
       var netWithDiscount = netAmount - discountAmount;
       var vatAmount = netWithDiscount * vatRate;
       var grossWithDiscount = netWithDiscount + vatAmount;
-
-      // Update UI totals
       this.updateCardTotalUI(cardQuoteId, {
         netAmount: netAmount,
         netWithDiscount: netWithDiscount,
@@ -275,25 +242,18 @@ Alpine.data('estimationShow', function () {
       });
     },
     updateCardTotalUI: function updateCardTotalUI(cardQuoteId, totals) {
-      // Update Net incl. Discount
       var netDiscountElement = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-net-discount"));
       if (netDiscountElement) {
         netDiscountElement.textContent = this.formatCurrency(totals.netWithDiscount);
       }
-
-      // Update Gross incl. Discount
       var grossDiscountElement = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-gross-discount"));
       if (grossDiscountElement) {
         grossDiscountElement.textContent = this.formatCurrency(totals.grossWithDiscount);
       }
-
-      // Update Net
       var netElement = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-net"));
       if (netElement) {
         netElement.textContent = this.formatCurrency(totals.netAmount);
       }
-
-      // Update Gross total
       var grossElement = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"] .total-gross-total"));
       if (grossElement) {
         grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
@@ -301,24 +261,17 @@ Alpine.data('estimationShow', function () {
     },
     initializeCardCalculations: function initializeCardCalculations() {
       var _this7 = this;
-      // Get all card quote IDs
       var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
         return el.dataset.cardquoteid;
       })));
-
-      // Calculate initial totals
       cardQuoteIds.forEach(function (cardQuoteId) {
         _this7.calculateCardTotals(cardQuoteId);
       });
-
-      // Add event listeners for changes
       document.addEventListener('change', function (e) {
         var _target$closest;
         var target = e.target;
         var cardQuoteId = (_target$closest = target.closest('[data-cardquoteid]')) === null || _target$closest === void 0 ? void 0 : _target$closest.dataset.cardquoteid;
         if (!cardQuoteId) return;
-
-        // Check if the change is relevant for recalculation
         if (target.matches('input[name="markup"]') || target.matches('input[name="discount"]') || target.matches('select[name="tax[]"]') || target.matches('.item-price') || target.matches('.item-quantity') || target.matches('.item-optional')) {
           _this7.calculateCardTotals(cardQuoteId);
         }
@@ -348,7 +301,6 @@ Alpine.data('estimationShow', function () {
       var itemId = row.dataset.id || row.dataset.itemid;
       var groupId = row.dataset.groupid;
       if (type === 'quantity') {
-        // Update quantity in data model
         if (this.items[itemId]) {
           this.items[itemId].quantity = parsedValue;
         }
@@ -356,8 +308,6 @@ Alpine.data('estimationShow', function () {
           this.newItems[itemId].quantity = parsedValue;
         }
       }
-
-      // Trigger recalculation of totals
       if (groupId) {
         this.calculateGroupTotal(groupId);
       }
@@ -407,10 +357,7 @@ Alpine.data('estimationShow', function () {
         },
         stop: function stop(event, ui) {
           var movedRow = ui.item[0];
-
-          // Only process if it's an item or comment row
           if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
-            // Find the closest previous group row
             var currentRow = movedRow.previousElementSibling;
             var newGroupRow = null;
             while (currentRow && !newGroupRow) {
@@ -423,11 +370,7 @@ Alpine.data('estimationShow', function () {
               var newGroupId = newGroupRow.dataset.groupid;
               var itemId = movedRow.dataset.itemid || movedRow.dataset.id;
               var oldGroupId = movedRow.dataset.groupid;
-
-              // Always update the group ID
               movedRow.dataset.groupid = newGroupId;
-
-              // Update data structures
               if (_this8.items[itemId]) {
                 _this8.items[itemId].groupId = newGroupId;
               }
@@ -436,8 +379,6 @@ Alpine.data('estimationShow', function () {
               }
             }
           }
-
-          // Recalculate everything
           _this8.updatePOSNumbers();
           _this8.calculateTotals();
         }
@@ -458,7 +399,6 @@ Alpine.data('estimationShow', function () {
           var itemNumber = parseInt(itemNum);
           _this9.lastGroupNumber = Math.max(_this9.lastGroupNumber, groupNumber);
           if (!_this9.lastItemNumbers[groupNumber] || itemNumber > _this9.lastItemNumbers[groupNumber]) {
-            // Ensure item numbers stay within 2 digits (max 99)
             _this9.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
           }
         }
@@ -473,21 +413,100 @@ Alpine.data('estimationShow', function () {
       var targetRowId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var timestamp = Date.now();
       var currentGroupId;
-      if (targetRowId) {
-        // Context menu: add after specific row
-        var targetRow = document.querySelector("tr[data-id=\"".concat(targetRowId, "\"], \n                                                   tr[data-itemid=\"").concat(targetRowId, "\"], \n                                                   tr[data-commentid=\"").concat(targetRowId, "\"], \n                                                   tr[data-groupid=\"").concat(targetRowId, "\"]"));
-        if (!targetRow) return;
 
-        // Get group ID from target row or nearest group
-        currentGroupId = targetRow.classList.contains('group_row') ? targetRow.dataset.groupid : targetRow.dataset.groupid;
+      // Check if table is completely empty
+      var hasAnyGroups = document.querySelectorAll('tr.group_row').length > 0;
+
+      // If table is empty, always create a group first with an item
+      if (!hasAnyGroups) {
+        // Create group
+        var groupTimestamp = Date.now();
+        currentGroupId = "group_".concat(groupTimestamp);
+        var newGroup = {
+          id: groupTimestamp,
+          type: 'group',
+          name: 'New Group',
+          total: 0,
+          expanded: false,
+          pos: ''
+        };
+
+        // Add group to collections
+        this.items[groupTimestamp] = newGroup;
+        this.newItems[groupTimestamp] = newGroup;
+        this.groups[currentGroupId] = {
+          id: currentGroupId,
+          pos: '',
+          name: 'New Group',
+          total: 0,
+          itemCount: 0
+        };
+
+        // Create child item
+        var itemTimestamp = Date.now() + 1;
+        var _newItem = {
+          id: itemTimestamp,
+          type: 'item',
+          groupId: currentGroupId,
+          name: 'New Item',
+          quantity: 0,
+          price: 0,
+          unit: '',
+          optional: false,
+          expanded: false,
+          pos: ''
+        };
+
+        // Add item to collections
+        this.items[itemTimestamp] = _newItem;
+        this.newItems[itemTimestamp] = _newItem;
+        this.$nextTick(function () {
+          _this10.initializeSortable();
+          _this10.updatePOSNumbers();
+          _this10.calculateTotals();
+        });
+        return;
+      }
+
+      // Normal flow for non-empty table
+      if (type === 'group') {
+        currentGroupId = "group_".concat(timestamp);
+        var _newItem2 = {
+          id: timestamp,
+          type: 'group',
+          name: "Group name",
+          total: 0,
+          expanded: false,
+          pos: ''
+        };
+        this.items[timestamp] = _newItem2;
+        this.newItems[timestamp] = _newItem2;
+        this.groups[currentGroupId] = {
+          id: currentGroupId,
+          pos: '',
+          name: 'Group name',
+          total: 0,
+          itemCount: 0
+        };
+        this.$nextTick(function () {
+          _this10.initializeSortable();
+          _this10.updatePOSNumbers();
+          _this10.calculateTotals();
+        });
+        return;
+      }
+
+      // For items and comments in non-empty table
+      if (targetRowId) {
+        var targetRow = document.querySelector("tr[data-id=\"".concat(targetRowId, "\"], \n                                               tr[data-itemid=\"").concat(targetRowId, "\"], \n                                               tr[data-commentid=\"").concat(targetRowId, "\"], \n                                               tr[data-groupid=\"").concat(targetRowId, "\"]"));
+        if (targetRow) {
+          currentGroupId = targetRow.classList.contains('group_row') ? targetRow.dataset.groupid : targetRow.dataset.groupid;
+        }
       } else {
-        // Regular add: add to last group
         var GroupRow = document.querySelectorAll('tr.group_row');
         var lastGroupRow = GroupRow[GroupRow.length - 1];
         currentGroupId = lastGroupRow ? lastGroupRow.dataset.groupid : null;
       }
-      if (!currentGroupId) return; // Need a group to add items
-
       var newItem = {
         id: timestamp,
         type: type,
@@ -500,15 +519,12 @@ Alpine.data('estimationShow', function () {
         expanded: false,
         pos: ''
       };
-
-      // Add to both collections
       this.items[timestamp] = newItem;
       this.newItems[timestamp] = newItem;
       this.$nextTick(function () {
         if (targetRowId) {
-          // Move new item after target row if context menu was used
-          var _targetRow = document.querySelector("tr[data-id=\"".concat(targetRowId, "\"], \n                                                       tr[data-itemid=\"").concat(targetRowId, "\"], \n                                                       tr[data-commentid=\"").concat(targetRowId, "\"], \n                                                       tr[data-groupid=\"").concat(targetRowId, "\"]"));
-          var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], \n                                                    tr[data-itemid=\"").concat(timestamp, "\"]"));
+          var _targetRow = document.querySelector("tr[data-id=\"".concat(targetRowId, "\"], \n                                                   tr[data-itemid=\"").concat(targetRowId, "\"], \n                                                   tr[data-commentid=\"").concat(targetRowId, "\"], \n                                                   tr[data-groupid=\"").concat(targetRowId, "\"]"));
+          var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], \n                                                tr[data-itemid=\"").concat(timestamp, "\"]"));
           if (newRow && _targetRow.nextSibling) {
             _targetRow.parentNode.insertBefore(newRow, _targetRow.nextSibling);
           }
@@ -603,7 +619,6 @@ Alpine.data('estimationShow', function () {
     initializeContextMenu: function initializeContextMenu() {
       var _this13 = this;
       document.querySelector('#estimation-edit-table').addEventListener('contextmenu', function (e) {
-        // Include comment rows in selection
         var row = e.target.closest('tr.item_row, tr.group_row, tr.item_comment');
         if (!row) return;
         e.preventDefault();
@@ -648,7 +663,6 @@ Alpine.data('estimationShow', function () {
       var isComment = originalRow.classList.contains('item_comment');
       var groupId = isGroup ? null : originalRow.dataset.groupid;
       if (isGroup) {
-        // Duplicate group
         var groupName = originalRow.querySelector('.grouptitle-input').value;
         var newGroupId = "group_".concat(timestamp);
         var newItem = {
@@ -658,12 +672,8 @@ Alpine.data('estimationShow', function () {
           total: 0,
           expanded: false
         };
-
-        // Add to collections
         this.items[timestamp] = newItem;
         this.newItems[timestamp] = newItem;
-
-        // Add to groups
         this.groups[newGroupId] = {
           id: newGroupId,
           pos: '',
@@ -672,19 +682,18 @@ Alpine.data('estimationShow', function () {
           itemCount: 0
         };
       } else if (isComment) {
-        var _newItem = {
+        var _newItem3 = {
           id: timestamp,
           type: 'comment',
           groupId: groupId,
           content: originalRow.querySelector('.item-description').value,
           expanded: false
         };
-        this.items[timestamp] = _newItem;
-        this.newItems[timestamp] = _newItem;
+        this.items[timestamp] = _newItem3;
+        this.newItems[timestamp] = _newItem3;
       } else {
         var _originalRow$querySel, _originalRow$querySel2, _originalRow$querySel3, _originalRow$querySel4, _originalRow$querySel5;
-        // Get values from original row
-        var _newItem2 = {
+        var _newItem4 = {
           id: timestamp,
           type: originalRow.classList.contains('item_comment') ? 'comment' : 'item',
           groupId: groupId,
@@ -695,18 +704,13 @@ Alpine.data('estimationShow', function () {
           price: this.parseNumber(((_originalRow$querySel5 = originalRow.querySelector('.item-price')) === null || _originalRow$querySel5 === void 0 ? void 0 : _originalRow$querySel5.value) || '0'),
           expanded: false
         };
-
-        // Add to collections
-        this.items[timestamp] = _newItem2;
-        this.newItems[timestamp] = _newItem2;
-
-        // Update group item count
+        this.items[timestamp] = _newItem4;
+        this.newItems[timestamp] = _newItem4;
         if (this.groups[groupId]) {
           this.groups[groupId].itemCount++;
         }
       }
       this.$nextTick(function () {
-        // Find the new row and move it after the original
         var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], tr[data-itemid=\"").concat(timestamp, "\"], tr[data-commentid=\"").concat(timestamp, "\"]"));
         if (newRow && originalRow.nextSibling) {
           originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
@@ -730,7 +734,6 @@ Alpine.data('estimationShow', function () {
           var row = document.querySelector("tr[data-id=\"".concat(rowId, "\"], tr[data-itemid=\"").concat(rowId, "\"], tr[data-groupid=\"").concat(rowId, "\"]"));
           if (!row) return;
           if (row.classList.contains('group_row')) {
-            // If it's a group, also remove all its items
             var groupId = row.dataset.groupid;
             document.querySelectorAll("tr[data-groupid=\"".concat(groupId, "\"]")).forEach(function (itemRow) {
               var itemId = itemRow.dataset.itemid;
@@ -740,7 +743,6 @@ Alpine.data('estimationShow', function () {
             });
             delete _this15.groups[groupId];
           } else {
-            // Remove single item
             var itemId = row.dataset.itemid || row.dataset.id;
             delete _this15.items[itemId];
             delete _this15.newItems[itemId];
@@ -748,8 +750,6 @@ Alpine.data('estimationShow', function () {
           row.remove();
           _this15.updatePOSNumbers();
           _this15.calculateTotals();
-
-          // Handle UI updates
           document.querySelector('.SelectAllCheckbox').checked = false;
         }
       });
@@ -759,8 +759,6 @@ Alpine.data('estimationShow', function () {
       var checked = event.target.checked;
       var groupRow = event.target.closest('tr.group_row');
       if (!groupRow) return;
-
-      // Get all items until next group row
       var currentRow = groupRow.nextElementSibling;
       while (currentRow && !currentRow.classList.contains('group_row')) {
         var checkbox = currentRow.querySelector('.item_selection');
@@ -777,24 +775,19 @@ Alpine.data('estimationShow', function () {
     },
     initializeColumnVisibility: function initializeColumnVisibility() {
       var _this16 = this;
-      // Initialize column visibility from localStorage if available
       var savedVisibility = localStorage.getItem('columnVisibility');
       if (savedVisibility) {
         this.columnVisibility = JSON.parse(savedVisibility);
         this.applyColumnVisibility();
       }
-
-      // Add event listeners for checkbox changes
       document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
         checkbox.addEventListener('change', function (e) {
           var columnClass = e.target.dataset.column;
           var quoteId = e.target.dataset.quoteid;
           if (columnClass === 'quote_th' && quoteId) {
-            // Handle quote columns specifically
             _this16.columnVisibility[columnClass] = e.target.checked;
             _this16.applyColumnVisibility(quoteId);
           } else {
-            // Handle regular columns
             _this16.columnVisibility[columnClass] = e.target.checked;
             _this16.applyColumnVisibility();
           }
@@ -804,13 +797,11 @@ Alpine.data('estimationShow', function () {
     },
     applyColumnVisibility: function applyColumnVisibility() {
       var quoteId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      // Apply visibility to regular columns
       Object.entries(this.columnVisibility).forEach(function (_ref5) {
         var _ref6 = _slicedToArray(_ref5, 2),
           columnClass = _ref6[0],
           isVisible = _ref6[1];
         if (columnClass === 'quote_th' && quoteId) {
-          // Handle quote columns
           var elements = document.querySelectorAll(".quote_th".concat(quoteId, ", ") + "[data-cardquoteid=\"".concat(quoteId, "\"]"));
           console.log(elements);
           elements.forEach(function (el) {
@@ -834,8 +825,6 @@ Alpine.data('estimationShow', function () {
       this.columnVisibility[columnClass] = !this.columnVisibility[columnClass];
       this.applyColumnVisibility(quoteId);
       this.saveColumnVisibility();
-
-      // Update checkbox state
       var selector = quoteId ? ".column-toggle[data-column=\"".concat(columnClass, "\"][data-quote=\"").concat(quoteId, "\"]") : ".column-toggle[data-column=\"".concat(columnClass, "\"]");
       var checkbox = document.querySelector(selector);
       if (checkbox) {
