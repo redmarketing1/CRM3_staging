@@ -724,6 +724,24 @@ Alpine.data('estimationShow', () => ({
         });
     },
 
+    deleteCardColumn(quoteId) {
+        const row = document.querySelectorAll(`[data-cardquoteid="${quoteId}"]`);
+
+        Swal.fire({
+            title: 'Confirmation Delete',
+            text: 'Really! You want to remove them? You can\'t undo',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete it',
+            cancelButtonText: "No, cancel",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                row.forEach(el => {
+                    el.remove();
+                });
+            }
+        });
+    },
+
     toggleDescription(index, event) {
         event.stopPropagation();
 

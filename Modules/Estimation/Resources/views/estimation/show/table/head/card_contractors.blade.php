@@ -58,9 +58,12 @@
                             @endif
                         @endif
 
-                        <li class="delete"><a class="dropdown-item" href="javascript:void(0)"
-                                onclick="deleteColumn('{{ $quotes->id }}',this)"><i
-                                    class="fa-regular fa-trash-can"></i>{{ __('Delete') }}</a>
+                        <li class="delete">
+                            <a class="dropdown-item" href="javascript:void(0)"
+                                @click="deleteCardColumn('{{ $quotes->id }}')">
+                                <i class="fa-regular fa-trash-can"></i>
+                                {{ __('Delete') }}
+                            </a>
                         </li>
 
                         @if (auth()->user()->type == 'company')
