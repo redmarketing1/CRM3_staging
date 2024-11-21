@@ -42,23 +42,28 @@
                         data-bs-toggle="dropdown" aria-expanded="false"></i>
                     <ul class="dropdown-menu quote_options{{ $quotes->id }}"
                         aria-labelledby="dropdownMenuButton{{ $quotes->id }}">
+
                         @permission('estimation duplicate quote option')
                             <li>
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    onclick="duplicateColumn('{{ $quotes->id }}','{{ $quotes->title }}','{{ $quotes->user_id }}','{{ $quotes->markup }}',false,'quote')"><i
-                                        class="fa-regular fa-copy"></i>{{ __('Duplicate') }}</a>
+                                    @click="duplicateCardColumn('{{ $quotes->id }}')">
+                                    <i class="fa-regular fa-copy"></i>
+                                    {{ __('Duplicate') }}
+                                </a>
                             </li>
                         @endpermission
+
                         @if (auth()->user()->type == 'company')
-                            @if ($key > 0)
-                                <li><a class="dropdown-item" href="javascript:void(0)"
-                                        onclick="duplicateColumn('{{ $quotes->id }}','{{ $quotes->title }}','{{ $quotes->user_id }}','{{ $quotes->markup }}',true)"><i
-                                            class="fa-solid fa-pencil"></i>{{ __('Change Name or Contact') }}</a>
-                                </li>
-                            @endif
+                            <li>
+                                <a class="dropdown-item  gap-2" href="javascript:void(0)"
+                                    onclick="duplicateColumn('{{ $quotes->id }}','{{ $quotes->title }}','{{ $quotes->user_id }}','{{ $quotes->markup }}',true)">
+                                    <i class="fa-solid fa-pencil"></i>
+                                    {{ __('Change Name or Contact') }}
+                                </a>
+                            </li>
                         @endif
 
-                        <li class="delete">
+                        <li>
                             <a class="dropdown-item" href="javascript:void(0)"
                                 @click="deleteCardColumn('{{ $quotes->id }}')">
                                 <i class="fa-regular fa-trash-can"></i>
@@ -68,7 +73,7 @@
 
                         @if (auth()->user()->type == 'company')
                             <li>
-                                <label class="dropdown-item">
+                                <label class="dropdown-item gap-2">
                                     <input type="checkbox" id="final_quote_checkbox"
                                         onchange="handleCheckboxChange(this, '{{ $quotes->id }}')">
                                     {{ __('Client Quote') }}
@@ -76,7 +81,7 @@
                             </li>
 
                             <li>
-                                <label class="dropdown-item">
+                                <label class="dropdown-item gap-2">
                                     <input type="checkbox" id="client_quote_checkbox"
                                         onchange="handleCheckboxChange(this, '{{ $quotes->id }}', 'client')">
                                     {{ __('Final Estimation for Client') }}
@@ -84,7 +89,7 @@
                             </li>
 
                             <li>
-                                <label class="dropdown-item">
+                                <label class="dropdown-item gap-2">
                                     <input type="checkbox" id="sub_contractor_quote_checkbox"
                                         onchange="handleCheckboxChange(this, '{{ $quotes->id }}', 'sub_contractor')">
                                     {{ __('Final Estimation for Subcontractor') }}

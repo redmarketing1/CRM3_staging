@@ -628,6 +628,64 @@ Alpine.data('estimationShow', function () {
         }
       });
     },
+    duplicateCardColumn: function duplicateCardColumn(quoteId) {
+      alert('Action for duplicateCardColumn' + quoteId);
+    },
+    deleteCardColumn: function deleteCardColumn(quoteId) {
+      var _this13 = this;
+      Swal.fire({
+        title: 'Confirmation Delete',
+        text: 'Really! You want to remove this column? You can\'t undo',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Delete it',
+        cancelButtonText: "No, cancel",
+        customClass: {
+          confirmButton: 'btn btn-danger',
+          cancelButton: 'btn btn-secondary'
+        }
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          try {
+            var elements = document.querySelectorAll("[data-cardquoteid=\"".concat(quoteId, "\"]"));
+            elements.forEach(function (el) {
+              return el.remove();
+            });
+            _this13.calculateTotals();
+            Swal.fire({
+              title: 'Deleted!',
+              text: "The Column has been deleted successfully",
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false
+            });
+
+            // If using an API, make the delete request
+            // fetch(route('estimations.delete_column'), {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            //     },
+            //     body: JSON.stringify({
+            //         estimation_id: window.estimation_id,
+            //         quote_id: quoteId
+            //     })
+            // }).catch(error => {
+            //     console.error('Error deleting column:', error);
+            // });
+          } catch (error) {
+            console.error('Error deleting column:', error);
+            Swal.fire({
+              title: 'Error!',
+              text: 'An error occurred while deleting the column',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
+        }
+      });
+    },
     toggleDescription: function toggleDescription(index, event) {
       event.stopPropagation();
       if (!this.expandedRows) {
@@ -649,7 +707,7 @@ Alpine.data('estimationShow', function () {
       return this.expandedRows[index] || false;
     },
     initializeContextMenu: function initializeContextMenu() {
-      var _this13 = this;
+      var _this14 = this;
       document.querySelector('#estimation-edit-table').addEventListener('contextmenu', function (e) {
         var row = e.target.closest('tr.item_row, tr.group_row, tr.item_comment');
         if (!row) return;
@@ -660,7 +718,7 @@ Alpine.data('estimationShow', function () {
         var y = e.clientY;
         if (x + 160 > viewportWidth) x = viewportWidth - 160;
         if (y + 160 > viewportHeight) y = viewportHeight - 160;
-        _this13.contextMenu = {
+        _this14.contextMenu = {
           show: true,
           x: x,
           y: y,
@@ -687,7 +745,7 @@ Alpine.data('estimationShow', function () {
       this.contextMenu.show = false;
     },
     duplicateRow: function duplicateRow(rowId) {
-      var _this14 = this;
+      var _this15 = this;
       var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], \n                                                 tr[data-itemid=\"").concat(rowId, "\"], \n                                                 tr[data-commentid=\"").concat(rowId, "\"], \n                                                 tr[data-groupid=\"").concat(rowId, "\"]"));
       if (!originalRow) return;
       var timestamp = Date.now();
@@ -747,14 +805,14 @@ Alpine.data('estimationShow', function () {
         if (newRow && originalRow.nextSibling) {
           originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
         }
-        _this14.updatePOSNumbers();
-        _this14.calculateTotals();
-        _this14.initializeContextMenu();
+        _this15.updatePOSNumbers();
+        _this15.calculateTotals();
+        _this15.initializeContextMenu();
       });
       this.contextMenu.show = false;
     },
     removeRowFromMenu: function removeRowFromMenu(rowId) {
-      var _this15 = this;
+      var _this16 = this;
       Swal.fire({
         title: 'Confirmation Delete',
         text: 'Really! You want to remove this item? You can\'t undo',
@@ -769,19 +827,19 @@ Alpine.data('estimationShow', function () {
             var groupId = row.dataset.groupid;
             document.querySelectorAll("tr[data-groupid=\"".concat(groupId, "\"]")).forEach(function (itemRow) {
               var itemId = itemRow.dataset.itemid;
-              delete _this15.items[itemId];
-              delete _this15.newItems[itemId];
+              delete _this16.items[itemId];
+              delete _this16.newItems[itemId];
               itemRow.remove();
             });
-            delete _this15.groups[groupId];
+            delete _this16.groups[groupId];
           } else {
             var itemId = row.dataset.itemid || row.dataset.id;
-            delete _this15.items[itemId];
-            delete _this15.newItems[itemId];
+            delete _this16.items[itemId];
+            delete _this16.newItems[itemId];
           }
           row.remove();
-          _this15.updatePOSNumbers();
-          _this15.calculateTotals();
+          _this16.updatePOSNumbers();
+          _this16.calculateTotals();
           document.querySelector('.SelectAllCheckbox').checked = false;
         }
       });
@@ -806,19 +864,19 @@ Alpine.data('estimationShow', function () {
       });
     },
     initializeColumnVisibility: function initializeColumnVisibility() {
-      var _this16 = this;
+      var _this17 = this;
       document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
         checkbox.addEventListener('change', function (e) {
           var columnClass = e.target.dataset.column;
           var quoteId = e.target.dataset.quoteid;
           if (columnClass === 'quote_th' && quoteId) {
-            _this16.columnVisibility[columnClass] = e.target.checked;
-            _this16.applyColumnVisibility(quoteId);
+            _this17.columnVisibility[columnClass] = e.target.checked;
+            _this17.applyColumnVisibility(quoteId);
           } else {
-            _this16.columnVisibility[columnClass] = e.target.checked;
-            _this16.applyColumnVisibility();
+            _this17.columnVisibility[columnClass] = e.target.checked;
+            _this17.applyColumnVisibility();
           }
-          _this16.saveColumnVisibility();
+          _this17.saveColumnVisibility();
         });
       });
     },
