@@ -157,9 +157,32 @@ Alpine.data('estimationShow', () => ({
 
         const quantity = this.parseNumber(row.querySelector('.item-quantity')?.value || '0');
         const priceInputs = row.querySelectorAll('.item-price');
-        const price = this.parseNumber(priceInputs[priceColumnIndex]?.value || '0');
+        const priceInput = priceInputs[priceColumnIndex];
 
-        return quantity * price;
+        if (!priceInput) return 0;
+
+        if (!priceInput.dataset.originalPrice) {
+            priceInput.dataset.originalPrice = this.parseNumber(priceInput.value);
+        }
+
+        const cardQuoteId = priceInput.closest('[data-cardquoteid]')?.dataset.cardquoteid;
+        let price = this.parseNumber(priceInput.dataset.originalPrice || '0');
+
+        if (cardQuoteId) {
+            const markupInput = document.querySelector(`input[name="markup"][data-cardquoteid="${cardQuoteId}"]`);
+            const markup = this.parseNumber(markupInput?.value || '0');
+            price += markup;
+        }
+
+        const total = quantity * price;
+
+        const totalCell = row.querySelectorAll('.column_total_price')[priceColumnIndex];
+        if (totalCell) {
+            totalCell.textContent = this.formatCurrency(total);
+            this.setNegativeStyle(totalCell, total);
+        }
+
+        return total;
     },
 
     calculateTotals() {
@@ -202,23 +225,26 @@ Alpine.data('estimationShow', () => ({
 
                         const totalCell = currentRow.querySelectorAll('.column_total_price')[index];
                         if (totalCell) {
-                            totalCell.textContent = this.formatCurrency(quantity * price);
+                            const total = quantity * price;
+                            totalCell.textContent = this.formatCurrency(total);
+                            this.setNegativeStyle(totalCell, total);
                         }
                     });
                 } else {
                     currentRow.querySelectorAll('.column_total_price').forEach(cell => {
                         cell.textContent = '-';
+                        cell.style.backgroundColor = '';
+                        cell.style.color = '';
                     });
                 }
             }
             currentRow = currentRow.nextElementSibling;
         }
 
-
         const totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
         totalCells.forEach((cell, index) => {
             cell.textContent = this.formatCurrency(totals[index] || 0);
-
+            this.setNegativeStyle(cell, totals[index] || 0);
 
             const cardQuoteId = cell.dataset.cardquoteid;
             if (cardQuoteId) {
@@ -293,14 +319,18 @@ Alpine.data('estimationShow', () => ({
     },
 
     initializeCardCalculations() {
-
         const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
-
 
         cardQuoteIds.forEach(cardQuoteId => {
             this.calculateCardTotals(cardQuoteId);
-        });
 
+            const markupInput = document.querySelector(`input[name="markup"][data-cardquoteid="${cardQuoteId}"]`);
+            if (markupInput) {
+                const value = this.parseNumber(markupInput.value);
+                markupInput.value = this.formatDecimal(value);
+                this.setNegativeStyle(markupInput, value);
+            }
+        });
 
         document.addEventListener('change', (e) => {
             const target = e.target;
@@ -308,6 +338,35 @@ Alpine.data('estimationShow', () => ({
 
             if (!cardQuoteId) return;
 
+            if (target.matches('input[name="markup"]')) {
+                const markup = this.parseNumber(target.value || '0');
+                target.value = this.formatDecimal(markup);
+                this.setMarkupStyle(target, markup);
+
+                const priceInputs = document.querySelectorAll(`[data-cardquoteid="${cardQuoteId}"] .item-price`);
+
+                priceInputs.forEach(input => {
+                    const originalPrice = input.dataset.originalPrice ? this.parseNumber(input.dataset.originalPrice) : this.parseNumber(input.value);
+
+                    if (!input.dataset.originalPrice) {
+                        input.dataset.originalPrice = originalPrice;
+                    }
+
+                    const newPrice = this.parseNumber(input.dataset.originalPrice) + markup;
+                    input.value = this.formatCurrency(newPrice);
+
+                    const row = input.closest('tr');
+                    if (row) {
+                        const itemId = row.dataset.itemid;
+                        if (itemId) {
+                            this.calculateItemTotal(itemId);
+                        }
+                    }
+                });
+
+                this.calculateGroupTotal(this.lastGroupId);
+                this.calculateTotals();
+            }
 
             if (
                 target.matches('input[name="markup"]') ||
@@ -320,6 +379,26 @@ Alpine.data('estimationShow', () => ({
                 this.calculateCardTotals(cardQuoteId);
             }
         });
+    },
+
+    setMarkupStyle(input, value) {
+        if (value < 0) {
+            input.style.backgroundColor = 'rgb(255 240 240)';
+            input.style.color = 'rgb(255 6 6)';
+        } else {
+            input.style.backgroundColor = '';
+            input.style.color = '';
+        }
+    },
+
+    setNegativeStyle(element, value) {
+        if (value < 0) {
+            element.style.backgroundColor = 'rgb(255 240 240)';
+            element.style.color = 'rgb(255 6 6)';
+        } else {
+            element.style.backgroundColor = '';
+            element.style.color = '';
+        }
     },
 
     formatDecimal(value) {
