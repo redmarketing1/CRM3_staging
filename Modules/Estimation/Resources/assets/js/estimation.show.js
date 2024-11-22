@@ -724,6 +724,67 @@ Alpine.data('estimationShow', () => ({
         });
     },
 
+    duplicateCardColumn(quoteId) {
+        alert('Action for duplicateCardColumn' + quoteId);
+    },
+
+    deleteCardColumn(quoteId) {
+        Swal.fire({
+            title: 'Confirmation Delete',
+            text: 'Really! You want to remove this column? You can\'t undo',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete it',
+            cancelButtonText: "No, cancel",
+            customClass: {
+                confirmButton: 'btn btn-danger',
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                try {
+
+                    const elements = document.querySelectorAll(`[data-cardquoteid="${quoteId}"]`);
+                    elements.forEach(el => el.remove());
+
+                    this.calculateTotals();
+
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: `The Column has been deleted successfully`,
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    // If using an API, make the delete request
+                    // fetch(route('estimations.delete_column'), {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Content-Type': 'application/json',
+                    //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    //     },
+                    //     body: JSON.stringify({
+                    //         estimation_id: window.estimation_id,
+                    //         quote_id: quoteId
+                    //     })
+                    // }).catch(error => {
+                    //     console.error('Error deleting column:', error);
+                    // });
+
+                } catch (error) {
+                    console.error('Error deleting column:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while deleting the column',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+        });
+    },
+
     toggleDescription(index, event) {
         event.stopPropagation();
 

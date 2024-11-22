@@ -8014,6 +8014,7 @@ span.select2-selection.select2-selection--multiple {
     background: #ffffff;
     display: block;
     text-align: left;
+    min-width: 280px;
 }
 
 #estimation-edit-table .table-col-customized {
