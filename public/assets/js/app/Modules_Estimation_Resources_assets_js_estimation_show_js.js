@@ -28,6 +28,7 @@ Alpine.data('estimationShow', function () {
     searchQuery: '',
     selectAll: false,
     isFullScreen: false,
+    autoSaveEnabled: true,
     contextMenu: {
       show: false,
       x: 0,
@@ -41,6 +42,11 @@ Alpine.data('estimationShow', function () {
       column_unit: true,
       column_optional: true,
       quote_th: true
+    },
+    data: function data() {
+      return {
+        estimation_id: this.$el.dataset.estimationId
+      };
     },
     init: function init() {
       var _this = this;
@@ -60,6 +66,11 @@ Alpine.data('estimationShow', function () {
         });
       }, {
         deep: true
+      });
+      this.$watch('autoSaveEnabled', function (newValue) {
+        if (newValue) {
+          _this.saveTableData();
+        }
       });
       this.$watch('searchQuery', function () {
         return _this.filterTable();
@@ -157,7 +168,7 @@ Alpine.data('estimationShow', function () {
       this.calculateTotals();
     },
     calculateItemTotal: function calculateItemTotal(itemId) {
-      var _row$querySelector, _priceInputs$priceCol;
+      var _row$querySelector, _priceInput$closest;
       var priceColumnIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       var item = this.items[itemId] || this.newItems[itemId];
       if (!item || item.optional) return 0;
@@ -165,8 +176,25 @@ Alpine.data('estimationShow', function () {
       if (!row) return 0;
       var quantity = this.parseNumber(((_row$querySelector = row.querySelector('.item-quantity')) === null || _row$querySelector === void 0 ? void 0 : _row$querySelector.value) || '0');
       var priceInputs = row.querySelectorAll('.item-price');
-      var price = this.parseNumber(((_priceInputs$priceCol = priceInputs[priceColumnIndex]) === null || _priceInputs$priceCol === void 0 ? void 0 : _priceInputs$priceCol.value) || '0');
-      return quantity * price;
+      var priceInput = priceInputs[priceColumnIndex];
+      if (!priceInput) return 0;
+      if (!priceInput.dataset.originalPrice) {
+        priceInput.dataset.originalPrice = this.parseNumber(priceInput.value);
+      }
+      var cardQuoteId = (_priceInput$closest = priceInput.closest('[data-cardquoteid]')) === null || _priceInput$closest === void 0 ? void 0 : _priceInput$closest.dataset.cardquoteid;
+      var price = this.parseNumber(priceInput.dataset.originalPrice || '0');
+      if (cardQuoteId) {
+        var markupInput = document.querySelector("input[name=\"markup\"][data-cardquoteid=\"".concat(cardQuoteId, "\"]"));
+        var markup = this.parseNumber((markupInput === null || markupInput === void 0 ? void 0 : markupInput.value) || '0');
+        price += markup;
+      }
+      var total = quantity * price;
+      var totalCell = row.querySelectorAll('.column_total_price')[priceColumnIndex];
+      if (totalCell) {
+        totalCell.textContent = this.formatCurrency(total);
+        this.setNegativeStyle(totalCell, total);
+      }
+      return total;
     },
     calculateTotals: function calculateTotals() {
       var _this4 = this;
@@ -201,12 +229,16 @@ Alpine.data('estimationShow', function () {
               totals[index] += quantity * price;
               var totalCell = currentRow.querySelectorAll('.column_total_price')[index];
               if (totalCell) {
-                totalCell.textContent = _this5.formatCurrency(quantity * price);
+                var total = quantity * price;
+                totalCell.textContent = _this5.formatCurrency(total);
+                _this5.setNegativeStyle(totalCell, total);
               }
             });
           } else {
             currentRow.querySelectorAll('.column_total_price').forEach(function (cell) {
               cell.textContent = '-';
+              cell.style.backgroundColor = '';
+              cell.style.color = '';
             });
           }
         }
@@ -218,6 +250,7 @@ Alpine.data('estimationShow', function () {
       var totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
       totalCells.forEach(function (cell, index) {
         cell.textContent = _this5.formatCurrency(totals[index] || 0);
+        _this5.setNegativeStyle(cell, totals[index] || 0);
         var cardQuoteId = cell.dataset.cardquoteid;
         if (cardQuoteId) {
           _this5.calculateCardTotals(cardQuoteId);
@@ -275,16 +308,63 @@ Alpine.data('estimationShow', function () {
       })));
       cardQuoteIds.forEach(function (cardQuoteId) {
         _this7.calculateCardTotals(cardQuoteId);
+        var markupInput = document.querySelector("input[name=\"markup\"][data-cardquoteid=\"".concat(cardQuoteId, "\"]"));
+        if (markupInput) {
+          var value = _this7.parseNumber(markupInput.value);
+          markupInput.value = _this7.formatDecimal(value);
+          _this7.setNegativeStyle(markupInput, value);
+        }
       });
       document.addEventListener('change', function (e) {
         var _target$closest;
         var target = e.target;
         var cardQuoteId = (_target$closest = target.closest('[data-cardquoteid]')) === null || _target$closest === void 0 ? void 0 : _target$closest.dataset.cardquoteid;
         if (!cardQuoteId) return;
+        if (target.matches('input[name="markup"]')) {
+          var markup = _this7.parseNumber(target.value || '0');
+          target.value = _this7.formatDecimal(markup);
+          _this7.setMarkupStyle(target, markup);
+          var priceInputs = document.querySelectorAll("[data-cardquoteid=\"".concat(cardQuoteId, "\"] .item-price"));
+          priceInputs.forEach(function (input) {
+            var originalPrice = input.dataset.originalPrice ? _this7.parseNumber(input.dataset.originalPrice) : _this7.parseNumber(input.value);
+            if (!input.dataset.originalPrice) {
+              input.dataset.originalPrice = originalPrice;
+            }
+            var newPrice = _this7.parseNumber(input.dataset.originalPrice) + markup;
+            input.value = _this7.formatCurrency(newPrice);
+            var row = input.closest('tr');
+            if (row) {
+              var itemId = row.dataset.itemid;
+              if (itemId) {
+                _this7.calculateItemTotal(itemId);
+              }
+            }
+          });
+          _this7.calculateGroupTotal(_this7.lastGroupId);
+          _this7.calculateTotals();
+        }
         if (target.matches('input[name="markup"]') || target.matches('input[name="discount"]') || target.matches('select[name="tax[]"]') || target.matches('.item-price') || target.matches('.item-quantity') || target.matches('.item-optional')) {
           _this7.calculateCardTotals(cardQuoteId);
         }
       });
+    },
+    setMarkupStyle: function setMarkupStyle(input, value) {
+      if (value < 0) {
+        input.style.backgroundColor = 'rgb(255 240 240)';
+        input.style.color = 'rgb(255 6 6)';
+      } else {
+        input.style.backgroundColor = '';
+        input.style.color = '';
+      }
+    },
+    setNegativeStyle: function setNegativeStyle(element, value) {
+      if (value < 0) {
+        element.style.backgroundColor = 'rgb(255 240 240)';
+        element.style.color = 'rgb(255 6 6)';
+      } else {
+        element.style.backgroundColor = '';
+        element.style.color = '';
+      }
     },
     formatDecimal: function formatDecimal(value) {
       return new Intl.NumberFormat('de-DE', {
@@ -880,7 +960,6 @@ Alpine.data('estimationShow', function () {
             _this17.columnVisibility[columnClass] = e.target.checked;
             _this17.applyColumnVisibility();
           }
-          _this17.saveColumnVisibility();
         });
       });
     },
@@ -906,19 +985,62 @@ Alpine.data('estimationShow', function () {
         }
       });
     },
-    saveColumnVisibility: function saveColumnVisibility() {
-      localStorage.setItem('columnVisibility', JSON.stringify(this.columnVisibility));
-    },
     toggleColumn: function toggleColumn(columnClass) {
       var quoteId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       this.columnVisibility[columnClass] = !this.columnVisibility[columnClass];
       this.applyColumnVisibility(quoteId);
-      this.saveColumnVisibility();
       var selector = quoteId ? ".column-toggle[data-column=\"".concat(columnClass, "\"][data-quote=\"").concat(quoteId, "\"]") : ".column-toggle[data-column=\"".concat(columnClass, "\"]");
       var checkbox = document.querySelector(selector);
       if (checkbox) {
         checkbox.checked = this.columnVisibility[columnClass];
       }
+    },
+    saveTableData: function saveTableData() {
+      // Prepare the data to be sent to the server
+      var data = {
+        form: this.getFomrData(),
+        data: this.serializeEstimationData()
+      };
+      console.log(data);
+
+      // $.ajax({
+      //     url: route('estimation.update', 11),
+      //     method: 'PUT',
+      //     data: data,
+      //     beforeSend: function () {
+      //         //TODO:
+      //     },
+      //     success: function (data) {
+      //         console.log(data);
+      //     }
+      // });
+
+      // Send the data to the server using an AJAX request
+      // fetch('/estimations/save', {
+      //     method: 'POST',
+      //     headers: {
+      //         'Content-Type': 'application/json',
+      //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+      //     },
+      //     body: JSON.stringify(data),
+      // })
+      //     .then((response) => response.json())
+      //     .then((data) => {
+      //         // Handle the response from the server
+      //         console.log('Estimation saved:', data);
+      //     })
+      //     .catch((error) => {
+      //         // Handle any errors
+      //         console.error('Error saving estimation:', error);
+      //     });
+    },
+    getFomrData: function getFomrData() {
+      var formData = new FormData(this.$el.closest('form'));
+      return Object.fromEntries(formData);
+    },
+    serializeEstimationData: function serializeEstimationData() {
+      // return JSON.stringify(this.items);
+      return Object.values(this.items);
     }
   };
 });

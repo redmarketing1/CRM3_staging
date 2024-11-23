@@ -861,7 +861,6 @@ function init_tiny_mce(selector_id) {
             ed.on('change', function (e) {
                 if (selector_id == "#technical_description") {
                     $(selector_id).trigger('change');
-                    console.log('the content ', ed.getContent());
                 }
             });
         }

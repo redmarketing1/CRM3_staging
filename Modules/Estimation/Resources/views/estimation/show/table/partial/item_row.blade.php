@@ -14,7 +14,8 @@
     <td class="column_name">
         <div class="div-desc-toggle">
             <i class="desc_toggle fa fas fa-solid fa-caret-right dt-control"></i>
-            <input type="text" name="item[]['name']" class="item-name form-control" value="{{ $product->name }}">
+            <input type="text" name="item[{{ $product->id }}]['name']" class="item-name form-control"
+                value="{{ $product->name }}">
         </div>
     </td>
 

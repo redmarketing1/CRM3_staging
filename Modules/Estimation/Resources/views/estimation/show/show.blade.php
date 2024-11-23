@@ -14,7 +14,8 @@
                     <div class="col-md-12 order-lg-2">
                         <div class="card repeater table-card-full">
                             {{ Form::open(['route' => 'estimations.importdata', 'files' => true, 'id' => 'quote_form']) }}
-
+                            {{ Form::hidden('id', $estimation->project_id) }}
+                           
                             <div class="card-body">
                                 @include('estimation::estimation.show.section.header')
                                 @include('estimation::estimation.show.table.index')

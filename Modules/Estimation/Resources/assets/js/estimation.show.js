@@ -9,6 +9,7 @@ Alpine.data('estimationShow', () => ({
     searchQuery: '',
     selectAll: false,
     isFullScreen: false,
+    autoSaveEnabled: true,
     contextMenu: {
         show: false,
         x: 0,
@@ -24,6 +25,12 @@ Alpine.data('estimationShow', () => ({
         quote_th: true
     },
 
+    data() {
+        return {
+            estimation_id: this.$el.dataset.estimationId,
+        };
+    },
+
     init() {
         this.initializeData();
         this.initializeSortable();
@@ -37,6 +44,12 @@ Alpine.data('estimationShow', () => ({
             const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
             cardQuoteIds.forEach(cardQuoteId => this.calculateCardTotals(cardQuoteId));
         }, { deep: true });
+
+        this.$watch('autoSaveEnabled', (newValue) => {
+            if (newValue) {
+                this.saveTableData();
+            }
+        });
 
         this.$watch('searchQuery', () => this.filterTable());
         this.$watch('selectAll', (value) => this.checkboxAll(value));
@@ -1110,8 +1123,6 @@ Alpine.data('estimationShow', () => ({
                     this.columnVisibility[columnClass] = e.target.checked;
                     this.applyColumnVisibility();
                 }
-
-                this.saveColumnVisibility();
             });
         });
     },
@@ -1143,15 +1154,9 @@ Alpine.data('estimationShow', () => ({
         });
     },
 
-    saveColumnVisibility() {
-        localStorage.setItem('columnVisibility', JSON.stringify(this.columnVisibility));
-    },
-
     toggleColumn(columnClass, quoteId = null) {
         this.columnVisibility[columnClass] = !this.columnVisibility[columnClass];
         this.applyColumnVisibility(quoteId);
-        this.saveColumnVisibility();
-
 
         const selector = quoteId
             ? `.column-toggle[data-column="${columnClass}"][data-quote="${quoteId}"]`
@@ -1160,5 +1165,56 @@ Alpine.data('estimationShow', () => ({
         if (checkbox) {
             checkbox.checked = this.columnVisibility[columnClass];
         }
-    }
+    },
+
+    saveTableData() {
+        // Prepare the data to be sent to the server
+        const data = {
+            form: this.getFomrData(),
+            data: this.serializeEstimationData(),
+        };
+
+        console.log(data);
+
+        // $.ajax({
+        //     url: route('estimation.update', 11),
+        //     method: 'PUT',
+        //     data: data,
+        //     beforeSend: function () {
+        //         //TODO:
+        //     },
+        //     success: function (data) {
+        //         console.log(data);
+        //     }
+        // });
+
+
+        // Send the data to the server using an AJAX request
+        // fetch('/estimations/save', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        //     },
+        //     body: JSON.stringify(data),
+        // })
+        //     .then((response) => response.json())
+        //     .then((data) => {
+        //         // Handle the response from the server
+        //         console.log('Estimation saved:', data);
+        //     })
+        //     .catch((error) => {
+        //         // Handle any errors
+        //         console.error('Error saving estimation:', error);
+        //     });
+    },
+
+    getFomrData() {
+        const formData = new FormData(this.$el.closest('form'));
+        return Object.fromEntries(formData);
+    },
+    serializeEstimationData() {
+        // return JSON.stringify(this.items);
+        return Object.values(this.items);
+    },
 })); 
