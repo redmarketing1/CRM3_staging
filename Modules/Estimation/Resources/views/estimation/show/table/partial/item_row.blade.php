@@ -22,7 +22,7 @@
     <td class="column_quantity">
         <input type="text" class="form-control item-quantity"
             value="{{ currency_format_with_sym($product->quantity, '', '', false) }}"
-            x-on:blur="handleInputBlur($event, 'quantity')">
+            x-on:blur="handleInputBlur($event, 'quantity', '{{ $product->id }}')">
     </td>
 
     <td class="column_unit">
@@ -38,7 +38,7 @@
     @foreach ($quoteItems->get($product->id, []) as $quoteItem)
         <td class="column_single_price border-left" data-cardQuoteID="{{ $quoteItem->estimate_quote_id }}">
             <div class="d-flex">
-                <input type="text" class="form-control item-price"
+                <input type="text" class="form-control item-price" name="cardQuote[][{{ $quoteItem->estimate_quote_id }}]"
                     value="{{ currency_format_with_sym($quoteItem->price) }}"
                     x-on:blur="handleInputBlur($event, 'price')">
             </div>

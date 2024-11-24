@@ -1,5 +1,6 @@
 Alpine.data('estimationShow', () => ({
     items: {},
+    comments: {},
     newItems: {},
     groups: {},
     totals: {},
@@ -96,6 +97,7 @@ Alpine.data('estimationShow', () => ({
     initializeData() {
 
         this.items = {};
+        this.comments = {};
         this.groups = {};
         this.lastGroupNumber = 0;
         this.lastItemNumbers = {};
@@ -117,81 +119,58 @@ Alpine.data('estimationShow', () => ({
             this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
         });
 
+        document.querySelectorAll('tr.item_row').forEach((row) => {
+            const itemId = row.dataset.itemid;
+            const groupId = row.dataset.groupid; 
 
-        document.querySelectorAll('tr.item_row, tr.item_comment').forEach((row) => {
-            const isComment = row.classList.contains('item_comment');
-            const itemId = isComment ? row.dataset.commentid : row.dataset.itemid;
-            const groupId = row.dataset.groupid;
-
-            if (isComment) {
-                this.items[itemId] = {
-                    id: itemId,
-                    type: 'comment',
-                    groupId: groupId,
-                    pos: row.querySelector('.pos-inner').textContent.trim(),
-                    content: row.querySelector('.column_name input').value,
-                    expanded: false
-                };
-            } else {
-                this.items[itemId] = {
-                    id: itemId,
-                    type: 'item',
-                    groupId: groupId,
-                    pos: row.querySelector('.pos-inner').textContent.trim(),
-                    name: row.querySelector('.item-name').value,
-                    quantity: this.parseNumber(row.querySelector('.item-quantity').value),
-                    price: this.parseNumber(row.querySelector('.item-price').value),
-                    optional: row.querySelector('.item-optional').checked,
-                    unit: row.querySelector('.item-unit').value
-                };
-            }
-
-            console.log(this.items);
-
+            this.items[itemId] = {
+                id: itemId,
+                type: 'item',
+                groupId: groupId,
+                pos: row.querySelector('.pos-inner').textContent.trim(),
+                name: row.querySelector('.item-name').value,
+                quantity: this.parseNumber(row.querySelector('.item-quantity').value),
+                prices: this.updateItemPriceAndTotal(itemId),
+                optional: row.querySelector('.item-optional').checked,
+                unit: row.querySelector('.item-unit').value
+            };
 
             this.groups[groupId].itemCount++;
         });
 
+        document.querySelectorAll('tr.item_comment').forEach((row) => {
+            const itemId = row.dataset.commentid;
+            const groupId = row.dataset.groupid;
+
+            this.comments[itemId] = {
+                id: itemId,
+                type: 'comment',
+                groupId: groupId,
+                pos: row.querySelector('.pos-inner').textContent.trim(),
+                content: row.querySelector('.column_name input').value,
+                expanded: false
+            };
+
+            this.groups[groupId].itemCount++;
+        });
 
         this.updatePOSNumbers();
         this.calculateTotals();
     },
 
     calculateItemTotal(itemId, priceColumnIndex = 0) {
-        const item = this.items[itemId] || this.newItems[itemId];
+        const item = this.items[itemId];
         if (!item || item.optional) return 0;
 
-        const row = document.querySelector(`tr[data-itemid="${itemId}"]`);
-        if (!row) return 0;
+        const { singlePrice, totalPrice } = item.prices[priceColumnIndex];
 
-        const quantity = this.parseNumber(row.querySelector('.item-quantity')?.value || '0');
-        const priceInputs = row.querySelectorAll('.item-price');
-        const priceInput = priceInputs[priceColumnIndex];
-
-        if (!priceInput) return 0;
-
-        if (!priceInput.dataset.originalPrice) {
-            priceInput.dataset.originalPrice = this.parseNumber(priceInput.value);
-        }
-
-        const cardQuoteId = priceInput.closest('[data-cardquoteid]')?.dataset.cardquoteid;
-        let price = this.parseNumber(priceInput.dataset.originalPrice || '0');
-
-        if (cardQuoteId) {
-            const markupInput = document.querySelector(`input[name="markup"][data-cardquoteid="${cardQuoteId}"]`);
-            const markup = this.parseNumber(markupInput?.value || '0');
-            price += markup;
-        }
-
-        const total = quantity * price;
-
-        const totalCell = row.querySelectorAll('.column_total_price')[priceColumnIndex];
+        const totalCell = document.querySelector(`tr[data-itemid="${itemId}"] .column_total_price[data-cardquoteid="${priceColumnIndex}"]`);
         if (totalCell) {
-            totalCell.textContent = this.formatCurrency(total);
-            this.setNegativeStyle(totalCell, total);
+            totalCell.textContent = this.formatCurrency(totalPrice);
+            this.setNegativeStyle(totalCell, totalPrice);
         }
 
-        return total;
+        return totalPrice;
     },
 
     calculateTotals() {
@@ -204,7 +183,6 @@ Alpine.data('estimationShow', () => ({
             if (!groupId) return;
 
             this.calculateGroupTotal(groupId);
-
 
             if (this.groups[groupId]) {
                 this.groups[groupId].total = this.parseNumber(
@@ -438,44 +416,60 @@ Alpine.data('estimationShow', () => ({
         const value = event.target.value;
         const row = event.target.closest('tr');
         const itemId = row.dataset.itemid;
-        const groupId = row.dataset.groupid;
 
         switch (type) {
             case 'item':
-                this.items[itemId].name = value;
-                break;
-            case 'group':
-                this.groups[groupId].name = value;
-                break;
-            case 'comment':
-                this.items[itemId].content = value;
-                break;
-            case 'unit':
-                this.items[itemId].unit = value;
+                if (this.items[itemId]) {
+                    this.items[itemId].name = value;
+                }
                 break;
             case 'quantity':
                 if (this.items[itemId]) {
                     this.items[itemId].quantity = this.parseNumber(value);
+                    this.updateItemPriceAndTotal(itemId);
                 }
-                if (this.newItems[itemId]) {
-                    this.newItems[itemId].quantity = this.parseNumber(value);
-                }
-
                 this.formatDecimalValue(event.target);
                 break;
             case 'price':
-                this.items[itemId].price = this.parseNumber(value);
-                this.newItems[itemId].price = this.parseNumber(value);
+                if (this.items[itemId]) {
+                    this.updateItemPriceAndTotal(itemId);
+                }
                 this.formatCurrencyValue(event.target);
+                break;
+            case 'unit':
+                if (this.items[itemId]) {
+                    this.items[itemId].unit = value;
+                }
                 break;
             default:
                 break;
         }
 
-        if (groupId) {
-            this.calculateGroupTotal(groupId);
-        }
         this.calculateTotals();
+    },
+
+    updateItemPriceAndTotal(itemId) {
+        const row = document.querySelector(`.item_row[data-itemid="${itemId}"]`);
+
+        const singlePricing = row.querySelectorAll('.item-price');
+        const prices = Array.from(singlePricing).map(element => {
+
+            const quoteId = element.closest('td[data-cardquoteid]').dataset.cardquoteid; 
+            const singlePrice = this.parseNumber(element.value);
+            const quantity = this.parseNumber(row.querySelector('.item-quantity').value);
+            const total = singlePrice * quantity;
+
+            return {
+                id: quoteId,
+                singlePrice: singlePrice,
+                totalPrice: total
+            };
+        });
+
+        if (this.items[itemId]) {
+            this.items[itemId].prices = prices;
+        }
+        return prices;
     },
 
     formatDecimalValue(target) {

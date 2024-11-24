@@ -7,6 +7,7 @@ use App\Models\SmartTemplate;
 use App\Models\SmartPromptQueue;
 use Butschster\Head\Facades\Meta;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Project;
 use Illuminate\Contracts\Support\Renderable;
 use Modules\Taskly\Entities\EstimationGroup;
@@ -93,30 +94,49 @@ class EstimationController extends Controller
      */
     public function update(Request $request)
     {
-        $items = collect($request->item);
+        $request = collect($request->item);
 
-        foreach ($items->where('type', 'item') ?? [] as $item) {
-            return ProjectEstimationProduct::updateOrCreate([
-                'id'       => $item['id'],
-                'group_id' => $item['groupId'],
+        $items  = $request->where('type', 'item') ?? [];
+        $prices = $items->flatMap(function ($item) {
+            return collect($item['prices'])->map(function ($price) use ($item) {
+                return array_merge(['productId' => $item['id']], $price);
+            });
+        });
+
+        self::updateItem($items);
+        self::updateQuote($prices);
+
+    }
+
+    private function updateQuote($quotes)
+    {
+        foreach ($quotes ?? [] as $key => $quote) {
+            EstimateQuoteItem::updateOrCreate([
+                "estimate_quote_id" => $quote['id'],
+                "product_id"        => $quote['productId'],
             ], [
-                'project_estimation_id' => $request['form']['id'],
-                'name'                  => $item['name'],
-                // 'description'           => $item['description'],
-                'pos'                   => $item['pos'],
-                'quantity'              => $item['quantity'],
-                'unit'                  => $item['unit'],
+                'price'       => $quote['singlePrice'],
+                'total_price' => $quote['totalPrice'],
             ]);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
+    private function updateItem($items)
     {
-        //
+        foreach ($items ?? [] as $key => $item) {
+            ProjectEstimationProduct::updateOrCreate(
+                [
+                    'id' => $item['id'],
+                ],
+                [
+                    // 'project_estimation_id' => $item['productId'],
+                    'name'     => $item['name'],
+                    'pos'      => $item['pos'],
+                    'quantity' => $item['quantity'],
+                    'unit'     => $item['unit'],
+                ],
+            );
+
+        }
     }
 }
