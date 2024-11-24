@@ -13,7 +13,8 @@
     <td colspan="4" class="column_name grouptitle border-right">
         <div class="div-desc-toggle">
             <i class="fa fas fa-solid fa-caret-right"></i>
-            <input type="text" class="form-control grouptitle-input" :value="item.name" autocomplete="off">
+            <input type="text" class="form-control grouptitle-input" :value="item.name"
+                :name="item[item.id]['group']" x-on:blur="handleInputBlur($event, 'group')">
         </div>
     </td>
 

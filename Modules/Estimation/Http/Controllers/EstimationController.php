@@ -12,6 +12,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Modules\Taskly\Entities\EstimationGroup;
 use Modules\Taskly\Entities\EstimateQuoteItem;
 use Modules\Estimation\Entities\ProjectEstimation;
+use Modules\Taskly\Entities\ProjectEstimationProduct;
 
 class EstimationController extends Controller
 {
@@ -90,9 +91,23 @@ class EstimationController extends Controller
      * @param Request $request
      * @param int $id 
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        dd($request, $id);
+        $items = collect($request->item);
+
+        foreach ($items->where('type', 'item') ?? [] as $item) {
+            return ProjectEstimationProduct::updateOrCreate([
+                'id'       => $item['id'],
+                'group_id' => $item['groupId'],
+            ], [
+                'project_estimation_id' => $request['form']['id'],
+                'name'                  => $item['name'],
+                // 'description'           => $item['description'],
+                'pos'                   => $item['pos'],
+                'quantity'              => $item['quantity'],
+                'unit'                  => $item['unit'],
+            ]);
+        }
     }
 
     /**

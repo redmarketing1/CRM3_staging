@@ -13,8 +13,8 @@
     </td>
 
     <td colspan="4" class="border-right column_name">
-        <input type="text" name="[item][name]" class="form-control item-description"
-            :value="item.content || 'write your comment'">
+        <input type="text" :name="[item.id]['comment']" class="form-control item-description"
+            :value="item.content || 'write your comment'" x-on:blur="handleInputBlur($event, 'comment')">
     </td>
 
     @foreach ($allQuotes as $quotes)

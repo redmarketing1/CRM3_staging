@@ -43,11 +43,6 @@ Alpine.data('estimationShow', function () {
       column_optional: true,
       quote_th: true
     },
-    data: function data() {
-      return {
-        estimation_id: this.$el.dataset.estimationId
-      };
-    },
     init: function init() {
       var _this = this;
       this.initializeData();
@@ -56,7 +51,7 @@ Alpine.data('estimationShow', function () {
       this.initializeContextMenu();
       this.initializeColumnVisibility();
       this.initializeCardCalculations();
-      this.$watch('items', function () {
+      this.$watch('items', function (value) {
         _this.calculateTotals();
         var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
           return el.dataset.cardquoteid;
@@ -139,7 +134,7 @@ Alpine.data('estimationShow', function () {
       document.querySelectorAll('tr.item_row, tr.item_comment').forEach(function (row) {
         var isComment = row.classList.contains('item_comment');
         var itemId = isComment ? row.dataset.commentid : row.dataset.itemid;
-        var groupId = row.closest('tbody').querySelector('tr.group_row').dataset.groupid;
+        var groupId = row.dataset.groupid;
         if (isComment) {
           _this3.items[itemId] = {
             id: itemId,
@@ -162,6 +157,7 @@ Alpine.data('estimationShow', function () {
             unit: row.querySelector('.item-unit').value
           };
         }
+        console.log(_this3.items);
         _this3.groups[groupId].itemCount++;
       });
       this.updatePOSNumbers();
@@ -385,27 +381,52 @@ Alpine.data('estimationShow', function () {
     handleInputBlur: function handleInputBlur(event, type) {
       if (event.type === 'keydown') {
         if (event.key !== 'Enter') return;
-        type = event.target.classList.contains('item-quantity') ? 'quantity' : 'price';
         event.target.blur();
       }
       var value = event.target.value;
-      var parsedValue = this.parseNumber(value);
-      event.target.value = type === 'quantity' ? this.formatDecimal(parsedValue) : this.formatCurrency(parsedValue);
       var row = event.target.closest('tr');
-      var itemId = row.dataset.id || row.dataset.itemid;
+      var itemId = row.dataset.itemid;
       var groupId = row.dataset.groupid;
-      if (type === 'quantity') {
-        if (this.items[itemId]) {
-          this.items[itemId].quantity = parsedValue;
-        }
-        if (this.newItems[itemId]) {
-          this.newItems[itemId].quantity = parsedValue;
-        }
+      switch (type) {
+        case 'item':
+          this.items[itemId].name = value;
+          break;
+        case 'group':
+          this.groups[groupId].name = value;
+          break;
+        case 'comment':
+          this.items[itemId].content = value;
+          break;
+        case 'unit':
+          this.items[itemId].unit = value;
+          break;
+        case 'quantity':
+          if (this.items[itemId]) {
+            this.items[itemId].quantity = this.parseNumber(value);
+          }
+          if (this.newItems[itemId]) {
+            this.newItems[itemId].quantity = this.parseNumber(value);
+          }
+          this.formatDecimalValue(event.target);
+          break;
+        case 'price':
+          this.items[itemId].price = this.parseNumber(value);
+          this.newItems[itemId].price = this.parseNumber(value);
+          this.formatCurrencyValue(event.target);
+          break;
+        default:
+          break;
       }
       if (groupId) {
         this.calculateGroupTotal(groupId);
       }
       this.calculateTotals();
+    },
+    formatDecimalValue: function formatDecimalValue(target) {
+      target.value = this.formatDecimal(this.parseNumber(target.value));
+    },
+    formatCurrencyValue: function formatCurrencyValue(target) {
+      target.value = this.formatCurrency(this.parseNumber(target.value));
     },
     handleOptionalChange: function handleOptionalChange(event, itemId) {
       if (this.items[itemId]) {
@@ -999,21 +1020,21 @@ Alpine.data('estimationShow', function () {
       // Prepare the data to be sent to the server
       var data = {
         form: this.getFomrData(),
-        data: this.serializeEstimationData()
+        item: this.serializeEstimationData(),
+        group: this.groups
       };
       console.log(data);
-
-      // $.ajax({
-      //     url: route('estimation.update', 11),
-      //     method: 'PUT',
-      //     data: data,
-      //     beforeSend: function () {
-      //         //TODO:
-      //     },
-      //     success: function (data) {
-      //         console.log(data);
-      //     }
-      // });
+      $.ajax({
+        url: route('estimation.update', 11),
+        method: 'PUT',
+        data: data,
+        beforeSend: function beforeSend() {
+          //TODO:
+        },
+        success: function success(data) {
+          console.log(data);
+        }
+      });
 
       // Send the data to the server using an AJAX request
       // fetch('/estimations/save', {

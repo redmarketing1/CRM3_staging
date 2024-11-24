@@ -13,8 +13,9 @@
     <td colspan="4" class="column_name grouptitle border-right">
         <div class="div-desc-toggle">
             <i class="desc_toggle fa fas fa-solid fa-caret-right grp-dt-control"></i>
-            <input type="text" name="item[{{ $estimationGroup->id }}]['group']" class="form-control grouptitle-input"
-                value="{{ $estimationGroup->group_name }}">
+            <input type="text" name="item[{{ $estimationGroup->id }}]['group']"
+                class="form-control grouptitle-input heading" value="{{ $estimationGroup->group_name }}"
+                x-on:blur="handleInputBlur($event, 'group')">
         </div>
     </td>
 

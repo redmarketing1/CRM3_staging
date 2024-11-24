@@ -14,8 +14,8 @@
     <td class="column_name">
         <div class="div-desc-toggle">
             <i class="desc_toggle fa fas fa-solid fa-caret-right dt-control"></i>
-            <input type="text" name="item[{{ $product->id }}]['name']" class="item-name form-control"
-                value="{{ $product->name }}">
+            <input type="text" name="item[{{ $product->id }}]['name']" class="item-name form-control heading"
+                value="{{ $product->name }}" x-on:blur="handleInputBlur($event, 'item')">
         </div>
     </td>
 
@@ -26,7 +26,8 @@
     </td>
 
     <td class="column_unit">
-        <input type="text" name="item[]['unit']" class="form-control item-unit" value="{{ $product->unit }}">
+        <input type="text" name="item[{{ $product->id }}]['unit']" class="form-control item-unit"
+            value="{{ $product->unit }}" x-on:blur="handleInputBlur($event, 'unit')">
     </td>
 
     <td class="column_optional border-right">
