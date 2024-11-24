@@ -2,14 +2,9 @@ const glob = require('glob');
 const mix = require('laravel-mix');
 const { execSync } = require('child_process');
 
-
-// JS and CSS files located in `resources/`
-mix.js('resources/js/app.js', 'public/assets/js/app.js')
-    // .sass('resources/sass/app.scss', 'public/assets/css')
-    .version();
-
-// Enable Vue support globally
-mix.vue();
+// mix.js('resources/js/app.js', 'public/assets/js/app.js')
+//     // .sass('resources/sass/app.scss', 'public/assets/css')
+//     .version();
 
 let configs = glob.sync("./Modules/*/webpack.mix.js");
 configs.forEach(config => {

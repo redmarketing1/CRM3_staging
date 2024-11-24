@@ -1,12 +1,11 @@
 {
-    "/assets/js/app.js": "/assets/js/app.js?id=4c9fcec87bfb97504f11fdd727ef36c6",
-    "/assets/js/project.index.js": "/assets/js/project.index.js?id=a5d04e3f3ac9991baaa6aa1984ded9f4",
-    "/assets/js/project.show.js": "/assets/js/project.show.js?id=0da0908f66ee95daf986e02cc6d87801",
-    "/assets/js/project.map.js": "/assets/js/project.map.js?id=331eaed53a3a5649b9ec10d197ef8e52",
-    "/assets/js/project.quickView.js": "/assets/js/project.quickView.js?id=3cede69e96ce64ab36c205a35b4e6e61",
-    "/assets/js/estimation.show.js": "/assets/js/estimation.show.js?id=0f7b95d1a3996b33594acc2fe329251e",
-    "/assets/css/project.quickView.css": "/assets/css/project.quickView.css?id=4d3ec11a905c9fdba36f654b4814f6d7",
-    "/assets/css/project.maps.css": "/assets/css/project.maps.css?id=8ced19f9dc78caec6748965e42b4c9f9",
-    "/assets/css/project.show.css": "/assets/css/project.show.css?id=fdc6ca6cfb40a60b1840044e33dbc493",
-    "/assets/css/project.index.css": "/assets/css/project.index.css?id=2c0cbd2ba6865c185978d85c8d3bf7e3"
+    "/assets/js/project.index.js": "/assets/js/project.index.js",
+    "/assets/js/project.show.js": "/assets/js/project.show.js",
+    "/assets/js/project.map.js": "/assets/js/project.map.js",
+    "/assets/js/project.quickView.js": "/assets/js/project.quickView.js",
+    "/assets/js/estimation.show.js": "/assets/js/estimation.show.js",
+    "/assets/css/project.quickView.css": "/assets/css/project.quickView.css",
+    "/assets/css/project.maps.css": "/assets/css/project.maps.css",
+    "/assets/css/project.show.css": "/assets/css/project.show.css",
+    "/assets/css/project.index.css": "/assets/css/project.index.css"
 }

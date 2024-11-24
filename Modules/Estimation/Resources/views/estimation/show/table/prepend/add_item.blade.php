@@ -17,7 +17,8 @@
         <div class="div-desc-toggle">
             <i class="desc_toggle fa fas fa-solid" :class="isExpanded(item.id) ? 'fa-caret-down' : 'fa-caret-right'"
                 x-on:click="toggleDescription(item.id, $event)"></i>
-            <input type="text" name="[item][name]" class="item-name form-control" :value="item.name">
+            <input type="text" :name="`item[${item.id}][name]`" class="item-name form-control" :value="item.name"
+                x-on:blur="handleInputBlur($event, 'item')">
         </div>
     </td>
 
@@ -27,7 +28,8 @@
     </td>
 
     <td class="column_unit">
-        <input type="text" class="form-control item-unit" :value="item.unit">
+        <input type="text" class="form-control item-unit" :value="item.unit"
+            x-on:blur="handleInputBlur($event, 'unit')">
     </td>
 
     <td class="column_optional border-right">

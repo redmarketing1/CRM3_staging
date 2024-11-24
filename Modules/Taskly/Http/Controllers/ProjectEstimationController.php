@@ -326,8 +326,8 @@ class ProjectEstimationController extends Controller
 
                 $quote_items = array();
                 $result      = EstimateQuoteItem::whereIn('product_id', $quote_items_ids)->with('quote')->orderBy('estimate_quote_id')->get();
-               
-                
+
+
 
                 foreach ($result as $row) {
                     if ($user->type == "company") {
@@ -339,7 +339,7 @@ class ProjectEstimationController extends Controller
                             $quote_items[$row->product_id][] = $row;
                         }
                     }
-                } 
+                }
 
                 $filters_request['order_by'] = array('field' => 'projects.created_at', 'order' => 'DESC');
                 $project_record              = Project::get_all($filters_request);
@@ -347,7 +347,7 @@ class ProjectEstimationController extends Controller
                 $site_money_format           = site_money_format();
                 $estimationStatus            = ProjectEstimation::$statues;
                 $estimationStatusColor       = ProjectEstimation::$statuesColor;
- 
+
                 return view("taskly::project_estimations.setup", compact(
                     'encryptId',
                     'estimation_products',
@@ -1876,6 +1876,7 @@ class ProjectEstimationController extends Controller
     public function saveMultple($request)
     {
         foreach ($request->items as $item) {
+
             foreach ($request->all_quotes as $k => $quote) {
                 EstimateQuoteItem::updateOrCreate([
                     "estimate_quote_id" => $quote['id'],
@@ -1914,6 +1915,7 @@ class ProjectEstimationController extends Controller
             if (! empty($item)) {
                 $price = 0;
                 foreach ($request->all_quotes as $k => $quote) {
+
                     $is_optional = ($item['optional'] == true) ? 0 : 1;
                     $price       = $item['single_price_sc' . $quote['id']] ?? null;
                     $total_price = $item['total_price_sc' . $quote['id']] ?? null;

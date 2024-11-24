@@ -7,11 +7,13 @@ use App\Models\SmartTemplate;
 use App\Models\SmartPromptQueue;
 use Butschster\Head\Facades\Meta;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Project;
 use Illuminate\Contracts\Support\Renderable;
 use Modules\Taskly\Entities\EstimationGroup;
 use Modules\Taskly\Entities\EstimateQuoteItem;
 use Modules\Estimation\Entities\ProjectEstimation;
+use Modules\Taskly\Entities\ProjectEstimationProduct;
 
 class EstimationController extends Controller
 {
@@ -88,21 +90,53 @@ class EstimationController extends Controller
     /**
      * Update the specified resource in storage.
      * @param Request $request
-     * @param int $id
-     * @return Renderable
+     * @param int $id 
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $request = collect($request->item);
+
+        $items  = $request->where('type', 'item') ?? [];
+        $prices = $items->flatMap(function ($item) {
+            return collect($item['prices'])->map(function ($price) use ($item) {
+                return array_merge(['productId' => $item['id']], $price);
+            });
+        });
+
+        self::updateItem($items);
+        self::updateQuote($prices);
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
+    private function updateQuote($quotes)
     {
-        //
+        foreach ($quotes ?? [] as $key => $quote) {
+            EstimateQuoteItem::updateOrCreate([
+                "estimate_quote_id" => $quote['id'],
+                "product_id"        => $quote['productId'],
+            ], [
+                'price'       => $quote['singlePrice'],
+                'total_price' => $quote['totalPrice'],
+            ]);
+        }
+    }
+
+    private function updateItem($items)
+    {
+        foreach ($items ?? [] as $key => $item) {
+            ProjectEstimationProduct::updateOrCreate(
+                [
+                    'id' => $item['id'],
+                ],
+                [
+                    // 'project_estimation_id' => $item['productId'],
+                    'name'     => $item['name'],
+                    'pos'      => $item['pos'],
+                    'quantity' => $item['quantity'],
+                    'unit'     => $item['unit'],
+                ],
+            );
+
+        }
     }
 }

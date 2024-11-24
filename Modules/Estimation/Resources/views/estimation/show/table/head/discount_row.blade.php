@@ -12,8 +12,8 @@
                         {{ __('Markup') }}
                     </div>
                     <div class="total-markup-input">
-                        <input type="text" name="markup"
-                            value="{{ currency_format_with_sym($quote->markup, '', '', false) }}" class="form-control">
+                        <input type="text" name="item[{{ $quote->id }}][markup]"
+                            value="{{ currency_format_with_sym($quote->markup) }}" class="form-control">
                     </div>
                 </div>
 
@@ -23,7 +23,8 @@
                         {{ __('Cash Discount') }}
                     </div>
                     <div class="total-discount-input">
-                        <input type="text" name="discount" class="form-control cash-discount"
+                        <input type="text" name="item[{{ $quote->id }}][discount]"
+                            class="form-control cash-discount"
                             value="{{ currency_format_with_sym($quote->discount, '', '', false) }}">
                     </div>
                 </div>

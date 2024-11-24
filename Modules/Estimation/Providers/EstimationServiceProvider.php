@@ -32,9 +32,9 @@ class EstimationServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
 
-        // $this->addAssets('estimation.show', [
-        //     'estimation.show.js',
-        // ]);
+        $this->addAssets('estimation.show', [
+            'estimation.show.js',
+        ]);
     }
 
     /**

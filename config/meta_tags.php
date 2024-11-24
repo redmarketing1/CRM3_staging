@@ -133,11 +133,13 @@ return [
             'name'      => 'Nprogress Js',
             'placement' => 'head',
         ],
-        // Foter script
         [
-            'url'  => '/assets/js/app.js',
-            'name' => 'vue.app',
+            'url'       => 'https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.3/cdn.min.js',
+            'name'      => 'Alpine Js',
+            'placement' => 'head',
+            'attribues' => ['defer'],
         ],
+        // Foter script 
         [
             'url'  => '/js/jquery.validate.min.js',
             'name' => 'jquery.validate',
