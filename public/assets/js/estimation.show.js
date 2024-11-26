@@ -60,11 +60,6 @@ document.addEventListener('alpine:init', function () {
         }, {
           deep: true
         });
-        this.$watch('autoSaveEnabled', function (newValue) {
-          if (newValue) {
-            _this.saveTableData();
-          }
-        });
         this.$watch('searchQuery', function () {
           return _this.filterTable();
         });
@@ -370,10 +365,16 @@ document.addEventListener('alpine:init', function () {
         var value = event.target.value;
         var row = event.target.closest('tr');
         var itemId = row.dataset.itemid;
+        var groupId = row.dataset.groupid;
         switch (type) {
           case 'item':
             if (this.items[itemId]) {
               this.items[itemId].name = value;
+            }
+            break;
+          case 'group':
+            if (this.groups[groupId]) {
+              this.groups[groupId].name = value;
             }
             break;
           case 'quantity':
@@ -398,6 +399,9 @@ document.addEventListener('alpine:init', function () {
             break;
         }
         this.calculateTotals();
+        if (this.autoSaveEnabled) {
+          this.saveTableData();
+        }
       },
       updateItemPriceAndTotal: function updateItemPriceAndTotal(itemId) {
         var _this8 = this;
@@ -432,6 +436,9 @@ document.addEventListener('alpine:init', function () {
             this.newItems[itemId].optional = event.target.checked ? 1 : 0;
           }
           this.calculateTotals();
+        }
+        if (this.autoSaveEnabled) {
+          this.saveTableData();
         }
       },
       filterTable: function filterTable() {

@@ -42,12 +42,6 @@ document.addEventListener('alpine:init', () => {
                 cardQuoteIds.forEach(cardQuoteId => this.calculateCardTotals(cardQuoteId));
             }, { deep: true });
 
-            this.$watch('autoSaveEnabled', (newValue) => {
-                if (newValue) {
-                    this.saveTableData();
-                }
-            });
-
             this.$watch('searchQuery', () => this.filterTable());
             this.$watch('selectAll', (value) => this.checkboxAll(value));
 
@@ -175,10 +169,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         calculateTotals() {
-
             this.totals = {};
-
-
             document.querySelectorAll('tr.group_row').forEach(row => {
                 const groupId = row.dataset.groupid;
                 if (!groupId) return;
@@ -413,15 +404,20 @@ document.addEventListener('alpine:init', () => {
                 if (event.key !== 'Enter') return;
                 event.target.blur();
             }
-
             const value = event.target.value;
             const row = event.target.closest('tr');
             const itemId = row.dataset.itemid;
+            const groupId = row.dataset.groupid;
 
             switch (type) {
                 case 'item':
                     if (this.items[itemId]) {
                         this.items[itemId].name = value;
+                    }
+                    break;
+                case 'group':
+                    if (this.groups[groupId]) {
+                        this.groups[groupId].name = value;
                     }
                     break;
                 case 'quantity':
@@ -447,6 +443,9 @@ document.addEventListener('alpine:init', () => {
             }
 
             this.calculateTotals();
+            if (this.autoSaveEnabled) {
+                this.saveTableData();
+            }
         },
 
         updateItemPriceAndTotal(itemId) {
@@ -488,6 +487,9 @@ document.addEventListener('alpine:init', () => {
                     this.newItems[itemId].optional = event.target.checked ? 1 : 0;
                 }
                 this.calculateTotals();
+            }
+            if (this.autoSaveEnabled) {
+                this.saveTableData();
             }
         },
 

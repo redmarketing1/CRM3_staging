@@ -18,34 +18,6 @@ use Modules\Taskly\Entities\ProjectEstimationProduct;
 class EstimationController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function index()
-    {
-        return view('estimation::index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
-    {
-        return view('estimation::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
-    {
-
-    }
-
-    /**
      * Show the specified resource.
      * @param ProjectEstimation $estimation 
      */
@@ -78,16 +50,6 @@ class EstimationController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('estimation::edit');
-    }
-
-    /**
      * Update the specified resource in storage.
      * @param Request $request
      * @param int $id 
@@ -95,6 +57,7 @@ class EstimationController extends Controller
     public function update(Request $request)
     {
         $form    = $request->form;
+        $groups  = $request->group;
         $request = collect($request->item);
 
         $items  = $request->where('type', 'item') ?? [];
@@ -105,7 +68,14 @@ class EstimationController extends Controller
         });
 
         self::updateItem($items, $form);
+        self::updateGroupItem($groups, $form);
         self::updateQuote($prices);
+
+        ProjectEstimation::find($form['id'])->update([
+            "title"                 => $form['title'],
+            "issue_date"            => $form['issue_date'],
+            "technical_description" => $form['technical_description'],
+        ]);
     }
 
     private function updateQuote($quotes)
@@ -126,19 +96,36 @@ class EstimationController extends Controller
         foreach ($items ?? [] as $key => $item) {
             ProjectEstimationProduct::updateOrCreate(
                 [
-                    'id' => $item['id'],
-                    // 'project_estimation_id' => $form['id'],
+                    'id'                    => $item['id'],
+                    'project_estimation_id' => $form['id'],
                 ],
                 [
                     'project_estimation_id' => $form['id'],
                     'name'                  => $item['name'],
                     'pos'                   => $item['pos'],
+                    'type'                  => 'item',
                     'quantity'              => $item['quantity'],
                     'unit'                  => $item['unit'],
                     'is_optional'           => $item['optional'],
                 ],
             );
 
+        }
+    }
+
+    private function updateGroupItem($items, $form)
+    {
+        foreach ($items ?? [] as $key => $item) {
+            EstimationGroup::updateOrCreate(
+                [
+                    'id' => $item['id'],
+                ],
+                [
+                    'estimation_id' => $form['id'],
+                    'group_name'    => $item['name'],
+                    'group_pos'     => $item['pos'],
+                ],
+            );
         }
     }
 }
