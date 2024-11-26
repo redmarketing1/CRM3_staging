@@ -132,7 +132,7 @@ document.addEventListener('alpine:init', () => {
                     name: row.querySelector('.item-name').value,
                     quantity: this.parseNumber(row.querySelector('.item-quantity').value),
                     prices: this.updateItemPriceAndTotal(itemId),
-                    optional: row.querySelector('.item-optional').checked,
+                    optional: row.querySelector('.item-optional').checked ? 1 : 0,
                     unit: row.querySelector('.item-unit').value
                 };
 
@@ -483,9 +483,9 @@ document.addEventListener('alpine:init', () => {
 
         handleOptionalChange(event, itemId) {
             if (this.items[itemId]) {
-                this.items[itemId].optional = event.target.checked;
+                this.items[itemId].optional = event.target.checked ? 1 : 0;
                 if (this.newItems[itemId]) {
-                    this.newItems[itemId].optional = event.target.checked;
+                    this.newItems[itemId].optional = event.target.checked ? 1 : 0;
                 }
                 this.calculateTotals();
             }
@@ -645,7 +645,7 @@ document.addEventListener('alpine:init', () => {
                     quantity: 0,
                     price: 0,
                     unit: '',
-                    optional: false,
+                    optional: 0,
                     expanded: false,
                     pos: ''
                 };
@@ -720,7 +720,7 @@ document.addEventListener('alpine:init', () => {
                 quantity: 0,
                 price: 0,
                 unit: '',
-                optional: false,
+                optional: 0,
                 expanded: false,
                 pos: ''
             };
@@ -1031,7 +1031,7 @@ document.addEventListener('alpine:init', () => {
                     name: originalRow.querySelector('.item-name')?.value + ' - copy',
                     quantity: this.parseNumber(originalRow.querySelector('.item-quantity')?.value || '0'),
                     unit: originalRow.querySelector('.item-unit')?.value || '',
-                    optional: originalRow.querySelector('.item-optional')?.checked || false,
+                    optional: originalRow.querySelector('.item-optional').checked ? 1 : 0,
                     price: this.parseNumber(originalRow.querySelector('.item-price')?.value || '0'),
                     expanded: false
                 };
@@ -1201,9 +1201,13 @@ document.addEventListener('alpine:init', () => {
                 data: data,
                 beforeSend: function () {
                     //TODO:
+                    $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
                 },
                 success: function (data) {
                     console.log(data);
+                    const lastSavedTime = new Date().toLocaleTimeString();
+                    toastrs("successs", "Estimation data has been saved.");
+                    $('#save-button').html(`Last Saved ${lastSavedTime}`);
                 }
             });
 

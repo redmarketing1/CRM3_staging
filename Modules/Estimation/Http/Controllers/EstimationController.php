@@ -94,6 +94,7 @@ class EstimationController extends Controller
      */
     public function update(Request $request)
     {
+        $form    = $request->form;
         $request = collect($request->item);
 
         $items  = $request->where('type', 'item') ?? [];
@@ -103,9 +104,8 @@ class EstimationController extends Controller
             });
         });
 
-        self::updateItem($items);
+        self::updateItem($items, $form);
         self::updateQuote($prices);
-
     }
 
     private function updateQuote($quotes)
@@ -121,19 +121,21 @@ class EstimationController extends Controller
         }
     }
 
-    private function updateItem($items)
+    private function updateItem($items, $form)
     {
         foreach ($items ?? [] as $key => $item) {
             ProjectEstimationProduct::updateOrCreate(
                 [
                     'id' => $item['id'],
+                    // 'project_estimation_id' => $form['id'],
                 ],
                 [
-                    // 'project_estimation_id' => $item['productId'],
-                    'name'     => $item['name'],
-                    'pos'      => $item['pos'],
-                    'quantity' => $item['quantity'],
-                    'unit'     => $item['unit'],
+                    'project_estimation_id' => $form['id'],
+                    'name'                  => $item['name'],
+                    'pos'                   => $item['pos'],
+                    'quantity'              => $item['quantity'],
+                    'unit'                  => $item['unit'],
+                    'is_optional'           => $item['optional'],
                 ],
             );
 

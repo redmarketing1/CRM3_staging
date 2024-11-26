@@ -31,14 +31,15 @@
     </td>
 
     <td class="column_optional border-right">
-        <input type="checkbox" class="item-optional" :checked="items[{{ $product->id }}]?.optional"
+        <input type="checkbox" class="item-optional" {{ $product->is_optional == 1 ? 'checked' : '' }}
             x-on:change="handleOptionalChange($event, {{ $product->id }})" value="{{ $product->id }}">
     </td>
 
     @foreach ($quoteItems->get($product->id, []) as $quoteItem)
         <td class="column_single_price border-left" data-cardQuoteID="{{ $quoteItem->estimate_quote_id }}">
             <div class="d-flex">
-                <input type="text" class="form-control item-price" name="cardQuote[][{{ $quoteItem->estimate_quote_id }}]"
+                <input type="text" class="form-control item-price"
+                    name="cardQuote[][{{ $quoteItem->estimate_quote_id }}]"
                     value="{{ currency_format_with_sym($quoteItem->price) }}"
                     x-on:blur="handleInputBlur($event, 'price')">
             </div>
