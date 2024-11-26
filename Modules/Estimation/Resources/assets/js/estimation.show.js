@@ -12,6 +12,8 @@ document.addEventListener('alpine:init', () => {
         selectAll: false,
         isFullScreen: false,
         autoSaveEnabled: true,
+        lastSaveTime: 0,
+        saveInterval: 1000 * 60, //1 MIN   
         contextMenu: {
             show: false,
             x: 0,
@@ -443,9 +445,7 @@ document.addEventListener('alpine:init', () => {
             }
 
             this.calculateTotals();
-            if (this.autoSaveEnabled) {
-                this.saveTableData();
-            }
+            this.autoSaveHandler();
         },
 
         updateItemPriceAndTotal(itemId) {
@@ -488,8 +488,16 @@ document.addEventListener('alpine:init', () => {
                 }
                 this.calculateTotals();
             }
+            this.autoSaveHandler();
+        },
+
+        autoSaveHandler() {
             if (this.autoSaveEnabled) {
-                this.saveTableData();
+                const currentTime = Date.now();
+                if (currentTime - this.lastSaveTime >= this.saveInterval) {
+                    this.lastSaveTime = currentTime;
+                    this.saveTableData();
+                }
             }
         },
 
