@@ -246,9 +246,8 @@ document.addEventListener('alpine:init', () => {
             });
 
 
-            const markupInput = document.querySelector(`input[name="markup"][value]:not([value=""])[data-cardquoteid="${cardQuoteId}"]`);
+            const markupInput = document.querySelector(`#quoteMarkup[name="item[${cardQuoteId}][markup]"]`);
             const markup = this.parseNumber(markupInput?.value || '0');
-
 
             const discountInput = document.querySelector(`input[name="discount"][data-cardquoteid="${cardQuoteId}"]`);
             const cashDiscount = this.parseNumber(discountInput?.value || '0');
@@ -305,61 +304,45 @@ document.addEventListener('alpine:init', () => {
             cardQuoteIds.forEach(cardQuoteId => {
                 this.calculateCardTotals(cardQuoteId);
 
-                const markupInput = document.querySelector(`input[name="markup"][data-cardquoteid="${cardQuoteId}"]`);
+                const markupInput = document.querySelector(`#quoteMarkup[name="item[${cardQuoteId}][markup]"]`);
                 if (markupInput) {
                     const value = this.parseNumber(markupInput.value);
                     markupInput.value = this.formatDecimal(value);
                     this.setNegativeStyle(markupInput, value);
                 }
             });
+        },
 
-            document.addEventListener('change', (e) => {
-                const target = e.target;
-                const cardQuoteId = target.closest('[data-cardquoteid]')?.dataset.cardquoteid;
+        updateMarkupCalculations(event, cardQuoteId) {
+            const target = event.target;
+            const markup = this.parseNumber(target.value || '0');
+            target.value = this.formatDecimal(markup);
+            this.setMarkupStyle(target, markup);
 
-                if (!cardQuoteId) return;
+            const priceInputs = document.querySelectorAll(`[data-cardquoteid="${cardQuoteId}"] .item-price`);
 
-                if (target.matches('input[name="markup"]')) {
-                    const markup = this.parseNumber(target.value || '0');
-                    target.value = this.formatDecimal(markup);
-                    this.setMarkupStyle(target, markup);
+            priceInputs.forEach(input => {
+                const originalPrice = input.dataset.originalPrice ? this.parseNumber(input.dataset.originalPrice) : this.parseNumber(input.value);
 
-                    const priceInputs = document.querySelectorAll(`[data-cardquoteid="${cardQuoteId}"] .item-price`);
-
-                    priceInputs.forEach(input => {
-                        const originalPrice = input.dataset.originalPrice ? this.parseNumber(input.dataset.originalPrice) : this.parseNumber(input.value);
-
-                        if (!input.dataset.originalPrice) {
-                            input.dataset.originalPrice = originalPrice;
-                        }
-
-                        const newPrice = this.parseNumber(input.dataset.originalPrice) + markup;
-                        input.value = this.formatCurrency(newPrice);
-
-                        const row = input.closest('tr');
-                        if (row) {
-                            const itemId = row.dataset.itemid;
-                            if (itemId) {
-                                this.calculateItemTotal(itemId);
-                            }
-                        }
-                    });
-
-                    this.calculateGroupTotal(this.lastGroupId);
-                    this.calculateTotals();
+                if (!input.dataset.originalPrice) {
+                    input.dataset.originalPrice = originalPrice;
                 }
 
-                if (
-                    target.matches('input[name="markup"]') ||
-                    target.matches('input[name="discount"]') ||
-                    target.matches('select[name="tax[]"]') ||
-                    target.matches('.item-price') ||
-                    target.matches('.item-quantity') ||
-                    target.matches('.item-optional')
-                ) {
-                    this.calculateCardTotals(cardQuoteId);
+                const newPrice = this.parseNumber(input.dataset.originalPrice) + markup;
+                input.value = this.formatCurrency(newPrice);
+
+                const row = input.closest('tr');
+                if (row) {
+                    const itemId = row.dataset.itemid;
+                    if (itemId) {
+                        this.calculateItemTotal(itemId);
+                    }
                 }
             });
+
+            this.calculateGroupTotal(this.lastGroupId);
+            this.calculateTotals();
+            this.calculateCardTotals(cardQuoteId);
         },
 
         setMarkupStyle(input, value) {

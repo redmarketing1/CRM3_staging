@@ -13,7 +13,8 @@
                     </div>
                     <div class="total-markup-input">
                         <input type="text" name="item[{{ $quote->id }}][markup]"
-                            value="{{ currency_format_with_sym($quote->markup) }}" class="form-control">
+                            x-on:blur="updateMarkupCalculations($event, '{{ $quote->id }}')"
+                            value="{{ $quote->markup ?? 0 }}" id="quoteMarkup" class="form-control">
                     </div>
                 </div>
 
