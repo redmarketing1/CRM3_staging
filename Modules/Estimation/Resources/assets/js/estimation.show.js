@@ -248,18 +248,16 @@ document.addEventListener('alpine:init', () => {
 
             const markupInput = document.querySelector(`#quoteMarkup[name="item[${cardQuoteId}][markup]"]`);
             const markup = this.parseNumber(markupInput?.value || '0');
-
-            const discountInput = document.querySelector(`input[name="discount"][data-cardquoteid="${cardQuoteId}"]`);
-            const cashDiscount = this.parseNumber(discountInput?.value || '0');
-
-
-            const vatSelect = document.querySelector(`select[name="tax[]"][data-cardquoteid="${cardQuoteId}"]`);
-            const vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
-
-
             const netAmount = subtotal + markup;
+
+            const discountInput = document.querySelector(`input[name="item[${cardQuoteId}][discount]"]`);
+            const cashDiscount = this.parseNumber(discountInput?.value || '0');
             const discountAmount = (netAmount * cashDiscount) / 100;
             const netWithDiscount = netAmount - discountAmount;
+
+
+            const vatSelect = document.querySelector(`select[name="item[${cardQuoteId}][tax]"]`);
+            const vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
             const vatAmount = netWithDiscount * vatRate;
             const grossWithDiscount = netWithDiscount + vatAmount;
 
@@ -422,6 +420,10 @@ document.addEventListener('alpine:init', () => {
                     if (this.items[itemId]) {
                         this.items[itemId].unit = value;
                     }
+                    break;
+                case 'cashDiscount':
+                    let cashDiscountValue = this.parseNumber(event.target.value);
+                    event.target.value = this.formatDecimal(cashDiscountValue || 0);
                     break;
                 default:
                     break;

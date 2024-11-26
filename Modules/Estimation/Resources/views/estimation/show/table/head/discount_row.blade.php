@@ -25,8 +25,8 @@
                     </div>
                     <div class="total-discount-input">
                         <input type="text" name="item[{{ $quote->id }}][discount]"
-                            class="form-control cash-discount"
-                            value="{{ currency_format_with_sym($quote->discount, '', '', false) }}">
+                            class="form-control cash-discount" x-on:blur="handleInputBlur($event, 'cashDiscount')"
+                            value="{{ $quote->discount }}">
                     </div>
                 </div>
             </span>
