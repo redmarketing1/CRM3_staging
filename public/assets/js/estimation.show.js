@@ -252,8 +252,11 @@ document.addEventListener('alpine:init', function () {
         var netWithDiscount = netAmount - discountAmount;
         var vatSelect = document.querySelector("select[name=\"item[".concat(cardQuoteId, "][tax]\"]"));
         var vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
-        var vatAmount = netWithDiscount * vatRate;
-        var grossWithDiscount = netWithDiscount + vatAmount;
+        var grossWithDiscount = netWithDiscount;
+        if (vatRate > 0) {
+          var vatAmount = grossWithDiscount * vatRate;
+          grossWithDiscount = netWithDiscount + vatAmount;
+        }
         this.updateCardTotalUI(cardQuoteId, {
           netAmount: netAmount,
           netWithDiscount: netWithDiscount,
@@ -278,6 +281,7 @@ document.addEventListener('alpine:init', function () {
         if (grossElement) {
           grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
         }
+        this.autoSaveHandler();
       },
       initializeCardCalculations: function initializeCardCalculations() {
         var _this7 = this;
@@ -293,6 +297,9 @@ document.addEventListener('alpine:init', function () {
             _this7.setNegativeStyle(markupInput, value);
           }
         });
+      },
+      handleVatChangeAmount: function handleVatChangeAmount(event, cardQuoteId) {
+        this.calculateCardTotals(cardQuoteId);
       },
       updateMarkupCalculations: function updateMarkupCalculations(event, cardQuoteId) {
         var _this8 = this;
