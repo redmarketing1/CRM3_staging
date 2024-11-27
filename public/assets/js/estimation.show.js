@@ -68,7 +68,6 @@ document.addEventListener('alpine:init', function () {
           cardQuoteIds.forEach(function (cardQuoteId) {
             return _this.calculateCardTotals(cardQuoteId);
           });
-          _this.hasUnsavedChanges = true;
         }, {
           deep: true
         });
@@ -123,6 +122,12 @@ document.addEventListener('alpine:init', function () {
       },
       initializeAutoSave: function initializeAutoSave() {
         var _this3 = this;
+        if (!document.querySelector('#quote_form')) {
+          console.warn('Quote form not found');
+          return;
+        }
+
+        // Initialize auto-save related event listeners
         window.addEventListener('beforeunload', function (e) {
           if (_this3.hasUnsavedChanges) {
             var message = 'You have unsaved changes. Are you sure you want to leave?';
@@ -316,8 +321,7 @@ document.addEventListener('alpine:init', function () {
         if (grossElement) {
           grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
         }
-
-        // this.autoSaveHandler();
+        this.autoSaveHandler();
       },
       initializeCardCalculations: function initializeCardCalculations() {
         var _this8 = this;
@@ -471,6 +475,7 @@ document.addEventListener('alpine:init', function () {
           default:
             break;
         }
+        this.hasUnsavedChanges = true;
         this.calculateTotals();
         this.autoSaveHandler();
       },
@@ -508,14 +513,12 @@ document.addEventListener('alpine:init', function () {
           }
           this.calculateTotals();
         }
-
-        // this.hasUnsavedChanges = true;
+        this.hasUnsavedChanges = true;
         this.autoSaveHandler();
       },
       autoSaveHandler: function autoSaveHandler() {
         var _this11 = this;
-        // if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
-
+        if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
         if (this.saveTimeout) {
           clearTimeout(this.saveTimeout);
         }
@@ -1141,10 +1144,7 @@ document.addEventListener('alpine:init', function () {
       },
       saveTableData: function saveTableData() {
         var _this23 = this;
-        // if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
-
-        console.log(this.hasUnsavedChanges);
-        return;
+        if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
         var columns = {};
         var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
           return el.dataset.cardquoteid;

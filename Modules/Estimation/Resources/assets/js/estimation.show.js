@@ -52,8 +52,6 @@ document.addEventListener('alpine:init', () => {
                 this.calculateTotals();
                 const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
                 cardQuoteIds.forEach(cardQuoteId => this.calculateCardTotals(cardQuoteId));
-
-                this.hasUnsavedChanges = true;
             }, { deep: true });
 
             this.$watch('searchQuery', () => this.filterTable());
@@ -108,6 +106,12 @@ document.addEventListener('alpine:init', () => {
         },
 
         initializeAutoSave() {
+            if (!document.querySelector('#quote_form')) {
+                console.warn('Quote form not found');
+                return;
+            }
+
+            // Initialize auto-save related event listeners
             window.addEventListener('beforeunload', (e) => {
                 if (this.hasUnsavedChanges) {
                     const message = 'You have unsaved changes. Are you sure you want to leave?';
@@ -334,7 +338,7 @@ document.addEventListener('alpine:init', () => {
                 grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
             }
 
-            // this.autoSaveHandler();
+            this.autoSaveHandler();
         },
 
         initializeCardCalculations() {
@@ -496,6 +500,7 @@ document.addEventListener('alpine:init', () => {
                     break;
             }
 
+            this.hasUnsavedChanges = true;
             this.calculateTotals();
             this.autoSaveHandler();
         },
@@ -541,12 +546,12 @@ document.addEventListener('alpine:init', () => {
                 this.calculateTotals();
             }
 
-            // this.hasUnsavedChanges = true;
+            this.hasUnsavedChanges = true;
             this.autoSaveHandler();
         },
 
         autoSaveHandler() {
-            // if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
+            if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
 
             if (this.saveTimeout) {
                 clearTimeout(this.saveTimeout);
@@ -1296,12 +1301,7 @@ document.addEventListener('alpine:init', () => {
 
         saveTableData() {
 
-            // if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
-
-            console.log(this.hasUnsavedChanges);
-
-
-            return;
+            if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
 
             const columns = {};
             const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
