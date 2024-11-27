@@ -33,7 +33,7 @@ document.addEventListener('alpine:init', function () {
       // 1 min
       hasUnsavedChanges: false,
       lastSaveTimestamp: null,
-      lastSaveText: 'Never saved',
+      lastSaveText: '',
       contextMenu: {
         show: false,
         x: 0,
@@ -58,6 +58,7 @@ document.addEventListener('alpine:init', function () {
           _this.initializeColumnVisibility();
           _this.initializeCardCalculations();
           _this.initializeAutoSave();
+          _this.calculateTotals();
         });
         this.$watch('items', function (value) {
           _this.calculateTotals();
@@ -67,6 +68,7 @@ document.addEventListener('alpine:init', function () {
           cardQuoteIds.forEach(function (cardQuoteId) {
             return _this.calculateCardTotals(cardQuoteId);
           });
+          _this.hasUnsavedChanges = true;
         }, {
           deep: true
         });
@@ -121,35 +123,12 @@ document.addEventListener('alpine:init', function () {
       },
       initializeAutoSave: function initializeAutoSave() {
         var _this3 = this;
-        if (!document.querySelector('#quote_form')) {
-          console.warn('Quote form not found');
-          return;
-        }
-
-        // Initialize auto-save related event listeners
         window.addEventListener('beforeunload', function (e) {
           if (_this3.hasUnsavedChanges) {
             var message = 'You have unsaved changes. Are you sure you want to leave?';
             e.preventDefault();
             e.returnValue = message;
             return message;
-          }
-        });
-        document.addEventListener('visibilitychange', function () {
-          if (document.visibilityState === 'hidden' && _this3.hasUnsavedChanges) {
-            _this3.saveTableData();
-          }
-        });
-        window.addEventListener('unload', function () {
-          if (_this3.hasUnsavedChanges) {
-            var data = {
-              form: _this3.getFomrData(),
-              item: _this3.serializeEstimationData(),
-              group: _this3.groups
-            };
-            navigator.sendBeacon(route('estimation.update', 11), new Blob([JSON.stringify(data)], {
-              type: 'application/json'
-            }));
           }
         });
       },
@@ -337,7 +316,8 @@ document.addEventListener('alpine:init', function () {
         if (grossElement) {
           grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
         }
-        this.autoSaveHandler();
+
+        // this.autoSaveHandler();
       },
       initializeCardCalculations: function initializeCardCalculations() {
         var _this8 = this;
@@ -345,13 +325,42 @@ document.addEventListener('alpine:init', function () {
           return el.dataset.cardquoteid;
         })));
         cardQuoteIds.forEach(function (cardQuoteId) {
-          _this8.calculateCardTotals(cardQuoteId);
+          // Get initial values
           var markupInput = document.querySelector("#quoteMarkup[name=\"item[".concat(cardQuoteId, "][markup]\"]"));
+          var discountInput = document.querySelector("input[name=\"item[".concat(cardQuoteId, "][discount]\"]"));
+          var vatSelect = document.querySelector("select[name=\"item[".concat(cardQuoteId, "][tax]\"]"));
+
+          // Format and apply markup
           if (markupInput) {
             var value = _this8.parseNumber(markupInput.value);
             markupInput.value = _this8.formatDecimal(value);
             _this8.setNegativeStyle(markupInput, value);
+
+            // Apply markup calculations
+            _this8.updateMarkupCalculations({
+              target: markupInput
+            }, cardQuoteId);
           }
+
+          // Format and apply discount
+          if (discountInput) {
+            var _value = _this8.parseNumber(discountInput.value);
+            discountInput.value = _this8.formatDecimal(_value);
+            // Trigger discount calculations
+            _this8.handleInputBlur({
+              target: discountInput
+            }, 'cashDiscount');
+          }
+
+          // Apply VAT calculations if set
+          if (vatSelect) {
+            _this8.handleVatChangeAmount({
+              target: vatSelect
+            }, cardQuoteId);
+          }
+
+          // Calculate all totals for this column
+          _this8.calculateCardTotals(cardQuoteId);
         });
       },
       handleVatChangeAmount: function handleVatChangeAmount(event, cardQuoteId) {
@@ -462,7 +471,6 @@ document.addEventListener('alpine:init', function () {
           default:
             break;
         }
-        this.hasUnsavedChanges = true;
         this.calculateTotals();
         this.autoSaveHandler();
       },
@@ -500,12 +508,14 @@ document.addEventListener('alpine:init', function () {
           }
           this.calculateTotals();
         }
-        this.hasUnsavedChanges = true;
+
+        // this.hasUnsavedChanges = true;
         this.autoSaveHandler();
       },
       autoSaveHandler: function autoSaveHandler() {
         var _this11 = this;
-        if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
+        // if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
+
         if (this.saveTimeout) {
           clearTimeout(this.saveTimeout);
         }
@@ -1131,8 +1141,32 @@ document.addEventListener('alpine:init', function () {
       },
       saveTableData: function saveTableData() {
         var _this23 = this;
-        if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
+        // if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
+
+        console.log(this.hasUnsavedChanges);
+        return;
+        var columns = {};
+        var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
+          return el.dataset.cardquoteid;
+        })));
+        cardQuoteIds.forEach(function (cardQuoteId) {
+          var _document$querySelect, _document$querySelect2, _document$querySelect3, _document$querySelect4, _document$querySelect5, _document$querySelect6, _document$querySelect7;
+          columns[cardQuoteId] = {
+            settings: {
+              markup: _this23.parseNumber(((_document$querySelect = document.querySelector("input[name=\"item[".concat(cardQuoteId, "][markup]\"]"))) === null || _document$querySelect === void 0 ? void 0 : _document$querySelect.value) || '0'),
+              cashDiscount: _this23.parseNumber(((_document$querySelect2 = document.querySelector("input[name=\"item[".concat(cardQuoteId, "][discount]\"]"))) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.value) || '0'),
+              vat: _this23.parseNumber(((_document$querySelect3 = document.querySelector("select[name=\"item[".concat(cardQuoteId, "][tax]\"]"))) === null || _document$querySelect3 === void 0 ? void 0 : _document$querySelect3.value) || '0')
+            },
+            totals: {
+              netIncludingDiscount: _this23.parseNumber((_document$querySelect4 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-net-discount"))) === null || _document$querySelect4 === void 0 ? void 0 : _document$querySelect4.textContent),
+              grossIncludingDiscount: _this23.parseNumber((_document$querySelect5 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-gross-discount"))) === null || _document$querySelect5 === void 0 ? void 0 : _document$querySelect5.textContent),
+              net: _this23.parseNumber((_document$querySelect6 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-net"))) === null || _document$querySelect6 === void 0 ? void 0 : _document$querySelect6.textContent),
+              gross: _this23.parseNumber((_document$querySelect7 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"] .total-gross-total"))) === null || _document$querySelect7 === void 0 ? void 0 : _document$querySelect7.textContent)
+            }
+          };
+        });
         var data = {
+          cards: columns,
           form: this.getFomrData(),
           item: this.serializeEstimationData(),
           group: this.groups

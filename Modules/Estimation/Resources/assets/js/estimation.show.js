@@ -17,7 +17,7 @@ document.addEventListener('alpine:init', () => {
         saveInterval: 60000, // 1 min
         hasUnsavedChanges: false,
         lastSaveTimestamp: null,
-        lastSaveText: 'Never saved',
+        lastSaveText: '',
         contextMenu: {
             show: false,
             x: 0,
@@ -43,6 +43,7 @@ document.addEventListener('alpine:init', () => {
                 this.initializeColumnVisibility();
                 this.initializeCardCalculations();
                 this.initializeAutoSave();
+                this.calculateTotals();
             });
 
 
@@ -51,6 +52,8 @@ document.addEventListener('alpine:init', () => {
                 this.calculateTotals();
                 const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
                 cardQuoteIds.forEach(cardQuoteId => this.calculateCardTotals(cardQuoteId));
+
+                this.hasUnsavedChanges = true;
             }, { deep: true });
 
             this.$watch('searchQuery', () => this.filterTable());
@@ -105,38 +108,12 @@ document.addEventListener('alpine:init', () => {
         },
 
         initializeAutoSave() {
-            if (!document.querySelector('#quote_form')) {
-                console.warn('Quote form not found');
-                return;
-            }
-
-            // Initialize auto-save related event listeners
             window.addEventListener('beforeunload', (e) => {
                 if (this.hasUnsavedChanges) {
                     const message = 'You have unsaved changes. Are you sure you want to leave?';
                     e.preventDefault();
                     e.returnValue = message;
                     return message;
-                }
-            });
-
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'hidden' && this.hasUnsavedChanges) {
-                    this.saveTableData();
-                }
-            });
-
-            window.addEventListener('unload', () => {
-                if (this.hasUnsavedChanges) {
-                    const data = {
-                        form: this.getFomrData(),
-                        item: this.serializeEstimationData(),
-                        group: this.groups,
-                    };
-
-                    navigator.sendBeacon(route('estimation.update', 11),
-                        new Blob([JSON.stringify(data)], { type: 'application/json' })
-                    );
                 }
             });
         },
@@ -357,21 +334,43 @@ document.addEventListener('alpine:init', () => {
                 grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
             }
 
-            this.autoSaveHandler();
+            // this.autoSaveHandler();
         },
 
         initializeCardCalculations() {
             const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
 
             cardQuoteIds.forEach(cardQuoteId => {
-                this.calculateCardTotals(cardQuoteId);
-
+                // Get initial values
                 const markupInput = document.querySelector(`#quoteMarkup[name="item[${cardQuoteId}][markup]"]`);
+                const discountInput = document.querySelector(`input[name="item[${cardQuoteId}][discount]"]`);
+                const vatSelect = document.querySelector(`select[name="item[${cardQuoteId}][tax]"]`);
+
+                // Format and apply markup
                 if (markupInput) {
                     const value = this.parseNumber(markupInput.value);
                     markupInput.value = this.formatDecimal(value);
                     this.setNegativeStyle(markupInput, value);
+
+                    // Apply markup calculations
+                    this.updateMarkupCalculations({ target: markupInput }, cardQuoteId);
                 }
+
+                // Format and apply discount
+                if (discountInput) {
+                    const value = this.parseNumber(discountInput.value);
+                    discountInput.value = this.formatDecimal(value);
+                    // Trigger discount calculations
+                    this.handleInputBlur({ target: discountInput }, 'cashDiscount');
+                }
+
+                // Apply VAT calculations if set
+                if (vatSelect) {
+                    this.handleVatChangeAmount({ target: vatSelect }, cardQuoteId);
+                }
+
+                // Calculate all totals for this column
+                this.calculateCardTotals(cardQuoteId);
             });
         },
 
@@ -497,7 +496,6 @@ document.addEventListener('alpine:init', () => {
                     break;
             }
 
-            this.hasUnsavedChanges = true;
             this.calculateTotals();
             this.autoSaveHandler();
         },
@@ -543,12 +541,12 @@ document.addEventListener('alpine:init', () => {
                 this.calculateTotals();
             }
 
-            this.hasUnsavedChanges = true;
+            // this.hasUnsavedChanges = true;
             this.autoSaveHandler();
         },
 
         autoSaveHandler() {
-            if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
+            // if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
 
             if (this.saveTimeout) {
                 clearTimeout(this.saveTimeout);
@@ -1298,9 +1296,34 @@ document.addEventListener('alpine:init', () => {
 
         saveTableData() {
 
-            if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
+            // if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
+
+            console.log(this.hasUnsavedChanges);
+
+
+            return;
+
+            const columns = {};
+            const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
+
+            cardQuoteIds.forEach(cardQuoteId => {
+                columns[cardQuoteId] = {
+                    settings: {
+                        markup: this.parseNumber(document.querySelector(`input[name="item[${cardQuoteId}][markup]"]`)?.value || '0'),
+                        cashDiscount: this.parseNumber(document.querySelector(`input[name="item[${cardQuoteId}][discount]"]`)?.value || '0'),
+                        vat: this.parseNumber(document.querySelector(`select[name="item[${cardQuoteId}][tax]"]`)?.value || '0')
+                    },
+                    totals: {
+                        netIncludingDiscount: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net-discount`)?.textContent),
+                        grossIncludingDiscount: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-gross-discount`)?.textContent),
+                        net: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net`)?.textContent),
+                        gross: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"] .total-gross-total`)?.textContent)
+                    }
+                };
+            });
 
             const data = {
+                cards: columns,
                 form: this.getFomrData(),
                 item: this.serializeEstimationData(),
                 group: this.groups,

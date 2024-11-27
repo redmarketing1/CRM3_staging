@@ -9,6 +9,7 @@ use Butschster\Head\Facades\Meta;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Taskly\Entities\Project;
+use Modules\Taskly\Entities\EstimateQuote;
 use Illuminate\Contracts\Support\Renderable;
 use Modules\Taskly\Entities\EstimationGroup;
 use Modules\Taskly\Entities\EstimateQuoteItem;
@@ -57,6 +58,7 @@ class EstimationController extends Controller
     public function update(Request $request)
     {
         $form    = $request->form;
+        $cards   = $request->cards;
         $groups  = $request->group;
         $request = collect($request->item);
 
@@ -70,12 +72,30 @@ class EstimationController extends Controller
         self::updateItem($items, $form);
         self::updateGroupItem($groups, $form);
         self::updateQuote($prices);
+        self::estimateQuote($cards);
 
         ProjectEstimation::find($form['id'])->update([
             "title"                 => $form['title'],
             "issue_date"            => $form['issue_date'],
             "technical_description" => $form['technical_description'],
         ]);
+    }
+
+    private function estimateQuote($quotes)
+    {
+        foreach ($quotes ?? [] as $key => $quote) { 
+            EstimateQuote::updateOrCreate(["id" => $key],
+                [
+                    "gross"               => $quote['totals']['gross'],
+                    "gross_with_discount" => $quote['totals']['grossIncludingDiscount'],
+                    "net"                 => $quote['totals']['net'],
+                    "net_with_discount"   => $quote['totals']['netIncludingDiscount'],
+
+                    "tax"                 => $quote['settings']['vat'],
+                    "discount"            => $quote['settings']['cashDiscount'],
+                    "markup"              => $quote['settings']['markup'],
+                ]);
+        }
     }
 
     private function updateQuote($quotes)
