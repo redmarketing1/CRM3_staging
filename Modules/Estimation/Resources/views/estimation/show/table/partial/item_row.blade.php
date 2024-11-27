@@ -46,7 +46,7 @@
         </td>
 
         <td class="column_total_price border-right" data-cardQuoteID="{{ $quoteItem->estimate_quote_id }}"
-            x-text="items[{{ $product->id }}].optional ? '-' : formatCurrency(calculateItemTotal({{ $product->id }}))">
+            x-text="items && items[{{ $product->id }}] && items[{{ $product->id }}].optional ? '-' : formatCurrency(calculateItemTotal({{ $product->id }}))">
         </td>
     @endforeach
 </tr>

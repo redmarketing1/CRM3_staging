@@ -36,6 +36,7 @@
             <input type="checkbox" class="form-check-input" id="autoSaveEnabled" x-model="autoSaveEnabled"
                 @input="autoSaveEnabled && saveTableData()">
             <label class="form-check-label" for="autoSaveEnabled">Enable auto save</label>
+            <div class="last-time" x-text="lastSaveText"></div>
         </div>
 
         @if ($estimation->status != 2 && $estimation->status != 3 && auth()->user()->type == 'company')

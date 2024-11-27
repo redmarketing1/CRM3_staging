@@ -28,8 +28,12 @@ document.addEventListener('alpine:init', function () {
       isFullScreen: false,
       autoSaveEnabled: true,
       lastSaveTime: 0,
-      saveInterval: 1000 * 60,
-      //1 MIN   
+      saveTimeout: null,
+      saveInterval: 60000,
+      // 1 min
+      hasUnsavedChanges: false,
+      lastSaveTimestamp: null,
+      lastSaveText: 'Never saved',
       contextMenu: {
         show: false,
         x: 0,
@@ -46,12 +50,15 @@ document.addEventListener('alpine:init', function () {
       },
       init: function init() {
         var _this = this;
-        this.initializeData();
-        this.initializeSortable();
-        this.initializeLastNumbers();
-        this.initializeContextMenu();
-        this.initializeColumnVisibility();
-        this.initializeCardCalculations();
+        this.$nextTick(function () {
+          _this.initializeData();
+          _this.initializeSortable();
+          _this.initializeLastNumbers();
+          _this.initializeContextMenu();
+          _this.initializeColumnVisibility();
+          _this.initializeCardCalculations();
+          _this.initializeAutoSave();
+        });
         this.$watch('items', function (value) {
           _this.calculateTotals();
           var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
@@ -74,6 +81,18 @@ document.addEventListener('alpine:init', function () {
             _this.showContextMenu = false;
           }
         });
+        this.$watch('hasUnsavedChanges', function () {
+          if (!_this.hasUnsavedChanges) {
+            $('#save-button').css({
+              'cursor': 'not-allowed',
+              'background': '#bfbfbf',
+              'border': '0',
+              'pointer-events': 'none'
+            });
+          } else {
+            $('#save-button').removeAttr('style');
+          }
+        });
         document.addEventListener('fullscreenchange', function () {
           _this.isFullScreen = !!document.fullscreenElement;
           var icon = document.querySelector('.fa-expand, .fa-compress');
@@ -82,10 +101,13 @@ document.addEventListener('alpine:init', function () {
           }
         });
         document.addEventListener('keydown', function (e) {
-          if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-price')) {
+          if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-price') || e.target.classList.contains('form-blur')) {
             _this.handleInputBlur(e);
           }
         });
+        if (this.lastSaveTimestamp) {
+          this.startTimeAgoUpdates();
+        }
       },
       initializeFullScreen: function initializeFullScreen() {
         var _this2 = this;
@@ -94,6 +116,40 @@ document.addEventListener('alpine:init', function () {
           var btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
           if (btn) {
             btn.className = _this2.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+          }
+        });
+      },
+      initializeAutoSave: function initializeAutoSave() {
+        var _this3 = this;
+        if (!document.querySelector('#quote_form')) {
+          console.warn('Quote form not found');
+          return;
+        }
+
+        // Initialize auto-save related event listeners
+        window.addEventListener('beforeunload', function (e) {
+          if (_this3.hasUnsavedChanges) {
+            var message = 'You have unsaved changes. Are you sure you want to leave?';
+            e.preventDefault();
+            e.returnValue = message;
+            return message;
+          }
+        });
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'hidden' && _this3.hasUnsavedChanges) {
+            _this3.saveTableData();
+          }
+        });
+        window.addEventListener('unload', function () {
+          if (_this3.hasUnsavedChanges) {
+            var data = {
+              form: _this3.getFomrData(),
+              item: _this3.serializeEstimationData(),
+              group: _this3.groups
+            };
+            navigator.sendBeacon(route('estimation.update', 11), new Blob([JSON.stringify(data)], {
+              type: 'application/json'
+            }));
           }
         });
       },
@@ -109,7 +165,7 @@ document.addEventListener('alpine:init', function () {
         }
       },
       initializeData: function initializeData() {
-        var _this3 = this;
+        var _this4 = this;
         this.items = {};
         this.comments = {};
         this.groups = {};
@@ -119,35 +175,35 @@ document.addEventListener('alpine:init', function () {
           var groupId = groupRow.dataset.groupid;
           var groupPos = groupRow.querySelector('.grouppos').textContent.trim();
           var groupNumber = parseInt(groupPos);
-          _this3.groups[groupId] = {
+          _this4.groups[groupId] = {
             id: groupId,
             pos: groupPos,
             name: groupRow.querySelector('.grouptitle-input').value,
-            total: _this3.parseNumber(groupRow.querySelector('.text-right').textContent),
+            total: _this4.parseNumber(groupRow.querySelector('.text-right').textContent),
             itemCount: 0
           };
-          _this3.lastGroupNumber = Math.max(_this3.lastGroupNumber, groupNumber);
+          _this4.lastGroupNumber = Math.max(_this4.lastGroupNumber, groupNumber);
         });
         document.querySelectorAll('tr.item_row').forEach(function (row) {
           var itemId = row.dataset.itemid;
           var groupId = row.dataset.groupid;
-          _this3.items[itemId] = {
+          _this4.items[itemId] = {
             id: itemId,
             type: 'item',
             groupId: groupId,
             pos: row.querySelector('.pos-inner').textContent.trim(),
             name: row.querySelector('.item-name').value,
-            quantity: _this3.parseNumber(row.querySelector('.item-quantity').value),
-            prices: _this3.updateItemPriceAndTotal(itemId),
+            quantity: _this4.parseNumber(row.querySelector('.item-quantity').value),
+            prices: _this4.updateItemPriceAndTotal(itemId),
             optional: row.querySelector('.item-optional').checked ? 1 : 0,
             unit: row.querySelector('.item-unit').value
           };
-          _this3.groups[groupId].itemCount++;
+          _this4.groups[groupId].itemCount++;
         });
         document.querySelectorAll('tr.item_comment').forEach(function (row) {
           var itemId = row.dataset.commentid;
           var groupId = row.dataset.groupid;
-          _this3.comments[itemId] = {
+          _this4.comments[itemId] = {
             id: itemId,
             type: 'comment',
             groupId: groupId,
@@ -155,7 +211,7 @@ document.addEventListener('alpine:init', function () {
             content: row.querySelector('.column_name input').value,
             expanded: false
           };
-          _this3.groups[groupId].itemCount++;
+          _this4.groups[groupId].itemCount++;
         });
         this.updatePOSNumbers();
         this.calculateTotals();
@@ -175,20 +231,20 @@ document.addEventListener('alpine:init', function () {
         return totalPrice;
       },
       calculateTotals: function calculateTotals() {
-        var _this4 = this;
+        var _this5 = this;
         this.totals = {};
         document.querySelectorAll('tr.group_row').forEach(function (row) {
           var groupId = row.dataset.groupid;
           if (!groupId) return;
-          _this4.calculateGroupTotal(groupId);
-          if (_this4.groups[groupId]) {
+          _this5.calculateGroupTotal(groupId);
+          if (_this5.groups[groupId]) {
             var _row$querySelector;
-            _this4.groups[groupId].total = _this4.parseNumber(((_row$querySelector = row.querySelector('.text-right.grouptotal')) === null || _row$querySelector === void 0 ? void 0 : _row$querySelector.textContent) || '0');
+            _this5.groups[groupId].total = _this5.parseNumber(((_row$querySelector = row.querySelector('.text-right.grouptotal')) === null || _row$querySelector === void 0 ? void 0 : _row$querySelector.textContent) || '0');
           }
         });
       },
       calculateGroupTotal: function calculateGroupTotal(groupId) {
-        var _this5 = this;
+        var _this6 = this;
         var totals = {};
         var groupRow = document.querySelector("tr.group_row[data-groupid=\"".concat(groupId, "\"]"));
         if (!groupRow) return 0;
@@ -199,17 +255,17 @@ document.addEventListener('alpine:init', function () {
             var itemId = currentRow.dataset.itemid;
             if (!((_currentRow$querySele = currentRow.querySelector('.item-optional')) !== null && _currentRow$querySele !== void 0 && _currentRow$querySele.checked)) {
               var _currentRow$querySele2;
-              var quantity = _this5.parseNumber(((_currentRow$querySele2 = currentRow.querySelector('.item-quantity')) === null || _currentRow$querySele2 === void 0 ? void 0 : _currentRow$querySele2.value) || '0');
+              var quantity = _this6.parseNumber(((_currentRow$querySele2 = currentRow.querySelector('.item-quantity')) === null || _currentRow$querySele2 === void 0 ? void 0 : _currentRow$querySele2.value) || '0');
               var priceInputs = currentRow.querySelectorAll('.item-price');
               priceInputs.forEach(function (priceInput, index) {
                 if (!totals[index]) totals[index] = 0;
-                var price = _this5.parseNumber(priceInput.value || '0');
+                var price = _this6.parseNumber(priceInput.value || '0');
                 totals[index] += quantity * price;
                 var totalCell = currentRow.querySelectorAll('.column_total_price')[index];
                 if (totalCell) {
                   var total = quantity * price;
-                  totalCell.textContent = _this5.formatCurrency(total);
-                  _this5.setNegativeStyle(totalCell, total);
+                  totalCell.textContent = _this6.formatCurrency(total);
+                  _this6.setNegativeStyle(totalCell, total);
                 }
               });
             } else {
@@ -227,21 +283,21 @@ document.addEventListener('alpine:init', function () {
         }
         var totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
         totalCells.forEach(function (cell, index) {
-          cell.textContent = _this5.formatCurrency(totals[index] || 0);
-          _this5.setNegativeStyle(cell, totals[index] || 0);
+          cell.textContent = _this6.formatCurrency(totals[index] || 0);
+          _this6.setNegativeStyle(cell, totals[index] || 0);
           var cardQuoteId = cell.dataset.cardquoteid;
           if (cardQuoteId) {
-            _this5.calculateCardTotals(cardQuoteId);
+            _this6.calculateCardTotals(cardQuoteId);
           }
         });
         return totals[0] || 0;
       },
       calculateCardTotals: function calculateCardTotals(cardQuoteId) {
-        var _this6 = this;
+        var _this7 = this;
         var subtotal = 0;
         var groupTotalCells = document.querySelectorAll("td[data-cardquoteid=\"".concat(cardQuoteId, "\"].grouptotal"));
         groupTotalCells.forEach(function (cell) {
-          subtotal += _this6.parseNumber(cell.textContent);
+          subtotal += _this7.parseNumber(cell.textContent);
         });
         var markupInput = document.querySelector("#quoteMarkup[name=\"item[".concat(cardQuoteId, "][markup]\"]"));
         var markup = this.parseNumber((markupInput === null || markupInput === void 0 ? void 0 : markupInput.value) || '0');
@@ -284,17 +340,17 @@ document.addEventListener('alpine:init', function () {
         this.autoSaveHandler();
       },
       initializeCardCalculations: function initializeCardCalculations() {
-        var _this7 = this;
+        var _this8 = this;
         var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
           return el.dataset.cardquoteid;
         })));
         cardQuoteIds.forEach(function (cardQuoteId) {
-          _this7.calculateCardTotals(cardQuoteId);
+          _this8.calculateCardTotals(cardQuoteId);
           var markupInput = document.querySelector("#quoteMarkup[name=\"item[".concat(cardQuoteId, "][markup]\"]"));
           if (markupInput) {
-            var value = _this7.parseNumber(markupInput.value);
-            markupInput.value = _this7.formatDecimal(value);
-            _this7.setNegativeStyle(markupInput, value);
+            var value = _this8.parseNumber(markupInput.value);
+            markupInput.value = _this8.formatDecimal(value);
+            _this8.setNegativeStyle(markupInput, value);
           }
         });
       },
@@ -302,24 +358,24 @@ document.addEventListener('alpine:init', function () {
         this.calculateCardTotals(cardQuoteId);
       },
       updateMarkupCalculations: function updateMarkupCalculations(event, cardQuoteId) {
-        var _this8 = this;
+        var _this9 = this;
         var target = event.target;
         var markup = this.parseNumber(target.value || '0');
         target.value = this.formatDecimal(markup);
         this.setMarkupStyle(target, markup);
         var priceInputs = document.querySelectorAll("[data-cardquoteid=\"".concat(cardQuoteId, "\"] .item-price"));
         priceInputs.forEach(function (input) {
-          var originalPrice = input.dataset.originalPrice ? _this8.parseNumber(input.dataset.originalPrice) : _this8.parseNumber(input.value);
+          var originalPrice = input.dataset.originalPrice ? _this9.parseNumber(input.dataset.originalPrice) : _this9.parseNumber(input.value);
           if (!input.dataset.originalPrice) {
             input.dataset.originalPrice = originalPrice;
           }
-          var newPrice = _this8.parseNumber(input.dataset.originalPrice) + markup;
-          input.value = _this8.formatCurrency(newPrice);
+          var newPrice = _this9.parseNumber(input.dataset.originalPrice) + markup;
+          input.value = _this9.formatCurrency(newPrice);
           var row = input.closest('tr');
           if (row) {
             var itemId = row.dataset.itemid;
             if (itemId) {
-              _this8.calculateItemTotal(itemId);
+              _this9.calculateItemTotal(itemId);
             }
           }
         });
@@ -406,17 +462,18 @@ document.addEventListener('alpine:init', function () {
           default:
             break;
         }
+        this.hasUnsavedChanges = true;
         this.calculateTotals();
         this.autoSaveHandler();
       },
       updateItemPriceAndTotal: function updateItemPriceAndTotal(itemId) {
-        var _this9 = this;
+        var _this10 = this;
         var row = document.querySelector(".item_row[data-itemid=\"".concat(itemId, "\"]"));
         var singlePricing = row.querySelectorAll('.item-price');
         var prices = Array.from(singlePricing).map(function (element) {
           var quoteId = element.closest('td[data-cardquoteid]').dataset.cardquoteid;
-          var singlePrice = _this9.parseNumber(element.value);
-          var quantity = _this9.parseNumber(row.querySelector('.item-quantity').value);
+          var singlePrice = _this10.parseNumber(element.value);
+          var quantity = _this10.parseNumber(row.querySelector('.item-quantity').value);
           var total = singlePrice * quantity;
           return {
             id: quoteId,
@@ -443,15 +500,27 @@ document.addEventListener('alpine:init', function () {
           }
           this.calculateTotals();
         }
+        this.hasUnsavedChanges = true;
         this.autoSaveHandler();
       },
       autoSaveHandler: function autoSaveHandler() {
-        if (this.autoSaveEnabled) {
-          var currentTime = Date.now();
-          if (currentTime - this.lastSaveTime >= this.saveInterval) {
-            this.lastSaveTime = currentTime;
-            this.saveTableData();
-          }
+        var _this11 = this;
+        if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
+        if (this.saveTimeout) {
+          clearTimeout(this.saveTimeout);
+        }
+        var currentTime = Date.now();
+        var timeSinceLastSave = currentTime - this.lastSaveTime;
+        if (timeSinceLastSave >= this.saveInterval) {
+          this.saveTableData();
+          this.lastSaveTime = currentTime;
+        } else {
+          this.saveTimeout = setTimeout(function () {
+            if (_this11.hasUnsavedChanges) {
+              _this11.saveTableData();
+              _this11.lastSaveTime = Date.now();
+            }
+          }, this.saveInterval);
         }
       },
       filterTable: function filterTable() {
@@ -485,7 +554,7 @@ document.addEventListener('alpine:init', function () {
         });
       },
       initializeSortable: function initializeSortable() {
-        var _this10 = this;
+        var _this12 = this;
         $("#estimation-edit-table").sortable({
           items: 'tbody tr',
           cursor: 'pointer',
@@ -512,21 +581,21 @@ document.addEventListener('alpine:init', function () {
                 var itemId = movedRow.dataset.itemid || movedRow.dataset.id;
                 var oldGroupId = movedRow.dataset.groupid;
                 movedRow.dataset.groupid = newGroupId;
-                if (_this10.items[itemId]) {
-                  _this10.items[itemId].groupId = newGroupId;
+                if (_this12.items[itemId]) {
+                  _this12.items[itemId].groupId = newGroupId;
                 }
-                if (_this10.newItems[itemId]) {
-                  _this10.newItems[itemId].groupId = newGroupId;
+                if (_this12.newItems[itemId]) {
+                  _this12.newItems[itemId].groupId = newGroupId;
                 }
               }
             }
-            _this10.updatePOSNumbers();
-            _this10.calculateTotals();
+            _this12.updatePOSNumbers();
+            _this12.calculateTotals();
           }
         });
       },
       initializeLastNumbers: function initializeLastNumbers() {
-        var _this11 = this;
+        var _this13 = this;
         var posNumbers = new Set();
         document.querySelectorAll('.pos-inner').forEach(function (element) {
           var pos = element.textContent.trim();
@@ -538,19 +607,19 @@ document.addEventListener('alpine:init', function () {
               itemNum = _pos$split2[1];
             var groupNumber = parseInt(groupNum);
             var itemNumber = parseInt(itemNum);
-            _this11.lastGroupNumber = Math.max(_this11.lastGroupNumber, groupNumber);
-            if (!_this11.lastItemNumbers[groupNumber] || itemNumber > _this11.lastItemNumbers[groupNumber]) {
-              _this11.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
+            _this13.lastGroupNumber = Math.max(_this13.lastGroupNumber, groupNumber);
+            if (!_this13.lastItemNumbers[groupNumber] || itemNumber > _this13.lastItemNumbers[groupNumber]) {
+              _this13.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
             }
           }
         });
         document.querySelectorAll('.grouppos').forEach(function (element) {
           var groupNum = parseInt(element.textContent.trim());
-          _this11.lastGroupNumber = Math.max(_this11.lastGroupNumber, groupNum);
+          _this13.lastGroupNumber = Math.max(_this13.lastGroupNumber, groupNum);
         });
       },
       addItem: function addItem(type) {
-        var _this12 = this;
+        var _this14 = this;
         var targetRowId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
         var timestamp = Date.now();
         var currentGroupId;
@@ -602,9 +671,9 @@ document.addEventListener('alpine:init', function () {
           this.items[itemTimestamp] = _newItem;
           this.newItems[itemTimestamp] = _newItem;
           this.$nextTick(function () {
-            _this12.initializeSortable();
-            _this12.updatePOSNumbers();
-            _this12.calculateTotals();
+            _this14.initializeSortable();
+            _this14.updatePOSNumbers();
+            _this14.calculateTotals();
           });
           return;
         }
@@ -630,9 +699,9 @@ document.addEventListener('alpine:init', function () {
             itemCount: 0
           };
           this.$nextTick(function () {
-            _this12.initializeSortable();
-            _this12.updatePOSNumbers();
-            _this12.calculateTotals();
+            _this14.initializeSortable();
+            _this14.updatePOSNumbers();
+            _this14.calculateTotals();
           });
           return;
         }
@@ -670,16 +739,16 @@ document.addEventListener('alpine:init', function () {
               _targetRow.parentNode.insertBefore(newRow, _targetRow.nextSibling);
             }
           }
-          _this12.initializeSortable();
-          _this12.updatePOSNumbers();
-          _this12.calculateTotals();
+          _this14.initializeSortable();
+          _this14.updatePOSNumbers();
+          _this14.calculateTotals();
         });
         if (targetRowId) {
           this.contextMenu.show = false;
         }
       },
       removeItem: function removeItem() {
-        var _this13 = this;
+        var _this15 = this;
         var selectedCheckboxes = document.querySelectorAll('.item_selection:checked');
         if (selectedCheckboxes.length === 0) {
           toastrs("Error", "Please select checkbox to continue delete");
@@ -699,10 +768,10 @@ document.addEventListener('alpine:init', function () {
               var row = checkbox.closest('tr');
               if (row.classList.contains('group_row')) {
                 groupIds.push(row.dataset.groupid);
-                delete _this13.groups[row.dataset.groupid];
+                delete _this15.groups[row.dataset.groupid];
               } else {
                 itemIds.push(row.dataset.itemid);
-                delete _this13.items[row.dataset.itemid];
+                delete _this15.items[row.dataset.itemid];
               }
               row.remove();
             });
@@ -719,13 +788,13 @@ document.addEventListener('alpine:init', function () {
                 group_ids: groupIds
               })
             });
-            _this13.calculateTotals();
-            _this13.updatePOSNumbers();
+            _this15.calculateTotals();
+            _this15.updatePOSNumbers();
           }
         });
       },
       updatePOSNumbers: function updatePOSNumbers() {
-        var _this14 = this;
+        var _this16 = this;
         var currentGroupPos = 0;
         var itemCountInGroup = 0;
         var lastGroupId = null;
@@ -736,16 +805,16 @@ document.addEventListener('alpine:init', function () {
             lastGroupId = row.dataset.groupid;
             var groupPos = currentGroupPos.toString().padStart(2, '0');
             row.querySelector('.grouppos').textContent = "".concat(groupPos);
-            if (_this14.groups[lastGroupId]) {
-              _this14.groups[lastGroupId].pos = groupPos;
+            if (_this16.groups[lastGroupId]) {
+              _this16.groups[lastGroupId].pos = groupPos;
             }
           } else if (row.classList.contains('item_row') || row.classList.contains('item_comment')) {
             itemCountInGroup++;
             var itemPos = "".concat(currentGroupPos.toString().padStart(2, '0'), ".").concat(itemCountInGroup.toString().padStart(2, '0'));
             row.querySelector('.pos-inner').textContent = itemPos;
             var itemId = row.dataset.itemid || row.dataset.commentid;
-            if (_this14.items[itemId]) {
-              _this14.items[itemId].pos = itemPos;
+            if (_this16.items[itemId]) {
+              _this16.items[itemId].pos = itemPos;
             }
           }
         });
@@ -754,7 +823,7 @@ document.addEventListener('alpine:init', function () {
         alert('Action for duplicateCardColumn' + quoteId);
       },
       deleteCardColumn: function deleteCardColumn(quoteId) {
-        var _this15 = this;
+        var _this17 = this;
         Swal.fire({
           title: 'Confirmation Delete',
           text: 'Really! You want to remove this column? You can\'t undo',
@@ -773,7 +842,7 @@ document.addEventListener('alpine:init', function () {
               elements.forEach(function (el) {
                 return el.remove();
               });
-              _this15.calculateTotals();
+              _this17.calculateTotals();
               Swal.fire({
                 title: 'Deleted!',
                 text: "The Column has been deleted successfully",
@@ -829,7 +898,7 @@ document.addEventListener('alpine:init', function () {
         return this.expandedRows[index] || false;
       },
       initializeContextMenu: function initializeContextMenu() {
-        var _this16 = this;
+        var _this18 = this;
         document.querySelector('#estimation-edit-table').addEventListener('contextmenu', function (e) {
           var row = e.target.closest('tr.item_row, tr.group_row, tr.item_comment');
           if (!row) return;
@@ -840,7 +909,7 @@ document.addEventListener('alpine:init', function () {
           var y = e.clientY;
           if (x + 160 > viewportWidth) x = viewportWidth - 160;
           if (y + 160 > viewportHeight) y = viewportHeight - 160;
-          _this16.contextMenu = {
+          _this18.contextMenu = {
             show: true,
             x: x,
             y: y,
@@ -867,7 +936,7 @@ document.addEventListener('alpine:init', function () {
         this.contextMenu.show = false;
       },
       duplicateRow: function duplicateRow(rowId) {
-        var _this17 = this;
+        var _this19 = this;
         var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], \n                                                 tr[data-itemid=\"").concat(rowId, "\"], \n                                                 tr[data-commentid=\"").concat(rowId, "\"], \n                                                 tr[data-groupid=\"").concat(rowId, "\"]"));
         if (!originalRow) return;
         var timestamp = Date.now();
@@ -927,14 +996,14 @@ document.addEventListener('alpine:init', function () {
           if (newRow && originalRow.nextSibling) {
             originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
           }
-          _this17.updatePOSNumbers();
-          _this17.calculateTotals();
-          _this17.initializeContextMenu();
+          _this19.updatePOSNumbers();
+          _this19.calculateTotals();
+          _this19.initializeContextMenu();
         });
         this.contextMenu.show = false;
       },
       removeRowFromMenu: function removeRowFromMenu(rowId) {
-        var _this18 = this;
+        var _this20 = this;
         Swal.fire({
           title: 'Confirmation Delete',
           text: 'Really! You want to remove this item? You can\'t undo',
@@ -949,19 +1018,19 @@ document.addEventListener('alpine:init', function () {
               var groupId = row.dataset.groupid;
               document.querySelectorAll("tr[data-groupid=\"".concat(groupId, "\"]")).forEach(function (itemRow) {
                 var itemId = itemRow.dataset.itemid;
-                delete _this18.items[itemId];
-                delete _this18.newItems[itemId];
+                delete _this20.items[itemId];
+                delete _this20.newItems[itemId];
                 itemRow.remove();
               });
-              delete _this18.groups[groupId];
+              delete _this20.groups[groupId];
             } else {
               var itemId = row.dataset.itemid || row.dataset.id;
-              delete _this18.items[itemId];
-              delete _this18.newItems[itemId];
+              delete _this20.items[itemId];
+              delete _this20.newItems[itemId];
             }
             row.remove();
-            _this18.updatePOSNumbers();
-            _this18.calculateTotals();
+            _this20.updatePOSNumbers();
+            _this20.calculateTotals();
             document.querySelector('.SelectAllCheckbox').checked = false;
           }
         });
@@ -986,17 +1055,17 @@ document.addEventListener('alpine:init', function () {
         });
       },
       initializeColumnVisibility: function initializeColumnVisibility() {
-        var _this19 = this;
+        var _this21 = this;
         document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
           checkbox.addEventListener('change', function (e) {
             var columnClass = e.target.dataset.column;
             var quoteId = e.target.dataset.quoteid;
             if (columnClass === 'quote_th' && quoteId) {
-              _this19.columnVisibility[columnClass] = e.target.checked;
-              _this19.applyColumnVisibility(quoteId);
+              _this21.columnVisibility[columnClass] = e.target.checked;
+              _this21.applyColumnVisibility(quoteId);
             } else {
-              _this19.columnVisibility[columnClass] = e.target.checked;
-              _this19.applyColumnVisibility();
+              _this21.columnVisibility[columnClass] = e.target.checked;
+              _this21.applyColumnVisibility();
             }
           });
         });
@@ -1033,51 +1102,72 @@ document.addEventListener('alpine:init', function () {
           checkbox.checked = this.columnVisibility[columnClass];
         }
       },
+      formatTimeAgo: function formatTimeAgo(timestamp) {
+        if (!timestamp) return 'Never saved';
+        var now = Date.now();
+        var diff = Math.floor((now - timestamp) / 1000);
+        if (diff < 60) return 'Just now';
+        if (diff < 3600) {
+          var minutes = Math.floor(diff / 60);
+          return "".concat(minutes, " minute").concat(minutes > 1 ? 's' : '', " ago");
+        }
+        if (diff < 86400) {
+          var hours = Math.floor(diff / 3600);
+          return "".concat(hours, " hour").concat(hours > 1 ? 's' : '', " ago");
+        }
+        var days = Math.floor(diff / 86400);
+        return "".concat(days, " day").concat(days > 1 ? 's' : '', " ago");
+      },
+      startTimeAgoUpdates: function startTimeAgoUpdates() {
+        var _this22 = this;
+        if (this.timeAgoInterval) {
+          clearInterval(this.timeAgoInterval);
+        }
+        this.timeAgoInterval = setInterval(function () {
+          if (_this22.lastSaveTimestamp) {
+            _this22.lastSaveText = _this22.formatTimeAgo(_this22.lastSaveTimestamp);
+          }
+        }, 60000);
+      },
       saveTableData: function saveTableData() {
-        // Prepare the data to be sent to the server
+        var _this23 = this;
+        if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
         var data = {
           form: this.getFomrData(),
           item: this.serializeEstimationData(),
           group: this.groups
         };
-        console.log(data);
         $.ajax({
           url: route('estimation.update', 11),
           method: 'PUT',
           data: data,
           beforeSend: function beforeSend() {
-            //TODO:
+            _this23.lastSaveText = 'Saving...';
             $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
           },
-          success: function success(data) {
-            console.log(data);
-            var lastSavedTime = new Date().toLocaleTimeString();
-            toastrs("successs", "Estimation data has been saved.");
-            $('#save-button').html("Last Saved ".concat(lastSavedTime));
+          success: function success(response) {
+            _this23.lastSaveTimestamp = Date.now();
+            _this23.lastSaveText = _this23.formatTimeAgo(_this23.lastSaveTimestamp);
+            toastrs("success", "Estimation data has been saved.");
+            $('#save-button').html("Saved last changed.");
+            _this23.hasUnsavedChanges = false;
+            _this23.startTimeAgoUpdates();
+          },
+          error: function error(_error) {
+            console.error('Error saving data:', _error);
+            toastrs("error", "Failed to save changes.");
+            _this23.hasUnsavedChanges = true;
+            _this23.lastSaveText = 'Save failed';
           }
         });
-
-        // Send the data to the server using an AJAX request
-        // fetch('/estimations/save', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        //     },
-        //     body: JSON.stringify(data),
-        // })
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //         // Handle the response from the server
-        //         console.log('Estimation saved:', data);
-        //     })
-        //     .catch((error) => {
-        //         // Handle any errors
-        //         console.error('Error saving estimation:', error);
-        //     });
       },
       getFomrData: function getFomrData() {
-        var formData = new FormData(this.$el.closest('form'));
+        var form = this.$el.closest('form');
+        if (!form) {
+          console.warn('Form not found');
+          return {};
+        }
+        var formData = new FormData(form);
         return Object.fromEntries(formData);
       },
       serializeEstimationData: function serializeEstimationData() {

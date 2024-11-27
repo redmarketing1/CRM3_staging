@@ -14,7 +14,7 @@
                     <div class="total-markup-input">
                         <input type="text" name="item[{{ $quote->id }}][markup]"
                             x-on:blur="updateMarkupCalculations($event, '{{ $quote->id }}')"
-                            value="{{ $quote->markup ?? 0 }}" id="quoteMarkup" class="form-control">
+                            value="{{ $quote->markup ?? 0 }}" id="quoteMarkup" class="form-control form-blur">
                     </div>
                 </div>
 
@@ -25,8 +25,8 @@
                     </div>
                     <div class="total-discount-input">
                         <input type="text" name="item[{{ $quote->id }}][discount]"
-                            class="form-control cash-discount" x-on:blur="handleInputBlur($event, 'cashDiscount')"
-                            value="{{ $quote->discount }}">
+                            class="form-control cash-discount form-blur"
+                            x-on:blur="handleInputBlur($event, 'cashDiscount')" value="{{ $quote->discount }}">
                     </div>
                 </div>
             </span>

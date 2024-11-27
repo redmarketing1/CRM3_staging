@@ -13,7 +13,11 @@ document.addEventListener('alpine:init', () => {
         isFullScreen: false,
         autoSaveEnabled: true,
         lastSaveTime: 0,
-        saveInterval: 1000 * 60, //1 MIN   
+        saveTimeout: null,
+        saveInterval: 60000, // 1 min
+        hasUnsavedChanges: false,
+        lastSaveTimestamp: null,
+        lastSaveText: 'Never saved',
         contextMenu: {
             show: false,
             x: 0,
@@ -30,12 +34,17 @@ document.addEventListener('alpine:init', () => {
         },
 
         init() {
-            this.initializeData();
-            this.initializeSortable();
-            this.initializeLastNumbers();
-            this.initializeContextMenu();
-            this.initializeColumnVisibility();
-            this.initializeCardCalculations();
+
+            this.$nextTick(() => {
+                this.initializeData();
+                this.initializeSortable();
+                this.initializeLastNumbers();
+                this.initializeContextMenu();
+                this.initializeColumnVisibility();
+                this.initializeCardCalculations();
+                this.initializeAutoSave();
+            });
+
 
             this.$watch('items', (value) => {
 
@@ -53,6 +62,19 @@ document.addEventListener('alpine:init', () => {
                 }
             });
 
+            this.$watch('hasUnsavedChanges', () => {
+                if (!this.hasUnsavedChanges) {
+                    $('#save-button').css({
+                        'cursor': 'not-allowed',
+                        'background': '#bfbfbf',
+                        'border': '0',
+                        'pointer-events': 'none'
+                    });
+                } else {
+                    $('#save-button').removeAttr('style');
+                }
+            });
+
             document.addEventListener('fullscreenchange', () => {
                 this.isFullScreen = !!document.fullscreenElement;
                 const icon = document.querySelector('.fa-expand, .fa-compress');
@@ -62,10 +84,14 @@ document.addEventListener('alpine:init', () => {
             });
 
             document.addEventListener('keydown', (e) => {
-                if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-price')) {
+                if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-price') || e.target.classList.contains('form-blur')) {
                     this.handleInputBlur(e);
                 }
             });
+
+            if (this.lastSaveTimestamp) {
+                this.startTimeAgoUpdates();
+            }
         },
 
         initializeFullScreen() {
@@ -74,6 +100,43 @@ document.addEventListener('alpine:init', () => {
                 const btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
                 if (btn) {
                     btn.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                }
+            });
+        },
+
+        initializeAutoSave() {
+            if (!document.querySelector('#quote_form')) {
+                console.warn('Quote form not found');
+                return;
+            }
+
+            // Initialize auto-save related event listeners
+            window.addEventListener('beforeunload', (e) => {
+                if (this.hasUnsavedChanges) {
+                    const message = 'You have unsaved changes. Are you sure you want to leave?';
+                    e.preventDefault();
+                    e.returnValue = message;
+                    return message;
+                }
+            });
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden' && this.hasUnsavedChanges) {
+                    this.saveTableData();
+                }
+            });
+
+            window.addEventListener('unload', () => {
+                if (this.hasUnsavedChanges) {
+                    const data = {
+                        form: this.getFomrData(),
+                        item: this.serializeEstimationData(),
+                        group: this.groups,
+                    };
+
+                    navigator.sendBeacon(route('estimation.update', 11),
+                        new Blob([JSON.stringify(data)], { type: 'application/json' })
+                    );
                 }
             });
         },
@@ -238,13 +301,10 @@ document.addEventListener('alpine:init', () => {
 
         calculateCardTotals(cardQuoteId) {
             let subtotal = 0;
-
-
             const groupTotalCells = document.querySelectorAll(`td[data-cardquoteid="${cardQuoteId}"].grouptotal`);
             groupTotalCells.forEach(cell => {
                 subtotal += this.parseNumber(cell.textContent);
             });
-
 
             const markupInput = document.querySelector(`#quoteMarkup[name="item[${cardQuoteId}][markup]"]`);
             const markup = this.parseNumber(markupInput?.value || '0');
@@ -255,12 +315,14 @@ document.addEventListener('alpine:init', () => {
             const discountAmount = (netAmount * cashDiscount) / 100;
             const netWithDiscount = netAmount - discountAmount;
 
-
             const vatSelect = document.querySelector(`select[name="item[${cardQuoteId}][tax]"]`);
             const vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
-            const vatAmount = netWithDiscount * vatRate;
-            const grossWithDiscount = netWithDiscount + vatAmount;
 
+            let grossWithDiscount = netWithDiscount;
+            if (vatRate > 0) {
+                const vatAmount = grossWithDiscount * vatRate;
+                grossWithDiscount = netWithDiscount + vatAmount;
+            }
 
             this.updateCardTotalUI(cardQuoteId, {
                 netAmount,
@@ -294,6 +356,8 @@ document.addEventListener('alpine:init', () => {
             if (grossElement) {
                 grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
             }
+
+            this.autoSaveHandler();
         },
 
         initializeCardCalculations() {
@@ -309,6 +373,10 @@ document.addEventListener('alpine:init', () => {
                     this.setNegativeStyle(markupInput, value);
                 }
             });
+        },
+
+        handleVatChangeAmount(event, cardQuoteId) {
+            this.calculateCardTotals(cardQuoteId);
         },
 
         updateMarkupCalculations(event, cardQuoteId) {
@@ -429,6 +497,7 @@ document.addEventListener('alpine:init', () => {
                     break;
             }
 
+            this.hasUnsavedChanges = true;
             this.calculateTotals();
             this.autoSaveHandler();
         },
@@ -473,16 +542,31 @@ document.addEventListener('alpine:init', () => {
                 }
                 this.calculateTotals();
             }
+
+            this.hasUnsavedChanges = true;
             this.autoSaveHandler();
         },
 
         autoSaveHandler() {
-            if (this.autoSaveEnabled) {
-                const currentTime = Date.now();
-                if (currentTime - this.lastSaveTime >= this.saveInterval) {
-                    this.lastSaveTime = currentTime;
-                    this.saveTableData();
-                }
+            if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
+
+            if (this.saveTimeout) {
+                clearTimeout(this.saveTimeout);
+            }
+
+            const currentTime = Date.now();
+            const timeSinceLastSave = currentTime - this.lastSaveTime;
+
+            if (timeSinceLastSave >= this.saveInterval) {
+                this.saveTableData();
+                this.lastSaveTime = currentTime;
+            } else {
+                this.saveTimeout = setTimeout(() => {
+                    if (this.hasUnsavedChanges) {
+                        this.saveTableData();
+                        this.lastSaveTime = Date.now();
+                    }
+                }, this.saveInterval);
             }
         },
 
@@ -1180,55 +1264,80 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        formatTimeAgo(timestamp) {
+            if (!timestamp) return 'Never saved';
+
+            const now = Date.now();
+            const diff = Math.floor((now - timestamp) / 1000);
+
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) {
+                const minutes = Math.floor(diff / 60);
+                return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+            }
+            if (diff < 86400) {
+                const hours = Math.floor(diff / 3600);
+                return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            }
+
+            const days = Math.floor(diff / 86400);
+            return `${days} day${days > 1 ? 's' : ''} ago`;
+        },
+
+        startTimeAgoUpdates() {
+            if (this.timeAgoInterval) {
+                clearInterval(this.timeAgoInterval);
+            }
+
+            this.timeAgoInterval = setInterval(() => {
+                if (this.lastSaveTimestamp) {
+                    this.lastSaveText = this.formatTimeAgo(this.lastSaveTimestamp);
+                }
+            }, 60000);
+        },
+
         saveTableData() {
-            // Prepare the data to be sent to the server
+
+            if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
+
             const data = {
                 form: this.getFomrData(),
                 item: this.serializeEstimationData(),
                 group: this.groups,
             };
 
-            console.log(data);
-
             $.ajax({
                 url: route('estimation.update', 11),
                 method: 'PUT',
                 data: data,
-                beforeSend: function () {
-                    //TODO:
+                beforeSend: () => {
+                    this.lastSaveText = 'Saving...';
                     $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
                 },
-                success: function (data) {
-                    console.log(data);
-                    const lastSavedTime = new Date().toLocaleTimeString();
-                    toastrs("successs", "Estimation data has been saved.");
-                    $('#save-button').html(`Last Saved ${lastSavedTime}`);
+                success: (response) => {
+                    this.lastSaveTimestamp = Date.now();
+                    this.lastSaveText = this.formatTimeAgo(this.lastSaveTimestamp);
+                    toastrs("success", "Estimation data has been saved.");
+                    $('#save-button').html(`Saved last changed.`);
+                    this.hasUnsavedChanges = false;
+                    this.startTimeAgoUpdates();
+                },
+                error: (error) => {
+                    console.error('Error saving data:', error);
+                    toastrs("error", "Failed to save changes.");
+                    this.hasUnsavedChanges = true;
+                    this.lastSaveText = 'Save failed';
                 }
             });
-
-
-            // Send the data to the server using an AJAX request
-            // fetch('/estimations/save', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            //     },
-            //     body: JSON.stringify(data),
-            // })
-            //     .then((response) => response.json())
-            //     .then((data) => {
-            //         // Handle the response from the server
-            //         console.log('Estimation saved:', data);
-            //     })
-            //     .catch((error) => {
-            //         // Handle any errors
-            //         console.error('Error saving estimation:', error);
-            //     });
         },
 
         getFomrData() {
-            const formData = new FormData(this.$el.closest('form'));
+            const form = this.$el.closest('form');
+            if (!form) {
+                console.warn('Form not found');
+                return {};
+            }
+            const formData = new FormData(form);
             return Object.fromEntries(formData);
         },
         serializeEstimationData() {
