@@ -857,7 +857,9 @@ document.addEventListener('alpine:init', () => {
                 cancelButtonText: "No, cancel",
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const estimationId = this.getFomrData().id;
                     const itemIds = [];
+                    const comments = [];
                     const groupIds = [];
 
                     selectedCheckboxes.forEach(checkbox => {
@@ -868,23 +870,26 @@ document.addEventListener('alpine:init', () => {
                         } else {
                             itemIds.push(row.dataset.itemid);
                             delete this.items[row.dataset.itemid];
+
+                            comments.push(row.dataset.commentid);
+                            delete this.comments[row.dataset.commentid];
                         }
                         row.remove();
                     });
 
                     document.querySelector('.SelectAllCheckbox').checked = false;
 
-                    fetch(route('estimations.remove_items.estimate'), {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    $.ajax({
+                        url: route('estimation.destroy', estimationId),
+                        method: 'DELETE',
+                        data: {
+                            estimationId: estimationId,
+                            items: itemIds.concat(comments),
+                            groups: groupIds
                         },
-                        body: JSON.stringify({
-                            estimation_id: window.estimation_id,
-                            item_ids: itemIds,
-                            group_ids: groupIds
-                        })
+                        success: (response) => {
+                            console.log(response);
+                        }
                     });
 
                     this.calculateTotals();
@@ -1339,7 +1344,7 @@ document.addEventListener('alpine:init', () => {
             };
 
             $.ajax({
-                url: route('estimation.update', 11),
+                url: route('estimation.update', data.form.id),
                 method: 'PUT',
                 data: data,
                 beforeSend: () => {

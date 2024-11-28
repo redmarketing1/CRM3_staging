@@ -784,7 +784,9 @@ document.addEventListener('alpine:init', function () {
           cancelButtonText: "No, cancel"
         }).then(function (result) {
           if (result.isConfirmed) {
+            var estimationId = _this15.getFomrData().id;
             var itemIds = [];
+            var comments = [];
             var groupIds = [];
             selectedCheckboxes.forEach(function (checkbox) {
               var row = checkbox.closest('tr');
@@ -794,21 +796,23 @@ document.addEventListener('alpine:init', function () {
               } else {
                 itemIds.push(row.dataset.itemid);
                 delete _this15.items[row.dataset.itemid];
+                comments.push(row.dataset.commentid);
+                delete _this15.comments[row.dataset.commentid];
               }
               row.remove();
             });
             document.querySelector('.SelectAllCheckbox').checked = false;
-            fetch(route('estimations.remove_items.estimate'), {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            $.ajax({
+              url: route('estimation.destroy', estimationId),
+              method: 'DELETE',
+              data: {
+                estimationId: estimationId,
+                items: itemIds.concat(comments),
+                groups: groupIds
               },
-              body: JSON.stringify({
-                estimation_id: window.estimation_id,
-                item_ids: itemIds,
-                group_ids: groupIds
-              })
+              success: function success(response) {
+                console.log(response);
+              }
             });
             _this15.calculateTotals();
             _this15.updatePOSNumbers();
@@ -1181,7 +1185,7 @@ document.addEventListener('alpine:init', function () {
           group: this.groups
         };
         $.ajax({
-          url: route('estimation.update', 11),
+          url: route('estimation.update', data.form.id),
           method: 'PUT',
           data: data,
           beforeSend: function beforeSend() {

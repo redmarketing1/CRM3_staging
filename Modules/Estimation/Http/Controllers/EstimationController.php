@@ -83,7 +83,7 @@ class EstimationController extends Controller
 
     private function estimateQuote($quotes)
     {
-        foreach ($quotes ?? [] as $key => $quote) { 
+        foreach ($quotes ?? [] as $key => $quote) {
             EstimateQuote::updateOrCreate(["id" => $key],
                 [
                     "gross"               => $quote['totals']['gross'],
@@ -146,6 +146,19 @@ class EstimationController extends Controller
                     'group_pos'     => $item['pos'],
                 ],
             );
+        }
+    }
+
+    public function destroy(Request $request)
+    {
+        if ($request->items) {
+            ProjectEstimationProduct::whereIn('id', $request->items)
+                ->delete();
+        }
+
+        if ($request->groups) {
+            EstimationGroup::whereIn('id', $request->groups)
+                ->delete();
         }
     }
 }
