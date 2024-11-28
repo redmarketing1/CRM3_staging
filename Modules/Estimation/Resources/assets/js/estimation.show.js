@@ -14,8 +14,9 @@ document.addEventListener('alpine:init', () => {
         autoSaveEnabled: true,
         lastSaveTime: 0,
         saveTimeout: null,
-        saveInterval: 60000, // 1 min
+        saveInterval: 1000 * 30, // 30 second
         hasUnsavedChanges: false,
+        isInitializing: true,
         lastSaveTimestamp: null,
         lastSaveText: '',
         contextMenu: {
@@ -36,6 +37,7 @@ document.addEventListener('alpine:init', () => {
         init() {
 
             this.$nextTick(() => {
+                this.isInitializing = true;
                 this.initializeData();
                 this.initializeSortable();
                 this.initializeLastNumbers();
@@ -44,6 +46,9 @@ document.addEventListener('alpine:init', () => {
                 this.initializeCardCalculations();
                 this.initializeAutoSave();
                 this.calculateTotals();
+                this.$nextTick(() => {
+                    this.isInitializing = false; // Reset flag after all initialization is done
+                });
             });
 
 
@@ -500,9 +505,11 @@ document.addEventListener('alpine:init', () => {
                     break;
             }
 
-            this.hasUnsavedChanges = true;
-            this.calculateTotals();
-            this.autoSaveHandler();
+            if (!this.isInitializing) {
+                this.hasUnsavedChanges = true;
+                this.calculateTotals();
+                this.autoSaveHandler();
+            }
         },
 
         updateItemPriceAndTotal(itemId) {
@@ -546,8 +553,10 @@ document.addEventListener('alpine:init', () => {
                 this.calculateTotals();
             }
 
-            this.hasUnsavedChanges = true;
-            this.autoSaveHandler();
+            if (!this.isInitializing) {
+                this.hasUnsavedChanges = true;
+                this.autoSaveHandler();
+            }
         },
 
         autoSaveHandler() {
@@ -1334,7 +1343,7 @@ document.addEventListener('alpine:init', () => {
                 method: 'PUT',
                 data: data,
                 beforeSend: () => {
-                    this.lastSaveText = 'Saving...';
+                    this.lastSaveText = 'is running...';
                     $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
                 },
                 success: (response) => {
@@ -1349,7 +1358,7 @@ document.addEventListener('alpine:init', () => {
                     console.error('Error saving data:', error);
                     toastrs("error", "Failed to save changes.");
                     this.hasUnsavedChanges = true;
-                    this.lastSaveText = 'Save failed';
+                    this.lastSaveText = 'is failed';
                 }
             });
         },

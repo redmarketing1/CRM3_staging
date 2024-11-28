@@ -29,9 +29,10 @@ document.addEventListener('alpine:init', function () {
       autoSaveEnabled: true,
       lastSaveTime: 0,
       saveTimeout: null,
-      saveInterval: 60000,
-      // 1 min
+      saveInterval: 1000 * 30,
+      // 30 second
       hasUnsavedChanges: false,
+      isInitializing: true,
       lastSaveTimestamp: null,
       lastSaveText: '',
       contextMenu: {
@@ -51,6 +52,7 @@ document.addEventListener('alpine:init', function () {
       init: function init() {
         var _this = this;
         this.$nextTick(function () {
+          _this.isInitializing = true;
           _this.initializeData();
           _this.initializeSortable();
           _this.initializeLastNumbers();
@@ -59,6 +61,9 @@ document.addEventListener('alpine:init', function () {
           _this.initializeCardCalculations();
           _this.initializeAutoSave();
           _this.calculateTotals();
+          _this.$nextTick(function () {
+            _this.isInitializing = false; // Reset flag after all initialization is done
+          });
         });
         this.$watch('items', function (value) {
           _this.calculateTotals();
@@ -475,9 +480,11 @@ document.addEventListener('alpine:init', function () {
           default:
             break;
         }
-        this.hasUnsavedChanges = true;
-        this.calculateTotals();
-        this.autoSaveHandler();
+        if (!this.isInitializing) {
+          this.hasUnsavedChanges = true;
+          this.calculateTotals();
+          this.autoSaveHandler();
+        }
       },
       updateItemPriceAndTotal: function updateItemPriceAndTotal(itemId) {
         var _this10 = this;
@@ -513,8 +520,10 @@ document.addEventListener('alpine:init', function () {
           }
           this.calculateTotals();
         }
-        this.hasUnsavedChanges = true;
-        this.autoSaveHandler();
+        if (!this.isInitializing) {
+          this.hasUnsavedChanges = true;
+          this.autoSaveHandler();
+        }
       },
       autoSaveHandler: function autoSaveHandler() {
         var _this11 = this;
@@ -1176,7 +1185,7 @@ document.addEventListener('alpine:init', function () {
           method: 'PUT',
           data: data,
           beforeSend: function beforeSend() {
-            _this23.lastSaveText = 'Saving...';
+            _this23.lastSaveText = 'is running...';
             $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
           },
           success: function success(response) {
@@ -1191,7 +1200,7 @@ document.addEventListener('alpine:init', function () {
             console.error('Error saving data:', _error);
             toastrs("error", "Failed to save changes.");
             _this23.hasUnsavedChanges = true;
-            _this23.lastSaveText = 'Save failed';
+            _this23.lastSaveText = 'is failed';
           }
         });
       },
