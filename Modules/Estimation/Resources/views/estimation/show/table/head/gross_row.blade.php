@@ -7,7 +7,8 @@
         <th colspan="2" class="toptotal total-gross border-left-right" data-cardQuoteID="{{ $quote->id }}">
             <span class="dt-column-title">
                 <div class="totalnr toptotal total-discount total-vat-input">
-                    <select name="item[{{ $quote->id }}][tax]">
+                    <select name="item[{{ $quote->id }}][tax]"
+                        x-on:change="handleVatChangeAmount($event, {{ $quote->id }})">
                         <option value="19" {{ $quote->tax == 19 ? 'selected' : '' }}>
                             19%
                         </option>

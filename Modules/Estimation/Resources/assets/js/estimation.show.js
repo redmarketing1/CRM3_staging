@@ -12,6 +12,13 @@ document.addEventListener('alpine:init', () => {
         selectAll: false,
         isFullScreen: false,
         autoSaveEnabled: true,
+        lastSaveTime: 0,
+        saveTimeout: null,
+        saveInterval: 1000 * 30, // 30 second
+        hasUnsavedChanges: false,
+        isInitializing: true,
+        lastSaveTimestamp: null,
+        lastSaveText: '',
         contextMenu: {
             show: false,
             x: 0,
@@ -28,12 +35,22 @@ document.addEventListener('alpine:init', () => {
         },
 
         init() {
-            this.initializeData();
-            this.initializeSortable();
-            this.initializeLastNumbers();
-            this.initializeContextMenu();
-            this.initializeColumnVisibility();
-            this.initializeCardCalculations();
+
+            this.$nextTick(() => {
+                this.isInitializing = true;
+                this.initializeData();
+                this.initializeSortable();
+                this.initializeLastNumbers();
+                this.initializeContextMenu();
+                this.initializeColumnVisibility();
+                this.initializeCardCalculations();
+                this.initializeAutoSave();
+                this.calculateTotals();
+                this.$nextTick(() => {
+                    this.isInitializing = false; // Reset flag after all initialization is done
+                });
+            });
+
 
             this.$watch('items', (value) => {
 
@@ -42,18 +59,25 @@ document.addEventListener('alpine:init', () => {
                 cardQuoteIds.forEach(cardQuoteId => this.calculateCardTotals(cardQuoteId));
             }, { deep: true });
 
-            this.$watch('autoSaveEnabled', (newValue) => {
-                if (newValue) {
-                    this.saveTableData();
-                }
-            });
-
             this.$watch('searchQuery', () => this.filterTable());
             this.$watch('selectAll', (value) => this.checkboxAll(value));
 
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.context-menu')) {
                     this.showContextMenu = false;
+                }
+            });
+
+            this.$watch('hasUnsavedChanges', () => {
+                if (!this.hasUnsavedChanges) {
+                    $('#save-button').css({
+                        'cursor': 'not-allowed',
+                        'background': '#bfbfbf',
+                        'border': '0',
+                        'pointer-events': 'none'
+                    });
+                } else {
+                    $('#save-button').removeAttr('style');
                 }
             });
 
@@ -66,10 +90,14 @@ document.addEventListener('alpine:init', () => {
             });
 
             document.addEventListener('keydown', (e) => {
-                if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-price')) {
+                if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-price') || e.target.classList.contains('form-blur')) {
                     this.handleInputBlur(e);
                 }
             });
+
+            if (this.lastSaveTimestamp) {
+                this.startTimeAgoUpdates();
+            }
         },
 
         initializeFullScreen() {
@@ -78,6 +106,23 @@ document.addEventListener('alpine:init', () => {
                 const btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
                 if (btn) {
                     btn.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                }
+            });
+        },
+
+        initializeAutoSave() {
+            if (!document.querySelector('#quote_form')) {
+                console.warn('Quote form not found');
+                return;
+            }
+
+            // Initialize auto-save related event listeners
+            window.addEventListener('beforeunload', (e) => {
+                if (this.hasUnsavedChanges) {
+                    const message = 'You have unsaved changes. Are you sure you want to leave?';
+                    e.preventDefault();
+                    e.returnValue = message;
+                    return message;
                 }
             });
         },
@@ -132,7 +177,7 @@ document.addEventListener('alpine:init', () => {
                     name: row.querySelector('.item-name').value,
                     quantity: this.parseNumber(row.querySelector('.item-quantity').value),
                     prices: this.updateItemPriceAndTotal(itemId),
-                    optional: row.querySelector('.item-optional').checked,
+                    optional: row.querySelector('.item-optional').checked ? 1 : 0,
                     unit: row.querySelector('.item-unit').value
                 };
 
@@ -175,10 +220,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         calculateTotals() {
-
             this.totals = {};
-
-
             document.querySelectorAll('tr.group_row').forEach(row => {
                 const groupId = row.dataset.groupid;
                 if (!groupId) return;
@@ -245,32 +287,28 @@ document.addEventListener('alpine:init', () => {
 
         calculateCardTotals(cardQuoteId) {
             let subtotal = 0;
-
-
             const groupTotalCells = document.querySelectorAll(`td[data-cardquoteid="${cardQuoteId}"].grouptotal`);
             groupTotalCells.forEach(cell => {
                 subtotal += this.parseNumber(cell.textContent);
             });
 
-
-            const markupInput = document.querySelector(`input[name="markup"][value]:not([value=""])[data-cardquoteid="${cardQuoteId}"]`);
+            const markupInput = document.querySelector(`#quoteMarkup[name="item[${cardQuoteId}][markup]"]`);
             const markup = this.parseNumber(markupInput?.value || '0');
-
-
-            const discountInput = document.querySelector(`input[name="discount"][data-cardquoteid="${cardQuoteId}"]`);
-            const cashDiscount = this.parseNumber(discountInput?.value || '0');
-
-
-            const vatSelect = document.querySelector(`select[name="tax[]"][data-cardquoteid="${cardQuoteId}"]`);
-            const vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
-
-
             const netAmount = subtotal + markup;
+
+            const discountInput = document.querySelector(`input[name="item[${cardQuoteId}][discount]"]`);
+            const cashDiscount = this.parseNumber(discountInput?.value || '0');
             const discountAmount = (netAmount * cashDiscount) / 100;
             const netWithDiscount = netAmount - discountAmount;
-            const vatAmount = netWithDiscount * vatRate;
-            const grossWithDiscount = netWithDiscount + vatAmount;
 
+            const vatSelect = document.querySelector(`select[name="item[${cardQuoteId}][tax]"]`);
+            const vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
+
+            let grossWithDiscount = netWithDiscount;
+            if (vatRate > 0) {
+                const vatAmount = grossWithDiscount * vatRate;
+                grossWithDiscount = netWithDiscount + vatAmount;
+            }
 
             this.updateCardTotalUI(cardQuoteId, {
                 netAmount,
@@ -304,69 +342,81 @@ document.addEventListener('alpine:init', () => {
             if (grossElement) {
                 grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
             }
+
+            this.autoSaveHandler();
         },
 
         initializeCardCalculations() {
             const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
 
             cardQuoteIds.forEach(cardQuoteId => {
-                this.calculateCardTotals(cardQuoteId);
+                // Get initial values
+                const markupInput = document.querySelector(`#quoteMarkup[name="item[${cardQuoteId}][markup]"]`);
+                const discountInput = document.querySelector(`input[name="item[${cardQuoteId}][discount]"]`);
+                const vatSelect = document.querySelector(`select[name="item[${cardQuoteId}][tax]"]`);
 
-                const markupInput = document.querySelector(`input[name="markup"][data-cardquoteid="${cardQuoteId}"]`);
+                // Format and apply markup
                 if (markupInput) {
                     const value = this.parseNumber(markupInput.value);
                     markupInput.value = this.formatDecimal(value);
                     this.setNegativeStyle(markupInput, value);
+
+                    // Apply markup calculations
+                    this.updateMarkupCalculations({ target: markupInput }, cardQuoteId);
+                }
+
+                // Format and apply discount
+                if (discountInput) {
+                    const value = this.parseNumber(discountInput.value);
+                    discountInput.value = this.formatDecimal(value);
+                    // Trigger discount calculations
+                    this.handleInputBlur({ target: discountInput }, 'cashDiscount');
+                }
+
+                // Apply VAT calculations if set
+                if (vatSelect) {
+                    this.handleVatChangeAmount({ target: vatSelect }, cardQuoteId);
+                }
+
+                // Calculate all totals for this column
+                this.calculateCardTotals(cardQuoteId);
+            });
+        },
+
+        handleVatChangeAmount(event, cardQuoteId) {
+            this.calculateCardTotals(cardQuoteId);
+        },
+
+        updateMarkupCalculations(event, cardQuoteId) {
+            const target = event.target;
+            const markup = this.parseNumber(target.value || '0');
+            target.value = this.formatDecimal(markup);
+            this.setMarkupStyle(target, markup);
+
+            const priceInputs = document.querySelectorAll(`[data-cardquoteid="${cardQuoteId}"] .item-price`);
+
+            priceInputs.forEach(input => {
+                const originalPrice = input.dataset.originalPrice ? this.parseNumber(input.dataset.originalPrice) : this.parseNumber(input.value);
+
+                if (!input.dataset.originalPrice) {
+                    input.dataset.originalPrice = originalPrice;
+                }
+
+                const newPrice = this.parseNumber(input.dataset.originalPrice) + markup;
+                input.value = this.formatCurrency(newPrice);
+
+                const row = input.closest('tr');
+                if (row) {
+                    const itemId = row.dataset.itemid;
+                    if (itemId) {
+                        this.calculateItemTotal(itemId);
+                    }
                 }
             });
 
-            document.addEventListener('change', (e) => {
-                const target = e.target;
-                const cardQuoteId = target.closest('[data-cardquoteid]')?.dataset.cardquoteid;
-
-                if (!cardQuoteId) return;
-
-                if (target.matches('input[name="markup"]')) {
-                    const markup = this.parseNumber(target.value || '0');
-                    target.value = this.formatDecimal(markup);
-                    this.setMarkupStyle(target, markup);
-
-                    const priceInputs = document.querySelectorAll(`[data-cardquoteid="${cardQuoteId}"] .item-price`);
-
-                    priceInputs.forEach(input => {
-                        const originalPrice = input.dataset.originalPrice ? this.parseNumber(input.dataset.originalPrice) : this.parseNumber(input.value);
-
-                        if (!input.dataset.originalPrice) {
-                            input.dataset.originalPrice = originalPrice;
-                        }
-
-                        const newPrice = this.parseNumber(input.dataset.originalPrice) + markup;
-                        input.value = this.formatCurrency(newPrice);
-
-                        const row = input.closest('tr');
-                        if (row) {
-                            const itemId = row.dataset.itemid;
-                            if (itemId) {
-                                this.calculateItemTotal(itemId);
-                            }
-                        }
-                    });
-
-                    this.calculateGroupTotal(this.lastGroupId);
-                    this.calculateTotals();
-                }
-
-                if (
-                    target.matches('input[name="markup"]') ||
-                    target.matches('input[name="discount"]') ||
-                    target.matches('select[name="tax[]"]') ||
-                    target.matches('.item-price') ||
-                    target.matches('.item-quantity') ||
-                    target.matches('.item-optional')
-                ) {
-                    this.calculateCardTotals(cardQuoteId);
-                }
-            });
+            this.calculateGroupTotal(this.lastGroupId);
+            this.calculateTotals();
+            this.calculateCardTotals(cardQuoteId);
         },
 
         setMarkupStyle(input, value) {
@@ -413,15 +463,20 @@ document.addEventListener('alpine:init', () => {
                 if (event.key !== 'Enter') return;
                 event.target.blur();
             }
-
             const value = event.target.value;
             const row = event.target.closest('tr');
             const itemId = row.dataset.itemid;
+            const groupId = row.dataset.groupid;
 
             switch (type) {
                 case 'item':
                     if (this.items[itemId]) {
                         this.items[itemId].name = value;
+                    }
+                    break;
+                case 'group':
+                    if (this.groups[groupId]) {
+                        this.groups[groupId].name = value;
                     }
                     break;
                 case 'quantity':
@@ -442,11 +497,19 @@ document.addEventListener('alpine:init', () => {
                         this.items[itemId].unit = value;
                     }
                     break;
+                case 'cashDiscount':
+                    let cashDiscountValue = this.parseNumber(event.target.value);
+                    event.target.value = this.formatDecimal(cashDiscountValue || 0);
+                    break;
                 default:
                     break;
             }
 
-            this.calculateTotals();
+            if (!this.isInitializing) {
+                this.hasUnsavedChanges = true;
+                this.calculateTotals();
+                this.autoSaveHandler();
+            }
         },
 
         updateItemPriceAndTotal(itemId) {
@@ -483,11 +546,39 @@ document.addEventListener('alpine:init', () => {
 
         handleOptionalChange(event, itemId) {
             if (this.items[itemId]) {
-                this.items[itemId].optional = event.target.checked;
+                this.items[itemId].optional = event.target.checked ? 1 : 0;
                 if (this.newItems[itemId]) {
-                    this.newItems[itemId].optional = event.target.checked;
+                    this.newItems[itemId].optional = event.target.checked ? 1 : 0;
                 }
                 this.calculateTotals();
+            }
+
+            if (!this.isInitializing) {
+                this.hasUnsavedChanges = true;
+                this.autoSaveHandler();
+            }
+        },
+
+        autoSaveHandler() {
+            if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
+
+            if (this.saveTimeout) {
+                clearTimeout(this.saveTimeout);
+            }
+
+            const currentTime = Date.now();
+            const timeSinceLastSave = currentTime - this.lastSaveTime;
+
+            if (timeSinceLastSave >= this.saveInterval) {
+                this.saveTableData();
+                this.lastSaveTime = currentTime;
+            } else {
+                this.saveTimeout = setTimeout(() => {
+                    if (this.hasUnsavedChanges) {
+                        this.saveTableData();
+                        this.lastSaveTime = Date.now();
+                    }
+                }, this.saveInterval);
             }
         },
 
@@ -624,7 +715,7 @@ document.addEventListener('alpine:init', () => {
                 };
 
                 // Add group to collections
-                this.items[groupTimestamp] = newGroup;
+                // this.items[groupTimestamp] = newGroup;
                 this.newItems[groupTimestamp] = newGroup;
 
                 this.groups[currentGroupId] = {
@@ -645,7 +736,7 @@ document.addEventListener('alpine:init', () => {
                     quantity: 0,
                     price: 0,
                     unit: '',
-                    optional: false,
+                    optional: 0,
                     expanded: false,
                     pos: ''
                 };
@@ -720,7 +811,7 @@ document.addEventListener('alpine:init', () => {
                 quantity: 0,
                 price: 0,
                 unit: '',
-                optional: false,
+                optional: 0,
                 expanded: false,
                 pos: ''
             };
@@ -766,7 +857,9 @@ document.addEventListener('alpine:init', () => {
                 cancelButtonText: "No, cancel",
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const estimationId = this.getFomrData().id;
                     const itemIds = [];
+                    const comments = [];
                     const groupIds = [];
 
                     selectedCheckboxes.forEach(checkbox => {
@@ -777,23 +870,27 @@ document.addEventListener('alpine:init', () => {
                         } else {
                             itemIds.push(row.dataset.itemid);
                             delete this.items[row.dataset.itemid];
+                            delete this.newItems[row.dataset.itemid];
+
+                            comments.push(row.dataset.commentid);
+                            delete this.comments[row.dataset.commentid];
                         }
                         row.remove();
                     });
 
                     document.querySelector('.SelectAllCheckbox').checked = false;
 
-                    fetch(route('estimations.remove_items.estimate'), {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    $.ajax({
+                        url: route('estimation.destroy', estimationId),
+                        method: 'DELETE',
+                        data: {
+                            estimationId: estimationId,
+                            items: itemIds.concat(comments),
+                            groups: groupIds
                         },
-                        body: JSON.stringify({
-                            estimation_id: window.estimation_id,
-                            item_ids: itemIds,
-                            group_ids: groupIds
-                        })
+                        success: (response) => {
+                            console.log(response);
+                        }
                     });
 
                     this.calculateTotals();
@@ -866,22 +963,6 @@ document.addEventListener('alpine:init', () => {
                             timer: 1500,
                             showConfirmButton: false
                         });
-
-                        // If using an API, make the delete request
-                        // fetch(route('estimations.delete_column'), {
-                        //     method: 'POST',
-                        //     headers: {
-                        //         'Content-Type': 'application/json',
-                        //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        //     },
-                        //     body: JSON.stringify({
-                        //         estimation_id: window.estimation_id,
-                        //         quote_id: quoteId
-                        //     })
-                        // }).catch(error => {
-                        //     console.error('Error deleting column:', error);
-                        // });
-
                     } catch (error) {
                         console.error('Error deleting column:', error);
                         Swal.fire({
@@ -1031,7 +1112,7 @@ document.addEventListener('alpine:init', () => {
                     name: originalRow.querySelector('.item-name')?.value + ' - copy',
                     quantity: this.parseNumber(originalRow.querySelector('.item-quantity')?.value || '0'),
                     unit: originalRow.querySelector('.item-unit')?.value || '',
-                    optional: originalRow.querySelector('.item-optional')?.checked || false,
+                    optional: originalRow.querySelector('.item-optional').checked ? 1 : 0,
                     price: this.parseNumber(originalRow.querySelector('.item-price')?.value || '0'),
                     expanded: false
                 };
@@ -1070,30 +1151,43 @@ document.addEventListener('alpine:init', () => {
                 cancelButtonText: "No, cancel",
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const estimationId = this.getFomrData().id;
+                    const itemIds = [];
+                    const comments = [];
+                    const groupIds = [];
+
                     const row = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-groupid="${rowId}"]`);
                     if (!row) return;
 
                     if (row.classList.contains('group_row')) {
-
-                        const groupId = row.dataset.groupid;
-                        document.querySelectorAll(`tr[data-groupid="${groupId}"]`).forEach(itemRow => {
-                            const itemId = itemRow.dataset.itemid;
-                            delete this.items[itemId];
-                            delete this.newItems[itemId];
-                            itemRow.remove();
-                        });
-                        delete this.groups[groupId];
+                        groupIds.push(row.dataset.groupid);
+                        delete this.groups[row.dataset.groupid];
                     } else {
+                        itemIds.push(row.dataset.itemid);
+                        delete this.items[row.dataset.itemid];
+                        delete this.newItems[row.dataset.itemid];
 
-                        const itemId = row.dataset.itemid || row.dataset.id;
-                        delete this.items[itemId];
-                        delete this.newItems[itemId];
+                        comments.push(row.dataset.commentid);
+                        delete this.comments[row.dataset.commentid];
+
                     }
+
+                    $.ajax({
+                        url: route('estimation.destroy', estimationId),
+                        method: 'DELETE',
+                        data: {
+                            estimationId: estimationId,
+                            items: itemIds.concat(comments),
+                            groups: groupIds
+                        },
+                        success: (response) => {
+                            console.log(response);
+                        }
+                    });
 
                     row.remove();
                     this.updatePOSNumbers();
                     this.calculateTotals();
-
 
                     document.querySelector('.SelectAllCheckbox').checked = false;
                 }
@@ -1185,51 +1279,100 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        formatTimeAgo(timestamp) {
+            if (!timestamp) return 'Never saved';
+
+            const now = Date.now();
+            const diff = Math.floor((now - timestamp) / 1000);
+
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) {
+                const minutes = Math.floor(diff / 60);
+                return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+            }
+            if (diff < 86400) {
+                const hours = Math.floor(diff / 3600);
+                return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            }
+
+            const days = Math.floor(diff / 86400);
+            return `${days} day${days > 1 ? 's' : ''} ago`;
+        },
+
+        startTimeAgoUpdates() {
+            if (this.timeAgoInterval) {
+                clearInterval(this.timeAgoInterval);
+            }
+
+            this.timeAgoInterval = setInterval(() => {
+                if (this.lastSaveTimestamp) {
+                    this.lastSaveText = this.formatTimeAgo(this.lastSaveTimestamp);
+                }
+            }, 60000);
+        },
+
         saveTableData() {
-            // Prepare the data to be sent to the server
+
+            if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
+
+            const columns = {};
+            const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
+
+            cardQuoteIds.forEach(cardQuoteId => {
+                columns[cardQuoteId] = {
+                    settings: {
+                        markup: this.parseNumber(document.querySelector(`input[name="item[${cardQuoteId}][markup]"]`)?.value || '0'),
+                        cashDiscount: this.parseNumber(document.querySelector(`input[name="item[${cardQuoteId}][discount]"]`)?.value || '0'),
+                        vat: this.parseNumber(document.querySelector(`select[name="item[${cardQuoteId}][tax]"]`)?.value || '0')
+                    },
+                    totals: {
+                        netIncludingDiscount: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net-discount`)?.textContent),
+                        grossIncludingDiscount: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-gross-discount`)?.textContent),
+                        net: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net`)?.textContent),
+                        gross: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"] .total-gross-total`)?.textContent)
+                    }
+                };
+            });
+
             const data = {
+                cards: columns,
                 form: this.getFomrData(),
                 item: this.serializeEstimationData(),
                 group: this.groups,
             };
 
-            console.log(data);
-
             $.ajax({
-                url: route('estimation.update', 11),
+                url: route('estimation.update', data.form.id),
                 method: 'PUT',
                 data: data,
-                beforeSend: function () {
-                    //TODO:
+                beforeSend: () => {
+                    this.lastSaveText = 'is running...';
+                    $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
                 },
-                success: function (data) {
-                    console.log(data);
+                success: (response) => {
+                    this.lastSaveTimestamp = Date.now();
+                    this.lastSaveText = this.formatTimeAgo(this.lastSaveTimestamp);
+                    toastrs("success", "Estimation data has been saved.");
+                    $('#save-button').html(`Saved last changed.`);
+                    this.hasUnsavedChanges = false;
+                    this.startTimeAgoUpdates();
+                },
+                error: (error) => {
+                    console.error('Error saving data:', error);
+                    toastrs("error", "Failed to save changes.");
+                    this.hasUnsavedChanges = true;
+                    this.lastSaveText = 'is failed';
                 }
             });
-
-
-            // Send the data to the server using an AJAX request
-            // fetch('/estimations/save', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            //     },
-            //     body: JSON.stringify(data),
-            // })
-            //     .then((response) => response.json())
-            //     .then((data) => {
-            //         // Handle the response from the server
-            //         console.log('Estimation saved:', data);
-            //     })
-            //     .catch((error) => {
-            //         // Handle any errors
-            //         console.error('Error saving estimation:', error);
-            //     });
         },
 
         getFomrData() {
-            const formData = new FormData(this.$el.closest('form'));
+            const form = this.$el.closest('form');
+            if (!form) {
+                console.warn('Form not found');
+                return {};
+            }
+            const formData = new FormData(form);
             return Object.fromEntries(formData);
         },
         serializeEstimationData() {

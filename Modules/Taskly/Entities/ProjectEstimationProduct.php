@@ -10,7 +10,7 @@ class ProjectEstimationProduct extends Model
     use HasFactory;
 
     protected $fillable = [
-		'project_estimation_id',
+        'project_estimation_id',
         'group_id',
         'type',
         'name',
@@ -22,30 +22,36 @@ class ProjectEstimationProduct extends Model
         'comment',
         'campare_percent',
         'ai_description',
-		'smart_template_data',
-        'position'
-	];
-    
+        'smart_template_data',
+        'position',
+    ];
+
+    protected $casts = [
+        // 'is_optional' => 'boolean',
+    ];
+
     protected static function newFactory()
     {
         return \Modules\Taskly\Database\factories\ProjectEstimationProductFactory::new();
     }
 
-	public function quoteItems()
+    public function quoteItems()
     {
-        return $this->hasMany(EstimateQuoteItem::class,"product_id","id");
+        return $this->hasMany(EstimateQuoteItem::class, "product_id", "id");
     }
 
-	public function group()
+    public function group()
     {
-        return $this->hasOne(EstimationGroup::class,'id','group_id');
+        return $this->hasOne(EstimationGroup::class, 'id', 'group_id');
     }
 
-	public function progress(){
-        return $this->hasMany(ProjectProgress::class,"product_id","id");
+    public function progress()
+    {
+        return $this->hasMany(ProjectProgress::class, "product_id", "id");
     }
 
-    public function progress_files(){
-        return $this->hasMany(ProjectProgressFiles::class,"product_id","id");
+    public function progress_files()
+    {
+        return $this->hasMany(ProjectProgressFiles::class, "product_id", "id");
     }
 }
