@@ -664,7 +664,7 @@ document.addEventListener('alpine:init', function () {
           };
 
           // Add group to collections
-          this.items[groupTimestamp] = newGroup;
+          // this.items[groupTimestamp] = newGroup;
           this.newItems[groupTimestamp] = newGroup;
           this.groups[currentGroupId] = {
             id: currentGroupId,
@@ -796,6 +796,7 @@ document.addEventListener('alpine:init', function () {
               } else {
                 itemIds.push(row.dataset.itemid);
                 delete _this15.items[row.dataset.itemid];
+                delete _this15.newItems[row.dataset.itemid];
                 comments.push(row.dataset.commentid);
                 delete _this15.comments[row.dataset.commentid];
               }
@@ -876,21 +877,6 @@ document.addEventListener('alpine:init', function () {
                 timer: 1500,
                 showConfirmButton: false
               });
-
-              // If using an API, make the delete request
-              // fetch(route('estimations.delete_column'), {
-              //     method: 'POST',
-              //     headers: {
-              //         'Content-Type': 'application/json',
-              //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-              //     },
-              //     body: JSON.stringify({
-              //         estimation_id: window.estimation_id,
-              //         quote_id: quoteId
-              //     })
-              // }).catch(error => {
-              //     console.error('Error deleting column:', error);
-              // });
             } catch (error) {
               console.error('Error deleting column:', error);
               Swal.fire({
@@ -1038,22 +1024,34 @@ document.addEventListener('alpine:init', function () {
           cancelButtonText: "No, cancel"
         }).then(function (result) {
           if (result.isConfirmed) {
+            var estimationId = _this20.getFomrData().id;
+            var itemIds = [];
+            var comments = [];
+            var groupIds = [];
             var row = document.querySelector("tr[data-id=\"".concat(rowId, "\"], tr[data-itemid=\"").concat(rowId, "\"], tr[data-groupid=\"").concat(rowId, "\"]"));
             if (!row) return;
             if (row.classList.contains('group_row')) {
-              var groupId = row.dataset.groupid;
-              document.querySelectorAll("tr[data-groupid=\"".concat(groupId, "\"]")).forEach(function (itemRow) {
-                var itemId = itemRow.dataset.itemid;
-                delete _this20.items[itemId];
-                delete _this20.newItems[itemId];
-                itemRow.remove();
-              });
-              delete _this20.groups[groupId];
+              groupIds.push(row.dataset.groupid);
+              delete _this20.groups[row.dataset.groupid];
             } else {
-              var itemId = row.dataset.itemid || row.dataset.id;
-              delete _this20.items[itemId];
-              delete _this20.newItems[itemId];
+              itemIds.push(row.dataset.itemid);
+              delete _this20.items[row.dataset.itemid];
+              delete _this20.newItems[row.dataset.itemid];
+              comments.push(row.dataset.commentid);
+              delete _this20.comments[row.dataset.commentid];
             }
+            $.ajax({
+              url: route('estimation.destroy', estimationId),
+              method: 'DELETE',
+              data: {
+                estimationId: estimationId,
+                items: itemIds.concat(comments),
+                groups: groupIds
+              },
+              success: function success(response) {
+                console.log(response);
+              }
+            });
             row.remove();
             _this20.updatePOSNumbers();
             _this20.calculateTotals();

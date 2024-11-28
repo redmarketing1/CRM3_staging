@@ -715,7 +715,7 @@ document.addEventListener('alpine:init', () => {
                 };
 
                 // Add group to collections
-                this.items[groupTimestamp] = newGroup;
+                // this.items[groupTimestamp] = newGroup;
                 this.newItems[groupTimestamp] = newGroup;
 
                 this.groups[currentGroupId] = {
@@ -870,6 +870,7 @@ document.addEventListener('alpine:init', () => {
                         } else {
                             itemIds.push(row.dataset.itemid);
                             delete this.items[row.dataset.itemid];
+                            delete this.newItems[row.dataset.itemid];
 
                             comments.push(row.dataset.commentid);
                             delete this.comments[row.dataset.commentid];
@@ -962,22 +963,6 @@ document.addEventListener('alpine:init', () => {
                             timer: 1500,
                             showConfirmButton: false
                         });
-
-                        // If using an API, make the delete request
-                        // fetch(route('estimations.delete_column'), {
-                        //     method: 'POST',
-                        //     headers: {
-                        //         'Content-Type': 'application/json',
-                        //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        //     },
-                        //     body: JSON.stringify({
-                        //         estimation_id: window.estimation_id,
-                        //         quote_id: quoteId
-                        //     })
-                        // }).catch(error => {
-                        //     console.error('Error deleting column:', error);
-                        // });
-
                     } catch (error) {
                         console.error('Error deleting column:', error);
                         Swal.fire({
@@ -1166,30 +1151,43 @@ document.addEventListener('alpine:init', () => {
                 cancelButtonText: "No, cancel",
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const estimationId = this.getFomrData().id;
+                    const itemIds = [];
+                    const comments = [];
+                    const groupIds = [];
+
                     const row = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-groupid="${rowId}"]`);
                     if (!row) return;
 
                     if (row.classList.contains('group_row')) {
-
-                        const groupId = row.dataset.groupid;
-                        document.querySelectorAll(`tr[data-groupid="${groupId}"]`).forEach(itemRow => {
-                            const itemId = itemRow.dataset.itemid;
-                            delete this.items[itemId];
-                            delete this.newItems[itemId];
-                            itemRow.remove();
-                        });
-                        delete this.groups[groupId];
+                        groupIds.push(row.dataset.groupid);
+                        delete this.groups[row.dataset.groupid];
                     } else {
+                        itemIds.push(row.dataset.itemid);
+                        delete this.items[row.dataset.itemid];
+                        delete this.newItems[row.dataset.itemid];
 
-                        const itemId = row.dataset.itemid || row.dataset.id;
-                        delete this.items[itemId];
-                        delete this.newItems[itemId];
+                        comments.push(row.dataset.commentid);
+                        delete this.comments[row.dataset.commentid];
+
                     }
+
+                    $.ajax({
+                        url: route('estimation.destroy', estimationId),
+                        method: 'DELETE',
+                        data: {
+                            estimationId: estimationId,
+                            items: itemIds.concat(comments),
+                            groups: groupIds
+                        },
+                        success: (response) => {
+                            console.log(response);
+                        }
+                    });
 
                     row.remove();
                     this.updatePOSNumbers();
                     this.calculateTotals();
-
 
                     document.querySelector('.SelectAllCheckbox').checked = false;
                 }
