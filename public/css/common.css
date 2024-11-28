@@ -3187,7 +3187,7 @@ table#progress-table {
 }
 
 canvas.signature-pad {
-    border: 3px dashed #9dd0e5 !important;
+    border: 3px dashed #53a65e !important;
     border-radius: 5px;
     /* width: 200px;
 		height: 50px; */
@@ -3215,6 +3215,8 @@ table#progress-table td.description .desc-inner {
 
 table#progress-table td.name {
     min-width: 150px;
+    font-weight: bold;
+    font-size: 110%;
 }
 
 tr.progress-group td {
@@ -3322,13 +3324,14 @@ a.confirm-progress-btn {
     margin: 30px 5px !important;
 }
 
-.confirm_div_top {
+.progress-footer .confirm_div_top {
     width: 100%;
     display: flex;
     justify-content: flex-end;
     gap: 40px;
     align-items: center;
     margin-top: 40px;
+    flex-flow: wrap;
 }
 
 .confirm_div_top div {
@@ -6456,7 +6459,7 @@ td a.btn-primary.btn_sign_here {
 }
 
 canvas.signature-pad {
-    border: 3px dashed #9dd0e5 !important;
+    border: 3px dashed #53a65e !important;
     border-radius: 5px;
     /* width: 200px;
     height: 50px; */
@@ -8956,7 +8959,14 @@ table.table tr.top-quote.only_final_quotes_profit {
     top: 202px;
 } */
 
-
+#progress-table tr td, tr.group.progress_files_row td {
+    background: #fff;
+}
+td.item-signature button {
+    background: #aaa;
+    border: none;
+    margin: 1px;
+}
 
 
 
@@ -9113,5 +9123,9 @@ table.table tr.top-quote.only_final_quotes_profit {
     .search-input-box .search-input {
         width: 50px !important;
     }
+    table td, table th {
+        display: block;
+    }
+}
 
     /************************************+ MEDIA QUERIES ONLY ********************************************/
