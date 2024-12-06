@@ -57,19 +57,20 @@ class EstimationController extends Controller
      */
     public function update(Request $request)
     {
-        $form    = $request->form;
-        $cards   = $request->cards;
-        $groups  = $request->group;
-        $request = collect($request->item);
+        $form     = $request->form;
+        $cards    = $request->cards;
+        $groups   = $request->groups;
+        $items    = $request->items;
+        $comments = $request->comments;
 
-        $items  = $request->where('type', 'item') ?? [];
-        $prices = $items->flatMap(function ($item) {
+        $prices = collect($items)->flatMap(function ($item) {
             return collect($item['prices'])->map(function ($price) use ($item) {
                 return array_merge(['productId' => $item['id']], $price);
             });
         });
 
         self::updateItem($items, $form);
+        self::updateComment($comments, $form);
         self::updateGroupItem($groups, $form);
         self::updateQuote($prices);
         self::estimateQuote($cards);
@@ -114,12 +115,11 @@ class EstimationController extends Controller
     private function updateItem($items, $form)
     {
         foreach ($items ?? [] as $key => $item) {
-            ProjectEstimationProduct::updateOrCreate(
-                [
-                    'id'                    => $item['id'],
-                    'project_estimation_id' => $form['id'],
-                ],
-                [
+
+            $existingItem = ProjectEstimationProduct::query();
+
+            if ($existingItem->find($item['id'])) {
+                $existingItem->update([
                     'project_estimation_id' => $form['id'],
                     'name'                  => $item['name'],
                     'pos'                   => $item['pos'],
@@ -127,9 +127,57 @@ class EstimationController extends Controller
                     'quantity'              => $item['quantity'],
                     'unit'                  => $item['unit'],
                     'is_optional'           => $item['optional'],
-                ],
-            );
+                ]);
+            } else {
+                tap($existingItem->create([
+                    'project_estimation_id' => $form['id'],
+                    'name'                  => $item['name'],
+                    'pos'                   => $item['pos'],
+                    'type'                  => 'item',
+                    'group_id'              => $item['groupId'],
+                    'quantity'              => $item['quantity'],
+                    'unit'                  => $item['unit'],
+                    'is_optional'           => $item['optional'],
+                ]), function ($qoute) use ($item) {
+                    $prices = collect($item['prices'])->map(function ($price) use ($qoute) {
+                        return array_merge(['productId' => $qoute['id']], $price);
+                    });
+                    self::updateQuote($prices);
+                }
+                );
+            }
+        }
+    }
 
+    private function updateComment($comments, $form)
+    {
+        foreach ($comments ?? [] as $key => $comment) {
+
+            $existingItem = ProjectEstimationProduct::query();
+
+            if ($existingItem->find($comment['id'])) {
+                $existingItem->update([
+                    'project_estimation_id' => $form['id'],
+                    'description'           => $comment['content'],
+                    'comment'               => $comment['content'],
+                    'pos'                   => $comment['pos'],
+                ]);
+            } else {
+                tap($existingItem->create([
+                    'project_estimation_id' => $form['id'],
+                    'description'           => $comment['content'],
+                    'comment'               => $comment['content'],
+                    'pos'                   => $comment['pos'],
+                    'type'                  => 'comment',
+                    'group_id'              => $comment['groupId'],
+                ]), function ($qoute) use ($comment) {
+                    $prices = collect($comment['prices'])->map(function ($price) use ($qoute) {
+                        return array_merge(['productId' => $qoute['id']], $price);
+                    });
+                    self::updateQuote($prices);
+                }
+                );
+            }
         }
     }
 

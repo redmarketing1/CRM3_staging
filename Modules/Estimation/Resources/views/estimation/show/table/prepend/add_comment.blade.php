@@ -1,4 +1,5 @@
-<tr class="item_comment" :data-id="item.id" :data-itemid="item.id" :data-groupid="item.groupId" data-type="comment">
+<tr class="item_comment" :data-id="item.id" :data-commentid="item.id" :data-groupid="item.groupId"
+    data-type="comment">
 
     <td class="column_reorder">
         <i class="fa fa-bars reorder-item"></i>

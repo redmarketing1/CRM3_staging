@@ -2,8 +2,8 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('estimationShow', () => ({
         items: {},
         comments: {},
-        newItems: {},
         groups: {},
+        newItems: {},
         totals: {},
         expandedRows: {},
         lastGroupNumber: 0,
@@ -208,9 +208,17 @@ document.addEventListener('alpine:init', () => {
             const item = this.items[itemId];
             if (!item || item.optional) return 0;
 
-            const { singlePrice, totalPrice } = item.prices[priceColumnIndex];
+            const row = document.querySelector(`tr[data-itemid="${itemId}"]`);
+            if (!row) return 0;
 
-            const totalCell = document.querySelector(`tr[data-itemid="${itemId}"] .column_total_price[data-cardquoteid="${priceColumnIndex}"]`);
+            const priceInput = row.querySelectorAll('.item-price')[priceColumnIndex];
+            if (!priceInput) return 0;
+
+            const singlePrice = this.parseNumber(priceInput.value);
+            const quantity = this.parseNumber(row.querySelector('.item-quantity').value);
+            const totalPrice = singlePrice * quantity;
+
+            const totalCell = row.querySelectorAll('.column_total_price')[priceColumnIndex];
             if (totalCell) {
                 totalCell.textContent = this.formatCurrency(totalPrice);
                 this.setNegativeStyle(totalCell, totalPrice);
@@ -466,12 +474,18 @@ document.addEventListener('alpine:init', () => {
             const value = event.target.value;
             const row = event.target.closest('tr');
             const itemId = row.dataset.itemid;
+            const commentId = row.dataset.commentid;
             const groupId = row.dataset.groupid;
 
             switch (type) {
                 case 'item':
                     if (this.items[itemId]) {
                         this.items[itemId].name = value;
+                    }
+                    break;
+                case 'comment':
+                    if (this.comments[commentId]) {
+                        this.comments[commentId].content = value;
                     }
                     break;
                 case 'group':
@@ -547,9 +561,6 @@ document.addEventListener('alpine:init', () => {
         handleOptionalChange(event, itemId) {
             if (this.items[itemId]) {
                 this.items[itemId].optional = event.target.checked ? 1 : 0;
-                if (this.newItems[itemId]) {
-                    this.newItems[itemId].optional = event.target.checked ? 1 : 0;
-                }
                 this.calculateTotals();
             }
 
@@ -653,9 +664,6 @@ document.addEventListener('alpine:init', () => {
                             if (this.items[itemId]) {
                                 this.items[itemId].groupId = newGroupId;
                             }
-                            if (this.newItems[itemId]) {
-                                this.newItems[itemId].groupId = newGroupId;
-                            }
                         }
                     }
 
@@ -694,139 +702,137 @@ document.addEventListener('alpine:init', () => {
 
         addItem(type, targetRowId = null) {
             const timestamp = Date.now();
-            let currentGroupId;
 
-            // Check if table is completely empty
+            if (type == 'group') {
+                this.createGroups(type, timestamp, targetRowId)
+            } {
+                this.createItemsAndComments(type, timestamp, targetRowId);
+            }
+
+            if (targetRowId) {
+                this.contextMenu.show = false;
+            }
+        },
+
+        createGroups(type, timestamp, targetRowId) {
+
+            if (type !== 'group') return;
+
+            const itemTimestamp = Date.now() + 1;
             const hasAnyGroups = document.querySelectorAll('tr.group_row').length > 0;
 
-            // If table is empty, always create a group first with an item
+            // Helper to create a group
+            const createGroup = (id, name, itemCount = 0) => ({
+                id,
+                type: 'group',
+                name,
+                total: 0,
+                expanded: false,
+                pos: '',
+                itemCount,
+            });
+
             if (!hasAnyGroups) {
-                // Create group
-                const groupTimestamp = Date.now();
-                currentGroupId = `group_${groupTimestamp}`;
+                this.groups[timestamp] = createGroup(timestamp, 'New Group');
+                this.newItems[timestamp] = createGroup(timestamp, 'New Group');
+                this.createItemsAndComments('item', itemTimestamp, targetRowId);
+            } else {
+                this.groups[timestamp] = createGroup(timestamp, 'Group Name');
+                this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
+            }
 
-                const newGroup = {
-                    id: groupTimestamp,
-                    type: 'group',
-                    name: 'New Group',
-                    total: 0,
-                    expanded: false,
-                    pos: ''
-                };
+            this.$nextTick(() => {
+                this.initializeSortable();
+                this.updatePOSNumbers();
+                this.calculateTotals();
+            });
 
-                // Add group to collections
-                // this.items[groupTimestamp] = newGroup;
-                this.newItems[groupTimestamp] = newGroup;
+            return;
+        },
 
-                this.groups[currentGroupId] = {
-                    id: currentGroupId,
-                    pos: '',
-                    name: 'New Group',
-                    total: 0,
-                    itemCount: 0
-                };
+        createItemsAndComments(type, timestamp, targetRowId) {
 
-                // Create child item
-                const itemTimestamp = Date.now() + 1;
-                const newItem = {
-                    id: itemTimestamp,
+            if (type !== 'item' && type !== 'comment') return;
+
+            const uniqueQuoteIds = [...new Set(
+                Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                    .map(el => el.dataset.cardquoteid)
+            )];
+
+            const initialPrices = uniqueQuoteIds.map(quoteId => ({
+                id: quoteId,
+                singlePrice: 0,
+                totalPrice: 0,
+            }));
+
+            // Helper to get current group ID
+            const getCurrentGroupId = (targetRowId) => {
+                if (targetRowId) {
+                    const targetRow = document.querySelector(
+                        `tr[data-id="${targetRowId}"], 
+                 tr[data-itemid="${targetRowId}"], 
+                 tr[data-commentid="${targetRowId}"], 
+                 tr[data-groupid="${targetRowId}"]`
+                    );
+                    return targetRow?.dataset.groupid || null;
+                } else {
+                    const lastGroupRow = document.querySelector('tr.group_row:last-of-type');
+                    return lastGroupRow?.dataset.groupid || null;
+                }
+            };
+
+            const currentGroupId = getCurrentGroupId(targetRowId);
+
+            // Add item or comment
+            if (type === 'item') {
+                const items = {
+                    id: timestamp,
                     type: 'item',
                     groupId: currentGroupId,
                     name: 'New Item',
                     quantity: 0,
                     price: 0,
+                    prices: initialPrices,
                     unit: '',
                     optional: 0,
                     expanded: false,
-                    pos: ''
-                };
-
-                // Add item to collections
-                this.items[itemTimestamp] = newItem;
-                this.newItems[itemTimestamp] = newItem;
-
-                this.$nextTick(() => {
-                    this.initializeSortable();
-                    this.updatePOSNumbers();
-                    this.calculateTotals();
-                });
-
-                return;
-            }
-
-            // Normal flow for non-empty table
-            if (type === 'group') {
-                currentGroupId = `group_${timestamp}`;
-                const newItem = {
-                    id: timestamp,
-                    type: 'group',
-                    name: `Group name`,
-                    total: 0,
-                    expanded: false,
-                    pos: ''
-                };
-
-                this.items[timestamp] = newItem;
-                this.newItems[timestamp] = newItem;
-
-                this.groups[currentGroupId] = {
-                    id: currentGroupId,
                     pos: '',
-                    name: 'Group name',
-                    total: 0,
-                    itemCount: 0
                 };
 
-                this.$nextTick(() => {
-                    this.initializeSortable();
-                    this.updatePOSNumbers();
-                    this.calculateTotals();
-                });
-
-                return;
-            }
-
-            // For items and comments in non-empty table
-            if (targetRowId) {
-                const targetRow = document.querySelector(`tr[data-id="${targetRowId}"], 
-                                               tr[data-itemid="${targetRowId}"], 
-                                               tr[data-commentid="${targetRowId}"], 
-                                               tr[data-groupid="${targetRowId}"]`);
-                if (targetRow) {
-                    currentGroupId = targetRow.classList.contains('group_row') ?
-                        targetRow.dataset.groupid :
-                        targetRow.dataset.groupid;
-                }
+                this.items[timestamp] = items;
+                this.newItems[timestamp] = items;
             } else {
-                const GroupRow = document.querySelectorAll('tr.group_row');
-                const lastGroupRow = GroupRow[GroupRow.length - 1];
-                currentGroupId = lastGroupRow ? lastGroupRow.dataset.groupid : null;
+                const items = {
+                    id: timestamp,
+                    type: 'comment',
+                    groupId: currentGroupId,
+                    content: 'New Comment',
+                    quantity: 0,
+                    price: 0,
+                    prices: initialPrices,
+                    unit: '',
+                    optional: 0,
+                    expanded: false,
+                    pos: '',
+                };
+
+                this.comments[timestamp] = items;
+                this.newItems[timestamp] = items;
             }
-
-            const newItem = {
-                id: timestamp,
-                type: type,
-                groupId: currentGroupId,
-                name: type + ` name`,
-                quantity: 0,
-                price: 0,
-                unit: '',
-                optional: 0,
-                expanded: false,
-                pos: ''
-            };
-
-            this.items[timestamp] = newItem;
-            this.newItems[timestamp] = newItem;
 
             this.$nextTick(() => {
                 if (targetRowId) {
-                    const targetRow = document.querySelector(`tr[data-id="${targetRowId}"], 
-                                                   tr[data-itemid="${targetRowId}"], 
-                                                   tr[data-commentid="${targetRowId}"], 
-                                                   tr[data-groupid="${targetRowId}"]`);
-                    const newRow = document.querySelector(`tr[data-id="${timestamp}"], 
-                                                tr[data-itemid="${timestamp}"]`);
+                    const targetRow = document.querySelector(`
+                        tr[data-id="${targetRowId}"], 
+                        tr[data-itemid="${targetRowId}"], 
+                        tr[data-commentid="${targetRowId}"], 
+                        tr[data-groupid="${targetRowId}"]`
+                    );
+
+                    const newRow = document.querySelector(`
+                        tr[data-id="${timestamp}"]`
+                    );
+
                     if (newRow && targetRow.nextSibling) {
                         targetRow.parentNode.insertBefore(newRow, targetRow.nextSibling);
                     }
@@ -836,10 +842,6 @@ document.addEventListener('alpine:init', () => {
                 this.updatePOSNumbers();
                 this.calculateTotals();
             });
-
-            if (targetRowId) {
-                this.contextMenu.show = false;
-            }
         },
 
         removeItem() {
@@ -870,7 +872,6 @@ document.addEventListener('alpine:init', () => {
                         } else {
                             itemIds.push(row.dataset.itemid);
                             delete this.items[row.dataset.itemid];
-                            delete this.newItems[row.dataset.itemid];
 
                             comments.push(row.dataset.commentid);
                             delete this.comments[row.dataset.commentid];
@@ -1068,7 +1069,6 @@ document.addEventListener('alpine:init', () => {
             if (isGroup) {
 
                 const groupName = originalRow.querySelector('.grouptitle-input').value;
-                const newGroupId = `group_${timestamp}`;
 
                 const newItem = {
                     id: timestamp,
@@ -1080,11 +1080,10 @@ document.addEventListener('alpine:init', () => {
 
 
                 this.items[timestamp] = newItem;
-                this.newItems[timestamp] = newItem;
 
 
-                this.groups[newGroupId] = {
-                    id: newGroupId,
+                this.groups[timestamp] = {
+                    id: timestamp,
                     pos: '',
                     name: `${groupName} - copy`,
                     total: 0,
@@ -1101,7 +1100,6 @@ document.addEventListener('alpine:init', () => {
                 };
 
                 this.items[timestamp] = newItem;
-                this.newItems[timestamp] = newItem;
             }
             else {
 
@@ -1119,7 +1117,6 @@ document.addEventListener('alpine:init', () => {
 
 
                 this.items[timestamp] = newItem;
-                this.newItems[timestamp] = newItem;
 
 
                 if (this.groups[groupId]) {
@@ -1165,7 +1162,6 @@ document.addEventListener('alpine:init', () => {
                     } else {
                         itemIds.push(row.dataset.itemid);
                         delete this.items[row.dataset.itemid];
-                        delete this.newItems[row.dataset.itemid];
 
                         comments.push(row.dataset.commentid);
                         delete this.comments[row.dataset.commentid];
@@ -1249,8 +1245,6 @@ document.addEventListener('alpine:init', () => {
                         `.quote_th${quoteId}, ` +
                         `[data-cardquoteid="${quoteId}"]`
                     );
-
-                    console.log(elements);
 
                     elements.forEach(el => {
                         el.style.display = isVisible ? '' : 'none';
@@ -1337,8 +1331,9 @@ document.addEventListener('alpine:init', () => {
             const data = {
                 cards: columns,
                 form: this.getFomrData(),
-                item: this.serializeEstimationData(),
-                group: this.groups,
+                items: this.items,
+                comments: this.comments,
+                groups: this.groups,
             };
 
             $.ajax({
@@ -1374,10 +1369,6 @@ document.addEventListener('alpine:init', () => {
             }
             const formData = new FormData(form);
             return Object.fromEntries(formData);
-        },
-        serializeEstimationData() {
-            // return JSON.stringify(this.items);
-            return Object.values(this.items);
         },
     }));
 });
