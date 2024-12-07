@@ -686,9 +686,9 @@ document.addEventListener('alpine:init', () => {
         addItem(type, targetRowId = null) {
             const timestamp = Date.now();
 
-            if (type == 'group') {
-                this.createGroups(type, timestamp, targetRowId)
-            } {
+            if (type === 'group') {
+                this.createGroups(type, timestamp, targetRowId);
+            } else if (type === 'item' || type === 'comment') {
                 this.createItemsAndComments(type, timestamp, targetRowId);
             }
 
@@ -702,7 +702,7 @@ document.addEventListener('alpine:init', () => {
             if (type !== 'group') return;
 
             const itemTimestamp = Date.now() + 1;
-            const hasAnyGroups = document.querySelectorAll('tr.group_row').length > 0;
+            const hasAnyGroups = Object.keys(this.groups).length > 0;
 
             // Helper to create a group
             const createGroup = (id, name, itemCount = 0) => ({
@@ -714,6 +714,9 @@ document.addEventListener('alpine:init', () => {
                 pos: '',
                 itemCount,
             });
+
+            this.groups[timestamp] = createGroup(timestamp, 'Group Name');
+            this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
 
             if (!hasAnyGroups) {
                 this.groups[timestamp] = createGroup(timestamp, 'New Group');
@@ -736,17 +739,10 @@ document.addEventListener('alpine:init', () => {
         createItemsAndComments(type, timestamp, targetRowId) {
 
             if (type !== 'item' && type !== 'comment') return;
-
-            const uniqueQuoteIds = [...new Set(
-                Array.from(document.querySelectorAll('[data-cardquoteid]'))
-                    .map(el => el.dataset.cardquoteid)
-            )];
-
-            const initialPrices = uniqueQuoteIds.map(quoteId => ({
-                id: quoteId,
-                singlePrice: 0,
-                totalPrice: 0,
-            }));
+ 
+            const initialPrices = [...new Set(
+                Array.from(document.querySelectorAll('[data-cardquoteid]'), el => el.dataset.cardquoteid)
+            )].map(id => ({ id, singlePrice: 0, totalPrice: 0 }));
 
             // Helper to get current group ID
             const getCurrentGroupId = (targetRowId) => {

@@ -641,10 +641,9 @@ document.addEventListener('alpine:init', function () {
       addItem: function addItem(type) {
         var targetRowId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
         var timestamp = Date.now();
-        if (type == 'group') {
+        if (type === 'group') {
           this.createGroups(type, timestamp, targetRowId);
-        }
-        {
+        } else if (type === 'item' || type === 'comment') {
           this.createItemsAndComments(type, timestamp, targetRowId);
         }
         if (targetRowId) {
@@ -655,7 +654,7 @@ document.addEventListener('alpine:init', function () {
         var _this14 = this;
         if (type !== 'group') return;
         var itemTimestamp = Date.now() + 1;
-        var hasAnyGroups = document.querySelectorAll('tr.group_row').length > 0;
+        var hasAnyGroups = Object.keys(this.groups).length > 0;
 
         // Helper to create a group
         var createGroup = function createGroup(id, name) {
@@ -670,6 +669,8 @@ document.addEventListener('alpine:init', function () {
             itemCount: itemCount
           };
         };
+        this.groups[timestamp] = createGroup(timestamp, 'Group Name');
+        this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
         if (!hasAnyGroups) {
           this.groups[timestamp] = createGroup(timestamp, 'New Group');
           this.newItems[timestamp] = createGroup(timestamp, 'New Group');
@@ -688,12 +689,11 @@ document.addEventListener('alpine:init', function () {
       createItemsAndComments: function createItemsAndComments(type, timestamp, targetRowId) {
         var _this15 = this;
         if (type !== 'item' && type !== 'comment') return;
-        var uniqueQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
+        var initialPrices = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]'), function (el) {
           return el.dataset.cardquoteid;
-        })));
-        var initialPrices = uniqueQuoteIds.map(function (quoteId) {
+        }))).map(function (id) {
           return {
-            id: quoteId,
+            id: id,
             singlePrice: 0,
             totalPrice: 0
           };
