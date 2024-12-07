@@ -10,22 +10,21 @@
                     <input type="checkbox" class="item_selection" @change="handleGroupSelection($event, item.groupId)">
                 </td>
                 <td class="column_pos grouppos"></td>
-                <td colspan="4" class="column_name grouptitle border-right">
+                <td colspan="4" class="column_name grouptitle border-right m-l-20">
                     <div class="div-desc-toggle">
                         <input type="text" class="form-control grouptitle-input" :value="item.name"
                             :name="`item[${item.id}][group]`" @blur="handleInputBlur($event, 'group')">
                     </div>
                 </td>
                 @foreach ($allQuotes as $quotes)
-                    <td colspan="2" class="text-right grouptotal border-left-right"
-                        data-cardQuoteID="{{ $quotes->id }}">
+                    <td colspan="2" class="text-right grouptotal border-left-right" data-cardQuoteID="{{ $quotes->id }}">
                         {{ currency_format_with_sym(00) }}
                     </td>
                 @endforeach
             </tr>
         </template>
 
-        <!-- Item Row -->
+        <!-- Item Rows (Parent and Child) -->
         <template x-if="item.type === 'item'">
             <tr class="item_row parent-row" :data-id="item.id" :data-itemid="item.id" :data-groupid="item.groupId"
                 data-type="item">
@@ -40,16 +39,17 @@
                 </td>
                 <td class="column_name item_name">
                     <div class="div-desc-toggle">
-                        <i class="desc_toggle fa fas fa-solid"
-                            :class="isExpanded(item.id) ? 'fa-caret-down' : 'fa-caret-right'"
-                            @click="toggleDescription(item.id, $event)"></i>
+                        <i class="desc_toggle fa fas fa-solid" 
+                           :class="isExpanded(item.id) ? 'fa-caret-down' : 'fa-caret-right'"
+                           @click="toggleDescription(item.id, $event)"></i>
                         <input type="text" :name="`item[${item.id}][name]`" class="item-name form-control"
                             :value="item.name" @blur="handleInputBlur($event, 'item')">
                     </div>
                 </td>
                 <td class="column_quantity">
-                    <input type="text" class="form-control row_qty item-quantity"
-                        :value="formatDecimal(item.quantity || 0)" @blur="handleInputBlur($event, 'quantity')">
+                    <input type="text" class="form-control row_qty item-quantity" 
+                           :value="formatDecimal(item.quantity || 0)"
+                           @blur="handleInputBlur($event, 'quantity')">
                 </td>
                 <td class="column_unit">
                     <input type="text" class="form-control item-unit" :value="item.unit"
@@ -70,8 +70,13 @@
                     </td>
                 @endforeach
             </tr>
-            <!-- Item Child Row -->
-            <tr class="item_child tr_child_description" data-type="item_child" :data-id="item.id"
+        </template>
+        
+        <!-- Item Description Row -->
+        <template x-if="item.type === 'item'">
+            <tr class="item_child tr_child_description" 
+                data-type="item_child" 
+                :data-id="item.id"
                 :style="isExpanded(item.id) ? 'display: table-row;' : 'display: none;'"
                 x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 transform scale-95"
@@ -80,10 +85,12 @@
                 x-transition:leave-start="opacity-100 transform scale-100"
                 x-transition:leave-end="opacity-0 transform scale-95">
                 <td colspan="3"></td>
-                <td colspan="4" class="column_name desc_column w-100">
-                    <textarea class="description_input w-100" :name="`item[${item.id}][description]`" placeholder="Items Description"></textarea>
-                </td>
-                <td colspan="4"></td>
+                <td colspan="4" class="column_name desc_column w-100 m-l-20">
+                    <textarea class="description_input w-100 tinyMCE" 
+                              :name="`item[${item.id}][description]`" 
+                              placeholder="Items Description"></textarea>
+                </td> 
+                <td colspan="{{ count($allQuotes) * 2 }}"></td> 
             </tr>
         </template>
 
