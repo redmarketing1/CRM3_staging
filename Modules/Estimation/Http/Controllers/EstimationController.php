@@ -68,7 +68,7 @@ class EstimationController extends Controller
                 return array_merge(['productId' => $item['id']], $price);
             });
         });
-
+    
         self::updateItem($items, $form);
         self::updateComment($comments, $form);
         self::updateGroupItem($groups, $form);
