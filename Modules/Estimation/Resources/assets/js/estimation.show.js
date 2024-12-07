@@ -4,6 +4,7 @@ document.addEventListener('alpine:init', () => {
         comments: {},
         groups: {},
         newItems: {},
+        tableData: {},
         totals: {},
         expandedRows: {},
         lastGroupNumber: 0,
@@ -35,6 +36,8 @@ document.addEventListener('alpine:init', () => {
         },
 
         init() {
+
+            this.tableData = JSON.parse(document.querySelector('#estimation-edit-table').dataset.table);
 
             this.$nextTick(() => {
                 this.isInitializing = true;
@@ -141,65 +144,45 @@ document.addEventListener('alpine:init', () => {
         },
 
         initializeData() {
-
-            this.items = {};
-            this.comments = {};
-            this.groups = {};
-            this.lastGroupNumber = 0;
-            this.lastItemNumbers = {};
-
-
-            document.querySelectorAll('tr.group_row').forEach((groupRow) => {
-                const groupId = groupRow.dataset.groupid;
-                const groupPos = groupRow.querySelector('.grouppos').textContent.trim();
-                const groupNumber = parseInt(groupPos);
-
-                this.groups[groupId] = {
-                    id: groupId,
-                    pos: groupPos,
-                    name: groupRow.querySelector('.grouptitle-input').value,
-                    total: this.parseNumber(groupRow.querySelector('.text-right').textContent),
-                    itemCount: 0
+            this.tableData.estimation_groups?.forEach(group => {
+                const groups = {
+                    id: group.id,
+                    name: group.group_name,
+                    pos: group.group_pos,
                 };
+                this.groups[group.id] = groups;
+                this.newItems[group.id] = groups;
 
-                this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
+                this.lastGroupNumber = Math.max(this.lastGroupNumber, parseInt(group.group_pos));
             });
 
-            document.querySelectorAll('tr.item_row').forEach((row) => {
-                const itemId = row.dataset.itemid;
-                const groupId = row.dataset.groupid;
-
-                this.items[itemId] = {
-                    id: itemId,
-                    type: 'item',
-                    groupId: groupId,
-                    pos: row.querySelector('.pos-inner').textContent.trim(),
-                    name: row.querySelector('.item-name').value,
-                    quantity: this.parseNumber(row.querySelector('.item-quantity').value),
-                    prices: this.updateItemPriceAndTotal(itemId),
-                    optional: row.querySelector('.item-optional').checked ? 1 : 0,
-                    unit: row.querySelector('.item-unit').value
-                };
-
-                this.groups[groupId].itemCount++;
+            this.tableData.products?.forEach(product => {
+                if (product.type === 'item') {
+                    const items = {
+                        id: product.id,
+                        type: 'item',
+                        groupId: product.group_id,
+                        name: product.name,
+                        quantity: product.quantity,
+                        unit: product.unit,
+                        optional: product.is_optional,
+                        // prices: this.updateItemPriceAndTotal(product.id),
+                        pos: product.pos
+                    };
+                    this.items[product.id] = items;
+                    this.newItems[product.id] = items;
+                } else if (product.type === 'comment') {
+                    const comments = {
+                        id: product.id,
+                        type: 'comment',
+                        groupId: product.group_id,
+                        content: product.content,
+                        pos: product.pos
+                    };
+                    this.comments[product.id] = comments;
+                    this.newItems[product.id] = comments;
+                }
             });
-
-            document.querySelectorAll('tr.item_comment').forEach((row) => {
-                const itemId = row.dataset.commentid;
-                const groupId = row.dataset.groupid;
-
-                this.comments[itemId] = {
-                    id: itemId,
-                    type: 'comment',
-                    groupId: groupId,
-                    pos: row.querySelector('.pos-inner').textContent.trim(),
-                    content: row.querySelector('.column_name input').value,
-                    expanded: false
-                };
-
-                this.groups[groupId].itemCount++;
-            });
-
             this.updatePOSNumbers();
             this.calculateTotals();
         },

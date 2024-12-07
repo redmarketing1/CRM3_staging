@@ -19,6 +19,7 @@ document.addEventListener('alpine:init', function () {
       comments: {},
       groups: {},
       newItems: {},
+      tableData: {},
       totals: {},
       expandedRows: {},
       lastGroupNumber: 0,
@@ -51,6 +52,7 @@ document.addEventListener('alpine:init', function () {
       },
       init: function init() {
         var _this = this;
+        this.tableData = JSON.parse(document.querySelector('#estimation-edit-table').dataset.table);
         this.$nextTick(function () {
           _this.isInitializing = true;
           _this.initializeData();
@@ -154,53 +156,45 @@ document.addEventListener('alpine:init', function () {
         }
       },
       initializeData: function initializeData() {
-        var _this4 = this;
-        this.items = {};
-        this.comments = {};
-        this.groups = {};
-        this.lastGroupNumber = 0;
-        this.lastItemNumbers = {};
-        document.querySelectorAll('tr.group_row').forEach(function (groupRow) {
-          var groupId = groupRow.dataset.groupid;
-          var groupPos = groupRow.querySelector('.grouppos').textContent.trim();
-          var groupNumber = parseInt(groupPos);
-          _this4.groups[groupId] = {
-            id: groupId,
-            pos: groupPos,
-            name: groupRow.querySelector('.grouptitle-input').value,
-            total: _this4.parseNumber(groupRow.querySelector('.text-right').textContent),
-            itemCount: 0
+        var _this$tableData$estim,
+          _this4 = this,
+          _this$tableData$produ;
+        (_this$tableData$estim = this.tableData.estimation_groups) === null || _this$tableData$estim === void 0 || _this$tableData$estim.forEach(function (group) {
+          var groups = {
+            id: group.id,
+            name: group.group_name,
+            pos: group.group_pos
           };
-          _this4.lastGroupNumber = Math.max(_this4.lastGroupNumber, groupNumber);
+          _this4.groups[group.id] = groups;
+          _this4.newItems[group.id] = groups;
+          _this4.lastGroupNumber = Math.max(_this4.lastGroupNumber, parseInt(group.group_pos));
         });
-        document.querySelectorAll('tr.item_row').forEach(function (row) {
-          var itemId = row.dataset.itemid;
-          var groupId = row.dataset.groupid;
-          _this4.items[itemId] = {
-            id: itemId,
-            type: 'item',
-            groupId: groupId,
-            pos: row.querySelector('.pos-inner').textContent.trim(),
-            name: row.querySelector('.item-name').value,
-            quantity: _this4.parseNumber(row.querySelector('.item-quantity').value),
-            prices: _this4.updateItemPriceAndTotal(itemId),
-            optional: row.querySelector('.item-optional').checked ? 1 : 0,
-            unit: row.querySelector('.item-unit').value
-          };
-          _this4.groups[groupId].itemCount++;
-        });
-        document.querySelectorAll('tr.item_comment').forEach(function (row) {
-          var itemId = row.dataset.commentid;
-          var groupId = row.dataset.groupid;
-          _this4.comments[itemId] = {
-            id: itemId,
-            type: 'comment',
-            groupId: groupId,
-            pos: row.querySelector('.pos-inner').textContent.trim(),
-            content: row.querySelector('.column_name input').value,
-            expanded: false
-          };
-          _this4.groups[groupId].itemCount++;
+        (_this$tableData$produ = this.tableData.products) === null || _this$tableData$produ === void 0 || _this$tableData$produ.forEach(function (product) {
+          if (product.type === 'item') {
+            var items = {
+              id: product.id,
+              type: 'item',
+              groupId: product.group_id,
+              name: product.name,
+              quantity: product.quantity,
+              unit: product.unit,
+              optional: product.is_optional,
+              // prices: this.updateItemPriceAndTotal(product.id),
+              pos: product.pos
+            };
+            _this4.items[product.id] = items;
+            _this4.newItems[product.id] = items;
+          } else if (product.type === 'comment') {
+            var comments = {
+              id: product.id,
+              type: 'comment',
+              groupId: product.group_id,
+              content: product.content,
+              pos: product.pos
+            };
+            _this4.comments[product.id] = comments;
+            _this4.newItems[product.id] = comments;
+          }
         });
         this.updatePOSNumbers();
         this.calculateTotals();
