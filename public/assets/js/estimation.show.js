@@ -2,6 +2,12 @@
 /*!*******************************************************************!*\
   !*** ./Modules/Estimation/Resources/assets/js/estimation.show.js ***!
   \*******************************************************************/
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
@@ -162,8 +168,11 @@ document.addEventListener('alpine:init', function () {
         (_this$tableData$estim = this.tableData.estimation_groups) === null || _this$tableData$estim === void 0 || _this$tableData$estim.forEach(function (group) {
           var groups = {
             id: group.id,
+            type: 'group',
             name: group.group_name,
-            pos: group.group_pos
+            pos: group.group_pos,
+            total: 0,
+            expanded: false
           };
           _this4.groups[group.id] = groups;
           _this4.newItems[group.id] = groups;
@@ -1173,7 +1182,109 @@ document.addEventListener('alpine:init', function () {
             _this24.lastSaveText = 'is running...';
             $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
           },
-          success: function success(response) {
+          success: function success(_ref7) {
+            var items = _ref7.items,
+              comments = _ref7.comments,
+              groups = _ref7.groups;
+            if (items) {
+              Object.entries(items).forEach(function (_ref8) {
+                var _ref9 = _slicedToArray(_ref8, 2),
+                  oldId = _ref9[0],
+                  newId = _ref9[1];
+                var itemKey = Object.keys(_this24.items).find(function (key) {
+                  return _this24.items[key].id.toString() === oldId;
+                });
+                if (itemKey) {
+                  // Create new object with updated id
+                  var updatedItem = _objectSpread(_objectSpread({}, _this24.items[itemKey]), {}, {
+                    id: newId
+                  });
+
+                  // Remove old entry and add new one
+                  delete _this24.items[itemKey];
+                  _this24.items[newId] = updatedItem;
+                }
+
+                // Update DOM elements
+                var row = document.querySelector("tr[data-itemid=\"".concat(oldId, "\"]"));
+                if (row) {
+                  row.dataset.itemid = newId;
+                  row.dataset.id = newId;
+
+                  // Update input names
+                  var inputs = row.querySelectorAll("[name*=\"[".concat(oldId, "]\"]"));
+                  inputs.forEach(function (input) {
+                    input.name = input.name.replace("[".concat(oldId, "]"), "[".concat(newId, "]"));
+                  });
+                }
+              });
+            }
+            if (comments) {
+              Object.entries(comments).forEach(function (_ref10) {
+                var _ref11 = _slicedToArray(_ref10, 2),
+                  oldId = _ref11[0],
+                  newId = _ref11[1];
+                var itemKey = Object.keys(_this24.comments).find(function (key) {
+                  return _this24.comments[key].id.toString() === oldId;
+                });
+                if (itemKey) {
+                  // Create new object with updated id
+                  var updatedItem = _objectSpread(_objectSpread({}, _this24.comments[itemKey]), {}, {
+                    id: newId
+                  });
+
+                  // Remove old entry and add new one
+                  delete _this24.comments[itemKey];
+                  _this24.comments[newId] = updatedItem;
+                }
+
+                // Update DOM elements
+                var row = document.querySelector("tr[data-commentid=\"".concat(oldId, "\"]"));
+                if (row) {
+                  row.dataset.commentid = newId;
+                  row.dataset.id = newId;
+
+                  // Update input names
+                  var inputs = row.querySelectorAll("[name*=\"[".concat(oldId, "]\"]"));
+                  inputs.forEach(function (input) {
+                    input.name = input.name.replace("[".concat(oldId, "]"), "[".concat(newId, "]"));
+                  });
+                }
+              });
+            }
+            if (groups) {
+              Object.entries(groups).forEach(function (_ref12) {
+                var _ref13 = _slicedToArray(_ref12, 2),
+                  oldId = _ref13[0],
+                  newId = _ref13[1];
+                var itemKey = Object.keys(_this24.groups).find(function (key) {
+                  return _this24.groups[key].id.toString() === oldId;
+                });
+                if (itemKey) {
+                  // Create new object with updated id
+                  var updatedItem = _objectSpread(_objectSpread({}, _this24.groups[itemKey]), {}, {
+                    id: newId
+                  });
+
+                  // Remove old entry and add new one
+                  delete _this24.groups[itemKey];
+                  _this24.groups[newId] = updatedItem;
+                }
+
+                // Update DOM elements
+                var row = document.querySelector("tr[data-groupid=\"".concat(oldId, "\"]"));
+                if (row) {
+                  row.dataset.groupid = newId;
+                  row.dataset.id = newId;
+
+                  // Update input names
+                  var inputs = row.querySelectorAll("[name*=\"[".concat(oldId, "]\"]"));
+                  inputs.forEach(function (input) {
+                    input.name = input.name.replace("[".concat(oldId, "]"), "[".concat(newId, "]"));
+                  });
+                }
+              });
+            }
             _this24.lastSaveTimestamp = Date.now();
             _this24.lastSaveText = _this24.formatTimeAgo(_this24.lastSaveTimestamp);
             toastrs("success", "Estimation data has been saved.");

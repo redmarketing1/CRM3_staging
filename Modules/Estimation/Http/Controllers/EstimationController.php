@@ -63,22 +63,34 @@ class EstimationController extends Controller
         $items    = $request->items;
         $comments = $request->comments;
 
+        // Track new IDs
+        $new_item_ids = [];
+
         $prices = collect($items)->flatMap(function ($item) {
             return collect($item['prices'])->map(function ($price) use ($item) {
                 return array_merge(['productId' => $item['id']], $price);
             });
         });
-    
-        self::updateItem($items, $form);
-        self::updateComment($comments, $form);
-        self::updateGroupItem($groups, $form);
-        self::updateQuote($prices);
+
         self::estimateQuote($cards);
+        self::updateQuote($prices);
+
+        $new_item_ids    = self::updateItem($items, $form);
+        $new_comment_ids = self::updateComment($comments, $form);
+        $new_group_ids   = self::updateGroupItem($groups, $form);
+
 
         ProjectEstimation::find($form['id'])->update([
             "title"                 => $form['title'],
             "issue_date"            => $form['issue_date'],
             "technical_description" => $form['technical_description'],
+        ]);
+
+        // Return all new IDs
+        return response()->json([
+            'items'    => $new_item_ids,
+            'comments' => $new_comment_ids,
+            'groups'   => $new_group_ids,
         ]);
     }
 
@@ -114,9 +126,12 @@ class EstimationController extends Controller
 
     private function updateItem($items, $form)
     {
+        $new_ids = [];
+
         foreach ($items ?? [] as $key => $item) {
 
             $existingItem = ProjectEstimationProduct::query();
+            $tempId       = $item['id'];
 
             if ($existingItem->find($item['id'])) {
                 $existingItem->update([
@@ -129,7 +144,7 @@ class EstimationController extends Controller
                     'is_optional'           => $item['optional'],
                 ]);
             } else {
-                tap($existingItem->create([
+                $newItem = tap($existingItem->create([
                     'project_estimation_id' => $form['id'],
                     'name'                  => $item['name'],
                     'pos'                   => $item['pos'],
@@ -146,14 +161,23 @@ class EstimationController extends Controller
                 }
                 );
             }
+
+            if (strlen($tempId) === 13) { // Timestamp ID check
+                $new_ids[$tempId] = $newItem->id;
+            }
         }
+
+        return $new_ids;
     }
 
     private function updateComment($comments, $form)
     {
+        $new_ids = [];
+
         foreach ($comments ?? [] as $key => $comment) {
 
             $existingItem = ProjectEstimationProduct::query();
+            $tempId       = $comment['id'];
 
             if ($existingItem->find($comment['id'])) {
                 $existingItem->update([
@@ -163,7 +187,7 @@ class EstimationController extends Controller
                     'pos'                   => $comment['pos'],
                 ]);
             } else {
-                tap($existingItem->create([
+                $newComment = tap($existingItem->create([
                     'project_estimation_id' => $form['id'],
                     'description'           => $comment['content'],
                     'comment'               => $comment['content'],
@@ -178,13 +202,24 @@ class EstimationController extends Controller
                 }
                 );
             }
+
+            if (strlen($tempId) === 13) { // Timestamp ID check
+                $new_ids[$tempId] = $newComment->id;
+            }
         }
+
+        return $new_ids;
     }
 
     private function updateGroupItem($items, $form)
     {
+        $new_ids = [];
+
         foreach ($items ?? [] as $key => $item) {
-            EstimationGroup::updateOrCreate(
+
+            $tempId = $item['id'];
+
+            $newItem = EstimationGroup::updateOrCreate(
                 [
                     'id' => $item['id'],
                 ],
@@ -194,7 +229,13 @@ class EstimationController extends Controller
                     'group_pos'     => $item['pos'],
                 ],
             );
+
+            if (strlen($tempId) === 13) { // Timestamp ID check
+                $new_ids[$tempId] = $newItem->id;
+            }
         }
+
+        return $new_ids;
     }
 
     public function destroy(Request $request)

@@ -86,7 +86,7 @@
                 x-transition:leave-end="opacity-0 transform scale-95">
                 <td colspan="3"></td>
                 <td colspan="4" class="column_name desc_column w-100 m-l-20">
-                    <textarea class="description_input w-100 tinyMCE" 
+                    <textarea class="description_input w-100 tinyMCE-DIS" 
                               :name="`item[${item.id}][description]`" 
                               placeholder="Items Description"></textarea>
                 </td> 

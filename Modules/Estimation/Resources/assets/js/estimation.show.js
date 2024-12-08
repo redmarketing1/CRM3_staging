@@ -147,8 +147,11 @@ document.addEventListener('alpine:init', () => {
             this.tableData.estimation_groups?.forEach(group => {
                 const groups = {
                     id: group.id,
+                    type: 'group',
                     name: group.group_name,
                     pos: group.group_pos,
+                    total: 0,
+                    expanded: false
                 };
                 this.groups[group.id] = groups;
                 this.newItems[group.id] = groups;
@@ -739,7 +742,7 @@ document.addEventListener('alpine:init', () => {
         createItemsAndComments(type, timestamp, targetRowId) {
 
             if (type !== 'item' && type !== 'comment') return;
- 
+
             const initialPrices = [...new Set(
                 Array.from(document.querySelectorAll('[data-cardquoteid]'), el => el.dataset.cardquoteid)
             )].map(id => ({ id, singlePrice: 0, totalPrice: 0 }));
@@ -1323,7 +1326,110 @@ document.addEventListener('alpine:init', () => {
                     this.lastSaveText = 'is running...';
                     $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
                 },
-                success: (response) => {
+                success: ({ items, comments, groups }) => {
+
+                    if (items) { 
+                        Object.entries(items).forEach(([oldId, newId]) => {
+
+                            const itemKey = Object.keys(this.items).find(key =>
+                                this.items[key].id.toString() === oldId
+                            );
+
+                            if (itemKey) {
+                                // Create new object with updated id
+                                const updatedItem = {
+                                    ...this.items[itemKey],
+                                    id: newId
+                                };
+
+                                // Remove old entry and add new one
+                                delete this.items[itemKey];
+                                this.items[newId] = updatedItem;
+                            } 
+
+                            // Update DOM elements
+                            const row = document.querySelector(`tr[data-itemid="${oldId}"]`);
+                            if (row) {
+                                row.dataset.itemid = newId;
+                                row.dataset.id = newId;
+
+                                // Update input names
+                                const inputs = row.querySelectorAll(`[name*="[${oldId}]"]`);
+                                inputs.forEach(input => {
+                                    input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
+                                });
+                            } 
+                        });
+                    }
+
+                    if (comments) { 
+                        Object.entries(comments).forEach(([oldId, newId]) => {
+
+                            const itemKey = Object.keys(this.comments).find(key =>
+                                this.comments[key].id.toString() === oldId
+                            );
+
+                            if (itemKey) {
+                                // Create new object with updated id
+                                const updatedItem = {
+                                    ...this.comments[itemKey],
+                                    id: newId
+                                };
+
+                                // Remove old entry and add new one
+                                delete this.comments[itemKey];
+                                this.comments[newId] = updatedItem;
+                            } 
+
+                            // Update DOM elements
+                            const row = document.querySelector(`tr[data-commentid="${oldId}"]`);
+                            if (row) {
+                                row.dataset.commentid = newId;
+                                row.dataset.id = newId;
+
+                                // Update input names
+                                const inputs = row.querySelectorAll(`[name*="[${oldId}]"]`);
+                                inputs.forEach(input => {
+                                    input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
+                                });
+                            } 
+                        });
+                    }
+
+                    if (groups) { 
+                        Object.entries(groups).forEach(([oldId, newId]) => {
+
+                            const itemKey = Object.keys(this.groups).find(key =>
+                                this.groups[key].id.toString() === oldId
+                            );
+
+                            if (itemKey) {
+                                // Create new object with updated id
+                                const updatedItem = {
+                                    ...this.groups[itemKey],
+                                    id: newId
+                                };
+
+                                // Remove old entry and add new one
+                                delete this.groups[itemKey];
+                                this.groups[newId] = updatedItem;
+                            } 
+
+                            // Update DOM elements
+                            const row = document.querySelector(`tr[data-groupid="${oldId}"]`);
+                            if (row) {
+                                row.dataset.groupid = newId;
+                                row.dataset.id = newId;
+
+                                // Update input names
+                                const inputs = row.querySelectorAll(`[name*="[${oldId}]"]`);
+                                inputs.forEach(input => {
+                                    input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
+                                });
+                            } 
+                        });
+                    }
+
                     this.lastSaveTimestamp = Date.now();
                     this.lastSaveText = this.formatTimeAgo(this.lastSaveTimestamp);
                     toastrs("success", "Estimation data has been saved.");
@@ -1333,7 +1439,7 @@ document.addEventListener('alpine:init', () => {
                 },
                 error: (error) => {
                     console.error('Error saving data:', error);
-                    toastrs("error", "Failed to save changes.");
+                    toastrs("error", "Failed to save changes."); 
                     this.hasUnsavedChanges = true;
                     this.lastSaveText = 'is failed';
                 }
