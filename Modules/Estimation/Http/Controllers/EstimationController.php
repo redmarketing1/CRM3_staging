@@ -130,8 +130,8 @@ class EstimationController extends Controller
 
         foreach ($items ?? [] as $key => $item) {
 
-            $existingItem = ProjectEstimationProduct::query();
             $tempId       = $item['id'];
+            $existingItem = ProjectEstimationProduct::query();
 
             if ($existingItem->find($item['id'])) {
                 $existingItem->update([
@@ -154,6 +154,9 @@ class EstimationController extends Controller
                     'unit'                  => $item['unit'],
                     'is_optional'           => $item['optional'],
                 ]), function ($qoute) use ($item) {
+
+                    // if (! empty($item['prices'])) {
+                    // }
                     $prices = collect($item['prices'])->map(function ($price) use ($qoute) {
                         return array_merge(['productId' => $qoute['id']], $price);
                     });
@@ -169,7 +172,6 @@ class EstimationController extends Controller
 
         return $new_ids;
     }
-
     private function updateComment($comments, $form)
     {
         $new_ids = [];
@@ -237,7 +239,6 @@ class EstimationController extends Controller
 
         return $new_ids;
     }
-
     public function destroy(Request $request)
     {
         if ($request->items) {

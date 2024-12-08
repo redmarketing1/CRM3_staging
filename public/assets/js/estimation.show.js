@@ -1186,105 +1186,44 @@ document.addEventListener('alpine:init', function () {
             var items = _ref7.items,
               comments = _ref7.comments,
               groups = _ref7.groups;
-            if (items) {
-              Object.entries(items).forEach(function (_ref8) {
+            // Helper function to update IDs and DOM elements
+            var updateEntities = function updateEntities(entities, oldNewIds, type) {
+              if (!oldNewIds) return;
+              Object.entries(oldNewIds).forEach(function (_ref8) {
                 var _ref9 = _slicedToArray(_ref8, 2),
                   oldId = _ref9[0],
                   newId = _ref9[1];
-                var itemKey = Object.keys(_this24.items).find(function (key) {
-                  return _this24.items[key].id.toString() === oldId;
+                // Update state
+                var itemKey = Object.keys(entities).find(function (key) {
+                  return entities[key].id.toString() === oldId;
                 });
                 if (itemKey) {
-                  // Create new object with updated id
-                  var updatedItem = _objectSpread(_objectSpread({}, _this24.items[itemKey]), {}, {
+                  entities[newId] = _objectSpread(_objectSpread({}, entities[itemKey]), {}, {
                     id: newId
                   });
-
-                  // Remove old entry and add new one
-                  delete _this24.items[itemKey];
-                  _this24.items[newId] = updatedItem;
+                  delete entities[itemKey];
                 }
 
-                // Update DOM elements
-                var row = document.querySelector("tr[data-itemid=\"".concat(oldId, "\"]"));
+                // Update DOM
+                var row = document.querySelector("tr[data-".concat(type, "id=\"").concat(oldId, "\"]"));
                 if (row) {
-                  row.dataset.itemid = newId;
+                  row.dataset["".concat(type, "id")] = newId;
                   row.dataset.id = newId;
 
                   // Update input names
-                  var inputs = row.querySelectorAll("[name*=\"[".concat(oldId, "]\"]"));
-                  inputs.forEach(function (input) {
+                  row.querySelectorAll("[name*=\"[".concat(oldId, "]\"]")).forEach(function (input) {
                     input.name = input.name.replace("[".concat(oldId, "]"), "[".concat(newId, "]"));
                   });
                 }
               });
-            }
-            if (comments) {
-              Object.entries(comments).forEach(function (_ref10) {
-                var _ref11 = _slicedToArray(_ref10, 2),
-                  oldId = _ref11[0],
-                  newId = _ref11[1];
-                var itemKey = Object.keys(_this24.comments).find(function (key) {
-                  return _this24.comments[key].id.toString() === oldId;
-                });
-                if (itemKey) {
-                  // Create new object with updated id
-                  var updatedItem = _objectSpread(_objectSpread({}, _this24.comments[itemKey]), {}, {
-                    id: newId
-                  });
+            };
 
-                  // Remove old entry and add new one
-                  delete _this24.comments[itemKey];
-                  _this24.comments[newId] = updatedItem;
-                }
+            // Update all entity types
+            updateEntities(_this24.items, items, 'item');
+            updateEntities(_this24.comments, comments, 'comment');
+            updateEntities(_this24.groups, groups, 'group');
 
-                // Update DOM elements
-                var row = document.querySelector("tr[data-commentid=\"".concat(oldId, "\"]"));
-                if (row) {
-                  row.dataset.commentid = newId;
-                  row.dataset.id = newId;
-
-                  // Update input names
-                  var inputs = row.querySelectorAll("[name*=\"[".concat(oldId, "]\"]"));
-                  inputs.forEach(function (input) {
-                    input.name = input.name.replace("[".concat(oldId, "]"), "[".concat(newId, "]"));
-                  });
-                }
-              });
-            }
-            if (groups) {
-              Object.entries(groups).forEach(function (_ref12) {
-                var _ref13 = _slicedToArray(_ref12, 2),
-                  oldId = _ref13[0],
-                  newId = _ref13[1];
-                var itemKey = Object.keys(_this24.groups).find(function (key) {
-                  return _this24.groups[key].id.toString() === oldId;
-                });
-                if (itemKey) {
-                  // Create new object with updated id
-                  var updatedItem = _objectSpread(_objectSpread({}, _this24.groups[itemKey]), {}, {
-                    id: newId
-                  });
-
-                  // Remove old entry and add new one
-                  delete _this24.groups[itemKey];
-                  _this24.groups[newId] = updatedItem;
-                }
-
-                // Update DOM elements
-                var row = document.querySelector("tr[data-groupid=\"".concat(oldId, "\"]"));
-                if (row) {
-                  row.dataset.groupid = newId;
-                  row.dataset.id = newId;
-
-                  // Update input names
-                  var inputs = row.querySelectorAll("[name*=\"[".concat(oldId, "]\"]"));
-                  inputs.forEach(function (input) {
-                    input.name = input.name.replace("[".concat(oldId, "]"), "[".concat(newId, "]"));
-                  });
-                }
-              });
-            }
+            // Update UI state
             _this24.lastSaveTimestamp = Date.now();
             _this24.lastSaveText = _this24.formatTimeAgo(_this24.lastSaveTimestamp);
             toastrs("success", "Estimation data has been saved.");

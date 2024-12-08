@@ -1328,118 +1328,55 @@ document.addEventListener('alpine:init', () => {
                 },
                 success: ({ items, comments, groups }) => {
 
-                    if (items) { 
-                        Object.entries(items).forEach(([oldId, newId]) => {
+                    // Helper function to update IDs and DOM elements
+                    const updateEntities = (entities, oldNewIds, type) => {
+                        if (!oldNewIds) return;
 
-                            const itemKey = Object.keys(this.items).find(key =>
-                                this.items[key].id.toString() === oldId
+                        Object.entries(oldNewIds).forEach(([oldId, newId]) => {
+                            // Update state
+                            const itemKey = Object.keys(entities).find(key =>
+                                entities[key].id.toString() === oldId
                             );
 
                             if (itemKey) {
-                                // Create new object with updated id
-                                const updatedItem = {
-                                    ...this.items[itemKey],
-                                    id: newId
-                                };
+                                entities[newId] = { ...entities[itemKey], id: newId };
+                                delete entities[itemKey];
+                            }
 
-                                // Remove old entry and add new one
-                                delete this.items[itemKey];
-                                this.items[newId] = updatedItem;
-                            } 
-
-                            // Update DOM elements
-                            const row = document.querySelector(`tr[data-itemid="${oldId}"]`);
+                            // Update DOM
+                            const row = document.querySelector(`tr[data-${type}id="${oldId}"]`);
                             if (row) {
-                                row.dataset.itemid = newId;
+                                row.dataset[`${type}id`] = newId;
                                 row.dataset.id = newId;
 
                                 // Update input names
-                                const inputs = row.querySelectorAll(`[name*="[${oldId}]"]`);
-                                inputs.forEach(input => {
-                                    input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
-                                });
-                            } 
+                                row.querySelectorAll(`[name*="[${oldId}]"]`)
+                                    .forEach(input => {
+                                        input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
+                                    });
+                            }
                         });
-                    }
+                    };
 
-                    if (comments) { 
-                        Object.entries(comments).forEach(([oldId, newId]) => {
+                    // Update all entity types
+                    updateEntities(this.items, items, 'item');
+                    updateEntities(this.comments, comments, 'comment');
+                    updateEntities(this.groups, groups, 'group');
 
-                            const itemKey = Object.keys(this.comments).find(key =>
-                                this.comments[key].id.toString() === oldId
-                            );
-
-                            if (itemKey) {
-                                // Create new object with updated id
-                                const updatedItem = {
-                                    ...this.comments[itemKey],
-                                    id: newId
-                                };
-
-                                // Remove old entry and add new one
-                                delete this.comments[itemKey];
-                                this.comments[newId] = updatedItem;
-                            } 
-
-                            // Update DOM elements
-                            const row = document.querySelector(`tr[data-commentid="${oldId}"]`);
-                            if (row) {
-                                row.dataset.commentid = newId;
-                                row.dataset.id = newId;
-
-                                // Update input names
-                                const inputs = row.querySelectorAll(`[name*="[${oldId}]"]`);
-                                inputs.forEach(input => {
-                                    input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
-                                });
-                            } 
-                        });
-                    }
-
-                    if (groups) { 
-                        Object.entries(groups).forEach(([oldId, newId]) => {
-
-                            const itemKey = Object.keys(this.groups).find(key =>
-                                this.groups[key].id.toString() === oldId
-                            );
-
-                            if (itemKey) {
-                                // Create new object with updated id
-                                const updatedItem = {
-                                    ...this.groups[itemKey],
-                                    id: newId
-                                };
-
-                                // Remove old entry and add new one
-                                delete this.groups[itemKey];
-                                this.groups[newId] = updatedItem;
-                            } 
-
-                            // Update DOM elements
-                            const row = document.querySelector(`tr[data-groupid="${oldId}"]`);
-                            if (row) {
-                                row.dataset.groupid = newId;
-                                row.dataset.id = newId;
-
-                                // Update input names
-                                const inputs = row.querySelectorAll(`[name*="[${oldId}]"]`);
-                                inputs.forEach(input => {
-                                    input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
-                                });
-                            } 
-                        });
-                    }
-
+                    // Update UI state
                     this.lastSaveTimestamp = Date.now();
                     this.lastSaveText = this.formatTimeAgo(this.lastSaveTimestamp);
+
                     toastrs("success", "Estimation data has been saved.");
                     $('#save-button').html(`Saved last changed.`);
+
                     this.hasUnsavedChanges = false;
                     this.startTimeAgoUpdates();
                 },
                 error: (error) => {
                     console.error('Error saving data:', error);
                     toastrs("error", "Failed to save changes."); 
+                    
                     this.hasUnsavedChanges = true;
                     this.lastSaveText = 'is failed';
                 }
