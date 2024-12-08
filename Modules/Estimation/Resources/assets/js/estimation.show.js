@@ -700,17 +700,13 @@ document.addEventListener('alpine:init', () => {
             });
         },
 
-        addItem(type, targetRowId = null) {
+        addItem(type, targetGroupId = null) {
             const timestamp = Date.now();
 
             if (type === 'group') {
-                this.createGroups(type, timestamp, targetRowId);
+                this.createGroups(type, timestamp);
             } else if (type === 'item' || type === 'comment') {
-                this.createItemsAndComments(type, timestamp, targetRowId);
-            }
-
-            if (targetRowId) {
-                this.contextMenu.show = false;
+                this.createItemsAndComments(type, timestamp, targetGroupId);
             }
         },
 
@@ -753,16 +749,17 @@ document.addEventListener('alpine:init', () => {
             return;
         },
 
-        createItemsAndComments(type, timestamp, targetRowId) {
+        createItemsAndComments(type, timestamp, targetRowId, targetGroupId = null) {
             if (type !== 'item' && type !== 'comment') return;
 
             const initialPrices = [...new Set(
                 Array.from(document.querySelectorAll('[data-cardquoteid]'), el => el.dataset.cardquoteid)
             )].map(id => ({ id, singlePrice: 0, totalPrice: 0 }));
 
-            const currentGroupId = this.getCurrentGroupId(targetRowId);
+            // Use passed targetGroupId or get from current context
+            const currentGroupId = targetGroupId || this.getCurrentGroupId();
+            if (!currentGroupId) return;
 
-            // Add item or comment
             if (type === 'item') {
                 const items = {
                     id: timestamp,
@@ -781,43 +778,21 @@ document.addEventListener('alpine:init', () => {
                 this.items[timestamp] = items;
                 this.newItems[timestamp] = items;
             } else {
-                const items = {
+                const comment = {
                     id: timestamp,
                     type: 'comment',
                     groupId: currentGroupId,
                     content: 'New Comment',
-                    quantity: 0,
-                    price: 0,
-                    prices: initialPrices,
-                    unit: '',
-                    optional: 0,
                     expanded: false,
                     pos: '',
                 };
 
-                this.comments[timestamp] = items;
-                this.newItems[timestamp] = items;
+                // Add to both collections
+                this.comments[timestamp] = comment;
+                this.newItems[timestamp] = comment;
             }
 
             this.$nextTick(() => {
-                if (targetRowId) {
-                    const targetRow = document.querySelector(`
-                        tr[data-id="${targetRowId}"], 
-                        tr[data-itemid="${targetRowId}"], 
-                        tr[data-commentid="${targetRowId}"], 
-                        tr[data-groupid="${targetRowId}"]`
-                    );
-
-                    const newRow = document.querySelector(`
-                        tr[data-id="${timestamp}"]`
-                    );
-
-                    if (newRow && targetRow.nextSibling) {
-                        targetRow.parentNode.insertBefore(newRow, targetRow.nextSibling);
-                    }
-                }
-
-                this.initializeSortable();
                 this.updatePOSNumbers();
                 this.calculateTotals();
             });
@@ -939,6 +914,12 @@ document.addEventListener('alpine:init', () => {
                     }
                 }
             });
+        },
+
+        getCurrentGroupId() {
+            // Get the last group from sorted groups
+            const groups = this.getSortedGroups();
+            return groups.length > 0 ? groups[groups.length - 1].id : null;
         },
 
         getSortedGroups() {

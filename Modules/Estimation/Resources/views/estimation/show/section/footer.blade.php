@@ -2,7 +2,7 @@
     @if (auth()->user()->type == 'company')
         <div class="button-wrapper-left gap-3">
             @permission('estimation add item option')
-                <button type="button" @click="addItem('item')">
+                <button type="button" @click="addItem('item', getCurrentGroupId())">
                     <i class="fa-solid fa-plus"></i>
                     {{ __('Item') }}
                 </button>
@@ -16,14 +16,14 @@
             @endpermission
 
             @permission('estimation add comment option')
-                <button type="button" @click="addItem('comment')">
+                <button type="button" @click="addItem('comment', getCurrentGroupId())">
                     <i class="fa-solid fa-plus"></i>
                     {{ __('Comment') }}
                 </button>
             @endpermission
 
             @permission('estimation remove option')
-                <button type="button" @click="removeItem">
+                <button type="button" @click="removeItem()">
                     <i class="fa-solid fa-plus"></i>
                     {{ __('Remove') }}
                 </button>
