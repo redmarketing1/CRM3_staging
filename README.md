@@ -4,7 +4,7 @@
 
 This is a custom development project for neu-west.com using Laravel 10 framework & PHP 8.2
 
-version : 0.6
+version : 0.7
 
 ## Features Checklist
 
