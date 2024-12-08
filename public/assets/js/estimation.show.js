@@ -188,11 +188,11 @@ document.addEventListener('alpine:init', function () {
               quantity: product.quantity,
               unit: product.unit,
               optional: product.is_optional,
-              // prices: this.updateItemPriceAndTotal(product.id),
               pos: product.pos
             };
             _this4.items[product.id] = items;
             _this4.newItems[product.id] = items;
+            _this4.updateItemPriceAndTotal(product.id);
           } else if (product.type === 'comment') {
             var comments = {
               id: product.id,
@@ -501,17 +501,17 @@ document.addEventListener('alpine:init', function () {
       },
       updateItemPriceAndTotal: function updateItemPriceAndTotal(itemId) {
         var _this10 = this;
-        var row = document.querySelector(".item_row[data-itemid=\"".concat(itemId, "\"]"));
-        var singlePricing = row.querySelectorAll('.item-price');
-        var prices = Array.from(singlePricing).map(function (element) {
-          var quoteId = element.closest('td[data-cardquoteid]').dataset.cardquoteid;
-          var singlePrice = _this10.parseNumber(element.value);
-          var quantity = _this10.parseNumber(row.querySelector('.item-quantity').value);
-          var total = singlePrice * quantity;
+        if (!itemId || !this.items[itemId]) return [];
+        var item = this.items[itemId];
+        var quantity = this.parseNumber(item.quantity || '0');
+        var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]'), function (el) {
+          return el.dataset.cardquoteid;
+        })));
+        var prices = cardQuoteIds.map(function (quoteId) {
           return {
             id: quoteId,
-            singlePrice: singlePrice,
-            totalPrice: total
+            singlePrice: _this10.parseNumber(item.price || '0'),
+            totalPrice: quantity * _this10.parseNumber(item.price || '0')
           };
         });
         if (this.items[itemId]) {
@@ -707,18 +707,7 @@ document.addEventListener('alpine:init', function () {
             totalPrice: 0
           };
         });
-
-        // Helper to get current group ID
-        var getCurrentGroupId = function getCurrentGroupId(targetRowId) {
-          if (targetRowId) {
-            var targetRow = document.querySelector("tr[data-id=\"".concat(targetRowId, "\"], \n                 tr[data-itemid=\"").concat(targetRowId, "\"], \n                 tr[data-commentid=\"").concat(targetRowId, "\"], \n                 tr[data-groupid=\"").concat(targetRowId, "\"]"));
-            return (targetRow === null || targetRow === void 0 ? void 0 : targetRow.dataset.groupid) || null;
-          } else {
-            var lastGroupRow = document.querySelector('tr.group_row:last-of-type');
-            return (lastGroupRow === null || lastGroupRow === void 0 ? void 0 : lastGroupRow.dataset.groupid) || null;
-          }
-        };
-        var currentGroupId = getCurrentGroupId(targetRowId);
+        var currentGroupId = this.getCurrentGroupId(targetRowId);
 
         // Add item or comment
         if (type === 'item') {
@@ -817,6 +806,16 @@ document.addEventListener('alpine:init', function () {
           }
         });
       },
+      getCurrentGroupId: function getCurrentGroupId(targetRowId) {
+        if (targetRowId) {
+          var targetRow = document.querySelector("tr[data-id=\"".concat(targetRowId, "\"], \n                 tr[data-itemid=\"").concat(targetRowId, "\"], \n                 tr[data-commentid=\"").concat(targetRowId, "\"], \n                 tr[data-groupid=\"").concat(targetRowId, "\"]"));
+          return (targetRow === null || targetRow === void 0 ? void 0 : targetRow.dataset.groupid) || null;
+        } else {
+          var allGroupRows = document.querySelectorAll('tr.group.group_row');
+          var lastGroupRow = allGroupRows[allGroupRows.length - 1];
+          return (lastGroupRow === null || lastGroupRow === void 0 ? void 0 : lastGroupRow.dataset.groupid) || null;
+        }
+      },
       updatePOSNumbers: function updatePOSNumbers() {
         var _this17 = this;
         var currentGroupPos = 0;
@@ -832,13 +831,21 @@ document.addEventListener('alpine:init', function () {
             if (_this17.groups[lastGroupId]) {
               _this17.groups[lastGroupId].pos = groupPos;
             }
-          } else if (row.classList.contains('item_row') || row.classList.contains('item_comment')) {
+          } else if (row.classList.contains('item_row')) {
             itemCountInGroup++;
             var itemPos = "".concat(currentGroupPos.toString().padStart(2, '0'), ".").concat(itemCountInGroup.toString().padStart(2, '0'));
             row.querySelector('.pos-inner').textContent = itemPos;
-            var itemId = row.dataset.itemid || row.dataset.commentid;
+            var itemId = row.dataset.itemid;
             if (_this17.items[itemId]) {
               _this17.items[itemId].pos = itemPos;
+            }
+          } else if (row.classList.contains('item_comment')) {
+            itemCountInGroup++;
+            var _itemPos = "".concat(currentGroupPos.toString().padStart(2, '0'), ".").concat(itemCountInGroup.toString().padStart(2, '0'));
+            row.querySelector('.pos-inner').textContent = _itemPos;
+            var _itemId = row.dataset.itemid || row.dataset.commentid;
+            if (_this17.comments[_itemId]) {
+              _this17.comments[_itemId].pos = _itemPos;
             }
           }
         });

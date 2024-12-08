@@ -66,7 +66,7 @@ class EstimationController extends Controller
         // Track new IDs
         $new_item_ids = [];
 
-        $prices = collect($items)->flatMap(function ($item) {
+        $prices = collect($items)->flatMap(function ($item) { 
             return collect($item['prices'])->map(function ($price) use ($item) {
                 return array_merge(['productId' => $item['id']], $price);
             });
@@ -138,6 +138,7 @@ class EstimationController extends Controller
                     'project_estimation_id' => $form['id'],
                     'name'                  => $item['name'],
                     'pos'                   => $item['pos'],
+                    'group_id'              => $item['groupId'],
                     'type'                  => 'item',
                     'quantity'              => $item['quantity'],
                     'unit'                  => $item['unit'],
@@ -187,6 +188,7 @@ class EstimationController extends Controller
                     'description'           => $comment['content'],
                     'comment'               => $comment['content'],
                     'pos'                   => $comment['pos'],
+                    'group_id'              => $comment['groupId'],
                 ]);
             } else {
                 $newComment = tap($existingItem->create([
