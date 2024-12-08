@@ -627,9 +627,7 @@ document.addEventListener('alpine:init', () => {
                 stop: (event, ui) => {
                     const movedRow = ui.item[0];
 
-
                     if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
-
                         let currentRow = movedRow.previousElementSibling;
                         let newGroupRow = null;
 
@@ -642,19 +640,33 @@ document.addEventListener('alpine:init', () => {
 
                         if (newGroupRow) {
                             const newGroupId = newGroupRow.dataset.groupid;
-                            const itemId = movedRow.dataset.itemid || movedRow.dataset.id;
+                            const itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
                             const oldGroupId = movedRow.dataset.groupid;
 
 
                             movedRow.dataset.groupid = newGroupId;
 
-
-                            if (this.items[itemId]) {
+                            // Update items state
+                            if (movedRow.classList.contains('item_row') && this.items[itemId]) {
                                 this.items[itemId].groupId = newGroupId;
+
+                                // Update newItems if it exists there
+                                if (this.newItems[itemId]) {
+                                    this.newItems[itemId].groupId = newGroupId;
+                                }
+                            }
+
+                            // Update comments state
+                            if (movedRow.classList.contains('item_comment') && this.comments[itemId]) {
+                                this.comments[itemId].groupId = newGroupId;
+
+                                // Update newItems if it exists there
+                                if (this.newItems[itemId]) {
+                                    this.newItems[itemId].groupId = newGroupId;
+                                }
                             }
                         }
                     }
-
 
                     this.updatePOSNumbers();
                     this.calculateTotals();
@@ -742,7 +754,6 @@ document.addEventListener('alpine:init', () => {
         },
 
         createItemsAndComments(type, timestamp, targetRowId) {
-
             if (type !== 'item' && type !== 'comment') return;
 
             const initialPrices = [...new Set(
@@ -837,12 +848,15 @@ document.addEventListener('alpine:init', () => {
                         if (row.classList.contains('group_row')) {
                             groupIds.push(row.dataset.groupid);
                             delete this.groups[row.dataset.groupid];
+                            delete this.newItems[row.dataset.groupid];
                         } else {
                             itemIds.push(row.dataset.itemid);
                             delete this.items[row.dataset.itemid];
+                            delete this.newItems[row.dataset.itemid];
 
                             comments.push(row.dataset.commentid);
                             delete this.comments[row.dataset.commentid];
+                            delete this.newItems[row.dataset.commentid];
                         }
                         row.remove();
                     });
@@ -910,7 +924,7 @@ document.addEventListener('alpine:init', () => {
 
                     const itemId = row.dataset.itemid;
                     if (this.items[itemId]) {
-                        this.items[itemId].pos = itemPos; 
+                        this.items[itemId].pos = itemPos;
                     }
                 }
                 else if (row.classList.contains('item_comment')) {
@@ -925,6 +939,39 @@ document.addEventListener('alpine:init', () => {
                     }
                 }
             });
+        },
+
+        getSortedGroups() {
+            // Get all groups from newItems
+            const groups = Object.values(this.newItems)
+                .filter(item => item.type === 'group')
+                .sort((a, b) => this.comparePOS(a.pos, b.pos));
+
+            return groups;
+        },
+
+        getSortedItemsForGroup(groupId) {
+            if (!groupId) return [];
+
+            // Get all items and comments for this group from newItems
+            return Object.values(this.newItems)
+                .filter(item =>
+                    item.groupId === groupId &&
+                    (item.type === 'item' || item.type === 'comment')
+                )
+                .sort((a, b) => this.comparePOS(a.pos, b.pos));
+        },
+
+        comparePOS(posA, posB) {
+            if (!posA || !posB) return 0;
+
+            const [groupA, itemA = "0"] = String(posA).split('.');
+            const [groupB, itemB = "0"] = String(posB).split('.');
+
+            const groupDiff = parseInt(groupA) - parseInt(groupB);
+            if (groupDiff !== 0) return groupDiff;
+
+            return parseInt(itemA) - parseInt(itemB);
         },
 
         duplicateCardColumn(quoteId) {
@@ -1154,13 +1201,15 @@ document.addEventListener('alpine:init', () => {
                     if (row.classList.contains('group_row')) {
                         groupIds.push(row.dataset.groupid);
                         delete this.groups[row.dataset.groupid];
+                        delete this.newItems[row.dataset.groupid];
                     } else {
                         itemIds.push(row.dataset.itemid);
                         delete this.items[row.dataset.itemid];
+                        delete this.newItems[row.dataset.itemid];
 
                         comments.push(row.dataset.commentid);
                         delete this.comments[row.dataset.commentid];
-
+                        delete this.newItems[row.dataset.commentid];
                     }
 
                     $.ajax({
@@ -1329,6 +1378,7 @@ document.addEventListener('alpine:init', () => {
                 items: this.items,
                 comments: this.comments,
                 groups: this.groups,
+                newItems: this.newItems,
             };
 
             $.ajax({

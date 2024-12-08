@@ -59,39 +59,107 @@ class EstimationController extends Controller
     {
         $form     = $request->form;
         $cards    = $request->cards;
-        $groups   = $request->groups;
-        $items    = $request->items;
-        $comments = $request->comments;
+        $newItems = collect($request->newItems);
 
-        // Track new IDs
-        $new_item_ids = [];
+        $new_ids = [
+            'items'    => [],
+            'comments' => [],
+            'groups'   => [],
+        ];
 
-        $prices = collect($items)->flatMap(function ($item) { 
-            return collect($item['prices'])->map(function ($price) use ($item) {
-                return array_merge(['productId' => $item['id']], $price);
-            });
-        });
+        try {
+            DB::beginTransaction();
 
-        self::estimateQuote($cards);
-        self::updateQuote($prices);
+            // Delete previous items
+            ProjectEstimationProduct::where('project_estimation_id', $form['id'])->delete();
+            EstimationGroup::where('estimation_id', $form['id'])->delete();
 
-        $new_item_ids    = self::updateItem($items, $form);
-        $new_comment_ids = self::updateComment($comments, $form);
-        $new_group_ids   = self::updateGroupItem($groups, $form);
+            // First create all groups
+            $groupMapping = [];  // To store temporary group ID to new group ID mapping
+            foreach ($newItems as $item) {
+                if ($item['type'] === 'group') {
+                    $newGroup = EstimationGroup::create([
+                        'estimation_id' => $form['id'],
+                        'group_name'    => $item['name'],
+                        'group_pos'     => $item['pos'],
+                    ]);
 
+                    $groupMapping[$item['id']] = $newGroup->id;
 
-        ProjectEstimation::find($form['id'])->update([
-            "title"                 => $form['title'],
-            "issue_date"            => $form['issue_date'],
-            "technical_description" => $form['technical_description'],
-        ]);
+                    if (strlen($item['id']) === 13) {
+                        $new_ids['groups'][$item['id']] = $newGroup->id;
+                    }
+                }
+            }
 
-        // Return all new IDs
-        return response()->json([
-            'items'    => $new_item_ids,
-            'comments' => $new_comment_ids,
-            'groups'   => $new_group_ids,
-        ]);
+            // Then create all items and comments with correct group IDs
+            foreach ($newItems as $item) {
+                if ($item['type'] === 'item') {
+                    $newItem = ProjectEstimationProduct::create([
+                        'project_estimation_id' => $form['id'],
+                        'group_id'              => $groupMapping[$item['groupId']] ?? null,
+                        'name'                  => $item['name'],
+                        'pos'                   => $item['pos'],
+                        'type'                  => 'item',
+                        'quantity'              => $item['quantity'],
+                        'unit'                  => $item['unit'],
+                        'is_optional'           => $item['optional'],
+                    ]);
+
+                    if (strlen($item['id']) === 13) {
+                        $new_ids['items'][$item['id']] = $newItem->id;
+                    }
+
+                    // Process prices
+                    if (! empty($item['prices'])) {
+                        foreach ($item['prices'] as $price) {
+                            EstimateQuoteItem::updateOrCreate([
+                                'estimate_quote_id' => $price['id'],
+                                'product_id'        => $newItem->id,
+                            ], [
+                                'price'       => $price['singlePrice'],
+                                'total_price' => $price['totalPrice'],
+                            ]);
+                        }
+                    }
+                } elseif ($item['type'] === 'comment') {
+                    $newComment = ProjectEstimationProduct::create([
+                        'project_estimation_id' => $form['id'],
+                        'group_id'              => $groupMapping[$item['groupId']] ?? null,
+                        'description'           => $item['content'],
+                        'comment'               => $item['content'],
+                        'pos'                   => $item['pos'],
+                        'type'                  => 'comment',
+                    ]);
+
+                    if (strlen($item['id']) === 13) {
+                        $new_ids['comments'][$item['id']] = $newComment->id;
+                    }
+                }
+            }
+
+            // Process quote settings
+            self::estimateQuote($cards);
+
+            // Update estimation details
+            ProjectEstimation::find($form['id'])->update([
+                "title"                 => $form['title'],
+                "issue_date"            => $form['issue_date'],
+                "technical_description" => $form['technical_description'],
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'items'    => $new_ids['items'],
+                'comments' => $new_ids['comments'],
+                'groups'   => $new_ids['groups'],
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     private function estimateQuote($quotes)
@@ -124,55 +192,21 @@ class EstimationController extends Controller
         }
     }
 
-    private function updateItem($items, $form)
+    private function updateItem($item, $form)
     {
-        $new_ids = [];
-
-        foreach ($items ?? [] as $key => $item) {
-
-            $tempId       = $item['id'];
-            $existingItem = ProjectEstimationProduct::query();
-
-            if ($existingItem->find($item['id'])) {
-                $existingItem->update([
-                    'project_estimation_id' => $form['id'],
-                    'name'                  => $item['name'],
-                    'pos'                   => $item['pos'],
-                    'group_id'              => $item['groupId'],
-                    'type'                  => 'item',
-                    'quantity'              => $item['quantity'],
-                    'unit'                  => $item['unit'],
-                    'is_optional'           => $item['optional'],
-                ]);
-            } else {
-                $newItem = tap($existingItem->create([
-                    'project_estimation_id' => $form['id'],
-                    'name'                  => $item['name'],
-                    'pos'                   => $item['pos'],
-                    'type'                  => 'item',
-                    'group_id'              => $item['groupId'],
-                    'quantity'              => $item['quantity'],
-                    'unit'                  => $item['unit'],
-                    'is_optional'           => $item['optional'],
-                ]), function ($qoute) use ($item) {
-
-                    // if (! empty($item['prices'])) {
-                    // }
-                    $prices = collect($item['prices'])->map(function ($price) use ($qoute) {
-                        return array_merge(['productId' => $qoute['id']], $price);
-                    });
-                    self::updateQuote($prices);
-                }
-                );
-            }
-
-            if (strlen($tempId) === 13) { // Timestamp ID check
-                $new_ids[$tempId] = $newItem->id;
-            }
-        }
-
-        return $new_ids;
+        ProjectEstimationProduct::where('id', $item['id'])->delete();
+        ProjectEstimationProduct::create([
+            'project_estimation_id' => $form['id'],
+            'name'                  => $item['name'],
+            'pos'                   => $item['pos'],
+            'type'                  => 'item',
+            'group_id'              => $item['groupId'],
+            'quantity'              => $item['quantity'],
+            'unit'                  => $item['unit'],
+            'is_optional'           => $item['optional'],
+        ]);
     }
+
     private function updateComment($comments, $form)
     {
         $new_ids = [];
