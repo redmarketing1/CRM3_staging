@@ -45,8 +45,8 @@ class ProjectEstimation extends Model
     protected $with = [
         'Quote',
         'project',
-        'products',
-        'estimationGroups',
+        // 'products',
+        'estimationGroups.estimation_products',
     ];
 
 

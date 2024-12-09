@@ -1,3 +1,5 @@
+const { comment } = require("postcss");
+
 document.addEventListener('alpine:init', () => {
     Alpine.data('estimationShow', () => ({
         items: {},
@@ -155,41 +157,25 @@ document.addEventListener('alpine:init', () => {
                 };
                 this.groups[group.id] = groups;
                 this.newItems[group.id] = groups;
-
                 this.lastGroupNumber = Math.max(this.lastGroupNumber, parseInt(group.group_pos));
-            });
 
-            this.tableData.products?.forEach(product => {
-                if (product.type === 'item') {
-                    const items = {
-                        id: product.id,
-                        type: 'item',
-                        groupId: product.group_id,
-                        name: product.name,
-                        quantity: product.quantity,
-                        unit: product.unit,
-                        optional: product.is_optional,
-                        pos: product.pos
+                group.estimation_products?.forEach(item => {
+                    const newItem = {
+                        id: item.id,
+                        type: item.type,
+                        groupId: item.group_id,
+                        name: item.name,
+                        description: item.description,
+                        comment: item.comment, 
+                        quantity: item.quantity,
+                        unit: item.unit,
+                        optional: item.is_optional,
+                        pos: item.pos
                     };
-                    this.items[product.id] = items;
-                    this.newItems[product.id] = items;
-
-                    this.updateItemPriceAndTotal(product.id);
-
-                } else if (product.type === 'comment') {
-                    const comments = {
-                        id: product.id,
-                        type: 'comment',
-                        groupId: product.group_id,
-                        content: product.content,
-                        pos: product.pos
-                    };
-                    this.comments[product.id] = comments;
-                    this.newItems[product.id] = comments;
-                }
+                    this.newItems[item.id] = newItem;
+                    this.updateItemPriceAndTotal(item.id);
+                });
             });
-            this.updatePOSNumbers();
-            this.calculateTotals();
         },
 
         calculateItemTotal(itemId, priceColumnIndex = 0) {
@@ -749,7 +735,7 @@ document.addEventListener('alpine:init', () => {
             return;
         },
 
-        createItemsAndComments(type, timestamp, targetRowId, targetGroupId = null) {
+        createItemsAndComments(type, timestamp, targetGroupId = null) {
             if (type !== 'item' && type !== 'comment') return;
 
             const initialPrices = [...new Set(
@@ -787,7 +773,6 @@ document.addEventListener('alpine:init', () => {
                     pos: '',
                 };
 
-                // Add to both collections
                 this.comments[timestamp] = comment;
                 this.newItems[timestamp] = comment;
             }
