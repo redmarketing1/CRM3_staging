@@ -5,7 +5,6 @@ namespace Modules\Search\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Modules\Project\Entities\Project;
-use Modules\Search\Service\MenuConfig;
 use Modules\Taskly\Entities\ProjectEstimation;
 
 class GlobalSearch
@@ -29,7 +28,7 @@ class GlobalSearch
 
     private function projects($keywords)
     {
-        $user        = Auth::user();
+        $user = Auth::user();
         $workspaceID = getActiveWorkSpace();
 
         $query = ($user->type == 'company') ?
@@ -37,17 +36,20 @@ class GlobalSearch
             Project::forClient($user->id, $workspaceID);
 
         return $query->where('is_archive', 0)
-            ->where('name', 'LIKE', "%{$keywords}%")
-            ->orWhere('description', 'LIKE', "%{$keywords}%")
+            ->where(function ($subQuery) use ($keywords) {
+                $subQuery->where('name', 'LIKE', "%{$keywords}%")
+                    ->orWhere('description', 'LIKE', "%{$keywords}%");
+            })
             ->get()
             ->map(function ($project) {
                 return [
-                    'type'     => 'Project',
-                    'view'     => view('search::partials.project_result', compact('project'))->render(), // Rendered project view
+                    'type' => 'Project',
+                    'view' => view('search::partials.project_result', compact('project'))->render(),
                     'priority' => 1,
                 ];
             })
             ->toArray();
+
     }
 
     private function users($keywords)
@@ -57,8 +59,8 @@ class GlobalSearch
             ->get()
             ->map(function ($user) {
                 return [
-                    'type'     => 'User',
-                    'view'     => view('search::partials.user_result', compact('user'))->render(),
+                    'type' => 'User',
+                    'view' => view('search::partials.user_result', compact('user'))->render(),
                     'priority' => 2,
                 ];
             })
@@ -67,23 +69,23 @@ class GlobalSearch
 
     private function menus($keywords)
     {
-        $results      = [];
-        $keywords     = strtolower($keywords);
+        $results = [];
+        $keywords = strtolower($keywords);
         $allowedMenus = MenuConfig::getAllowedFlatMenus();
 
         foreach ($allowedMenus as $menu) {
             if (str_contains(strtolower($menu['name']), $keywords)) {
                 $results[] = [
-                    'type'     => isset($menu['parent']) ? 'Submenu' : 'Menu',
-                    'view'     => view('search::partials.menu_result', [
-                        'name'       => $menu['name'],
-                        'route'      => $menu['route'],
-                        'icon'       => $menu['icon'],
+                    'type' => isset($menu['parent']) ? 'Submenu' : 'Menu',
+                    'view' => view('search::partials.menu_result', [
+                        'name' => $menu['name'],
+                        'route' => $menu['route'],
+                        'icon' => $menu['icon'],
                         'parentName' => isset($menu['parent']) ? $menu['parent']['name'] : null,
-                        'isParent'   => ! empty($menu['children']),
-                        'key'        => $menu['key'],
+                        'isParent' => ! empty($menu['children']),
+                        'key' => $menu['key'],
                     ])->render(),
-                    'priority' => isset($menu['parent']) ? 4 : 3
+                    'priority' => isset($menu['parent']) ? 4 : 3,
                 ];
             }
         }
@@ -94,12 +96,13 @@ class GlobalSearch
     private function estimation($keywords)
     {
         $keywords = strtolower($keywords);
+
         return ProjectEstimation::where('title', 'LIKE', "%{$keywords}%")
             ->get()
             ->map(function ($estimation) {
                 return [
-                    'type'     => 'estimation',
-                    'view'     => view('search::partials.estimation_result', compact('estimation'))->render(),
+                    'type' => 'estimation',
+                    'view' => view('search::partials.estimation_result', compact('estimation'))->render(),
                     'priority' => 2,
                 ];
             })
