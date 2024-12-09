@@ -19,7 +19,6 @@ class SearchController extends Controller
     {
         $keyword = $request->input('keywords');
         $results = $this->searchService->search($keyword);
-
         $html = collect($results)->map(function ($result) {
             return $result['view'];
         })->implode('');
