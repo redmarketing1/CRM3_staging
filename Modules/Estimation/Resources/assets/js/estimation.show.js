@@ -1,3 +1,5 @@
+const { comment } = require("postcss");
+
 document.addEventListener('alpine:init', () => {
     Alpine.data('estimationShow', () => ({
         items: {},
@@ -147,44 +149,33 @@ document.addEventListener('alpine:init', () => {
             this.tableData.estimation_groups?.forEach(group => {
                 const groups = {
                     id: group.id,
+                    type: 'group',
                     name: group.group_name,
                     pos: group.group_pos,
+                    total: 0,
+                    expanded: false
                 };
                 this.groups[group.id] = groups;
                 this.newItems[group.id] = groups;
-
                 this.lastGroupNumber = Math.max(this.lastGroupNumber, parseInt(group.group_pos));
-            });
 
-            this.tableData.products?.forEach(product => {
-                if (product.type === 'item') {
-                    const items = {
-                        id: product.id,
-                        type: 'item',
-                        groupId: product.group_id,
-                        name: product.name,
-                        quantity: product.quantity,
-                        unit: product.unit,
-                        optional: product.is_optional,
-                        // prices: this.updateItemPriceAndTotal(product.id),
-                        pos: product.pos
+                group.estimation_products?.forEach(item => {
+                    const newItem = {
+                        id: item.id,
+                        type: item.type,
+                        groupId: item.group_id,
+                        name: item.name,
+                        description: item.description,
+                        content: item.comment, 
+                        quantity: item.quantity,
+                        unit: item.unit,
+                        optional: item.is_optional,
+                        pos: item.pos
                     };
-                    this.items[product.id] = items;
-                    this.newItems[product.id] = items;
-                } else if (product.type === 'comment') {
-                    const comments = {
-                        id: product.id,
-                        type: 'comment',
-                        groupId: product.group_id,
-                        content: product.content,
-                        pos: product.pos
-                    };
-                    this.comments[product.id] = comments;
-                    this.newItems[product.id] = comments;
-                }
+                    this.newItems[item.id] = newItem;
+                    this.updateItemPriceAndTotal(item.id);
+                });
             });
-            this.updatePOSNumbers();
-            this.calculateTotals();
         },
 
         calculateItemTotal(itemId, priceColumnIndex = 0) {
@@ -462,36 +453,36 @@ document.addEventListener('alpine:init', () => {
 
             switch (type) {
                 case 'item':
-                    if (this.items[itemId]) {
-                        this.items[itemId].name = value;
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].name = value;
                     }
                     break;
                 case 'comment':
-                    if (this.comments[commentId]) {
-                        this.comments[commentId].content = value;
+                    if (this.newItems[commentId]) {
+                        this.newItems[commentId].content = value;
                     }
                     break;
                 case 'group':
-                    if (this.groups[groupId]) {
-                        this.groups[groupId].name = value;
+                    if (this.newItems[groupId]) {
+                        this.newItems[groupId].name = value;
                     }
                     break;
                 case 'quantity':
-                    if (this.items[itemId]) {
-                        this.items[itemId].quantity = this.parseNumber(value);
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].quantity = this.parseNumber(value);
                         this.updateItemPriceAndTotal(itemId);
                     }
                     this.formatDecimalValue(event.target);
                     break;
                 case 'price':
-                    if (this.items[itemId]) {
+                    if (this.newItems[itemId]) {
                         this.updateItemPriceAndTotal(itemId);
                     }
                     this.formatCurrencyValue(event.target);
                     break;
                 case 'unit':
-                    if (this.items[itemId]) {
-                        this.items[itemId].unit = value;
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].unit = value;
                     }
                     break;
                 case 'cashDiscount':
@@ -510,26 +501,26 @@ document.addEventListener('alpine:init', () => {
         },
 
         updateItemPriceAndTotal(itemId) {
-            const row = document.querySelector(`.item_row[data-itemid="${itemId}"]`);
+            if (!itemId || !this.items[itemId]) return [];
 
-            const singlePricing = row.querySelectorAll('.item-price');
-            const prices = Array.from(singlePricing).map(element => {
+            const item = this.items[itemId];
+            const quantity = this.parseNumber(item.quantity || '0');
 
-                const quoteId = element.closest('td[data-cardquoteid]').dataset.cardquoteid;
-                const singlePrice = this.parseNumber(element.value);
-                const quantity = this.parseNumber(row.querySelector('.item-quantity').value);
-                const total = singlePrice * quantity;
+            const cardQuoteIds = [...new Set(
+                Array.from(document.querySelectorAll('[data-cardquoteid]'),
+                    el => el.dataset.cardquoteid)
+            )];
 
-                return {
-                    id: quoteId,
-                    singlePrice: singlePrice,
-                    totalPrice: total
-                };
-            });
+            const prices = cardQuoteIds.map(quoteId => ({
+                id: quoteId,
+                singlePrice: this.parseNumber(item.price || '0'),
+                totalPrice: quantity * this.parseNumber(item.price || '0')
+            }));
 
             if (this.items[itemId]) {
                 this.items[itemId].prices = prices;
             }
+
             return prices;
         },
 
@@ -622,9 +613,7 @@ document.addEventListener('alpine:init', () => {
                 stop: (event, ui) => {
                     const movedRow = ui.item[0];
 
-
                     if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
-
                         let currentRow = movedRow.previousElementSibling;
                         let newGroupRow = null;
 
@@ -637,19 +626,33 @@ document.addEventListener('alpine:init', () => {
 
                         if (newGroupRow) {
                             const newGroupId = newGroupRow.dataset.groupid;
-                            const itemId = movedRow.dataset.itemid || movedRow.dataset.id;
+                            const itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
                             const oldGroupId = movedRow.dataset.groupid;
 
 
                             movedRow.dataset.groupid = newGroupId;
 
-
-                            if (this.items[itemId]) {
+                            // Update items state
+                            if (movedRow.classList.contains('item_row') && this.items[itemId]) {
                                 this.items[itemId].groupId = newGroupId;
+
+                                // Update newItems if it exists there
+                                if (this.newItems[itemId]) {
+                                    this.newItems[itemId].groupId = newGroupId;
+                                }
+                            }
+
+                            // Update comments state
+                            if (movedRow.classList.contains('item_comment') && this.comments[itemId]) {
+                                this.comments[itemId].groupId = newGroupId;
+
+                                // Update newItems if it exists there
+                                if (this.newItems[itemId]) {
+                                    this.newItems[itemId].groupId = newGroupId;
+                                }
                             }
                         }
                     }
-
 
                     this.updatePOSNumbers();
                     this.calculateTotals();
@@ -683,17 +686,13 @@ document.addEventListener('alpine:init', () => {
             });
         },
 
-        addItem(type, targetRowId = null) {
+        addItem(type, targetGroupId = null) {
             const timestamp = Date.now();
 
             if (type === 'group') {
-                this.createGroups(type, timestamp, targetRowId);
+                this.createGroups(type, timestamp);
             } else if (type === 'item' || type === 'comment') {
-                this.createItemsAndComments(type, timestamp, targetRowId);
-            }
-
-            if (targetRowId) {
-                this.contextMenu.show = false;
+                this.createItemsAndComments(type, timestamp, targetGroupId);
             }
         },
 
@@ -736,33 +735,17 @@ document.addEventListener('alpine:init', () => {
             return;
         },
 
-        createItemsAndComments(type, timestamp, targetRowId) {
-
+        createItemsAndComments(type, timestamp, targetGroupId = null) {
             if (type !== 'item' && type !== 'comment') return;
- 
+
             const initialPrices = [...new Set(
                 Array.from(document.querySelectorAll('[data-cardquoteid]'), el => el.dataset.cardquoteid)
             )].map(id => ({ id, singlePrice: 0, totalPrice: 0 }));
 
-            // Helper to get current group ID
-            const getCurrentGroupId = (targetRowId) => {
-                if (targetRowId) {
-                    const targetRow = document.querySelector(
-                        `tr[data-id="${targetRowId}"], 
-                 tr[data-itemid="${targetRowId}"], 
-                 tr[data-commentid="${targetRowId}"], 
-                 tr[data-groupid="${targetRowId}"]`
-                    );
-                    return targetRow?.dataset.groupid || null;
-                } else {
-                    const lastGroupRow = document.querySelector('tr.group_row:last-of-type');
-                    return lastGroupRow?.dataset.groupid || null;
-                }
-            };
+            // Use passed targetGroupId or get from current context
+            const currentGroupId = targetGroupId || this.getCurrentGroupId();
+            if (!currentGroupId) return;
 
-            const currentGroupId = getCurrentGroupId(targetRowId);
-
-            // Add item or comment
             if (type === 'item') {
                 const items = {
                     id: timestamp,
@@ -781,43 +764,20 @@ document.addEventListener('alpine:init', () => {
                 this.items[timestamp] = items;
                 this.newItems[timestamp] = items;
             } else {
-                const items = {
+                const comment = {
                     id: timestamp,
                     type: 'comment',
                     groupId: currentGroupId,
                     content: 'New Comment',
-                    quantity: 0,
-                    price: 0,
-                    prices: initialPrices,
-                    unit: '',
-                    optional: 0,
                     expanded: false,
                     pos: '',
                 };
 
-                this.comments[timestamp] = items;
-                this.newItems[timestamp] = items;
+                this.comments[timestamp] = comment;
+                this.newItems[timestamp] = comment;
             }
 
             this.$nextTick(() => {
-                if (targetRowId) {
-                    const targetRow = document.querySelector(`
-                        tr[data-id="${targetRowId}"], 
-                        tr[data-itemid="${targetRowId}"], 
-                        tr[data-commentid="${targetRowId}"], 
-                        tr[data-groupid="${targetRowId}"]`
-                    );
-
-                    const newRow = document.querySelector(`
-                        tr[data-id="${timestamp}"]`
-                    );
-
-                    if (newRow && targetRow.nextSibling) {
-                        targetRow.parentNode.insertBefore(newRow, targetRow.nextSibling);
-                    }
-                }
-
-                this.initializeSortable();
                 this.updatePOSNumbers();
                 this.calculateTotals();
             });
@@ -848,12 +808,15 @@ document.addEventListener('alpine:init', () => {
                         if (row.classList.contains('group_row')) {
                             groupIds.push(row.dataset.groupid);
                             delete this.groups[row.dataset.groupid];
+                            delete this.newItems[row.dataset.groupid];
                         } else {
                             itemIds.push(row.dataset.itemid);
                             delete this.items[row.dataset.itemid];
+                            delete this.newItems[row.dataset.itemid];
 
                             comments.push(row.dataset.commentid);
                             delete this.comments[row.dataset.commentid];
+                            delete this.newItems[row.dataset.commentid];
                         }
                         row.remove();
                     });
@@ -879,6 +842,22 @@ document.addEventListener('alpine:init', () => {
             });
         },
 
+        getCurrentGroupId(targetRowId) {
+            if (targetRowId) {
+                const targetRow = document.querySelector(
+                    `tr[data-id="${targetRowId}"], 
+                 tr[data-itemid="${targetRowId}"], 
+                 tr[data-commentid="${targetRowId}"], 
+                 tr[data-groupid="${targetRowId}"]`
+                );
+                return targetRow?.dataset.groupid || null;
+            } else {
+                const allGroupRows = document.querySelectorAll('tr.group.group_row');
+                const lastGroupRow = allGroupRows[allGroupRows.length - 1];
+                return lastGroupRow?.dataset.groupid || null;
+            }
+        },
+
         updatePOSNumbers() {
             let currentGroupPos = 0;
             let itemCountInGroup = 0;
@@ -897,18 +876,68 @@ document.addEventListener('alpine:init', () => {
                         this.groups[lastGroupId].pos = groupPos;
                     }
                 }
-                else if (row.classList.contains('item_row') || row.classList.contains('item_comment')) {
+                else if (row.classList.contains('item_row')) {
+                    itemCountInGroup++;
+                    const itemPos = `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`;
+
+                    row.querySelector('.pos-inner').textContent = itemPos;
+
+                    const itemId = row.dataset.itemid;
+                    if (this.items[itemId]) {
+                        this.items[itemId].pos = itemPos;
+                    }
+                }
+                else if (row.classList.contains('item_comment')) {
                     itemCountInGroup++;
                     const itemPos = `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`;
 
                     row.querySelector('.pos-inner').textContent = itemPos;
 
                     const itemId = row.dataset.itemid || row.dataset.commentid;
-                    if (this.items[itemId]) {
-                        this.items[itemId].pos = itemPos;
+                    if (this.comments[itemId]) {
+                        this.comments[itemId].pos = itemPos;
                     }
                 }
             });
+        },
+
+        getCurrentGroupId() {
+            // Get the last group from sorted groups
+            const groups = this.getSortedGroups();
+            return groups.length > 0 ? groups[groups.length - 1].id : null;
+        },
+
+        getSortedGroups() {
+            // Get all groups from newItems
+            const groups = Object.values(this.newItems)
+                .filter(item => item.type === 'group')
+                .sort((a, b) => this.comparePOS(a.pos, b.pos));
+
+            return groups;
+        },
+
+        getSortedItemsForGroup(groupId) {
+            if (!groupId) return [];
+
+            // Get all items and comments for this group from newItems
+            return Object.values(this.newItems)
+                .filter(item =>
+                    item.groupId === groupId &&
+                    (item.type === 'item' || item.type === 'comment')
+                )
+                .sort((a, b) => this.comparePOS(a.pos, b.pos));
+        },
+
+        comparePOS(posA, posB) {
+            if (!posA || !posB) return 0;
+
+            const [groupA, itemA = "0"] = String(posA).split('.');
+            const [groupB, itemB = "0"] = String(posB).split('.');
+
+            const groupDiff = parseInt(groupA) - parseInt(groupB);
+            if (groupDiff !== 0) return groupDiff;
+
+            return parseInt(itemA) - parseInt(itemB);
         },
 
         duplicateCardColumn(quoteId) {
@@ -1138,13 +1167,15 @@ document.addEventListener('alpine:init', () => {
                     if (row.classList.contains('group_row')) {
                         groupIds.push(row.dataset.groupid);
                         delete this.groups[row.dataset.groupid];
+                        delete this.newItems[row.dataset.groupid];
                     } else {
                         itemIds.push(row.dataset.itemid);
                         delete this.items[row.dataset.itemid];
+                        delete this.newItems[row.dataset.itemid];
 
                         comments.push(row.dataset.commentid);
                         delete this.comments[row.dataset.commentid];
-
+                        delete this.newItems[row.dataset.commentid];
                     }
 
                     $.ajax({
@@ -1313,6 +1344,7 @@ document.addEventListener('alpine:init', () => {
                 items: this.items,
                 comments: this.comments,
                 groups: this.groups,
+                newItems: this.newItems,
             };
 
             $.ajax({
@@ -1323,17 +1355,57 @@ document.addEventListener('alpine:init', () => {
                     this.lastSaveText = 'is running...';
                     $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
                 },
-                success: (response) => {
+                success: ({ items, comments, groups }) => {
+
+                    // Helper function to update IDs and DOM elements
+                    const updateEntities = (entities, oldNewIds, type) => {
+                        if (!oldNewIds) return;
+
+                        Object.entries(oldNewIds).forEach(([oldId, newId]) => {
+                            // Update state
+                            const itemKey = Object.keys(entities).find(key =>
+                                entities[key].id.toString() === oldId
+                            );
+
+                            if (itemKey) {
+                                entities[newId] = { ...entities[itemKey], id: newId };
+                                delete entities[itemKey];
+                            }
+
+                            // Update DOM
+                            const row = document.querySelector(`tr[data-${type}id="${oldId}"]`);
+                            if (row) {
+                                row.dataset[`${type}id`] = newId;
+                                row.dataset.id = newId;
+
+                                // Update input names
+                                row.querySelectorAll(`[name*="[${oldId}]"]`)
+                                    .forEach(input => {
+                                        input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
+                                    });
+                            }
+                        });
+                    };
+
+                    // Update all entity types
+                    updateEntities(this.items, items, 'item');
+                    updateEntities(this.comments, comments, 'comment');
+                    updateEntities(this.groups, groups, 'group');
+
+                    // Update UI state
                     this.lastSaveTimestamp = Date.now();
                     this.lastSaveText = this.formatTimeAgo(this.lastSaveTimestamp);
+
                     toastrs("success", "Estimation data has been saved.");
                     $('#save-button').html(`Saved last changed.`);
+
                     this.hasUnsavedChanges = false;
                     this.startTimeAgoUpdates();
                 },
                 error: (error) => {
                     console.error('Error saving data:', error);
                     toastrs("error", "Failed to save changes.");
+
                     this.hasUnsavedChanges = true;
                     this.lastSaveText = 'is failed';
                 }
