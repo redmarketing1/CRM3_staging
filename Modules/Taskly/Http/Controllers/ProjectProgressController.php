@@ -66,15 +66,8 @@ class ProjectProgressController extends Controller
 			$username = isset($item->user->name) ? $item->user->name : '';
 			$name_signature    = '<div class="progress-history-item">
                                     <span class="user-avatar">
-                                        // <i class="fa fa-user"></i>
                                         ' . $username . '
                                     </span>
-                                    // <span class="CellWithComment">
-                                    //     <i class="fa fa-info-circle"></i>
-                                    //     <span class="CellComment">
-                                    //         <img src="' . $item->signature . '" />
-                                    //     </span>
-                                    // </span>
                                 </div>';
 			if (Auth::user()->isAbleTo('progress view')){
 				$action = '<div class="action_btn btn-primary">';
@@ -193,7 +186,7 @@ class ProjectProgressController extends Controller
 
 						$history .= '<div class="progress-step">';
 						if ($progress->status == 1) {
-							$history .= '<div class="status1 pstatus">';
+							$history .= '<div class="status1 pstatus">'; 
 						}
 						if ($progress->status == 2) {
 							$history .= '<div class="status2 pstatus">';

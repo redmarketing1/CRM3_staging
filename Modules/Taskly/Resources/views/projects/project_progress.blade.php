@@ -213,7 +213,12 @@
 		}
 		.progress_files_row #progress_bulk_delete_form .btn-primary i{
             color: #fff !important;
-        }		
+        }  
+        .pos-prefix {
+            color: #666;
+            font-weight: 500;
+            min-width: 45px;
+        }
 	</style>
 @endpush
 @push('scripts')
@@ -230,7 +235,7 @@
 		<div class="card">
 
 			<div class="card-header d-flex justify-content-between align-items-center">
-				<h2>{{ __('Project Progress') }}</h2>
+				<h2>{{ __('Project Progress') }} - {{ \Carbon\Carbon::now('Europe/Berlin')->format('d.m.Y') }}</h2>
                 <div class="">
                     
                 </div>
@@ -241,12 +246,14 @@
 				{{ Form::open(['route' => ['progress.sign.store'], 'enctype' => 'multipart/form-data', 'class' => 'project-progress-form']) }}
 					<table class="table w-100 table-hover table-bordered" id="progress-table">
 						<thead>
-							<th data-dt-order="disable">&nbsp;</th>
-							<th data-dt-order="disable">{{ __('POS') }}</th>
-							<th data-dt-order="disable">{{ __('Group') }}</th>
+							{{-- <th data-dt-order="disable">&nbsp;</th> --}}
+							{{-- <th data-dt-order="disable">{{ __('POS') }}</th> --}}
+							
 							<th data-dt-order="disable">{{ __('Name') }}</th>
+							<th data-dt-order="disable">{{ __('Group') }}</th>
 							<th data-dt-order="disable">{{ __('Quantity') }}</th>
 							<th data-dt-order="disable">{{ __('Signature') }}</th>
+							<th data-dt-order="disable">{{ __('Description') }}</th>
 							@if ($show_everything == 1)
 								<th data-dt-order="disable">{{ __('Single Price') }}</th>
 								<th data-dt-order="disable">{{ __('Total Price') }}</th>
@@ -254,7 +261,6 @@
 								<th data-dt-order="disable">{{ __('Remaining') }}</th>
 							@endif
 							<th data-dt-order="disable">{{ __('History') }}</th>
-							<th data-dt-order="disable">{{ __('Description') }}</th>
 						</thead>
 					</table>
 					<div class="progress-footer">
@@ -377,7 +383,7 @@
 				$('.comment_text[data-id="' + id + '"]').toggleClass('d-none');
 				return false;
 			});
-
+ 
 			$(document).on('click', '.quantitySig', function(e) {
 				e.preventDefault();
 				var id = $(this).data('id');  
@@ -405,45 +411,46 @@
 			$('#progress-table colgroup').empty();
 
 			var columns_data = [
-				{ "data": "product_id", "className": "product-id", "orderable": false },
-				{ "data": "pos", "className": "position", "orderable": false },
+                {{-- { "data": "product_id", "className": "product-id", "orderable": false }, --}}
+                { "data": "name", 
+                    "className": "name", 
+                    "orderable": false,
+                    "render": function(data, type, row) {
+                        return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
+                    }
+                },
 				{ "data": "group", "className": "group", "orderable": false },
-				{ "data": "name", 
-				"className": "name", 
-				"orderable": false,
-				"render": function(data, type, row) {
-					return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
-				}
-				},
-				{ "data": "quantity", "className": "quantity", "orderable": false },
-				{ "data": "item_signature", "className": "item-signature", "orderable": false },
-				{ "data": "history", "className": "history", "orderable": false },
-				{ "data": "description", "className": "description", "orderable": false }
-			];
+                { "data": "quantity", "className": "quantity", "orderable": false },
+                { "data": "item_signature", "className": "item-signature", "orderable": false },
+				{ "data": "description", "className": "description", "orderable": false },
+                { "data": "history", "className": "history", "orderable": false },
+            ];
+
 			if (show_everything == 1) {
 				columns_data = [
-					{ "data": "product_id", "className": "product-id", "orderable": false },
-					{ "data": "pos", "className": "position", "orderable": false },
+                    {{-- { "data": "product_id", "className": "product-id", "orderable": false }, --}}
+                   
+                    { "data": "name", 
+                    "className": "name", 
+                    "orderable": false,
+                    "render": function(data, type, row) {
+                        return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
+                    }
+                    },
 					{ "data": "group", "className": "group", "orderable": false },
-					{ "data": "name", 
-					"className": "name", 
-					"orderable": false,
-					"render": function(data, type, row) {
-						return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
-					}
-					},
-					{ "data": "quantity", "className": "quantity", "orderable": false },
-					{ "data": "item_signature", "className": "item-signature", "orderable": false },
-					{ "data": "price", "className": "price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-					{ "data": "totalPrice", "className": "total-price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-					{ "data": "progress_amount", "className": "progress-amount", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-					{ "data": "progress_remaining", "className": "progress-remaining", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-					{ "data": "history", "className": "history", "orderable": false },
+                    { "data": "quantity", "className": "quantity", "orderable": false },
+                    { "data": "item_signature", "className": "item-signature", "orderable": false },
 					{ "data": "description", "className": "description", "orderable": false },
-				];
+                    { "data": "price", "className": "price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    { "data": "totalPrice", "className": "total-price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    { "data": "progress_amount", "className": "progress-amount", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    { "data": "progress_remaining", "className": "progress-remaining", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    { "data": "history", "className": "history", "orderable": false },
+                ];
 			}
+
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
-            var groupColumn = 2;
+            var groupColumn = 1;
             $('#progress-table').DataTable({
                 "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
                 'pageLength': 200,
@@ -474,34 +481,31 @@
                     var rows = api.rows({ page: 'current' }).nodes();
                     var last = null;
                     var aData = [];
-					var col_span = (show_everything == 1) ? 11 : 7;
-					api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+					var col_span = (show_everything == 1) ? 10 : 6;
+					
+                   api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+                        var vals = api.row(api.row($(rows).eq(i)).index()).data();
+                        $(rows).eq(i).find('.history').append('<div class="progress_files_row progress-files-group-'+vals.progress_item_id+'">'+vals.item_files+'</div>');
 
-						var vals = api.row(api.row($(rows).eq(i)).index()).data();
-						/*** add progress files rows after each row ***/
-						$(rows).eq(i).find('.history').append('<div class="progress_files_row progress-files-group-'+vals.progress_item_id+'">'+vals.item_files+'</div>');
-
-						var totalPrice = vals['totalPrice'] ? parseFloat(vals['totalPrice']) : 0;
-						if (typeof aData[group] == 'undefined') {
-							aData[group] = new Array();
-							aData[group].rows = [];
-							aData[group].totalPrice = [];
-						}
-						aData[group].rows.push(i); 
-						aData[group].totalPrice.push(totalPrice); 
-					});
+                        var totalPrice = vals['totalPrice'] ? parseFloat(vals['totalPrice']) : 0;
+                        if (typeof aData[group] == 'undefined') {
+                            aData[group] = new Array();
+                            aData[group].rows = [];
+                            aData[group].totalPrice = [];
+                        }
+                        aData[group].rows.push(i); 
+                        aData[group].totalPrice.push(totalPrice); 
+                    });
+                    
 					var idx= 0;
-					for(var group in aData){
-						idx =  Math.min.apply(Math,aData[group].rows);
-						var sum = 0; 
-						$.each(aData[group].totalPrice,function(k,v){
-							sum = sum + v;
-						});
-						
-
-						// $(rows).eq(idx).before('<tr class="group progress-group"><td colspan="10"><b>'+group+'</b></td><td class="text-right" colspan="2"><b>'+moneyFormatter.format(parseFloat(sum))+'</b></td></tr>');
+                    for(var group in aData){
+                        idx = Math.min.apply(Math,aData[group].rows);
+                        var sum = 0; 
+                        $.each(aData[group].totalPrice,function(k,v){
+                            sum = sum + v;
+                        });
                         $(rows).eq(idx).before('<tr class="group progress-group"><td colspan="'+col_span+'">'+group+'</td></tr>');
-					};
+                    }; 
                 },
             });
         }
