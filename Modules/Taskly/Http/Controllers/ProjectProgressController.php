@@ -66,15 +66,15 @@ class ProjectProgressController extends Controller
 			$username = isset($item->user->name) ? $item->user->name : '';
 			$name_signature    = '<div class="progress-history-item">
                                     <span class="user-avatar">
-                                        <i class="fa fa-user"></i>
+                                        // <i class="fa fa-user"></i>
                                         ' . $username . '
                                     </span>
-                                    <span class="CellWithComment">
-                                        <i class="fa fa-info-circle"></i>
-                                        <span class="CellComment">
-                                            <img src="' . $item->signature . '" />
-                                        </span>
-                                    </span>
+                                    // <span class="CellWithComment">
+                                    //     <i class="fa fa-info-circle"></i>
+                                    //     <span class="CellComment">
+                                    //         <img src="' . $item->signature . '" />
+                                    //     </span>
+                                    // </span>
                                 </div>';
 			if (Auth::user()->isAbleTo('progress view')){
 				$action = '<div class="action_btn btn-primary">';
@@ -181,7 +181,7 @@ class ProjectProgressController extends Controller
 					foreach ($item->progress()->orderBy('id')->get() as $progress) {
 						$user_name = "";
 						if (isset($progress->progress_id) && !empty($progress->progress_id)) {
-							$user_name = ($progress->project_progress[0]['name']) ? '<i class="fa fa-user"></i> ' . $progress->project_progress[0]['name'] . '</i>' : '';
+							$user_name = ($progress->project_progress[0]['name']) ? ' ' . $progress->project_progress[0]['name'] . '</i>' : '';
 						}
 						if ($progress->status == 0) {
 							$sign_here = true;
@@ -201,16 +201,19 @@ class ProjectProgressController extends Controller
 						$progress_remarks = isset($progress->remarks) ? $progress->remarks : '';
 
 						$loggedInUser = Auth::user()->name; // Erhalte den Namen des eingeloggten Benutzers
-						$history .= '<div class="progress_wrapper"><div class="progress_labels"><div class="total_progress"><div class="progress-history-item"><span class="progress-date">' . date('d.m.y', strtotime($progress->created_at)) . '</span><span class="progress-percent">' . $progress->progress . '%</span><span class="user-avatar">' . $user_name . '</span>';
+						$history .= '<div class="progress_wrapper"><div class="progress_labels"><div class="total_progress"><div class="progress-history-item">
+							<span class="progress-percent">' . $progress->progress . '%</span>
+							<span class="progress-date">' . date('d.m.y', strtotime($progress->created_at)) . '</span>
+							<span class="user-avatar">' . $user_name . '</span>';
 
-						if (isset($progress->signature) && !empty($progress->signature)) {
-							$history .= '<span class="CellWithComment">
-                                            <i class="fa fa-info-circle"></i>
-                                            <span class="CellComment">
-                                                <img src="' . $progress->signature . '" />
-                                            </span>
-                                        </span>';
-						}
+						// if (isset($progress->signature) && !empty($progress->signature)) {
+						// 	$history .= '<span class="CellWithComment">
+                        //                     <i class="fa fa-info-circle"></i>
+                        //                     <span class="CellComment">
+                        //                         <img src="' . $progress->signature . '" />
+                        //                     </span>
+                        //                 </span>';
+						// }
 
 						// Füge den Span für progress_remarks nur hinzu, wenn progress_remarks vorhanden ist
 						if (!empty($progress_remarks)) {
@@ -242,18 +245,31 @@ class ProjectProgressController extends Controller
 					$item_progress_files = '<div class="progress_files d-none" data-id="' . $item->id . '"><div id="progressdropBox" ondrop="handleProgressDrop(event)" ondragover="handleProgressDragOver(event, this)" data-id="' . $item->id . '" data-estimationid="' . $item->project_estimation_id . '"><p style="font-size:20px ">Drag & Drop files here or click to select</p></div><input type="file" id="progressfileInput' . $item->id . '" class="progressfileInput" multiple onchange="handleProgressFileSelect(event, this)" data-id="' . $item->id . '" data-estimationid="' . $item->project_estimation_id . '" /></div>';
 
 					$item_progress_id = isset($old_progress->id) ? $old_progress->id : 0;
-					$item_progress_comment = isset($item->comment) ? $item->comment : "";
-					$item_signature = '<div class="signature-field form-control"><input type="hidden" name="signatures[' . $item->id . ']" id="SignupImage' . $item->id . '" value=""><canvas id="items-signature-pad-' . $item->id . '" class="signature-pad" data-id="' . $item->id . '" height="100" width="300"></canvas></div> <input type="hidden" name="estimation_id" value="' . $item->project_estimation_id . '"><input type="hidden" name="progress_product_id" value="' . $item->id . '">';
-					$item_signature .= '<div class="sign_btn_block mt-1">
-                                            <div class="sign_btn_block_small">
-                                            <button type="button" class=" btn btn-sm btn-danger clearSig" id="clearSig" data-id="' . $item->id . '"><i class="fa-regular fa-trash-can"></i></button>
-                                            <button type="button" class=" btn btn-sm btn-danger commentSig" id="commentSig" data-id="' . $item->id . '"><i class="fa-regular fa-comment-dots"></i></button>
-                                            <button type="button" class=" btn btn-sm btn-danger quantitySig" id="quantitySig" data-id="' . $item->id . '"><i class="fa-solid fa-hashtag"></i></button>
-                                            <button type="button" class=" btn btn-sm btn-danger uploadSig" id="uploadSig" data-id="' . $item->id . '"><i class="fa-solid fa-camera"></i></button>
-                                            </div>';
-
-					$item_signature .= '</div>';
-
+$item_progress_comment = isset($item->comment) ? $item->comment : "";
+$item_signature = '<div class="sign_btn_block">
+    <div class="dropdown">
+        <button type="button" class="btn btn-sm btn-sig-menu" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-caret-down"></i>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item clearSig" href="#" data-id="' . $item->id . '"><i class="fa-regular fa-trash-can me-2"></i>'.__('Clear').'</a></li>
+            <li><a class="dropdown-item commentSig" href="#" data-id="' . $item->id . '"><i class="fa-regular fa-comment-dots me-2"></i>'.__('Comment').'</a></li>
+            <li><a class="dropdown-item quantitySig" href="#" data-id="' . $item->id . '"><i class="fa-solid fa-hashtag me-2"></i>'.__('Quantity').'</a></li>
+            <li><a class="dropdown-item uploadSig" href="#" data-id="' . $item->id . '"><i class="fa-solid fa-camera me-2"></i>'.__('Upload').'</a></li>
+        </ul>
+    </div>
+</div>
+<div class="signature-field form-control position-relative">
+	<div class="signature-placeholder" id="signature-placeholder-' . $item->id . '">' . trans('Signature') . '</div>
+    <input type="hidden" name="signatures[' . $item->id . ']" id="SignupImage' . $item->id . '" value="">
+    <canvas id="items-signature-pad-' . $item->id . '" class="signature-pad" data-id="' . $item->id . '" height="100" width="300"></canvas>
+    
+</div>
+<input type="hidden" name="estimation_id" value="' . $item->project_estimation_id . '">
+<input type="hidden" name="progress_product_id" value="' . $item->id . '">
+<div class="input-fields mt-2">
+    ' . $item_comment . $item_progress_amount . '
+</div>';
 					$progress_files_preview = '<div class="progress_files_preview_' . $item->id . '"><div id="ProgressFilesPreviewContainer' . $item->id . '"></div></div>';
 
 					$progress_files_remove_btn = '<div class="float-start d-flex">';
@@ -277,7 +293,7 @@ class ProjectProgressController extends Controller
 					$row['history'] 			= $history;
 					$row['progress_amount']     = 0;
 					$row['progress_remaining']  = 0;
-					$row['item_signature'] 		= $item_progress . $item_comment . $item_progress_amount . $item_signature;
+					$row['item_signature'] = $item_progress . $item_signature;
 					$row['progress_item_id'] 			= $item->id;
 					$row['item_files'] 		    = $item_progress_files . $progress_files_preview . $progress_files_mediabox . $progress_files_remove_btn;
 					$row['_children'] 			= [['description' => $item->description]];

@@ -228,20 +228,25 @@
 <div class="row">
 	<div class="col-sm-12">
 		<div class="card">
-			<div class="card-header card-body table-border-style">
+
+			<div class="card-header d-flex justify-content-between align-items-center">
+				<h2>{{ __('Project Progress') }}</h2>
+                <div class="">
+                    
+                </div>
+            </div>
+
+			<div class="card-body table-border-style">
 				<div class="card-body table-responsive" id="progress-div">
 				{{ Form::open(['route' => ['progress.sign.store'], 'enctype' => 'multipart/form-data', 'class' => 'project-progress-form']) }}
-				<h2>{{ __('Project Progress') }}</h2>
-				<h6></h6>
 					<table class="table w-100 table-hover table-bordered" id="progress-table">
 						<thead>
 							<th data-dt-order="disable">&nbsp;</th>
 							<th data-dt-order="disable">{{ __('POS') }}</th>
 							<th data-dt-order="disable">{{ __('Group') }}</th>
 							<th data-dt-order="disable">{{ __('Name') }}</th>
-							<th data-dt-order="disable">{{ __('Signature') }}</th>
-							<th data-dt-order="disable">{{ __('Description') }}</th>
 							<th data-dt-order="disable">{{ __('Quantity') }}</th>
+							<th data-dt-order="disable">{{ __('Signature') }}</th>
 							@if ($show_everything == 1)
 								<th data-dt-order="disable">{{ __('Single Price') }}</th>
 								<th data-dt-order="disable">{{ __('Total Price') }}</th>
@@ -249,6 +254,7 @@
 								<th data-dt-order="disable">{{ __('Remaining') }}</th>
 							@endif
 							<th data-dt-order="disable">{{ __('History') }}</th>
+							<th data-dt-order="disable">{{ __('Description') }}</th>
 						</thead>
 					</table>
 					<div class="progress-footer">
@@ -334,9 +340,11 @@
 				});
 			});
 
-			$(document).on("click", ".clearSig", function() {
+			$(document).on("click", ".clearSig", function(e) {
+				e.preventDefault();
 				var item_id = $(this).data('id');
 				signaturePad[item_id].clear();
+				return false;
 			});
 
 			$(document).on("click", ".progress_final_clear_sig", function() {
@@ -363,20 +371,25 @@
 				}
 			});
 
-			$(document).on('click', '.commentSig', function() {
+			$(document).on("click", ".commentSig", function(e) {
+				e.preventDefault();
 				var id = $(this).data('id');
 				$('.comment_text[data-id="' + id + '"]').toggleClass('d-none');
+				return false;
 			});
-			// Toggle Progress amount
-			$(document).on('click', '.quantitySig', function() {
-				var id = $(this).data('id');
+
+			$(document).on('click', '.quantitySig', function(e) {
+				e.preventDefault();
+				var id = $(this).data('id');  
 				$('.progress_amount[data-id="' + id + '"]').toggleClass('d-none');
+				return false;
 			});
-			// Toggle Upload files
-			$(document).on('click', '.uploadSig', function() {
+
+			$(document).on('click', '.uploadSig', function(e) {
+				e.preventDefault();
 				var id = $(this).data('id');
-				// $('.progress-files-group-'+ id).toggleClass('d-none');
 				$('.progress_files[data-id="' + id + '"]').toggleClass('d-none');
+				return false;
 			});
 			// Toggle Final Comment
 			$('a.progress-final-comment-icon').on('click', function() {
@@ -395,26 +408,38 @@
 				{ "data": "product_id", "className": "product-id", "orderable": false },
 				{ "data": "pos", "className": "position", "orderable": false },
 				{ "data": "group", "className": "group", "orderable": false },
-				{ "data": "name", "className": "name", "orderable": false },
-				{ "data": "item_signature", "className": "item-signature", "orderable": false },
-				{ "data": "description", "className": "description", "orderable": false },
+				{ "data": "name", 
+				"className": "name", 
+				"orderable": false,
+				"render": function(data, type, row) {
+					return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
+				}
+				},
 				{ "data": "quantity", "className": "quantity", "orderable": false },
+				{ "data": "item_signature", "className": "item-signature", "orderable": false },
 				{ "data": "history", "className": "history", "orderable": false },
+				{ "data": "description", "className": "description", "orderable": false }
 			];
 			if (show_everything == 1) {
 				columns_data = [
 					{ "data": "product_id", "className": "product-id", "orderable": false },
 					{ "data": "pos", "className": "position", "orderable": false },
 					{ "data": "group", "className": "group", "orderable": false },
-					{ "data": "name", "className": "name", "orderable": false },
-					{ "data": "item_signature", "className": "item-signature", "orderable": false },
-					{ "data": "description", "className": "description", "orderable": false },
+					{ "data": "name", 
+					"className": "name", 
+					"orderable": false,
+					"render": function(data, type, row) {
+						return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
+					}
+					},
 					{ "data": "quantity", "className": "quantity", "orderable": false },
+					{ "data": "item_signature", "className": "item-signature", "orderable": false },
 					{ "data": "price", "className": "price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
 					{ "data": "totalPrice", "className": "total-price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
 					{ "data": "progress_amount", "className": "progress-amount", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
 					{ "data": "progress_remaining", "className": "progress-remaining", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
 					{ "data": "history", "className": "history", "orderable": false },
+					{ "data": "description", "className": "description", "orderable": false },
 				];
 			}
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -454,7 +479,7 @@
 
 						var vals = api.row(api.row($(rows).eq(i)).index()).data();
 						/*** add progress files rows after each row ***/
-						$(rows).eq(i).after('<tr class="group progress_files_row progress-files-group-'+vals.progress_item_id+' "><td colspan="'+col_span+'">'+vals.item_files+'</td></tr>');
+						$(rows).eq(i).find('.history').append('<div class="progress_files_row progress-files-group-'+vals.progress_item_id+'">'+vals.item_files+'</div>');
 
 						var totalPrice = vals['totalPrice'] ? parseFloat(vals['totalPrice']) : 0;
 						if (typeof aData[group] == 'undefined') {

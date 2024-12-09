@@ -574,6 +574,7 @@ td.totalnr {
     box-sizing: border-box;
     width: 20%;
     padding: 5px;
+    position: relative;
 }
 
 .mediabox .media a {
@@ -1022,14 +1023,16 @@ td a.btn-primary i {
 
 
 .progress-step {
-    position: absolute;
-    max-width: 100%;
-    width: 100%;
+    padding: 5px 10px;
+    background: #f9f9f9;
+    margin: 2px;
+    border-radius: 10px;
+    display: inline-block;
 }
 
 .progress-steps {
     width: 100% !important;
-    min-height: 75px;
+    /* min-height: 75px; */
     position: relative;
 }
 
@@ -1037,9 +1040,9 @@ td a.btn-primary i {
     display: flex;
 }
 
-.select-progress-inner {
+/* .select-progress-inner {
     padding-left: 20px !important;
-}
+} */
 
 .select-progress .select-progress-inner {
     display: block !important;
@@ -1063,13 +1066,6 @@ td a.btn-primary i {
     /* padding: 10px !important; */
     /* border-radius: 5px; */
     width: 100px;
-    /* background: #f9f9f9; */
-}
-
-.progress-step:nth-child(n+2) {
-    border-top: 1px solid #eee !important;
-    margin-top: 5px !important;
-    padding-top: 5px !important;
     /* background: #f9f9f9; */
 }
 
@@ -1108,11 +1104,11 @@ span.progress-comment-content {
 }
 
 span.progress-percent {
-    background: #e7e7e7;
-    padding: 2px 4px !important;
-    border-radius: 5px;
+    font-weight: bold;
 }
-
+.progress_files {
+    margin: 10px 0;
+}
 /*.progress-history .progress-step:last-child {
 	display: none;
 	}*/
@@ -3187,11 +3183,12 @@ table#progress-table {
 }
 
 canvas.signature-pad {
-    border: 3px dashed #9dd0e5 !important;
+    border: 3px dashed #53a65e !important;
     border-radius: 5px;
     /* width: 200px;
 		height: 50px; */
     background: #FFF;
+    z-index: 2;
 }
 
 .sign_btn_block,
@@ -3214,7 +3211,9 @@ table#progress-table td.description .desc-inner {
 }
 
 table#progress-table td.name {
-    min-width: 150px;
+    font-size: 120%;
+    line-height: 115%;
+    min-width: 180px !important;
 }
 
 tr.progress-group td {
@@ -3322,13 +3321,14 @@ a.confirm-progress-btn {
     margin: 30px 5px !important;
 }
 
-.confirm_div_top {
+.progress-footer .confirm_div_top {
     width: 100%;
     display: flex;
     justify-content: flex-end;
     gap: 40px;
     align-items: center;
     margin-top: 40px;
+    flex-flow: wrap;
 }
 
 .confirm_div_top div {
@@ -3900,8 +3900,8 @@ span.feedback-preview {
     width: 25px;
     text-align: center;
     border-radius: 0 0 20px 0;
-    padding: 4px 4px 5px 0;
-    font-size: 10px;
+    padding: 4px 7px 7px 5px;
+    font-size: 12px;
 }
 
 .dropdown-menu .delete:hover * {
@@ -3912,7 +3912,7 @@ span.feedback-preview {
 .column-dropdown .dropdown-menu.show {
     display: flex;
     flex-wrap: wrap;
-    width: 500px;
+    max-width: 500px;
     justify-content: center;
 }
 
@@ -5487,14 +5487,19 @@ span.select2-selection textarea {
     text-align: left !important;
     margin-top: -40px;
     position: relative;
-    z-index: 9;
+    z-index: 2;
     visibility: hidden;
     display: flex;
     width: 100%;
     justify-content: left;
     padding-left: 7px;
 }
-
+div#progress-div {
+    padding: 0;
+}
+#progress-table tr.group td, #progress-table tr.group td:hover {
+    background: rgb(238 238 238) !important;
+}
 .actionbuttons .action-btn {
     width: 20px;
     height: 20px;
@@ -6456,13 +6461,44 @@ td a.btn-primary.btn_sign_here {
 }
 
 canvas.signature-pad {
-    border: 3px dashed #9dd0e5 !important;
+    border: 3px dashed #53a65e !important;
     border-radius: 5px;
     /* width: 200px;
     height: 50px; */
-    background: #FFF;
+    background: #ffffffc7;
+}
+.signature-placeholder {
+    position: absolute;
+    top: 13px;
+    left: 10px;
+    font-size: 14px;
+    font-family: 'Open Sans';
+}
+.progress_files p {
+    font-size: 15px !important;
+}
+.progress_files #progressdropBox {
+    width: 100%;
+    height: 100px !important;
+    border: 2px dashed #add3e9 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    background: #ebf8ff;
+    border-radius: 10px;
+}
+td.item-signature {
+    position: relative;
 }
 
+.sign_btn_block {
+    position: absolute;
+    z-index: 3;
+    right: 23px;
+    margin-top: 7px;
+}
 .sign_btn_block,
 td.item-signature .form-control {
     display: flex;
@@ -6830,7 +6866,7 @@ table td .btn-sm i {
 body.project.show .card-body {
     max-height: 800px;
     overflow: hidden;
-    border-radius: 20px;
+    border-radius: 0 0 10px 10px;
     /* padding-bottom: 0 !important;
     border-bottom: 15px solid #FFF; */
 }
@@ -8856,7 +8892,7 @@ span.timeline-step {
 }
 
 table.table tr.top-quote {
-    border: 10px solid #FFF;
+    border: 2px solid #FFF;
 }
 
 table.table tr.top-quote.client_final_quote {
@@ -8941,12 +8977,61 @@ table.table tr.top-quote.subcontractor_final_quote:hover {
     border: none !important
 }
 
+table.table tr.top-quote.client_final_quote
+{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+/* 
+table.table tr.top-quote.subcontractor_final_quote {
+    top: 124px !important;!i;!;
+}
 
+table.table tr.top-quote.only_final_quotes_profit {
+    top: 202px;
+} */
 
+#progress-table tr td, tr.group.progress_files_row td {
+    background: #fff;
+}
+td.item-signature button {
+    background: #d5d7da;
+    background: transparent;
+    border: none;
+    margin: 1px;
+}
+td.item-signature button i {
+    color: #999 !important;
+    font-size: 18px !important;
+}
+td.item-signature button:hover,
+td.item-signature button:active,
+td.item-signature button:focus {
+    background: transparent;
+}
+.progress_files_row .mediabox .media img {
+    height: 80px;
+}
 
+.progress_files_row .mediabox span.filename {
+    display: none;
+}
 
+.progress_files_row .mediabox .mediainfo {
+    background: #FFF !important;
+    padding: 0 !important;
+}
 
-
+body .progress_files_row .progress_mediaimg {
+    padding: 1px 0px !important;
+}
+.project_progress .pos-prefix div {
+    font-weight: 100;
+    text-align: left;
+    color: #bbb;
+    font-size: 13px;
+}
 
 
 
@@ -9100,5 +9185,9 @@ table.table tr.top-quote.subcontractor_final_quote:hover {
     .search-input-box .search-input {
         width: 50px !important;
     }
+    table td, table th {
+        display: block;
+    }
+}
 
     /************************************+ MEDIA QUERIES ONLY ********************************************/
