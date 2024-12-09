@@ -279,8 +279,8 @@ $item_signature = '<div class="sign_btn_block">
 					$row['name'] 				= $item->name;
 					$row['description'] 		= '<div class="desc-inner">' . $item->description . '</div>';
 					$row['quantity'] 			= $item->quantity . ' ' . $item->unit;
-					$row['price'] 				= $item->price;
-					$row['totalPrice'] 			= $item->total_price;
+					$row['price']              = $item->price ?? ($item->total_price / $item->quantity);
+$row['totalPrice']         = $item->total_price ?? ($item->price * $item->quantity);
 					$row['type'] 				= $item->type;
 					$row['comment'] 			= $item->comment;
 					$row['history'] 			= $history;

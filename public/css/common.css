@@ -3214,6 +3214,7 @@ table#progress-table td.name {
     font-size: 120%;
     line-height: 115%;
     min-width: 180px !important;
+    hyphens: auto;
 }
 
 tr.progress-group td {
