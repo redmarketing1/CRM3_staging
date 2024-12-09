@@ -166,7 +166,7 @@ document.addEventListener('alpine:init', () => {
                         groupId: item.group_id,
                         name: item.name,
                         description: item.description,
-                        comment: item.comment, 
+                        content: item.comment, 
                         quantity: item.quantity,
                         unit: item.unit,
                         optional: item.is_optional,
@@ -453,36 +453,36 @@ document.addEventListener('alpine:init', () => {
 
             switch (type) {
                 case 'item':
-                    if (this.items[itemId]) {
-                        this.items[itemId].name = value;
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].name = value;
                     }
                     break;
                 case 'comment':
-                    if (this.comments[commentId]) {
-                        this.comments[commentId].content = value;
+                    if (this.newItems[commentId]) {
+                        this.newItems[commentId].content = value;
                     }
                     break;
                 case 'group':
-                    if (this.groups[groupId]) {
-                        this.groups[groupId].name = value;
+                    if (this.newItems[groupId]) {
+                        this.newItems[groupId].name = value;
                     }
                     break;
                 case 'quantity':
-                    if (this.items[itemId]) {
-                        this.items[itemId].quantity = this.parseNumber(value);
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].quantity = this.parseNumber(value);
                         this.updateItemPriceAndTotal(itemId);
                     }
                     this.formatDecimalValue(event.target);
                     break;
                 case 'price':
-                    if (this.items[itemId]) {
+                    if (this.newItems[itemId]) {
                         this.updateItemPriceAndTotal(itemId);
                     }
                     this.formatCurrencyValue(event.target);
                     break;
                 case 'unit':
-                    if (this.items[itemId]) {
-                        this.items[itemId].unit = value;
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].unit = value;
                     }
                     break;
                 case 'cashDiscount':

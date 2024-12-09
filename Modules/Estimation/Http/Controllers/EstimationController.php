@@ -126,7 +126,7 @@ class EstimationController extends Controller
                     $newComment = ProjectEstimationProduct::create([
                         'project_estimation_id' => $form['id'],
                         'group_id'              => $groupMapping[$item['groupId']] ?? null,
-                        'comment'               => $item['comment'],
+                        'comment'               => $item['content'],
                         'pos'                   => $item['pos'],
                         'type'                  => 'comment',
                     ]);
