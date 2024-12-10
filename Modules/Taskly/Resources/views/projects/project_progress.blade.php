@@ -26,194 +26,7 @@
 @endsection
 @push('css')
 	<style>
-		
-		#card2 {
-            right: -61px;
-            width: 48%;
-        }
 
-        #card1 {
-            width: 48%;
-        }
-
-        #useradd-8 {
-            display: flex;
-        }
-
-        #progressdropBox {
-            width: 100%;
-            height: 100px !important;
-            border: 2px dashed #ccc !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        #progressdropBox:hover {
-            border-color: #4CAF50 !important;
-        }
-
-		.item-signature .progress_files{
-			margin-top: 10px !important;
-		}
-
-        .progressfileInput {
-            display: none;
-        }
-
-        #previewContainer {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .preview {
-            max-width: 100%;
-            max-height: 150px;
-            margin: 10px;
-        }
-		/* The container */
-		.checkbox-btn .container {
-			display: block;
-			position: relative;
-			margin-bottom: 25px !important;
-			cursor: pointer;
-			font-size: 22px;
-			-webkit-user-select: none;
-			-moz-user-select: none;
-			-ms-user-select: none;
-			user-select: none;
-		}
-
-		/* Hide the browser's default checkbox */
-		.checkbox-btn .container input {
-		position: absolute;
-		opacity: 0;
-		cursor: pointer;
-		height: 0;
-		width: 0;
-		}
-
-		/* Create a custom checkbox */
-		.checkmark {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 15px;
-            width: 15px;
-            background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
-		}
-        .header_buttons .checkmark {
-            background-color: #0427e9 !important;
-        }
-
-		/* Create the checkmark/indicator (hidden when not checked) */
-		.checkmark:after {
-            content: "";
-            position: absolute;
-            display: none;
-		}
-
-		/* Show the checkmark when checked */
-		.container input:checked ~ .checkmark:after {
-			display: block;
-		}
-
-		/* Style the checkmark/indicator */
-		.container .checkmark:after {
-			left: 9px;
-			top: 5px;
-			width: 5px;
-			height: 10px;
-			border: solid white;
-			border-width: 0 3px 3px 0;
-			-webkit-transform: rotate(45deg);
-			-ms-transform: rotate(45deg);
-			transform: rotate(45deg);
-		}
-		.selected_image .actionbuttons .bg-danger, .default_file .header_buttons .action-btn{
-			visibility: visible;
-		}
-
-		.progress-step {
-			position: relative !important;
-		}
-
-        .flex-div span {
-            display: flex;
-        }
-
-		#progress-table tr.group, #progress-table tr.group:hover {
-			background-color: rgba(0, 0, 0, 0.1) !important;
-		}
-        .construction_detail_address span, .client_invoice_address span, .address-class span { 
-            display : block;
-        }
-
-		.CellWithComment{
-			position:relative;
-		}
-		.CellWithComment i{
-            color: #333333 !important;
-        }
-		.CellWithComment:hover span.CellComment{
-			display:block;
-		}
-		.CellWithComment .CellComment{
-			top: 33px !important;
-		}
-		.CellWithComment .CellComment:before{
-			margin-top: -28px !important;
-			margin-right: 28px !important;
-		}
-		.progress-signature .sign_btn_block{
-			display: flex;
-    		justify-content: space-between;
-		}
-
-		.progress-signature .sign_btn_block_small {
-			display: flex;
-			gap: 1px;
-		}
-		.progress-signature .progress_final_clear_sig, .progress-signature .progress_final_clear_sig:hover {
-			color: #333 !important;
-			background: none !important;
-			border: none !important;
-			margin-top: 1px !important;
-		}
-		.item-signature .progress_amount {
-			border: 1px solid #d8d8d8 !important;
-			padding: 10px !important;
-			background: #ffffff !important;
-			margin-top: 5px !important;
-		}
-		.progress_files_row .progress_mediaimg{
-			padding: 10px !important;
-		}
-		.progress_files_row .lightbox-link{
-			margin: 0 auto !important;
-			display: block !important;
-		}
-		.progress_files_row .mediabox .mediainfo{
-			text-align: center !important;
-		}
-		.progress_files_row .preview{
-			margin: 10px !important;
-		}
-		.media-body a .fileprev{
-            margin: 0 auto !important;
-        }
-		.progress_files_row #progress_bulk_delete_form .btn-primary{
-			background: #48494B !important;
-			padding: 5px 10px !important;
-			color: #fff !important;
-		}
-		.progress_files_row #progress_bulk_delete_form .btn-primary i{
-            color: #fff !important;
-        }		
 	</style>
 @endpush
 @push('scripts')
@@ -230,31 +43,43 @@
 		<div class="card">
 
 			<div class="card-header d-flex justify-content-between align-items-center">
-				<h2>{{ __('Project Progress') }}</h2>
-                <div class="">
-                    
-                </div>
+				<h2>{{ __('Project Progress') }} - {{ \Carbon\Carbon::now('Europe/Berlin')->format('d.m.Y') }}</h2>
+                <div class="select-progress total-progress CHANGE">
+											
+											<div class="select-progress-inner">
+												
+												<input class="progress" name="progress[' . $item->id . ']" type="range" id="progress-slider-' . $item->id . '" class="form-control"
+													min="0" value="50%" data-min="50%" max="100" step="5" data-id="' . $item->id . '"
+													style="width: 100%;">
+												<span id="slider-value-' . $item->id . '" class="slider-value">50%</span>
+											</div>
+											<div class="progress-numbers">
+													<span class="progress-numbers"><b>Total Progress: </b>650,00 € / 1.000,00 € (Remaining: 350,00 €)</span>
+													<span class="invoice-numbers"><b>Total Invoice: </b>500,00 € / 1.000,00 € (Remaining: 500,00 €)</span>
+												</div>
+										</div>
             </div>
-
+	
 			<div class="card-body table-border-style">
 				<div class="card-body table-responsive" id="progress-div">
 				{{ Form::open(['route' => ['progress.sign.store'], 'enctype' => 'multipart/form-data', 'class' => 'project-progress-form']) }}
 					<table class="table w-100 table-hover table-bordered" id="progress-table">
 						<thead>
-							<th data-dt-order="disable">&nbsp;</th>
-							<th data-dt-order="disable">{{ __('POS') }}</th>
-							<th data-dt-order="disable">{{ __('Group') }}</th>
+							{{-- <th data-dt-order="disable">&nbsp;</th> --}}
+							{{-- <th data-dt-order="disable">{{ __('POS') }}</th> --}}
+							
 							<th data-dt-order="disable">{{ __('Name') }}</th>
+							<th data-dt-order="disable">{{ __('Group') }}</th>
 							<th data-dt-order="disable">{{ __('Quantity') }}</th>
-							<th data-dt-order="disable">{{ __('Signature') }}</th>
+							<th data-dt-order="disable">{{ __('Progress') }}</th>
+							<th data-dt-order="disable">{{ __('Description') }}</th>
 							@if ($show_everything == 1)
-								<th data-dt-order="disable">{{ __('Single Price') }}</th>
+								<!-- <th data-dt-order="disable">{{ __('Single Price') }}</th>
 								<th data-dt-order="disable">{{ __('Total Price') }}</th>
 								<th data-dt-order="disable">{{ __('Progress') }}</th>
-								<th data-dt-order="disable">{{ __('Remaining') }}</th>
+								<th data-dt-order="disable">{{ __('Remaining') }}</th> -->
 							@endif
 							<th data-dt-order="disable">{{ __('History') }}</th>
-							<th data-dt-order="disable">{{ __('Description') }}</th>
 						</thead>
 					</table>
 					<div class="progress-footer">
@@ -377,7 +202,7 @@
 				$('.comment_text[data-id="' + id + '"]').toggleClass('d-none');
 				return false;
 			});
-
+ 
 			$(document).on('click', '.quantitySig', function(e) {
 				e.preventDefault();
 				var id = $(this).data('id');  
@@ -405,45 +230,46 @@
 			$('#progress-table colgroup').empty();
 
 			var columns_data = [
-				{ "data": "product_id", "className": "product-id", "orderable": false },
-				{ "data": "pos", "className": "position", "orderable": false },
+                {{-- { "data": "product_id", "className": "product-id", "orderable": false }, --}}
+                { "data": "name", 
+                    "className": "name", 
+                    "orderable": false,
+                    "render": function(data, type, row) {
+                        return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
+                    }
+                },
 				{ "data": "group", "className": "group", "orderable": false },
-				{ "data": "name", 
-				"className": "name", 
-				"orderable": false,
-				"render": function(data, type, row) {
-					return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
-				}
-				},
-				{ "data": "quantity", "className": "quantity", "orderable": false },
-				{ "data": "item_signature", "className": "item-signature", "orderable": false },
-				{ "data": "history", "className": "history", "orderable": false },
-				{ "data": "description", "className": "description", "orderable": false }
-			];
+                { "data": "quantity", "className": "quantity", "orderable": false },
+                { "data": "item_signature", "className": "item-signature", "orderable": false },
+				{ "data": "description", "className": "description", "orderable": false },
+                { "data": "history", "className": "history", "orderable": false },
+            ];
+
 			if (show_everything == 1) {
 				columns_data = [
-					{ "data": "product_id", "className": "product-id", "orderable": false },
-					{ "data": "pos", "className": "position", "orderable": false },
+                    {{-- { "data": "product_id", "className": "product-id", "orderable": false }, --}}
+                   
+                    { "data": "name", 
+                    "className": "name", 
+                    "orderable": false,
+                    "render": function(data, type, row) {
+                        return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
+                    }
+                    },
 					{ "data": "group", "className": "group", "orderable": false },
-					{ "data": "name", 
-					"className": "name", 
-					"orderable": false,
-					"render": function(data, type, row) {
-						return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
-					}
-					},
-					{ "data": "quantity", "className": "quantity", "orderable": false },
-					{ "data": "item_signature", "className": "item-signature", "orderable": false },
-					{ "data": "price", "className": "price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-					{ "data": "totalPrice", "className": "total-price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-					{ "data": "progress_amount", "className": "progress-amount", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-					{ "data": "progress_remaining", "className": "progress-remaining", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-					{ "data": "history", "className": "history", "orderable": false },
+                    { "data": "quantity", "className": "quantity", "orderable": false },
+                    { "data": "item_signature", "className": "item-signature", "orderable": false },
 					{ "data": "description", "className": "description", "orderable": false },
-				];
+                    // { "data": "price", "className": "price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    // { "data": "totalPrice", "className": "total-price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    // { "data": "progress_amount", "className": "progress-amount", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    // { "data": "progress_remaining", "className": "progress-remaining", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    { "data": "history", "className": "history", "orderable": false },
+                ];
 			}
+
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
-            var groupColumn = 2;
+            var groupColumn = 1;
             $('#progress-table').DataTable({
                 "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
                 'pageLength': 200,
@@ -474,34 +300,31 @@
                     var rows = api.rows({ page: 'current' }).nodes();
                     var last = null;
                     var aData = [];
-					var col_span = (show_everything == 1) ? 11 : 7;
-					api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+					var col_span = (show_everything == 1) ? 10 : 6;
+					
+                   api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+                        var vals = api.row(api.row($(rows).eq(i)).index()).data();
+                        $(rows).eq(i).find('.history').append('<div class="progress_files_row progress-files-group-'+vals.progress_item_id+'">'+vals.item_files+'</div>');
 
-						var vals = api.row(api.row($(rows).eq(i)).index()).data();
-						/*** add progress files rows after each row ***/
-						$(rows).eq(i).find('.history').append('<div class="progress_files_row progress-files-group-'+vals.progress_item_id+'">'+vals.item_files+'</div>');
-
-						var totalPrice = vals['totalPrice'] ? parseFloat(vals['totalPrice']) : 0;
-						if (typeof aData[group] == 'undefined') {
-							aData[group] = new Array();
-							aData[group].rows = [];
-							aData[group].totalPrice = [];
-						}
-						aData[group].rows.push(i); 
-						aData[group].totalPrice.push(totalPrice); 
-					});
+                        var totalPrice = vals['totalPrice'] ? parseFloat(vals['totalPrice']) : 0;
+                        if (typeof aData[group] == 'undefined') {
+                            aData[group] = new Array();
+                            aData[group].rows = [];
+                            aData[group].totalPrice = [];
+                        }
+                        aData[group].rows.push(i); 
+                        aData[group].totalPrice.push(totalPrice); 
+                    });
+                    
 					var idx= 0;
-					for(var group in aData){
-						idx =  Math.min.apply(Math,aData[group].rows);
-						var sum = 0; 
-						$.each(aData[group].totalPrice,function(k,v){
-							sum = sum + v;
-						});
-						
-
-						// $(rows).eq(idx).before('<tr class="group progress-group"><td colspan="10"><b>'+group+'</b></td><td class="text-right" colspan="2"><b>'+moneyFormatter.format(parseFloat(sum))+'</b></td></tr>');
+                    for(var group in aData){
+                        idx = Math.min.apply(Math,aData[group].rows);
+                        var sum = 0; 
+                        $.each(aData[group].totalPrice,function(k,v){
+                            sum = sum + v;
+                        });
                         $(rows).eq(idx).before('<tr class="group progress-group"><td colspan="'+col_span+'">'+group+'</td></tr>');
-					};
+                    }; 
                 },
             });
         }

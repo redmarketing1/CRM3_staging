@@ -66,15 +66,8 @@ class ProjectProgressController extends Controller
 			$username = isset($item->user->name) ? $item->user->name : '';
 			$name_signature    = '<div class="progress-history-item">
                                     <span class="user-avatar">
-                                        // <i class="fa fa-user"></i>
                                         ' . $username . '
                                     </span>
-                                    // <span class="CellWithComment">
-                                    //     <i class="fa fa-info-circle"></i>
-                                    //     <span class="CellComment">
-                                    //         <img src="' . $item->signature . '" />
-                                    //     </span>
-                                    // </span>
                                 </div>';
 			if (Auth::user()->isAbleTo('progress view')){
 				$action = '<div class="action_btn btn-primary">';
@@ -193,7 +186,7 @@ class ProjectProgressController extends Controller
 
 						$history .= '<div class="progress-step">';
 						if ($progress->status == 1) {
-							$history .= '<div class="status1 pstatus">';
+							$history .= '<div class="status1 pstatus">'; 
 						}
 						if ($progress->status == 2) {
 							$history .= '<div class="status2 pstatus">';
@@ -229,7 +222,12 @@ class ProjectProgressController extends Controller
 
 					$item_old_progress 	= isset($old_progress->progress) ? $old_progress->progress : 0;
 					$item_progress 		= '<div class="select-progress">
+											<div class="progress-numbers CHANGE">
+													<span class="progress-numbers"><b>Progress: </b>650,00 € / 1.000,00 € (Remaining: 350,00 €)</span>
+													<span class="invoice-numbers"><b>Invoice: </b>500,00 € / 1.000,00 € (Remaining: 500,00 €)</span>
+												</div>
 											<div class="select-progress-inner">
+												
 												<input class="progress" name="progress[' . $item->id . ']" type="range" id="progress-slider-' . $item->id . '" class="form-control"
 													min="0" value="' . $item_old_progress . '" data-min="' . $item_old_progress . '" max="100" step="5" data-id="' . $item->id . '"
 													style="width: 100%;">
@@ -237,10 +235,21 @@ class ProjectProgressController extends Controller
 											</div>
 										</div>';
 
-					$item_comment = '<textarea class="comment_text d-none" id="comment-' . $item->id . '" name="comments[' . $item->id . ']" placeholder="' . __('Comment ...') . '" data-id="' . $item->id . '"></textarea>';
+					$item_comment = '<textarea class="comment_text d-none" id="comment-' . $item->id . '" name="comments[' . $item->id . ']" placeholder="' . __('Comment') . ' ..." data-id="' . $item->id . '"></textarea>';
 
 					$progress_min_amount = isset($old_progress->progress_amount) ? $old_progress->progress_amount : 0;
-					$item_progress_amount = '<input type="number" class="progress_amount form-control d-none" id="progress_amount_' . $item->id . '" min="' . $progress_min_amount . '" max="' . $item->quantity . '" value="' . (($progress_min_amount > 0) ? $progress_min_amount : '') . '" name="progress_amount[' . $item->id . ']" placeholder="' . __('Progress Amount ...') . '" data-id="' . $item->id . '" />';
+					$item_progress_amount = '<div class="d-flex align-items-center gap-2 progress_amount d-none" data-id="' . $item->id . '">
+						<input type="number" 
+							class="form-control" 
+							id="progress_amount_' . $item->id . '" 
+							min="' . $progress_min_amount . '" 
+							max="' . $item->quantity . '" 
+							value="' . (($progress_min_amount > 0) ? $progress_min_amount : '') . '" 
+							name="progress_amount[' . $item->id . ']" 
+							placeholder="' . __('Amount') . ' ..."
+						/>
+						<span class="text-muted">/ ' . $item->quantity . ' ' . $item->unit . '</span>
+					</div>';
 
 					$item_progress_files = '<div class="progress_files d-none" data-id="' . $item->id . '"><div id="progressdropBox" ondrop="handleProgressDrop(event)" ondragover="handleProgressDragOver(event, this)" data-id="' . $item->id . '" data-estimationid="' . $item->project_estimation_id . '"><p style="font-size:20px ">Drag & Drop files here or click to select</p></div><input type="file" id="progressfileInput' . $item->id . '" class="progressfileInput" multiple onchange="handleProgressFileSelect(event, this)" data-id="' . $item->id . '" data-estimationid="' . $item->project_estimation_id . '" /></div>';
 
@@ -252,7 +261,7 @@ $item_signature = '<div class="sign_btn_block">
             <i class="fa-solid fa-caret-down"></i>
         </button>
         <ul class="dropdown-menu">
-            <li><a class="dropdown-item clearSig" href="#" data-id="' . $item->id . '"><i class="fa-regular fa-trash-can me-2"></i>'.__('Clear').'</a></li>
+            <li><a class="dropdown-item clearSig" href="#" data-id="' . $item->id . '"><i class="fa-regular fa-trash-can me-2"></i>'.__('Delete').'</a></li>
             <li><a class="dropdown-item commentSig" href="#" data-id="' . $item->id . '"><i class="fa-regular fa-comment-dots me-2"></i>'.__('Comment').'</a></li>
             <li><a class="dropdown-item quantitySig" href="#" data-id="' . $item->id . '"><i class="fa-solid fa-hashtag me-2"></i>'.__('Quantity').'</a></li>
             <li><a class="dropdown-item uploadSig" href="#" data-id="' . $item->id . '"><i class="fa-solid fa-camera me-2"></i>'.__('Upload').'</a></li>
@@ -285,7 +294,7 @@ $item_signature = '<div class="sign_btn_block">
 					$row['pos']                 = '<div class="div-inner">' . htmlspecialchars($item->pos) . '</div>';
 					$row['name'] 				= $item->name;
 					$row['description'] 		= '<div class="desc-inner">' . $item->description . '</div>';
-					$row['quantity'] 			= $item->quantity . ' ' . $item->unit;
+					$row['quantity'] 			= $item->quantity . ' ' . $item->unit . '<div class="single-price CHANGE"> x 0,00 €</div>';
 					$row['price'] 				= $item->price;
 					$row['totalPrice'] 			= $item->total_price;
 					$row['type'] 				= $item->type;
