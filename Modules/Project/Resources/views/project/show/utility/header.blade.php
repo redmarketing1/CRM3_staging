@@ -11,7 +11,7 @@
              </h4>
              <div class="d-flex  align-items-center row1">
                 <div class="px-3">
-                    <span class="text-white text-sm">{{ __('Start Date') }}:</span>
+                    <span class="text-white text-sm">{{ __('Created Date') }}:</span>
                     <input type="text" class="text-white text-nowrap inline-edit edit-dateField"
                         contenteditable="true" data-field="start_date"
                         data-message="{{ trans('Project start date has been updated.') }}" data-toggle="tooltip"
