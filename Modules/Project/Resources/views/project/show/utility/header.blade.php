@@ -1,3 +1,6 @@
+@php
+    use Carbon\Carbon;
+@endphp
  <div class="card bg-primary project-detail-dashboard">
      <div class="card-body">
          <div class="d-block d-sm-flex align-items-center justify-content-between">
@@ -7,6 +10,14 @@
                  {{ $project->name }}
              </h4>
              <div class="d-flex  align-items-center row1">
+                <div class="px-3">
+                    <span class="text-white text-sm">{{ __('Start Date') }}:</span>
+                    <input type="text" class="text-white text-nowrap inline-edit edit-dateField"
+                        contenteditable="true" data-field="start_date"
+                        data-message="{{ trans('Project start date has been updated.') }}" data-toggle="tooltip"
+                        title="{{ $project->created_at }}" data-original-text="{{ $project->created_at }}"
+                        value="{{ $project->created_at->diffForHumans() }}">
+                </div>
                  <div class="px-3">
                      <span class="text-white text-sm">{{ __('Start Date') }}:</span>
                      <input type="text" class="text-white text-nowrap inline-edit edit-dateField"
