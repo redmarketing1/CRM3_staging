@@ -222,7 +222,12 @@ class ProjectProgressController extends Controller
 
 					$item_old_progress 	= isset($old_progress->progress) ? $old_progress->progress : 0;
 					$item_progress 		= '<div class="select-progress">
+											<div class="progress-numbers CHANGE">
+													<span class="progress-numbers"><b>Progress: </b>650,00 € / 1.000,00 € (Remaining: 350,00 €)</span>
+													<span class="invoice-numbers"><b>Invoice: </b>500,00 € / 1.000,00 € (Remaining: 500,00 €)</span>
+												</div>
 											<div class="select-progress-inner">
+												
 												<input class="progress" name="progress[' . $item->id . ']" type="range" id="progress-slider-' . $item->id . '" class="form-control"
 													min="0" value="' . $item_old_progress . '" data-min="' . $item_old_progress . '" max="100" step="5" data-id="' . $item->id . '"
 													style="width: 100%;">
@@ -289,7 +294,7 @@ $item_signature = '<div class="sign_btn_block">
 					$row['pos']                 = '<div class="div-inner">' . htmlspecialchars($item->pos) . '</div>';
 					$row['name'] 				= $item->name;
 					$row['description'] 		= '<div class="desc-inner">' . $item->description . '</div>';
-					$row['quantity'] 			= $item->quantity . ' ' . $item->unit;
+					$row['quantity'] 			= $item->quantity . ' ' . $item->unit . '<div class="single-price CHANGE"> x 0,00 €</div>';
 					$row['price'] 				= $item->price;
 					$row['totalPrice'] 			= $item->total_price;
 					$row['type'] 				= $item->type;

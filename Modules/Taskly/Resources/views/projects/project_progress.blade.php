@@ -44,11 +44,22 @@
 
 			<div class="card-header d-flex justify-content-between align-items-center">
 				<h2>{{ __('Project Progress') }} - {{ \Carbon\Carbon::now('Europe/Berlin')->format('d.m.Y') }}</h2>
-                <div class="">
-                    
-                </div>
+                <div class="select-progress total-progress CHANGE">
+											
+											<div class="select-progress-inner">
+												
+												<input class="progress" name="progress[' . $item->id . ']" type="range" id="progress-slider-' . $item->id . '" class="form-control"
+													min="0" value="50%" data-min="50%" max="100" step="5" data-id="' . $item->id . '"
+													style="width: 100%;">
+												<span id="slider-value-' . $item->id . '" class="slider-value">50%</span>
+											</div>
+											<div class="progress-numbers">
+													<span class="progress-numbers"><b>Total Progress: </b>650,00 € / 1.000,00 € (Remaining: 350,00 €)</span>
+													<span class="invoice-numbers"><b>Total Invoice: </b>500,00 € / 1.000,00 € (Remaining: 500,00 €)</span>
+												</div>
+										</div>
             </div>
-
+	
 			<div class="card-body table-border-style">
 				<div class="card-body table-responsive" id="progress-div">
 				{{ Form::open(['route' => ['progress.sign.store'], 'enctype' => 'multipart/form-data', 'class' => 'project-progress-form']) }}
@@ -63,10 +74,10 @@
 							<th data-dt-order="disable">{{ __('Progress') }}</th>
 							<th data-dt-order="disable">{{ __('Description') }}</th>
 							@if ($show_everything == 1)
-								<th data-dt-order="disable">{{ __('Single Price') }}</th>
+								<!-- <th data-dt-order="disable">{{ __('Single Price') }}</th>
 								<th data-dt-order="disable">{{ __('Total Price') }}</th>
 								<th data-dt-order="disable">{{ __('Progress') }}</th>
-								<th data-dt-order="disable">{{ __('Remaining') }}</th>
+								<th data-dt-order="disable">{{ __('Remaining') }}</th> -->
 							@endif
 							<th data-dt-order="disable">{{ __('History') }}</th>
 						</thead>
@@ -249,10 +260,10 @@
                     { "data": "quantity", "className": "quantity", "orderable": false },
                     { "data": "item_signature", "className": "item-signature", "orderable": false },
 					{ "data": "description", "className": "description", "orderable": false },
-                    { "data": "price", "className": "price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-                    { "data": "totalPrice", "className": "total-price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-                    { "data": "progress_amount", "className": "progress-amount", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-                    { "data": "progress_remaining", "className": "progress-remaining", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    // { "data": "price", "className": "price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    // { "data": "totalPrice", "className": "total-price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    // { "data": "progress_amount", "className": "progress-amount", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
+                    // { "data": "progress_remaining", "className": "progress-remaining", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
                     { "data": "history", "className": "history", "orderable": false },
                 ];
 			}
