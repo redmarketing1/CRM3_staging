@@ -161,58 +161,125 @@ document.addEventListener('alpine:init', () => {
                 handle: '.fa-bars, .fa-up-down',
                 animation: 150,
                 start: function (e, ui) {
-                    // ui.item.addClass("selected");
+                    ui.item.addClass("selected");
                 },
                 stop: (event, ui) => {
                     const movedRow = ui.item[0];
 
                     if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
-                        let currentRow = movedRow.previousElementSibling;
-                        let newGroupRow = null;
-
-                        // Find the new group
-                        while (currentRow && !newGroupRow) {
-                            if (currentRow.classList.contains('group_row')) {
-                                newGroupRow = currentRow;
-                            }
-                            currentRow = currentRow.previousElementSibling;
-                        }
-
-                        if (newGroupRow) {
-                            const newGroupId = newGroupRow.dataset.groupid;
-                            const itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
-                            const oldGroupId = movedRow.dataset.groupid;
-
-                            // Update group ID in DOM
-                            movedRow.dataset.groupid = newGroupId;
-
-                            // Update items/comments in state
-                            if (movedRow.classList.contains('item_row')) {
-                                if (this.newItems[itemId]) {
-                                    this.newItems[itemId].groupId = newGroupId;
-                                }
-                            } else if (movedRow.classList.contains('item_comment')) {
-                                if (this.newItems[itemId]) {
-                                    this.newItems[itemId].groupId = newGroupId;
-                                }
-                            }
-
-                            // Update old and new group calculations
-                            this.calculateGroupTotal(oldGroupId);
-                            this.calculateGroupTotal(newGroupId);
-                        }
+                        this.handleItemMove(movedRow);
+                    } else if (movedRow.classList.contains('group_row')) {
+                        this.handleGroupMove(movedRow);
                     }
 
-                    // Update positions and recalculate all totals
-                    this.updatePOSNumbers();
-                    this.calculateTotals();
+                    // Force recalculation of all totals
+                    this.recalculateAllTotals();
 
-                    // Mark as unsaved and trigger auto-save
                     if (!this.isInitializing) {
                         this.hasUnsavedChanges = true;
                         this.autoSaveHandler();
                     }
                 }
+            });
+        },
+
+        handleItemMove(movedRow) {
+            let currentRow = movedRow.previousElementSibling;
+            let newGroupRow = null;
+
+            while (currentRow && !newGroupRow) {
+                if (currentRow.classList.contains('group_row')) {
+                    newGroupRow = currentRow;
+                }
+                currentRow = currentRow.previousElementSibling;
+            }
+
+            if (newGroupRow) {
+                const newGroupId = newGroupRow.dataset.groupid;
+                const itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
+                const oldGroupId = movedRow.dataset.groupid;
+
+                // Update DOM
+                movedRow.dataset.groupid = newGroupId;
+
+                // Update state
+                if (this.newItems[itemId]) {
+                    this.newItems[itemId].groupId = newGroupId;
+
+                    // Update prices if it's an item
+                    if (movedRow.classList.contains('item_row')) {
+                        this.updateItemPrices(itemId);
+                    }
+                }
+
+                // Update group calculations
+                const cardQuoteIds = [...new Set(
+                    Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                        .map(el => el.dataset.cardquoteid)
+                )];
+
+                cardQuoteIds.forEach(quoteId => {
+                    this.calculateGroupTotal(oldGroupId, quoteId);
+                    this.calculateGroupTotal(newGroupId, quoteId);
+                });
+            }
+        },
+
+        handleGroupMove(groupRow) {
+            const groupId = groupRow.dataset.groupid;
+            if (this.newItems[groupId]) {
+                // Recalculate group totals
+                const cardQuoteIds = [...new Set(
+                    Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                        .map(el => el.dataset.cardquoteid)
+                )];
+
+                cardQuoteIds.forEach(quoteId => {
+                    this.calculateGroupTotal(groupId, quoteId);
+                });
+            }
+        },
+
+        recalculateAllTotals() {
+            // Update positions first
+            this.updatePOSNumbers();
+
+            // Get all groups and quotes
+            const groups = [...document.querySelectorAll('tr.group_row')].map(row => row.dataset.groupid);
+            const cardQuoteIds = [...new Set(
+                Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                    .map(el => el.dataset.cardquoteid)
+            )];
+
+            // Recalculate all items
+            Object.keys(this.newItems).forEach(itemId => {
+                const item = this.newItems[itemId];
+                if (item.type === 'item') {
+                    this.updateItemPrices(itemId);
+                }
+            });
+
+            // Recalculate all group totals
+            groups.forEach(groupId => {
+                cardQuoteIds.forEach(quoteId => {
+                    this.calculateGroupTotal(groupId, quoteId);
+                });
+            });
+
+            // Final total calculation
+            this.calculateTotals();
+
+            // Update UI for all price columns
+            cardQuoteIds.forEach(quoteId => {
+                document.querySelectorAll(`[data-cardquoteid="${quoteId}"] .item-price`).forEach(priceInput => {
+                    const row = priceInput.closest('tr');
+                    if (row) {
+                        const itemId = row.dataset.itemid;
+                        if (itemId && this.newItems[itemId]?.prices?.[quoteId]) {
+                            this.formatCurrencyValue(priceInput);
+                        }
+                    }
+                });
             });
         },
 
@@ -241,7 +308,7 @@ document.addEventListener('alpine:init', () => {
                 this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNum);
             });
         },
-        
+
         initializeFullScreen() {
             document.addEventListener('fullscreenchange', () => {
                 this.isFullScreen = !!document.fullscreenElement;
@@ -633,7 +700,7 @@ document.addEventListener('alpine:init', () => {
                 price.totalPrice = quantity * (price.singlePrice || 0);
             });
         },
-  
+
         handleOptionalChange(event, itemId) {
             if (this.newItems[itemId]) {
                 this.newItems[itemId].optional = event.target.checked ? 1 : 0;
@@ -688,7 +755,7 @@ document.addEventListener('alpine:init', () => {
                 }
             });
         },
- 
+
         addItem(type, targetGroupId = null) {
             const timestamp = Date.now();
 
