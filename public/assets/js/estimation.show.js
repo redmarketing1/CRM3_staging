@@ -20,8 +20,8 @@ function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 document.addEventListener('alpine:init', function () {
   Alpine.data('estimationShow', function () {
-    var _ref5;
-    return _ref5 = {
+    var _ref7;
+    return _ref7 = {
       items: {},
       comments: {},
       groups: {},
@@ -904,7 +904,7 @@ document.addEventListener('alpine:init', function () {
           }
         });
       }
-    }, _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_ref5, "getCurrentGroupId", function getCurrentGroupId() {
+    }, _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_ref7, "getCurrentGroupId", function getCurrentGroupId() {
       // Get the last group from sorted groups
       var groups = this.getSortedGroups();
       return groups.length > 0 ? groups[groups.length - 1].id : null;
@@ -1037,7 +1037,7 @@ document.addEventListener('alpine:init', function () {
       this.updatePOSNumbers();
       this.calculateTotals();
       this.contextMenu.show = false;
-    }), _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_ref5, "duplicateRow", function duplicateRow(rowId) {
+    }), _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_ref7, "duplicateRow", function duplicateRow(rowId) {
       var _this23 = this;
       var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], \n                                                 tr[data-itemid=\"").concat(rowId, "\"], \n                                                 tr[data-commentid=\"").concat(rowId, "\"], \n                                                 tr[data-groupid=\"").concat(rowId, "\"]"));
       if (!originalRow) return;
@@ -1257,9 +1257,6 @@ document.addEventListener('alpine:init', function () {
       var data = {
         cards: columns,
         form: this.getFomrData(),
-        items: this.items,
-        comments: this.comments,
-        groups: this.groups,
         newItems: this.newItems
       };
       $.ajax({
@@ -1271,38 +1268,49 @@ document.addEventListener('alpine:init', function () {
           $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
         },
         success: function success(idMappings) {
-          // Helper function to update IDs and DOM elements
           var updateEntities = function updateEntities(oldId, newId) {
-            // Find item in newItems and update its ID
+            // Check if this item exists in newItems
             var itemKey = Object.keys(_this27.newItems).find(function (key) {
               return _this27.newItems[key].id.toString() === oldId;
             });
             if (itemKey) {
-              _this27.newItems[newId] = _objectSpread(_objectSpread({}, _this27.newItems[itemKey]), {}, {
+              var item = _this27.newItems[itemKey];
+
+              // Create updated item with new ID
+              _this27.newItems[newId] = _objectSpread(_objectSpread({}, item), {}, {
                 id: newId
               });
-              delete _this27.newItems[itemKey];
-            }
 
-            // Update DOM - check all possible types
-            ['item', 'comment', 'group'].forEach(function (type) {
-              var row = document.querySelector("tr[data-".concat(type, "id=\"").concat(oldId, "\"]"));
+              // If this is an item (not a group) and has a groupId, update it
+              if (item.type !== 'group' && item.groupId) {
+                _this27.newItems[newId].groupId = idMappings[item.groupId] || item.groupId;
+              }
+              delete _this27.newItems[itemKey];
+
+              // Update DOM
+              var row = document.querySelector("tr[data-id=\"".concat(oldId, "\"]"));
               if (row) {
-                row.dataset["".concat(type, "id")] = newId;
                 row.dataset.id = newId;
+                if (row.dataset.groupid === oldId) {
+                  row.dataset.groupid = newId;
+                }
 
                 // Update input names
                 row.querySelectorAll("[name*=\"[".concat(oldId, "]\"]")).forEach(function (input) {
                   input.name = input.name.replace("[".concat(oldId, "]"), "[".concat(newId, "]"));
                 });
               }
-            });
+              console.log(_this27.newItems[newId]);
+            }
           };
 
           // Update all entities with new IDs
-          // Object.entries(idMappings).forEach(([oldId, newId]) => {
-          //     updateEntities(oldId, newId);
-          // });
+          Object.entries(idMappings).forEach(function (_ref5) {
+            var _ref6 = _slicedToArray(_ref5, 2),
+              oldId = _ref6[0],
+              newId = _ref6[1];
+            updateEntities(oldId, newId);
+          });
 
           // Update UI state
           _this27.lastSaveTimestamp = Date.now();
@@ -1319,7 +1327,7 @@ document.addEventListener('alpine:init', function () {
           _this27.lastSaveText = 'is failed';
         }
       });
-    }), _defineProperty(_ref5, "getFomrData", function getFomrData() {
+    }), _defineProperty(_ref7, "getFomrData", function getFomrData() {
       var form = this.$el.closest('form');
       if (!form) {
         console.warn('Form not found');

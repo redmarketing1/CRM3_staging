@@ -1369,9 +1369,6 @@ document.addEventListener('alpine:init', () => {
             const data = {
                 cards: columns,
                 form: this.getFomrData(),
-                items: this.items,
-                comments: this.comments,
-                groups: this.groups,
                 newItems: this.newItems,
             };
 
@@ -1384,38 +1381,52 @@ document.addEventListener('alpine:init', () => {
                     $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
                 },
                 success: (idMappings) => {
-                    // Helper function to update IDs and DOM elements
+
                     const updateEntities = (oldId, newId) => {
-                        // Find item in newItems and update its ID
+                        // Check if this item exists in newItems
                         const itemKey = Object.keys(this.newItems).find(key =>
                             this.newItems[key].id.toString() === oldId
                         );
 
                         if (itemKey) {
-                            this.newItems[newId] = { ...this.newItems[itemKey], id: newId };
-                            delete this.newItems[itemKey];
-                        }
+                            const item = this.newItems[itemKey];
 
-                        // Update DOM - check all possible types
-                        ['item', 'comment', 'group'].forEach(type => {
-                            const row = document.querySelector(`tr[data-${type}id="${oldId}"]`);
+                            // Create updated item with new ID
+                            this.newItems[newId] = {
+                                ...item,
+                                id: newId
+                            };
+
+                            // If this is an item (not a group) and has a groupId, update it
+                            if (item.type !== 'group' && item.groupId) {
+                                this.newItems[newId].groupId = idMappings[item.groupId] || item.groupId;
+                            }
+
+                            delete this.newItems[itemKey];
+
+                            // Update DOM
+                            const row = document.querySelector(`tr[data-id="${oldId}"]`);
                             if (row) {
-                                row.dataset[`${type}id`] = newId;
                                 row.dataset.id = newId;
+                                if (row.dataset.groupid === oldId) {
+                                    row.dataset.groupid = newId;
+                                }
 
                                 // Update input names
-                                row.querySelectorAll(`[name*="[${oldId}]"]`)
-                                    .forEach(input => {
-                                        input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
-                                    });
+                                row.querySelectorAll(`[name*="[${oldId}]"]`).forEach(input => {
+                                    input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
+                                });
                             }
-                        });
+
+                            console.log(this.newItems[newId]); 
+
+                        }
                     };
 
                     // Update all entities with new IDs
-                    // Object.entries(idMappings).forEach(([oldId, newId]) => {
-                    //     updateEntities(oldId, newId);
-                    // });
+                    Object.entries(idMappings).forEach(([oldId, newId]) => {
+                        updateEntities(oldId, newId);
+                    });
 
                     // Update UI state
                     this.lastSaveTimestamp = Date.now();

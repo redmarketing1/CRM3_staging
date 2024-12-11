@@ -25,8 +25,8 @@
         <template x-for="entry in getSortedItemsForGroup(group.id)" :key="entry.id">
             <template x-if="true">
                 <tr :class="{ 'item_row': entry.type === 'item', 'item_comment': entry.type === 'comment' }"
-                    :data-id="entry.id" :data-itemid="entry.type === 'item' ? entry.id : null"
-                    :data-commentid="entry.type === 'comment' ? entry.id : null" :data-groupid="group.id"
+                    :data-id="entry.id"
+                    :data-groupid="group.id"
                     :data-type="entry.type">
                     <td class="column_reorder">
                         <i class="fa fa-bars reorder-item"></i>
