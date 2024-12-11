@@ -1,8 +1,5 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('estimationShow', () => ({
-        items: {},
-        comments: {},
-        groups: {},
         newItems: {},
         tableData: {},
         totals: {},
@@ -55,13 +52,13 @@ document.addEventListener('alpine:init', () => {
             });
 
 
-            this.$watch('items', (value) => {
+            this.$watch('newItems', (value) => {
                 this.calculateTotals();
                 const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
                 cardQuoteIds.forEach(cardQuoteId => this.calculateCardTotals(cardQuoteId));
             }, { deep: true });
 
-            this.$watch('searchQuery', () => this.filterTable());
+            this.$watch('searchQuery', () => this.searchTableItem());
             this.$watch('selectAll', (value) => this.checkboxAll(value));
 
             document.addEventListener('click', (e) => {
@@ -155,29 +152,102 @@ document.addEventListener('alpine:init', () => {
             }, {});
         },
 
+        initializeSortable() {
+            $("#estimation-edit-table").sortable({
+                items: 'tbody tr',
+                cursor: 'pointer',
+                axis: 'y',
+                dropOnEmpty: true,
+                handle: '.fa-bars, .fa-up-down',
+                animation: 150,
+                start: function (e, ui) {
+                    // ui.item.addClass("selected");
+                },
+                stop: (event, ui) => {
+                    const movedRow = ui.item[0];
+
+                    if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
+                        let currentRow = movedRow.previousElementSibling;
+                        let newGroupRow = null;
+
+                        // Find the new group
+                        while (currentRow && !newGroupRow) {
+                            if (currentRow.classList.contains('group_row')) {
+                                newGroupRow = currentRow;
+                            }
+                            currentRow = currentRow.previousElementSibling;
+                        }
+
+                        if (newGroupRow) {
+                            const newGroupId = newGroupRow.dataset.groupid;
+                            const itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
+                            const oldGroupId = movedRow.dataset.groupid;
+
+                            // Update group ID in DOM
+                            movedRow.dataset.groupid = newGroupId;
+
+                            // Update items/comments in state
+                            if (movedRow.classList.contains('item_row')) {
+                                if (this.newItems[itemId]) {
+                                    this.newItems[itemId].groupId = newGroupId;
+                                }
+                            } else if (movedRow.classList.contains('item_comment')) {
+                                if (this.newItems[itemId]) {
+                                    this.newItems[itemId].groupId = newGroupId;
+                                }
+                            }
+
+                            // Update old and new group calculations
+                            this.calculateGroupTotal(oldGroupId);
+                            this.calculateGroupTotal(newGroupId);
+                        }
+                    }
+
+                    // Update positions and recalculate all totals
+                    this.updatePOSNumbers();
+                    this.calculateTotals();
+
+                    // Mark as unsaved and trigger auto-save
+                    if (!this.isInitializing) {
+                        this.hasUnsavedChanges = true;
+                        this.autoSaveHandler();
+                    }
+                }
+            });
+        },
+
+        initializeLastNumbers() {
+            const posNumbers = new Set();
+
+            document.querySelectorAll('.pos-inner').forEach(element => {
+                const pos = element.textContent.trim();
+                if (pos) {
+                    posNumbers.add(pos);
+                    const [groupNum, itemNum] = pos.split('.');
+                    const groupNumber = parseInt(groupNum);
+                    const itemNumber = parseInt(itemNum);
+
+                    this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
+
+                    if (!this.lastItemNumbers[groupNumber] || itemNumber > this.lastItemNumbers[groupNumber]) {
+
+                        this.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
+                    }
+                }
+            });
+
+            document.querySelectorAll('.grouppos').forEach(element => {
+                const groupNum = parseInt(element.textContent.trim());
+                this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNum);
+            });
+        },
+        
         initializeFullScreen() {
             document.addEventListener('fullscreenchange', () => {
                 this.isFullScreen = !!document.fullscreenElement;
                 const btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
                 if (btn) {
                     btn.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
-                }
-            });
-        },
-
-        initializeAutoSave() {
-            if (!document.querySelector('#quote_form')) {
-                console.warn('Quote form not found');
-                return;
-            }
-
-            // Initialize auto-save related event listeners
-            window.addEventListener('beforeunload', (e) => {
-                if (this.hasUnsavedChanges) {
-                    const message = 'You have unsaved changes. Are you sure you want to leave?';
-                    e.preventDefault();
-                    e.returnValue = message;
-                    return message;
                 }
             });
         },
@@ -193,6 +263,17 @@ document.addEventListener('alpine:init', () => {
             } else {
                 document.exitFullscreen();
             }
+        },
+
+        initializeAutoSave() {
+            window.addEventListener('beforeunload', (e) => {
+                if (this.hasUnsavedChanges) {
+                    const message = 'You have unsaved changes. Are you sure you want to leave?';
+                    e.preventDefault();
+                    e.returnValue = message;
+                    return message;
+                }
+            });
         },
 
         calculateItemTotal(itemId, quoteId) {
@@ -220,8 +301,8 @@ document.addEventListener('alpine:init', () => {
 
                 this.calculateGroupTotal(groupId);
 
-                if (this.groups[groupId]) {
-                    this.groups[groupId].total = this.parseNumber(
+                if (this.newItems[groupId]) {
+                    this.newItems[groupId].total = this.parseNumber(
                         row.querySelector('.text-right.grouptotal')?.textContent || '0'
                     );
                 }
@@ -466,30 +547,6 @@ document.addEventListener('alpine:init', () => {
             return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
         },
 
-        updateItemPriceAndTotal(itemId) {
-            if (!itemId || !this.items[itemId]) return [];
-
-            const item = this.items[itemId];
-            const quantity = this.parseNumber(item.quantity || '0');
-
-            const cardQuoteIds = [...new Set(
-                Array.from(document.querySelectorAll('[data-cardquoteid]'),
-                    el => el.dataset.cardquoteid)
-            )];
-
-            const prices = cardQuoteIds.map(quoteId => ({
-                id: quoteId,
-                singlePrice: this.parseNumber(item.price || '0'),
-                totalPrice: quantity * this.parseNumber(item.price || '0')
-            }));
-
-            if (this.items[itemId]) {
-                this.items[itemId].prices = prices;
-            }
-
-            return prices;
-        },
-
         handleInputBlur(event, type) {
             if (!event?.target || !type) return;
             if (event.type === 'keydown' && event.key !== 'Enter') return;
@@ -499,26 +556,54 @@ document.addEventListener('alpine:init', () => {
             if (!row?.dataset) return;
 
             const { value } = event.target;
-            const { itemid, commentid, groupid } = row.dataset;
+            const itemId = row.dataset.id;
             const cardQuoteId = event.target.closest('[data-cardquoteid]')?.dataset.cardquoteid;
 
             const inputHandlers = {
-                item: () => this.updateNewItem(itemid, { name: value }),
-                comment: () => this.updateNewItem(commentid, { content: value }),
-                group: () => this.updateNewItem(groupid, { name: value }),
+                item: () => {
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].name = value;
+                    }
+                },
+                comment: () => {
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].content = value;
+                    }
+                },
+                group: () => {
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].name = value;
+                    }
+                },
                 quantity: () => {
                     const quantity = this.parseNumber(value);
-                    this.updateNewItem(itemid, { quantity });
-                    this.updateItemPrices(itemid);
-                    this.formatDecimalValue(event.target);
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].quantity = quantity;
+                        this.updateItemPrices(itemId);
+                        this.formatDecimalValue(event.target);
+                    }
                 },
                 price: () => {
-                    const singlePrice = this.parseNumber(value);
-                    this.updateNewItem(itemid, { singlePrice }, cardQuoteId);
-                    this.updateItemPrices(itemid);
-                    this.formatCurrencyValue(event.target);
+                    if (this.newItems[itemId] && this.newItems[itemId].prices && cardQuoteId) {
+                        const singlePrice = this.parseNumber(value);
+                        if (!this.newItems[itemId].prices[cardQuoteId]) {
+                            this.newItems[itemId].prices[cardQuoteId] = {
+                                quoteId: cardQuoteId,
+                                type: 'item',
+                                singlePrice: 0,
+                                totalPrice: 0
+                            };
+                        }
+                        this.newItems[itemId].prices[cardQuoteId].singlePrice = singlePrice;
+                        this.newItems[itemId].prices[cardQuoteId].totalPrice = singlePrice * (this.newItems[itemId].quantity || 0);
+                        this.formatCurrencyValue(event.target);
+                    }
                 },
-                unit: () => this.updateNewItem(itemid, { unit: value }),
+                unit: () => {
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].unit = value;
+                    }
+                },
                 cashDiscount: () => {
                     event.target.value = this.formatDecimal(this.parseNumber(value) || 0);
                 }
@@ -548,31 +633,7 @@ document.addEventListener('alpine:init', () => {
                 price.totalPrice = quantity * (price.singlePrice || 0);
             });
         },
-
-        updateNewItem(id, updates, cardQuoteId = null) {
-            if (!this.newItems[id]) return;
-
-            // Handle single field updates
-            if (!cardQuoteId) {
-                Object.assign(this.newItems[id], updates);
-                return;
-            }
-
-            // Handle price updates for specific columns
-            if (!this.newItems[id].prices) {
-                this.newItems[id].prices = {};
-            }
-
-            if (!this.newItems[id].prices[cardQuoteId]) {
-                this.newItems[id].prices[cardQuoteId] = {
-                    singlePrice: 0,
-                    totalPrice: 0
-                };
-            }
-
-            Object.assign(this.newItems[id].prices[cardQuoteId], updates);
-        },
-
+  
         handleOptionalChange(event, itemId) {
             if (this.newItems[itemId]) {
                 this.newItems[itemId].optional = event.target.checked ? 1 : 0;
@@ -617,107 +678,17 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        filterTable() {
+        searchTableItem() {
             const searchTerm = this.searchQuery.toLowerCase();
             Object.entries(this.newItems).forEach(([itemId, item]) => {
-                const row = document.querySelector(`tr[data-itemid="${itemId}"]`);
+                const row = document.querySelector(`tr[data-id="${itemId}"]`);
                 if (row) {
-                    row.style.display = item.name.toLowerCase().includes(searchTerm) ||
-                        item.pos.toLowerCase().includes(searchTerm) ? '' : 'none';
+                    const targetKeyword = item.name || item.content;
+                    row.style.display = targetKeyword.toLowerCase().includes(searchTerm) ? '' : 'none';
                 }
             });
         },
-
-        initializeSortable() {
-            $("#estimation-edit-table").sortable({
-                items: 'tbody tr',
-                cursor: 'pointer',
-                axis: 'y',
-                dropOnEmpty: true,
-                handle: '.fa-bars, .fa-up-down',
-                animation: 150,
-                start: function (e, ui) {
-                    // ui.item.addClass("selected");
-                },
-                stop: (event, ui) => {
-                    const movedRow = ui.item[0];
-
-                    if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
-                        let currentRow = movedRow.previousElementSibling;
-                        let newGroupRow = null;
-
-                        // Find the new group
-                        while (currentRow && !newGroupRow) {
-                            if (currentRow.classList.contains('group_row')) {
-                                newGroupRow = currentRow;
-                            }
-                            currentRow = currentRow.previousElementSibling;
-                        }
-
-                        if (newGroupRow) {
-                            const newGroupId = newGroupRow.dataset.groupid;
-                            const itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
-                            const oldGroupId = movedRow.dataset.groupid;
-
-                            // Update group ID in DOM
-                            movedRow.dataset.groupid = newGroupId;
-
-                            // Update items/comments in state
-                            if (movedRow.classList.contains('item_row')) {
-                                if (this.newItems[itemId]) {
-                                    this.newItems[itemId].groupId = newGroupId;
-                                }
-                            } else if (movedRow.classList.contains('item_comment')) {
-                                if (this.newItems[itemId]) {
-                                    this.newItems[itemId].groupId = newGroupId;
-                                }
-                            }
-
-                            // Update old and new group calculations
-                            this.calculateGroupTotal(oldGroupId);
-                            this.calculateGroupTotal(newGroupId);
-                        }
-                    }
-
-                    // Update positions and recalculate all totals
-                    this.updatePOSNumbers();
-                    this.calculateTotals();
-
-                    // Mark as unsaved and trigger auto-save
-                    if (!this.isInitializing) {
-                        this.hasUnsavedChanges = true;
-                        this.autoSaveHandler();
-                    }
-                }
-            });
-        },
-
-        initializeLastNumbers() {
-            const posNumbers = new Set();
-
-            document.querySelectorAll('.pos-inner').forEach(element => {
-                const pos = element.textContent.trim();
-                if (pos) {
-                    posNumbers.add(pos);
-                    const [groupNum, itemNum] = pos.split('.');
-                    const groupNumber = parseInt(groupNum);
-                    const itemNumber = parseInt(itemNum);
-
-                    this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
-
-                    if (!this.lastItemNumbers[groupNumber] || itemNumber > this.lastItemNumbers[groupNumber]) {
-
-                        this.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
-                    }
-                }
-            });
-
-            document.querySelectorAll('.grouppos').forEach(element => {
-                const groupNum = parseInt(element.textContent.trim());
-                this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNum);
-            });
-        },
-
+ 
         addItem(type, targetGroupId = null) {
             const timestamp = Date.now();
 
@@ -733,7 +704,7 @@ document.addEventListener('alpine:init', () => {
             if (type !== 'group') return;
 
             const itemTimestamp = Date.now() + 1;
-            const hasAnyGroups = Object.keys(this.groups).length > 0;
+            const hasAnyGroups = Object.values(this.newItems).some(item => item.type === 'group');
 
             // Helper to create a group
             const createGroup = (id, name, itemCount = 0) => ({
@@ -746,15 +717,12 @@ document.addEventListener('alpine:init', () => {
                 itemCount,
             });
 
-            this.groups[timestamp] = createGroup(timestamp, 'Group Name');
             this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
 
             if (!hasAnyGroups) {
-                this.groups[timestamp] = createGroup(timestamp, 'New Group');
                 this.newItems[timestamp] = createGroup(timestamp, 'New Group');
                 this.createItemsAndComments('item', itemTimestamp, targetRowId);
             } else {
-                this.groups[timestamp] = createGroup(timestamp, 'Group Name');
                 this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
             }
 
@@ -792,8 +760,6 @@ document.addEventListener('alpine:init', () => {
                     expanded: false,
                     pos: '',
                 };
-
-                this.items[timestamp] = items;
                 this.newItems[timestamp] = items;
             } else {
                 const comment = {
@@ -804,8 +770,6 @@ document.addEventListener('alpine:init', () => {
                     expanded: false,
                     pos: '',
                 };
-
-                this.comments[timestamp] = comment;
                 this.newItems[timestamp] = comment;
             }
 
@@ -839,7 +803,6 @@ document.addEventListener('alpine:init', () => {
 
                         if (row.classList.contains('group_row')) {
                             groupIds.push(row.dataset.groupid);
-                            delete this.groups[row.dataset.groupid];
                             delete this.newItems[row.dataset.groupid];
                         } else {
                             const IDs = row.dataset.id;
@@ -889,41 +852,45 @@ document.addEventListener('alpine:init', () => {
         updatePOSNumbers() {
             let currentGroupPos = 0;
             let itemCountInGroup = 0;
-            let lastGroupId = null;
 
-            document.querySelectorAll('tr').forEach(row => {
+            // Get all rows but filter out any that aren't groups, items, or comments
+            document.querySelectorAll('tr.group_row, tr.item_row, tr.item_comment').forEach(row => {
                 if (row.classList.contains('group_row')) {
+                    // Handle group row
                     currentGroupPos++;
                     itemCountInGroup = 0;
-                    lastGroupId = row.dataset.groupid;
+                    const groupId = row.dataset.groupid;
 
+                    // Format group position with leading zeros
                     const groupPos = currentGroupPos.toString().padStart(2, '0');
-                    row.querySelector('.grouppos').textContent = `${groupPos}`;
 
-                    if (this.groups[lastGroupId]) {
-                        this.groups[lastGroupId].pos = groupPos;
+                    // Update DOM
+                    const groupPosElement = row.querySelector('.grouppos');
+                    if (groupPosElement) {
+                        groupPosElement.textContent = groupPos;
                     }
-                }
-                else if (row.classList.contains('item_row')) {
-                    itemCountInGroup++;
-                    const itemPos = `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`;
 
-                    row.querySelector('.pos-inner').textContent = itemPos;
-
-                    const itemId = row.dataset.itemid;
-                    if (this.items[itemId]) {
-                        this.items[itemId].pos = itemPos;
+                    // Update state
+                    if (this.newItems[groupId]) {
+                        this.newItems[groupId].pos = groupPos;
                     }
-                }
-                else if (row.classList.contains('item_comment')) {
+                } else {
+                    // Handle both item and comment rows
                     itemCountInGroup++;
-                    const itemPos = `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`;
-
-                    row.querySelector('.pos-inner').textContent = itemPos;
-
                     const itemId = row.dataset.itemid || row.dataset.commentid;
-                    if (this.comments[itemId]) {
-                        this.comments[itemId].pos = itemPos;
+
+                    // Format position with leading zeros (e.g., "01.01")
+                    const itemPos = `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`;
+
+                    // Update DOM
+                    const posElement = row.querySelector('.pos-inner');
+                    if (posElement) {
+                        posElement.textContent = itemPos;
+                    }
+
+                    // Update state
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].pos = itemPos;
                     }
                 }
             });
@@ -1091,10 +1058,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         duplicateRow(rowId) {
-            const originalRow = document.querySelector(`tr[data-id="${rowId}"], 
-                                                 tr[data-itemid="${rowId}"], 
-                                                 tr[data-commentid="${rowId}"], 
-                                                 tr[data-groupid="${rowId}"]`);
+            const originalRow = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-commentid="${rowId}"], tr[data-groupid="${rowId}"]`);
             if (!originalRow) return;
 
             const timestamp = Date.now();
@@ -1102,74 +1066,82 @@ document.addEventListener('alpine:init', () => {
             const isComment = originalRow.classList.contains('item_comment');
             const groupId = isGroup ? null : originalRow.dataset.groupid;
 
+            const cardQuoteIds = [...new Set(
+                Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                    .map(el => el.dataset.cardquoteid)
+            )];
+
             if (isGroup) {
-
-                const groupName = originalRow.querySelector('.grouptitle-input').value;
-
-                const newItem = {
+                const groupName = originalRow.querySelector('.grouptitle-input')?.value || 'Group Name';
+                this.newItems[timestamp] = {
                     id: timestamp,
                     type: 'group',
                     name: `${groupName} - copy`,
                     total: 0,
-                    expanded: false
-                };
-
-
-                this.items[timestamp] = newItem;
-
-
-                this.groups[timestamp] = {
-                    id: timestamp,
-                    pos: '',
-                    name: `${groupName} - copy`,
-                    total: 0,
-                    itemCount: 0
+                    expanded: false,
+                    pos: ''
                 };
             } else if (isComment) {
-
-                const newItem = {
+                this.newItems[timestamp] = {
                     id: timestamp,
                     type: 'comment',
                     groupId: groupId,
-                    content: originalRow.querySelector('.item-description').value,
-                    expanded: false
+                    content: originalRow.querySelector('.item-description')?.value || 'New Comment',
+                    expanded: false,
+                    pos: ''
                 };
+            } else {
+                const prices = {};
+                cardQuoteIds.forEach(quoteId => {
+                    const priceInput = originalRow.querySelector(`.item-price[data-cardquoteid="${quoteId}"]`);
+                    prices[quoteId] = {
+                        quoteId: quoteId,
+                        type: 'item',
+                        singlePrice: this.parseNumber(priceInput?.value || '0'),
+                        totalPrice: 0
+                    };
+                });
 
-                this.items[timestamp] = newItem;
-            }
-            else {
-
-                const newItem = {
+                this.newItems[timestamp] = {
                     id: timestamp,
-                    type: originalRow.classList.contains('item_comment') ? 'comment' : 'item',
+                    type: 'item',
                     groupId: groupId,
-                    name: originalRow.querySelector('.item-name')?.value + ' - copy',
+                    name: (originalRow.querySelector('.item-name')?.value || 'New Item') + ' - copy',
                     quantity: this.parseNumber(originalRow.querySelector('.item-quantity')?.value || '0'),
                     unit: originalRow.querySelector('.item-unit')?.value || '',
-                    optional: originalRow.querySelector('.item-optional').checked ? 1 : 0,
-                    price: this.parseNumber(originalRow.querySelector('.item-price')?.value || '0'),
-                    expanded: false
+                    optional: originalRow.querySelector('.item-optional')?.checked ? 1 : 0,
+                    expanded: false,
+                    pos: '',
+                    prices: prices,
+                    description: originalRow.querySelector('.description_input')?.value || ''
                 };
-
-
-                this.items[timestamp] = newItem;
-
-
-                if (this.groups[groupId]) {
-                    this.groups[groupId].itemCount++;
-                }
             }
 
             this.$nextTick(() => {
+                this.hasUnsavedChanges = true;
 
-                const newRow = document.querySelector(`tr[data-id="${timestamp}"], tr[data-itemid="${timestamp}"], tr[data-commentid="${timestamp}"]`);
-                if (newRow && originalRow.nextSibling) {
-                    originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
-                }
+                this.$nextTick(() => {
+                    const insertAfter = (el, referenceNode) => {
+                        referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
+                    };
 
-                this.updatePOSNumbers();
-                this.calculateTotals();
-                this.initializeContextMenu();
+                    const newRow = document.querySelector(`tr[data-id="${timestamp}"], tr[data-itemid="${timestamp}"], tr[data-commentid="${timestamp}"]`);
+
+                    if (newRow && originalRow) {
+                        insertAfter(newRow, originalRow);
+                    }
+
+                    this.updatePOSNumbers();
+                    this.calculateTotals();
+                    this.initializeContextMenu();
+
+                    if (!isGroup && !isComment) {
+                        const descriptionContent = originalRow.querySelector('.description_input')?.value;
+                        if (descriptionContent) {
+                            this.newItems[timestamp].description = descriptionContent;
+                        }
+                    }
+                });
             });
 
             this.contextMenu.show = false;
@@ -1194,16 +1166,10 @@ document.addEventListener('alpine:init', () => {
 
                     if (row.classList.contains('group_row')) {
                         groupIds.push(row.dataset.groupid);
-                        delete this.groups[row.dataset.groupid];
                         delete this.newItems[row.dataset.groupid];
                     } else {
-                        itemIds.push(row.dataset.itemid);
-                        delete this.items[row.dataset.itemid];
-                        delete this.newItems[row.dataset.itemid];
-
-                        comments.push(row.dataset.commentid);
-                        delete this.comments[row.dataset.commentid];
-                        delete this.newItems[row.dataset.commentid];
+                        itemIds.push(row.dataset.id);
+                        delete this.newItems[row.dataset.id];
                     }
 
                     $.ajax({
@@ -1418,7 +1384,7 @@ document.addEventListener('alpine:init', () => {
                                 });
                             }
 
-                            console.log(this.newItems[newId]); 
+                            console.log(this.newItems[newId]);
 
                         }
                     };

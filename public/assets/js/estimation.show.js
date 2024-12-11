@@ -22,9 +22,6 @@ document.addEventListener('alpine:init', function () {
   Alpine.data('estimationShow', function () {
     var _ref7;
     return _ref7 = {
-      items: {},
-      comments: {},
-      groups: {},
       newItems: {},
       tableData: {},
       totals: {},
@@ -74,7 +71,7 @@ document.addEventListener('alpine:init', function () {
             _this.isInitializing = false; // Reset flag after all initialization is done
           });
         });
-        this.$watch('items', function (value) {
+        this.$watch('newItems', function (value) {
           _this.calculateTotals();
           var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
             return el.dataset.cardquoteid;
@@ -86,7 +83,7 @@ document.addEventListener('alpine:init', function () {
           deep: true
         });
         this.$watch('searchQuery', function () {
-          return _this.filterTable();
+          return _this.searchTableItem();
         });
         this.$watch('selectAll', function (value) {
           return _this.checkboxAll(value);
@@ -176,30 +173,99 @@ document.addEventListener('alpine:init', function () {
           return acc;
         }, {});
       },
-      initializeFullScreen: function initializeFullScreen() {
+      initializeSortable: function initializeSortable() {
         var _this3 = this;
-        document.addEventListener('fullscreenchange', function () {
-          _this3.isFullScreen = !!document.fullscreenElement;
-          var btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
-          if (btn) {
-            btn.className = _this3.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+        $("#estimation-edit-table").sortable({
+          items: 'tbody tr',
+          cursor: 'pointer',
+          axis: 'y',
+          dropOnEmpty: true,
+          handle: '.fa-bars, .fa-up-down',
+          animation: 150,
+          start: function start(e, ui) {
+            // ui.item.addClass("selected");
+          },
+          stop: function stop(event, ui) {
+            var movedRow = ui.item[0];
+            if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
+              var currentRow = movedRow.previousElementSibling;
+              var newGroupRow = null;
+
+              // Find the new group
+              while (currentRow && !newGroupRow) {
+                if (currentRow.classList.contains('group_row')) {
+                  newGroupRow = currentRow;
+                }
+                currentRow = currentRow.previousElementSibling;
+              }
+              if (newGroupRow) {
+                var newGroupId = newGroupRow.dataset.groupid;
+                var itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
+                var oldGroupId = movedRow.dataset.groupid;
+
+                // Update group ID in DOM
+                movedRow.dataset.groupid = newGroupId;
+
+                // Update items/comments in state
+                if (movedRow.classList.contains('item_row')) {
+                  if (_this3.newItems[itemId]) {
+                    _this3.newItems[itemId].groupId = newGroupId;
+                  }
+                } else if (movedRow.classList.contains('item_comment')) {
+                  if (_this3.newItems[itemId]) {
+                    _this3.newItems[itemId].groupId = newGroupId;
+                  }
+                }
+
+                // Update old and new group calculations
+                _this3.calculateGroupTotal(oldGroupId);
+                _this3.calculateGroupTotal(newGroupId);
+              }
+            }
+
+            // Update positions and recalculate all totals
+            _this3.updatePOSNumbers();
+            _this3.calculateTotals();
+
+            // Mark as unsaved and trigger auto-save
+            if (!_this3.isInitializing) {
+              _this3.hasUnsavedChanges = true;
+              _this3.autoSaveHandler();
+            }
           }
         });
       },
-      initializeAutoSave: function initializeAutoSave() {
+      initializeLastNumbers: function initializeLastNumbers() {
         var _this4 = this;
-        if (!document.querySelector('#quote_form')) {
-          console.warn('Quote form not found');
-          return;
-        }
-
-        // Initialize auto-save related event listeners
-        window.addEventListener('beforeunload', function (e) {
-          if (_this4.hasUnsavedChanges) {
-            var message = 'You have unsaved changes. Are you sure you want to leave?';
-            e.preventDefault();
-            e.returnValue = message;
-            return message;
+        var posNumbers = new Set();
+        document.querySelectorAll('.pos-inner').forEach(function (element) {
+          var pos = element.textContent.trim();
+          if (pos) {
+            posNumbers.add(pos);
+            var _pos$split = pos.split('.'),
+              _pos$split2 = _slicedToArray(_pos$split, 2),
+              groupNum = _pos$split2[0],
+              itemNum = _pos$split2[1];
+            var groupNumber = parseInt(groupNum);
+            var itemNumber = parseInt(itemNum);
+            _this4.lastGroupNumber = Math.max(_this4.lastGroupNumber, groupNumber);
+            if (!_this4.lastItemNumbers[groupNumber] || itemNumber > _this4.lastItemNumbers[groupNumber]) {
+              _this4.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
+            }
+          }
+        });
+        document.querySelectorAll('.grouppos').forEach(function (element) {
+          var groupNum = parseInt(element.textContent.trim());
+          _this4.lastGroupNumber = Math.max(_this4.lastGroupNumber, groupNum);
+        });
+      },
+      initializeFullScreen: function initializeFullScreen() {
+        var _this5 = this;
+        document.addEventListener('fullscreenchange', function () {
+          _this5.isFullScreen = !!document.fullscreenElement;
+          var btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
+          if (btn) {
+            btn.className = _this5.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
           }
         });
       },
@@ -213,6 +279,17 @@ document.addEventListener('alpine:init', function () {
         } else {
           document.exitFullscreen();
         }
+      },
+      initializeAutoSave: function initializeAutoSave() {
+        var _this6 = this;
+        window.addEventListener('beforeunload', function (e) {
+          if (_this6.hasUnsavedChanges) {
+            var message = 'You have unsaved changes. Are you sure you want to leave?';
+            e.preventDefault();
+            e.returnValue = message;
+            return message;
+          }
+        });
       },
       calculateItemTotal: function calculateItemTotal(itemId, quoteId) {
         var _item$prices$quoteId;
@@ -229,20 +306,20 @@ document.addEventListener('alpine:init', function () {
         return totalPrice;
       },
       calculateTotals: function calculateTotals() {
-        var _this5 = this;
+        var _this7 = this;
         this.totals = {};
         document.querySelectorAll('tr.group_row').forEach(function (row) {
           var groupId = row.dataset.groupid;
           if (!groupId) return;
-          _this5.calculateGroupTotal(groupId);
-          if (_this5.groups[groupId]) {
+          _this7.calculateGroupTotal(groupId);
+          if (_this7.newItems[groupId]) {
             var _row$querySelector;
-            _this5.groups[groupId].total = _this5.parseNumber(((_row$querySelector = row.querySelector('.text-right.grouptotal')) === null || _row$querySelector === void 0 ? void 0 : _row$querySelector.textContent) || '0');
+            _this7.newItems[groupId].total = _this7.parseNumber(((_row$querySelector = row.querySelector('.text-right.grouptotal')) === null || _row$querySelector === void 0 ? void 0 : _row$querySelector.textContent) || '0');
           }
         });
       },
       calculateGroupTotal: function calculateGroupTotal(groupId) {
-        var _this6 = this;
+        var _this8 = this;
         var totals = {};
         var groupRow = document.querySelector("tr.group_row[data-groupid=\"".concat(groupId, "\"]"));
         if (!groupRow) return 0;
@@ -254,19 +331,19 @@ document.addEventListener('alpine:init', function () {
             var isOptional = (_currentRow$querySele = currentRow.querySelector('.item-optional')) === null || _currentRow$querySele === void 0 ? void 0 : _currentRow$querySele.checked;
             if (!isOptional) {
               var _currentRow$querySele2;
-              var quantity = _this6.parseNumber(((_currentRow$querySele2 = currentRow.querySelector('.item-quantity')) === null || _currentRow$querySele2 === void 0 ? void 0 : _currentRow$querySele2.value) || '0');
+              var quantity = _this8.parseNumber(((_currentRow$querySele2 = currentRow.querySelector('.item-quantity')) === null || _currentRow$querySele2 === void 0 ? void 0 : _currentRow$querySele2.value) || '0');
               var priceInputs = currentRow.querySelectorAll('.item-price');
               priceInputs.forEach(function (priceInput, index) {
                 if (!totals[index]) totals[index] = 0;
-                var price = _this6.parseNumber(priceInput.value || '0');
+                var price = _this8.parseNumber(priceInput.value || '0');
                 var total = quantity * price;
                 totals[index] += total;
 
                 // Update individual item total
                 var totalCell = currentRow.querySelectorAll('.column_total_price')[index];
                 if (totalCell) {
-                  totalCell.textContent = _this6.formatCurrency(total);
-                  _this6.setNegativeStyle(totalCell, total);
+                  totalCell.textContent = _this8.formatCurrency(total);
+                  _this8.setNegativeStyle(totalCell, total);
                 }
               });
             } else {
@@ -288,23 +365,23 @@ document.addEventListener('alpine:init', function () {
         var totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
         totalCells.forEach(function (cell, index) {
           var total = totals[index] || 0;
-          cell.textContent = _this6.formatCurrency(total);
-          _this6.setNegativeStyle(cell, total);
+          cell.textContent = _this8.formatCurrency(total);
+          _this8.setNegativeStyle(cell, total);
 
           // Update card totals
           var cardQuoteId = cell.dataset.cardquoteid;
           if (cardQuoteId) {
-            _this6.calculateCardTotals(cardQuoteId);
+            _this8.calculateCardTotals(cardQuoteId);
           }
         });
         return totals[0] || 0;
       },
       calculateCardTotals: function calculateCardTotals(cardQuoteId) {
-        var _this7 = this;
+        var _this9 = this;
         var subtotal = 0;
         var groupTotalCells = document.querySelectorAll("td[data-cardquoteid=\"".concat(cardQuoteId, "\"].grouptotal"));
         groupTotalCells.forEach(function (cell) {
-          subtotal += _this7.parseNumber(cell.textContent);
+          subtotal += _this9.parseNumber(cell.textContent);
         });
         var markupInput = document.querySelector("#quoteMarkup[name=\"item[".concat(cardQuoteId, "][markup]\"]"));
         var markup = this.parseNumber((markupInput === null || markupInput === void 0 ? void 0 : markupInput.value) || '0');
@@ -347,7 +424,7 @@ document.addEventListener('alpine:init', function () {
         this.autoSaveHandler();
       },
       initializeCardCalculations: function initializeCardCalculations() {
-        var _this8 = this;
+        var _this10 = this;
         var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
           return el.dataset.cardquoteid;
         })));
@@ -359,59 +436,59 @@ document.addEventListener('alpine:init', function () {
 
           // Format and apply markup
           if (markupInput) {
-            var value = _this8.parseNumber(markupInput.value);
-            markupInput.value = _this8.formatDecimal(value);
-            _this8.setNegativeStyle(markupInput, value);
+            var value = _this10.parseNumber(markupInput.value);
+            markupInput.value = _this10.formatDecimal(value);
+            _this10.setNegativeStyle(markupInput, value);
 
             // Apply markup calculations
-            _this8.updateMarkupCalculations({
+            _this10.updateMarkupCalculations({
               target: markupInput
             }, cardQuoteId);
           }
 
           // Format and apply discount
           if (discountInput) {
-            var _value = _this8.parseNumber(discountInput.value);
-            discountInput.value = _this8.formatDecimal(_value);
+            var _value = _this10.parseNumber(discountInput.value);
+            discountInput.value = _this10.formatDecimal(_value);
             // Trigger discount calculations
-            _this8.handleInputBlur({
+            _this10.handleInputBlur({
               target: discountInput
             }, 'cashDiscount');
           }
 
           // Apply VAT calculations if set
           if (vatSelect) {
-            _this8.handleVatChangeAmount({
+            _this10.handleVatChangeAmount({
               target: vatSelect
             }, cardQuoteId);
           }
 
           // Calculate all totals for this column
-          _this8.calculateCardTotals(cardQuoteId);
+          _this10.calculateCardTotals(cardQuoteId);
         });
       },
       handleVatChangeAmount: function handleVatChangeAmount(event, cardQuoteId) {
         this.calculateCardTotals(cardQuoteId);
       },
       updateMarkupCalculations: function updateMarkupCalculations(event, cardQuoteId) {
-        var _this9 = this;
+        var _this11 = this;
         var target = event.target;
         var markup = this.parseNumber(target.value || '0');
         target.value = this.formatDecimal(markup);
         this.setMarkupStyle(target, markup);
         var priceInputs = document.querySelectorAll("[data-cardquoteid=\"".concat(cardQuoteId, "\"] .item-price"));
         priceInputs.forEach(function (input) {
-          var originalPrice = input.dataset.originalPrice ? _this9.parseNumber(input.dataset.originalPrice) : _this9.parseNumber(input.value);
+          var originalPrice = input.dataset.originalPrice ? _this11.parseNumber(input.dataset.originalPrice) : _this11.parseNumber(input.value);
           if (!input.dataset.originalPrice) {
             input.dataset.originalPrice = originalPrice;
           }
-          var newPrice = _this9.parseNumber(input.dataset.originalPrice) + markup;
-          input.value = _this9.formatCurrency(newPrice);
+          var newPrice = _this11.parseNumber(input.dataset.originalPrice) + markup;
+          input.value = _this11.formatCurrency(newPrice);
           var row = input.closest('tr');
           if (row) {
             var itemId = row.dataset.itemid;
             if (itemId) {
-              _this9.calculateItemTotal(itemId);
+              _this11.calculateItemTotal(itemId);
             }
           }
         });
@@ -459,79 +536,64 @@ document.addEventListener('alpine:init', function () {
         if (typeof value === 'number') return value;
         return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
       },
-      updateItemPriceAndTotal: function updateItemPriceAndTotal(itemId) {
-        var _this10 = this;
-        if (!itemId || !this.items[itemId]) return [];
-        var item = this.items[itemId];
-        var quantity = this.parseNumber(item.quantity || '0');
-        var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]'), function (el) {
-          return el.dataset.cardquoteid;
-        })));
-        var prices = cardQuoteIds.map(function (quoteId) {
-          return {
-            id: quoteId,
-            singlePrice: _this10.parseNumber(item.price || '0'),
-            totalPrice: quantity * _this10.parseNumber(item.price || '0')
-          };
-        });
-        if (this.items[itemId]) {
-          this.items[itemId].prices = prices;
-        }
-        return prices;
-      },
       handleInputBlur: function handleInputBlur(event, type) {
         var _event$target$closest,
-          _this11 = this;
+          _this12 = this;
         if (!(event !== null && event !== void 0 && event.target) || !type) return;
         if (event.type === 'keydown' && event.key !== 'Enter') return;
         if (event.type === 'keydown') event.target.blur();
         var row = event.target.closest('tr');
         if (!(row !== null && row !== void 0 && row.dataset)) return;
         var value = event.target.value;
-        var _row$dataset = row.dataset,
-          itemid = _row$dataset.itemid,
-          commentid = _row$dataset.commentid,
-          groupid = _row$dataset.groupid;
+        var itemId = row.dataset.id;
         var cardQuoteId = (_event$target$closest = event.target.closest('[data-cardquoteid]')) === null || _event$target$closest === void 0 ? void 0 : _event$target$closest.dataset.cardquoteid;
         var inputHandlers = {
           item: function item() {
-            return _this11.updateNewItem(itemid, {
-              name: value
-            });
+            if (_this12.newItems[itemId]) {
+              _this12.newItems[itemId].name = value;
+            }
           },
           comment: function comment() {
-            return _this11.updateNewItem(commentid, {
-              content: value
-            });
+            if (_this12.newItems[itemId]) {
+              _this12.newItems[itemId].content = value;
+            }
           },
           group: function group() {
-            return _this11.updateNewItem(groupid, {
-              name: value
-            });
+            if (_this12.newItems[itemId]) {
+              _this12.newItems[itemId].name = value;
+            }
           },
           quantity: function quantity() {
-            var quantity = _this11.parseNumber(value);
-            _this11.updateNewItem(itemid, {
-              quantity: quantity
-            });
-            _this11.updateItemPrices(itemid);
-            _this11.formatDecimalValue(event.target);
+            var quantity = _this12.parseNumber(value);
+            if (_this12.newItems[itemId]) {
+              _this12.newItems[itemId].quantity = quantity;
+              _this12.updateItemPrices(itemId);
+              _this12.formatDecimalValue(event.target);
+            }
           },
           price: function price() {
-            var singlePrice = _this11.parseNumber(value);
-            _this11.updateNewItem(itemid, {
-              singlePrice: singlePrice
-            }, cardQuoteId);
-            _this11.updateItemPrices(itemid);
-            _this11.formatCurrencyValue(event.target);
+            if (_this12.newItems[itemId] && _this12.newItems[itemId].prices && cardQuoteId) {
+              var singlePrice = _this12.parseNumber(value);
+              if (!_this12.newItems[itemId].prices[cardQuoteId]) {
+                _this12.newItems[itemId].prices[cardQuoteId] = {
+                  quoteId: cardQuoteId,
+                  type: 'item',
+                  singlePrice: 0,
+                  totalPrice: 0
+                };
+              }
+              _this12.newItems[itemId].prices[cardQuoteId].singlePrice = singlePrice;
+              _this12.newItems[itemId].prices[cardQuoteId].totalPrice = singlePrice * (_this12.newItems[itemId].quantity || 0);
+              _this12.formatCurrencyValue(event.target);
+            }
           },
           unit: function unit() {
-            return _this11.updateNewItem(itemid, {
-              unit: value
-            });
+            if (_this12.newItems[itemId]) {
+              _this12.newItems[itemId].unit = value;
+            }
           },
           cashDiscount: function cashDiscount() {
-            event.target.value = _this11.formatDecimal(_this11.parseNumber(value) || 0);
+            event.target.value = _this12.formatDecimal(_this12.parseNumber(value) || 0);
           }
         };
         try {
@@ -558,28 +620,6 @@ document.addEventListener('alpine:init', function () {
           price.totalPrice = quantity * (price.singlePrice || 0);
         });
       },
-      updateNewItem: function updateNewItem(id, updates) {
-        var cardQuoteId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-        if (!this.newItems[id]) return;
-
-        // Handle single field updates
-        if (!cardQuoteId) {
-          Object.assign(this.newItems[id], updates);
-          return;
-        }
-
-        // Handle price updates for specific columns
-        if (!this.newItems[id].prices) {
-          this.newItems[id].prices = {};
-        }
-        if (!this.newItems[id].prices[cardQuoteId]) {
-          this.newItems[id].prices[cardQuoteId] = {
-            singlePrice: 0,
-            totalPrice: 0
-          };
-        }
-        Object.assign(this.newItems[id].prices[cardQuoteId], updates);
-      },
       handleOptionalChange: function handleOptionalChange(event, itemId) {
         if (this.newItems[itemId]) {
           this.newItems[itemId].optional = event.target.checked ? 1 : 0;
@@ -598,7 +638,7 @@ document.addEventListener('alpine:init', function () {
         }
       },
       autoSaveHandler: function autoSaveHandler() {
-        var _this12 = this;
+        var _this13 = this;
         if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
         if (this.saveTimeout) {
           clearTimeout(this.saveTimeout);
@@ -610,109 +650,24 @@ document.addEventListener('alpine:init', function () {
           this.lastSaveTime = currentTime;
         } else {
           this.saveTimeout = setTimeout(function () {
-            if (_this12.hasUnsavedChanges) {
-              _this12.saveTableData();
-              _this12.lastSaveTime = Date.now();
+            if (_this13.hasUnsavedChanges) {
+              _this13.saveTableData();
+              _this13.lastSaveTime = Date.now();
             }
           }, this.saveInterval);
         }
       },
-      filterTable: function filterTable() {
+      searchTableItem: function searchTableItem() {
         var searchTerm = this.searchQuery.toLowerCase();
         Object.entries(this.newItems).forEach(function (_ref) {
           var _ref2 = _slicedToArray(_ref, 2),
             itemId = _ref2[0],
             item = _ref2[1];
-          var row = document.querySelector("tr[data-itemid=\"".concat(itemId, "\"]"));
+          var row = document.querySelector("tr[data-id=\"".concat(itemId, "\"]"));
           if (row) {
-            row.style.display = item.name.toLowerCase().includes(searchTerm) || item.pos.toLowerCase().includes(searchTerm) ? '' : 'none';
+            var targetKeyword = item.name || item.content;
+            row.style.display = targetKeyword.toLowerCase().includes(searchTerm) ? '' : 'none';
           }
-        });
-      },
-      initializeSortable: function initializeSortable() {
-        var _this13 = this;
-        $("#estimation-edit-table").sortable({
-          items: 'tbody tr',
-          cursor: 'pointer',
-          axis: 'y',
-          dropOnEmpty: true,
-          handle: '.fa-bars, .fa-up-down',
-          animation: 150,
-          start: function start(e, ui) {
-            // ui.item.addClass("selected");
-          },
-          stop: function stop(event, ui) {
-            var movedRow = ui.item[0];
-            if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
-              var currentRow = movedRow.previousElementSibling;
-              var newGroupRow = null;
-
-              // Find the new group
-              while (currentRow && !newGroupRow) {
-                if (currentRow.classList.contains('group_row')) {
-                  newGroupRow = currentRow;
-                }
-                currentRow = currentRow.previousElementSibling;
-              }
-              if (newGroupRow) {
-                var newGroupId = newGroupRow.dataset.groupid;
-                var itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
-                var oldGroupId = movedRow.dataset.groupid;
-
-                // Update group ID in DOM
-                movedRow.dataset.groupid = newGroupId;
-
-                // Update items/comments in state
-                if (movedRow.classList.contains('item_row')) {
-                  if (_this13.newItems[itemId]) {
-                    _this13.newItems[itemId].groupId = newGroupId;
-                  }
-                } else if (movedRow.classList.contains('item_comment')) {
-                  if (_this13.newItems[itemId]) {
-                    _this13.newItems[itemId].groupId = newGroupId;
-                  }
-                }
-
-                // Update old and new group calculations
-                _this13.calculateGroupTotal(oldGroupId);
-                _this13.calculateGroupTotal(newGroupId);
-              }
-            }
-
-            // Update positions and recalculate all totals
-            _this13.updatePOSNumbers();
-            _this13.calculateTotals();
-
-            // Mark as unsaved and trigger auto-save
-            if (!_this13.isInitializing) {
-              _this13.hasUnsavedChanges = true;
-              _this13.autoSaveHandler();
-            }
-          }
-        });
-      },
-      initializeLastNumbers: function initializeLastNumbers() {
-        var _this14 = this;
-        var posNumbers = new Set();
-        document.querySelectorAll('.pos-inner').forEach(function (element) {
-          var pos = element.textContent.trim();
-          if (pos) {
-            posNumbers.add(pos);
-            var _pos$split = pos.split('.'),
-              _pos$split2 = _slicedToArray(_pos$split, 2),
-              groupNum = _pos$split2[0],
-              itemNum = _pos$split2[1];
-            var groupNumber = parseInt(groupNum);
-            var itemNumber = parseInt(itemNum);
-            _this14.lastGroupNumber = Math.max(_this14.lastGroupNumber, groupNumber);
-            if (!_this14.lastItemNumbers[groupNumber] || itemNumber > _this14.lastItemNumbers[groupNumber]) {
-              _this14.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
-            }
-          }
-        });
-        document.querySelectorAll('.grouppos').forEach(function (element) {
-          var groupNum = parseInt(element.textContent.trim());
-          _this14.lastGroupNumber = Math.max(_this14.lastGroupNumber, groupNum);
         });
       },
       addItem: function addItem(type) {
@@ -725,10 +680,12 @@ document.addEventListener('alpine:init', function () {
         }
       },
       createGroups: function createGroups(type, timestamp, targetRowId) {
-        var _this15 = this;
+        var _this14 = this;
         if (type !== 'group') return;
         var itemTimestamp = Date.now() + 1;
-        var hasAnyGroups = Object.keys(this.groups).length > 0;
+        var hasAnyGroups = Object.values(this.newItems).some(function (item) {
+          return item.type === 'group';
+        });
 
         // Helper to create a group
         var createGroup = function createGroup(id, name) {
@@ -743,25 +700,22 @@ document.addEventListener('alpine:init', function () {
             itemCount: itemCount
           };
         };
-        this.groups[timestamp] = createGroup(timestamp, 'Group Name');
         this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
         if (!hasAnyGroups) {
-          this.groups[timestamp] = createGroup(timestamp, 'New Group');
           this.newItems[timestamp] = createGroup(timestamp, 'New Group');
           this.createItemsAndComments('item', itemTimestamp, targetRowId);
         } else {
-          this.groups[timestamp] = createGroup(timestamp, 'Group Name');
           this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
         }
         this.$nextTick(function () {
-          _this15.initializeSortable();
-          _this15.updatePOSNumbers();
-          _this15.calculateTotals();
+          _this14.initializeSortable();
+          _this14.updatePOSNumbers();
+          _this14.calculateTotals();
         });
         return;
       },
       createItemsAndComments: function createItemsAndComments(type, timestamp) {
-        var _this16 = this;
+        var _this15 = this;
         var targetGroupId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
         if (type !== 'item' && type !== 'comment') return;
         var initialPrices = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]'), function (el) {
@@ -792,7 +746,6 @@ document.addEventListener('alpine:init', function () {
             expanded: false,
             pos: ''
           };
-          this.items[timestamp] = items;
           this.newItems[timestamp] = items;
         } else {
           var comment = {
@@ -803,16 +756,15 @@ document.addEventListener('alpine:init', function () {
             expanded: false,
             pos: ''
           };
-          this.comments[timestamp] = comment;
           this.newItems[timestamp] = comment;
         }
         this.$nextTick(function () {
-          _this16.updatePOSNumbers();
-          _this16.calculateTotals();
+          _this15.updatePOSNumbers();
+          _this15.calculateTotals();
         });
       },
       removeItem: function removeItem() {
-        var _this17 = this;
+        var _this16 = this;
         var selectedCheckboxes = document.querySelectorAll('.item_selection:checked');
         if (selectedCheckboxes.length === 0) {
           toastrs("Error", "Please select checkbox to continue delete");
@@ -826,19 +778,18 @@ document.addEventListener('alpine:init', function () {
           cancelButtonText: "No, cancel"
         }).then(function (result) {
           if (result.isConfirmed) {
-            var estimationId = _this17.getFomrData().id;
+            var estimationId = _this16.getFomrData().id;
             var itemIds = [];
             var groupIds = [];
             selectedCheckboxes.forEach(function (checkbox) {
               var row = checkbox.closest('tr');
               if (row.classList.contains('group_row')) {
                 groupIds.push(row.dataset.groupid);
-                delete _this17.groups[row.dataset.groupid];
-                delete _this17.newItems[row.dataset.groupid];
+                delete _this16.newItems[row.dataset.groupid];
               } else {
                 var IDs = row.dataset.id;
                 itemIds.push(IDs);
-                delete _this17.newItems[IDs];
+                delete _this16.newItems[IDs];
               }
               row.remove();
             });
@@ -855,8 +806,8 @@ document.addEventListener('alpine:init', function () {
                 console.log(response);
               }
             });
-            _this17.calculateTotals();
-            _this17.updatePOSNumbers();
+            _this16.calculateTotals();
+            _this16.updatePOSNumbers();
           }
         });
       },
@@ -871,35 +822,48 @@ document.addEventListener('alpine:init', function () {
         }
       },
       updatePOSNumbers: function updatePOSNumbers() {
-        var _this18 = this;
+        var _this17 = this;
         var currentGroupPos = 0;
         var itemCountInGroup = 0;
-        var lastGroupId = null;
-        document.querySelectorAll('tr').forEach(function (row) {
+
+        // Get all rows but filter out any that aren't groups, items, or comments
+        document.querySelectorAll('tr.group_row, tr.item_row, tr.item_comment').forEach(function (row) {
           if (row.classList.contains('group_row')) {
+            // Handle group row
             currentGroupPos++;
             itemCountInGroup = 0;
-            lastGroupId = row.dataset.groupid;
+            var groupId = row.dataset.groupid;
+
+            // Format group position with leading zeros
             var groupPos = currentGroupPos.toString().padStart(2, '0');
-            row.querySelector('.grouppos').textContent = "".concat(groupPos);
-            if (_this18.groups[lastGroupId]) {
-              _this18.groups[lastGroupId].pos = groupPos;
+
+            // Update DOM
+            var groupPosElement = row.querySelector('.grouppos');
+            if (groupPosElement) {
+              groupPosElement.textContent = groupPos;
             }
-          } else if (row.classList.contains('item_row')) {
+
+            // Update state
+            if (_this17.newItems[groupId]) {
+              _this17.newItems[groupId].pos = groupPos;
+            }
+          } else {
+            // Handle both item and comment rows
             itemCountInGroup++;
+            var itemId = row.dataset.itemid || row.dataset.commentid;
+
+            // Format position with leading zeros (e.g., "01.01")
             var itemPos = "".concat(currentGroupPos.toString().padStart(2, '0'), ".").concat(itemCountInGroup.toString().padStart(2, '0'));
-            row.querySelector('.pos-inner').textContent = itemPos;
-            var itemId = row.dataset.itemid;
-            if (_this18.items[itemId]) {
-              _this18.items[itemId].pos = itemPos;
+
+            // Update DOM
+            var posElement = row.querySelector('.pos-inner');
+            if (posElement) {
+              posElement.textContent = itemPos;
             }
-          } else if (row.classList.contains('item_comment')) {
-            itemCountInGroup++;
-            var _itemPos = "".concat(currentGroupPos.toString().padStart(2, '0'), ".").concat(itemCountInGroup.toString().padStart(2, '0'));
-            row.querySelector('.pos-inner').textContent = _itemPos;
-            var _itemId = row.dataset.itemid || row.dataset.commentid;
-            if (_this18.comments[_itemId]) {
-              _this18.comments[_itemId].pos = _itemPos;
+
+            // Update state
+            if (_this17.newItems[itemId]) {
+              _this17.newItems[itemId].pos = itemPos;
             }
           }
         });
@@ -909,23 +873,23 @@ document.addEventListener('alpine:init', function () {
       var groups = this.getSortedGroups();
       return groups.length > 0 ? groups[groups.length - 1].id : null;
     }), "getSortedGroups", function getSortedGroups() {
-      var _this19 = this;
+      var _this18 = this;
       // Get all groups from newItems
       var groups = Object.values(this.newItems).filter(function (item) {
         return item.type === 'group';
       }).sort(function (a, b) {
-        return _this19.comparePOS(a.pos, b.pos);
+        return _this18.comparePOS(a.pos, b.pos);
       });
       return groups;
     }), "getSortedItemsForGroup", function getSortedItemsForGroup(groupId) {
-      var _this20 = this;
+      var _this19 = this;
       if (!groupId) return [];
 
       // Get all items and comments for this group from newItems
       return Object.values(this.newItems).filter(function (item) {
         return item.groupId === groupId && (item.type === 'item' || item.type === 'comment');
       }).sort(function (a, b) {
-        return _this20.comparePOS(a.pos, b.pos);
+        return _this19.comparePOS(a.pos, b.pos);
       });
     }), "comparePOS", function comparePOS(posA, posB) {
       if (!posA || !posB) return 0;
@@ -945,7 +909,7 @@ document.addEventListener('alpine:init', function () {
     }), "duplicateCardColumn", function duplicateCardColumn(quoteId) {
       alert('Action for duplicateCardColumn' + quoteId);
     }), "deleteCardColumn", function deleteCardColumn(quoteId) {
-      var _this21 = this;
+      var _this20 = this;
       Swal.fire({
         title: 'Confirmation Delete',
         text: 'Really! You want to remove this column? You can\'t undo',
@@ -964,7 +928,7 @@ document.addEventListener('alpine:init', function () {
             elements.forEach(function (el) {
               return el.remove();
             });
-            _this21.calculateTotals();
+            _this20.calculateTotals();
             Swal.fire({
               title: 'Deleted!',
               text: "The Column has been deleted successfully",
@@ -1002,7 +966,7 @@ document.addEventListener('alpine:init', function () {
     }), "isExpanded", function isExpanded(index) {
       return this.expandedRows[index] || false;
     }), "initializeContextMenu", function initializeContextMenu() {
-      var _this22 = this;
+      var _this21 = this;
       document.querySelector('#estimation-edit-table').addEventListener('contextmenu', function (e) {
         var row = e.target.closest('tr.item_row, tr.group_row, tr.item_comment');
         if (!row) return;
@@ -1013,7 +977,7 @@ document.addEventListener('alpine:init', function () {
         var y = e.clientY;
         if (x + 160 > viewportWidth) x = viewportWidth - 160;
         if (y + 160 > viewportHeight) y = viewportHeight - 160;
-        _this22.contextMenu = {
+        _this21.contextMenu = {
           show: true,
           x: x,
           y: y,
@@ -1038,69 +1002,88 @@ document.addEventListener('alpine:init', function () {
       this.calculateTotals();
       this.contextMenu.show = false;
     }), _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_ref7, "duplicateRow", function duplicateRow(rowId) {
-      var _this23 = this;
-      var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], \n                                                 tr[data-itemid=\"").concat(rowId, "\"], \n                                                 tr[data-commentid=\"").concat(rowId, "\"], \n                                                 tr[data-groupid=\"").concat(rowId, "\"]"));
+      var _this22 = this;
+      var originalRow = document.querySelector("tr[data-id=\"".concat(rowId, "\"], tr[data-itemid=\"").concat(rowId, "\"], tr[data-commentid=\"").concat(rowId, "\"], tr[data-groupid=\"").concat(rowId, "\"]"));
       if (!originalRow) return;
       var timestamp = Date.now();
       var isGroup = originalRow.classList.contains('group_row');
       var isComment = originalRow.classList.contains('item_comment');
       var groupId = isGroup ? null : originalRow.dataset.groupid;
+      var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
+        return el.dataset.cardquoteid;
+      })));
       if (isGroup) {
-        var groupName = originalRow.querySelector('.grouptitle-input').value;
-        var newItem = {
+        var _originalRow$querySel;
+        var groupName = ((_originalRow$querySel = originalRow.querySelector('.grouptitle-input')) === null || _originalRow$querySel === void 0 ? void 0 : _originalRow$querySel.value) || 'Group Name';
+        this.newItems[timestamp] = {
           id: timestamp,
           type: 'group',
           name: "".concat(groupName, " - copy"),
           total: 0,
-          expanded: false
-        };
-        this.items[timestamp] = newItem;
-        this.groups[timestamp] = {
-          id: timestamp,
-          pos: '',
-          name: "".concat(groupName, " - copy"),
-          total: 0,
-          itemCount: 0
+          expanded: false,
+          pos: ''
         };
       } else if (isComment) {
-        var _newItem = {
+        var _originalRow$querySel2;
+        this.newItems[timestamp] = {
           id: timestamp,
           type: 'comment',
           groupId: groupId,
-          content: originalRow.querySelector('.item-description').value,
-          expanded: false
+          content: ((_originalRow$querySel2 = originalRow.querySelector('.item-description')) === null || _originalRow$querySel2 === void 0 ? void 0 : _originalRow$querySel2.value) || 'New Comment',
+          expanded: false,
+          pos: ''
         };
-        this.items[timestamp] = _newItem;
       } else {
-        var _originalRow$querySel, _originalRow$querySel2, _originalRow$querySel3, _originalRow$querySel4;
-        var _newItem2 = {
+        var _originalRow$querySel3, _originalRow$querySel4, _originalRow$querySel5, _originalRow$querySel6, _originalRow$querySel7;
+        var prices = {};
+        cardQuoteIds.forEach(function (quoteId) {
+          var priceInput = originalRow.querySelector(".item-price[data-cardquoteid=\"".concat(quoteId, "\"]"));
+          prices[quoteId] = {
+            quoteId: quoteId,
+            type: 'item',
+            singlePrice: _this22.parseNumber((priceInput === null || priceInput === void 0 ? void 0 : priceInput.value) || '0'),
+            totalPrice: 0
+          };
+        });
+        this.newItems[timestamp] = {
           id: timestamp,
-          type: originalRow.classList.contains('item_comment') ? 'comment' : 'item',
+          type: 'item',
           groupId: groupId,
-          name: ((_originalRow$querySel = originalRow.querySelector('.item-name')) === null || _originalRow$querySel === void 0 ? void 0 : _originalRow$querySel.value) + ' - copy',
-          quantity: this.parseNumber(((_originalRow$querySel2 = originalRow.querySelector('.item-quantity')) === null || _originalRow$querySel2 === void 0 ? void 0 : _originalRow$querySel2.value) || '0'),
-          unit: ((_originalRow$querySel3 = originalRow.querySelector('.item-unit')) === null || _originalRow$querySel3 === void 0 ? void 0 : _originalRow$querySel3.value) || '',
-          optional: originalRow.querySelector('.item-optional').checked ? 1 : 0,
-          price: this.parseNumber(((_originalRow$querySel4 = originalRow.querySelector('.item-price')) === null || _originalRow$querySel4 === void 0 ? void 0 : _originalRow$querySel4.value) || '0'),
-          expanded: false
+          name: (((_originalRow$querySel3 = originalRow.querySelector('.item-name')) === null || _originalRow$querySel3 === void 0 ? void 0 : _originalRow$querySel3.value) || 'New Item') + ' - copy',
+          quantity: this.parseNumber(((_originalRow$querySel4 = originalRow.querySelector('.item-quantity')) === null || _originalRow$querySel4 === void 0 ? void 0 : _originalRow$querySel4.value) || '0'),
+          unit: ((_originalRow$querySel5 = originalRow.querySelector('.item-unit')) === null || _originalRow$querySel5 === void 0 ? void 0 : _originalRow$querySel5.value) || '',
+          optional: (_originalRow$querySel6 = originalRow.querySelector('.item-optional')) !== null && _originalRow$querySel6 !== void 0 && _originalRow$querySel6.checked ? 1 : 0,
+          expanded: false,
+          pos: '',
+          prices: prices,
+          description: ((_originalRow$querySel7 = originalRow.querySelector('.description_input')) === null || _originalRow$querySel7 === void 0 ? void 0 : _originalRow$querySel7.value) || ''
         };
-        this.items[timestamp] = _newItem2;
-        if (this.groups[groupId]) {
-          this.groups[groupId].itemCount++;
-        }
       }
       this.$nextTick(function () {
-        var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], tr[data-itemid=\"").concat(timestamp, "\"], tr[data-commentid=\"").concat(timestamp, "\"]"));
-        if (newRow && originalRow.nextSibling) {
-          originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
-        }
-        _this23.updatePOSNumbers();
-        _this23.calculateTotals();
-        _this23.initializeContextMenu();
+        _this22.hasUnsavedChanges = true;
+        _this22.$nextTick(function () {
+          var insertAfter = function insertAfter(el, referenceNode) {
+            referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
+          };
+          var newRow = document.querySelector("tr[data-id=\"".concat(timestamp, "\"], tr[data-itemid=\"").concat(timestamp, "\"], tr[data-commentid=\"").concat(timestamp, "\"]"));
+          if (newRow && originalRow) {
+            insertAfter(newRow, originalRow);
+          }
+          _this22.updatePOSNumbers();
+          _this22.calculateTotals();
+          _this22.initializeContextMenu();
+          if (!isGroup && !isComment) {
+            var _originalRow$querySel8;
+            var descriptionContent = (_originalRow$querySel8 = originalRow.querySelector('.description_input')) === null || _originalRow$querySel8 === void 0 ? void 0 : _originalRow$querySel8.value;
+            if (descriptionContent) {
+              _this22.newItems[timestamp].description = descriptionContent;
+            }
+          }
+        });
       });
       this.contextMenu.show = false;
     }), "removeRowFromMenu", function removeRowFromMenu(rowId) {
-      var _this24 = this;
+      var _this23 = this;
       Swal.fire({
         title: 'Confirmation Delete',
         text: 'Really! You want to remove this item? You can\'t undo',
@@ -1109,7 +1092,7 @@ document.addEventListener('alpine:init', function () {
         cancelButtonText: "No, cancel"
       }).then(function (result) {
         if (result.isConfirmed) {
-          var estimationId = _this24.getFomrData().id;
+          var estimationId = _this23.getFomrData().id;
           var itemIds = [];
           var comments = [];
           var groupIds = [];
@@ -1117,15 +1100,10 @@ document.addEventListener('alpine:init', function () {
           if (!row) return;
           if (row.classList.contains('group_row')) {
             groupIds.push(row.dataset.groupid);
-            delete _this24.groups[row.dataset.groupid];
-            delete _this24.newItems[row.dataset.groupid];
+            delete _this23.newItems[row.dataset.groupid];
           } else {
-            itemIds.push(row.dataset.itemid);
-            delete _this24.items[row.dataset.itemid];
-            delete _this24.newItems[row.dataset.itemid];
-            comments.push(row.dataset.commentid);
-            delete _this24.comments[row.dataset.commentid];
-            delete _this24.newItems[row.dataset.commentid];
+            itemIds.push(row.dataset.id);
+            delete _this23.newItems[row.dataset.id];
           }
           $.ajax({
             url: route('estimation.destroy', estimationId),
@@ -1140,8 +1118,8 @@ document.addEventListener('alpine:init', function () {
             }
           });
           row.remove();
-          _this24.updatePOSNumbers();
-          _this24.calculateTotals();
+          _this23.updatePOSNumbers();
+          _this23.calculateTotals();
           document.querySelector('.SelectAllCheckbox').checked = false;
         }
       });
@@ -1163,17 +1141,17 @@ document.addEventListener('alpine:init', function () {
         checkbox.checked = value;
       });
     }), "initializeColumnVisibility", function initializeColumnVisibility() {
-      var _this25 = this;
+      var _this24 = this;
       document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
         checkbox.addEventListener('change', function (e) {
           var columnClass = e.target.dataset.column;
           var quoteId = e.target.dataset.quoteid;
           if (columnClass === 'quote_th' && quoteId) {
-            _this25.columnVisibility[columnClass] = e.target.checked;
-            _this25.applyColumnVisibility(quoteId);
+            _this24.columnVisibility[columnClass] = e.target.checked;
+            _this24.applyColumnVisibility(quoteId);
           } else {
-            _this25.columnVisibility[columnClass] = e.target.checked;
-            _this25.applyColumnVisibility();
+            _this24.columnVisibility[columnClass] = e.target.checked;
+            _this24.applyColumnVisibility();
           }
         });
       });
@@ -1222,17 +1200,17 @@ document.addEventListener('alpine:init', function () {
       var days = Math.floor(diff / 86400);
       return "".concat(days, " day").concat(days > 1 ? 's' : '', " ago");
     }), "startTimeAgoUpdates", function startTimeAgoUpdates() {
-      var _this26 = this;
+      var _this25 = this;
       if (this.timeAgoInterval) {
         clearInterval(this.timeAgoInterval);
       }
       this.timeAgoInterval = setInterval(function () {
-        if (_this26.lastSaveTimestamp) {
-          _this26.lastSaveText = _this26.formatTimeAgo(_this26.lastSaveTimestamp);
+        if (_this25.lastSaveTimestamp) {
+          _this25.lastSaveText = _this25.formatTimeAgo(_this25.lastSaveTimestamp);
         }
       }, 60000);
     }), "saveTableData", function saveTableData() {
-      var _this27 = this;
+      var _this26 = this;
       if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
       var columns = {};
       var cardQuoteIds = _toConsumableArray(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
@@ -1242,15 +1220,15 @@ document.addEventListener('alpine:init', function () {
         var _document$querySelect, _document$querySelect2, _document$querySelect3, _document$querySelect4, _document$querySelect5, _document$querySelect6, _document$querySelect7;
         columns[cardQuoteId] = {
           settings: {
-            markup: _this27.parseNumber(((_document$querySelect = document.querySelector("input[name=\"item[".concat(cardQuoteId, "][markup]\"]"))) === null || _document$querySelect === void 0 ? void 0 : _document$querySelect.value) || '0'),
-            cashDiscount: _this27.parseNumber(((_document$querySelect2 = document.querySelector("input[name=\"item[".concat(cardQuoteId, "][discount]\"]"))) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.value) || '0'),
-            vat: _this27.parseNumber(((_document$querySelect3 = document.querySelector("select[name=\"item[".concat(cardQuoteId, "][tax]\"]"))) === null || _document$querySelect3 === void 0 ? void 0 : _document$querySelect3.value) || '0')
+            markup: _this26.parseNumber(((_document$querySelect = document.querySelector("input[name=\"item[".concat(cardQuoteId, "][markup]\"]"))) === null || _document$querySelect === void 0 ? void 0 : _document$querySelect.value) || '0'),
+            cashDiscount: _this26.parseNumber(((_document$querySelect2 = document.querySelector("input[name=\"item[".concat(cardQuoteId, "][discount]\"]"))) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.value) || '0'),
+            vat: _this26.parseNumber(((_document$querySelect3 = document.querySelector("select[name=\"item[".concat(cardQuoteId, "][tax]\"]"))) === null || _document$querySelect3 === void 0 ? void 0 : _document$querySelect3.value) || '0')
           },
           totals: {
-            netIncludingDiscount: _this27.parseNumber((_document$querySelect4 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-net-discount"))) === null || _document$querySelect4 === void 0 ? void 0 : _document$querySelect4.textContent),
-            grossIncludingDiscount: _this27.parseNumber((_document$querySelect5 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-gross-discount"))) === null || _document$querySelect5 === void 0 ? void 0 : _document$querySelect5.textContent),
-            net: _this27.parseNumber((_document$querySelect6 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-net"))) === null || _document$querySelect6 === void 0 ? void 0 : _document$querySelect6.textContent),
-            gross: _this27.parseNumber((_document$querySelect7 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"] .total-gross-total"))) === null || _document$querySelect7 === void 0 ? void 0 : _document$querySelect7.textContent)
+            netIncludingDiscount: _this26.parseNumber((_document$querySelect4 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-net-discount"))) === null || _document$querySelect4 === void 0 ? void 0 : _document$querySelect4.textContent),
+            grossIncludingDiscount: _this26.parseNumber((_document$querySelect5 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-gross-discount"))) === null || _document$querySelect5 === void 0 ? void 0 : _document$querySelect5.textContent),
+            net: _this26.parseNumber((_document$querySelect6 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"].total-net"))) === null || _document$querySelect6 === void 0 ? void 0 : _document$querySelect6.textContent),
+            gross: _this26.parseNumber((_document$querySelect7 = document.querySelector("th[data-cardquoteid=\"".concat(cardQuoteId, "\"] .total-gross-total"))) === null || _document$querySelect7 === void 0 ? void 0 : _document$querySelect7.textContent)
           }
         };
       });
@@ -1264,28 +1242,28 @@ document.addEventListener('alpine:init', function () {
         method: 'PUT',
         data: data,
         beforeSend: function beforeSend() {
-          _this27.lastSaveText = 'is running...';
+          _this26.lastSaveText = 'is running...';
           $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
         },
         success: function success(idMappings) {
           var updateEntities = function updateEntities(oldId, newId) {
             // Check if this item exists in newItems
-            var itemKey = Object.keys(_this27.newItems).find(function (key) {
-              return _this27.newItems[key].id.toString() === oldId;
+            var itemKey = Object.keys(_this26.newItems).find(function (key) {
+              return _this26.newItems[key].id.toString() === oldId;
             });
             if (itemKey) {
-              var item = _this27.newItems[itemKey];
+              var item = _this26.newItems[itemKey];
 
               // Create updated item with new ID
-              _this27.newItems[newId] = _objectSpread(_objectSpread({}, item), {}, {
+              _this26.newItems[newId] = _objectSpread(_objectSpread({}, item), {}, {
                 id: newId
               });
 
               // If this is an item (not a group) and has a groupId, update it
               if (item.type !== 'group' && item.groupId) {
-                _this27.newItems[newId].groupId = idMappings[item.groupId] || item.groupId;
+                _this26.newItems[newId].groupId = idMappings[item.groupId] || item.groupId;
               }
-              delete _this27.newItems[itemKey];
+              delete _this26.newItems[itemKey];
 
               // Update DOM
               var row = document.querySelector("tr[data-id=\"".concat(oldId, "\"]"));
@@ -1300,7 +1278,7 @@ document.addEventListener('alpine:init', function () {
                   input.name = input.name.replace("[".concat(oldId, "]"), "[".concat(newId, "]"));
                 });
               }
-              console.log(_this27.newItems[newId]);
+              console.log(_this26.newItems[newId]);
             }
           };
 
@@ -1313,18 +1291,18 @@ document.addEventListener('alpine:init', function () {
           });
 
           // Update UI state
-          _this27.lastSaveTimestamp = Date.now();
-          _this27.lastSaveText = _this27.formatTimeAgo(_this27.lastSaveTimestamp);
+          _this26.lastSaveTimestamp = Date.now();
+          _this26.lastSaveText = _this26.formatTimeAgo(_this26.lastSaveTimestamp);
           toastrs("success", "Estimation data has been saved.");
           $('#save-button').html("Saved last changed.");
-          _this27.hasUnsavedChanges = false;
-          _this27.startTimeAgoUpdates();
+          _this26.hasUnsavedChanges = false;
+          _this26.startTimeAgoUpdates();
         },
         error: function error(_error) {
           console.error('Error saving data:', _error);
           toastrs("error", "Failed to save changes." + _error.error);
-          _this27.hasUnsavedChanges = true;
-          _this27.lastSaveText = 'is failed';
+          _this26.hasUnsavedChanges = true;
+          _this26.lastSaveText = 'is failed';
         }
       });
     }), _defineProperty(_ref7, "getFomrData", function getFomrData() {
