@@ -1,10 +1,5 @@
-const { comment } = require("postcss");
-
 document.addEventListener('alpine:init', () => {
     Alpine.data('estimationShow', () => ({
-        items: {},
-        comments: {},
-        groups: {},
         newItems: {},
         tableData: {},
         totals: {},
@@ -57,14 +52,13 @@ document.addEventListener('alpine:init', () => {
             });
 
 
-            this.$watch('items', (value) => {
-
+            this.$watch('newItems', (value) => {
                 this.calculateTotals();
                 const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
                 cardQuoteIds.forEach(cardQuoteId => this.calculateCardTotals(cardQuoteId));
             }, { deep: true });
 
-            this.$watch('searchQuery', () => this.filterTable());
+            this.$watch('searchQuery', () => this.searchTableItem());
             this.$watch('selectAll', (value) => this.checkboxAll(value));
 
             document.addEventListener('click', (e) => {
@@ -95,7 +89,7 @@ document.addEventListener('alpine:init', () => {
             });
 
             document.addEventListener('keydown', (e) => {
-                if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-price') || e.target.classList.contains('form-blur')) {
+                if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-name') || e.target.classList.contains('item-price') || e.target.classList.contains('form-blur')) {
                     this.handleInputBlur(e);
                 }
             });
@@ -105,29 +99,222 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        initializeData() {
+            const cardQuoteIds = [...new Set(
+                Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                    .map(el => el.dataset.cardquoteid)
+            )];
+
+            this.tableData.estimation_groups?.forEach(group => {
+                const groupData = {
+                    id: group.id,
+                    type: 'group',
+                    name: group.group_name,
+                    pos: group.group_pos,
+                    total: 0,
+                    expanded: false,
+                };
+
+                this.newItems[group.id] = groupData;
+                this.lastGroupNumber = Math.max(this.lastGroupNumber, parseInt(group.group_pos));
+
+                group.estimation_products?.forEach(item => {
+                    const itemData = {
+                        id: item.id,
+                        type: item.type,
+                        groupId: item.group_id,
+                        name: item.name,
+                        description: item.description,
+                        content: item.comment,
+                        quantity: item.quantity,
+                        unit: item.unit,
+                        optional: item.is_optional,
+                        pos: item.pos,
+                        prices: this.initializePrices(cardQuoteIds, item, item.quote_items || [])
+                    };
+                    this.newItems[item.id] = itemData;
+                });
+            });
+        },
+
+        initializePrices(cardQuoteIds, item = null, quoteItems = []) {
+            return cardQuoteIds.reduce((acc, quoteId) => {
+                const quoteItem = quoteItems.find(quote => quote.estimate_quote_id == quoteId) || {};
+
+                acc[quoteId] = {
+                    quoteId: quoteId,
+                    type: item?.type || null,
+                    singlePrice: quoteItem.base_price || 0,
+                    totalPrice: quoteItem.total_price || (item?.quantity || 0) * (quoteItem.price || 0)
+                };
+
+                return acc;
+            }, {});
+        },
+
+        initializeSortable() {
+            $("#estimation-edit-table").sortable({
+                items: 'tbody tr',
+                cursor: 'pointer',
+                axis: 'y',
+                dropOnEmpty: true,
+                handle: '.fa-bars, .fa-up-down',
+                animation: 150,
+                start: function (e, ui) {
+                    ui.item.addClass("selected");
+                },
+                stop: (event, ui) => {
+                    const movedRow = ui.item[0];
+
+                    if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
+                        this.handleItemMove(movedRow);
+                    } else if (movedRow.classList.contains('group_row')) {
+                        this.handleGroupMove(movedRow);
+                    }
+
+                    // Force recalculation of all totals
+                    this.recalculateAllTotals();
+
+                    if (!this.isInitializing) {
+                        this.hasUnsavedChanges = true;
+                        this.autoSaveHandler();
+                    }
+                }
+            });
+        },
+
+        handleItemMove(movedRow) {
+            let currentRow = movedRow.previousElementSibling;
+            let newGroupRow = null;
+
+            while (currentRow && !newGroupRow) {
+                if (currentRow.classList.contains('group_row')) {
+                    newGroupRow = currentRow;
+                }
+                currentRow = currentRow.previousElementSibling;
+            }
+
+            if (newGroupRow) {
+                const newGroupId = newGroupRow.dataset.groupid;
+                const itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
+                const oldGroupId = movedRow.dataset.groupid;
+
+                // Update DOM
+                movedRow.dataset.groupid = newGroupId;
+
+                // Update state
+                if (this.newItems[itemId]) {
+                    this.newItems[itemId].groupId = newGroupId;
+
+                    // Update prices if it's an item
+                    if (movedRow.classList.contains('item_row')) {
+                        this.updateItemPrices(itemId);
+                    }
+                }
+
+                // Update group calculations
+                const cardQuoteIds = [...new Set(
+                    Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                        .map(el => el.dataset.cardquoteid)
+                )];
+
+                cardQuoteIds.forEach(quoteId => {
+                    this.calculateGroupTotal(oldGroupId, quoteId);
+                    this.calculateGroupTotal(newGroupId, quoteId);
+                });
+            }
+        },
+
+        handleGroupMove(groupRow) {
+            const groupId = groupRow.dataset.groupid;
+            if (this.newItems[groupId]) {
+                // Recalculate group totals
+                const cardQuoteIds = [...new Set(
+                    Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                        .map(el => el.dataset.cardquoteid)
+                )];
+
+                cardQuoteIds.forEach(quoteId => {
+                    this.calculateGroupTotal(groupId, quoteId);
+                });
+            }
+        },
+
+        recalculateAllTotals() {
+            // Update positions first
+            this.updatePOSNumbers();
+
+            // Get all groups and quotes
+            const groups = [...document.querySelectorAll('tr.group_row')].map(row => row.dataset.groupid);
+            const cardQuoteIds = [...new Set(
+                Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                    .map(el => el.dataset.cardquoteid)
+            )];
+
+            // Recalculate all items
+            Object.keys(this.newItems).forEach(itemId => {
+                const item = this.newItems[itemId];
+                if (item.type === 'item') {
+                    this.updateItemPrices(itemId);
+                }
+            });
+
+            // Recalculate all group totals
+            groups.forEach(groupId => {
+                cardQuoteIds.forEach(quoteId => {
+                    this.calculateGroupTotal(groupId, quoteId);
+                });
+            });
+
+            // Final total calculation
+            this.calculateTotals();
+
+            // Update UI for all price columns
+            cardQuoteIds.forEach(quoteId => {
+                document.querySelectorAll(`[data-cardquoteid="${quoteId}"] .item-price`).forEach(priceInput => {
+                    const row = priceInput.closest('tr');
+                    if (row) {
+                        const itemId = row.dataset.itemid;
+                        if (itemId && this.newItems[itemId]?.prices?.[quoteId]) {
+                            this.formatCurrencyValue(priceInput);
+                        }
+                    }
+                });
+            });
+        },
+
+        initializeLastNumbers() {
+            const posNumbers = new Set();
+
+            document.querySelectorAll('.pos-inner').forEach(element => {
+                const pos = element.textContent.trim();
+                if (pos) {
+                    posNumbers.add(pos);
+                    const [groupNum, itemNum] = pos.split('.');
+                    const groupNumber = parseInt(groupNum);
+                    const itemNumber = parseInt(itemNum);
+
+                    this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
+
+                    if (!this.lastItemNumbers[groupNumber] || itemNumber > this.lastItemNumbers[groupNumber]) {
+
+                        this.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
+                    }
+                }
+            });
+
+            document.querySelectorAll('.grouppos').forEach(element => {
+                const groupNum = parseInt(element.textContent.trim());
+                this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNum);
+            });
+        },
+
         initializeFullScreen() {
             document.addEventListener('fullscreenchange', () => {
                 this.isFullScreen = !!document.fullscreenElement;
                 const btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
                 if (btn) {
                     btn.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
-                }
-            });
-        },
-
-        initializeAutoSave() {
-            if (!document.querySelector('#quote_form')) {
-                console.warn('Quote form not found');
-                return;
-            }
-
-            // Initialize auto-save related event listeners
-            window.addEventListener('beforeunload', (e) => {
-                if (this.hasUnsavedChanges) {
-                    const message = 'You have unsaved changes. Are you sure you want to leave?';
-                    e.preventDefault();
-                    e.returnValue = message;
-                    return message;
                 }
             });
         },
@@ -145,57 +332,29 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        initializeData() {
-            this.tableData.estimation_groups?.forEach(group => {
-                const groups = {
-                    id: group.id,
-                    type: 'group',
-                    name: group.group_name,
-                    pos: group.group_pos,
-                    total: 0,
-                    expanded: false
-                };
-                this.groups[group.id] = groups;
-                this.newItems[group.id] = groups;
-                this.lastGroupNumber = Math.max(this.lastGroupNumber, parseInt(group.group_pos));
-
-                group.estimation_products?.forEach(item => {
-                    const newItem = {
-                        id: item.id,
-                        type: item.type,
-                        groupId: item.group_id,
-                        name: item.name,
-                        description: item.description,
-                        content: item.comment, 
-                        quantity: item.quantity,
-                        unit: item.unit,
-                        optional: item.is_optional,
-                        pos: item.pos
-                    };
-                    this.newItems[item.id] = newItem;
-                    this.updateItemPriceAndTotal(item.id);
-                });
+        initializeAutoSave() {
+            window.addEventListener('beforeunload', (e) => {
+                if (this.hasUnsavedChanges) {
+                    const message = 'You have unsaved changes. Are you sure you want to leave?';
+                    e.preventDefault();
+                    e.returnValue = message;
+                    return message;
+                }
             });
         },
 
-        calculateItemTotal(itemId, priceColumnIndex = 0) {
-            const item = this.items[itemId];
-            if (!item || item.optional) return 0;
+        calculateItemTotal(itemId, quoteId) {
+            // Early validation
+            if (!itemId || !this.newItems[itemId]) return 0;
+            if (this.newItems[itemId].optional) return 0;
 
-            const row = document.querySelector(`tr[data-itemid="${itemId}"]`);
-            if (!row) return 0;
+            const item = this.newItems[itemId];
+            const quantity = this.parseNumber(item.quantity || 0);
+            const singlePrice = this.parseNumber(item.prices[quoteId]?.singlePrice || 0);
+            const totalPrice = quantity * singlePrice;
 
-            const priceInput = row.querySelectorAll('.item-price')[priceColumnIndex];
-            if (!priceInput) return 0;
-
-            const singlePrice = this.parseNumber(priceInput.value);
-            const quantity = this.parseNumber(row.querySelector('.item-quantity').value);
-            const totalPrice = singlePrice * quantity;
-
-            const totalCell = row.querySelectorAll('.column_total_price')[priceColumnIndex];
-            if (totalCell) {
-                totalCell.textContent = this.formatCurrency(totalPrice);
-                this.setNegativeStyle(totalCell, totalPrice);
+            if (item.prices[quoteId]) {
+                item.prices[quoteId].totalPrice = totalPrice;
             }
 
             return totalPrice;
@@ -209,8 +368,8 @@ document.addEventListener('alpine:init', () => {
 
                 this.calculateGroupTotal(groupId);
 
-                if (this.groups[groupId]) {
-                    this.groups[groupId].total = this.parseNumber(
+                if (this.newItems[groupId]) {
+                    this.newItems[groupId].total = this.parseNumber(
                         row.querySelector('.text-right.grouptotal')?.textContent || '0'
                     );
                 }
@@ -226,23 +385,27 @@ document.addEventListener('alpine:init', () => {
             while (currentRow && !currentRow.classList.contains('group_row')) {
                 if (currentRow.classList.contains('item_row')) {
                     const itemId = currentRow.dataset.itemid;
-                    if (!currentRow.querySelector('.item-optional')?.checked) {
+                    const isOptional = currentRow.querySelector('.item-optional')?.checked;
+
+                    if (!isOptional) {
                         const quantity = this.parseNumber(currentRow.querySelector('.item-quantity')?.value || '0');
                         const priceInputs = currentRow.querySelectorAll('.item-price');
 
                         priceInputs.forEach((priceInput, index) => {
                             if (!totals[index]) totals[index] = 0;
                             const price = this.parseNumber(priceInput.value || '0');
-                            totals[index] += quantity * price;
+                            const total = quantity * price;
+                            totals[index] += total;
 
+                            // Update individual item total
                             const totalCell = currentRow.querySelectorAll('.column_total_price')[index];
                             if (totalCell) {
-                                const total = quantity * price;
                                 totalCell.textContent = this.formatCurrency(total);
                                 this.setNegativeStyle(totalCell, total);
                             }
                         });
                     } else {
+                        // Clear totals for optional items
                         currentRow.querySelectorAll('.column_total_price').forEach(cell => {
                             cell.textContent = '-';
                             cell.style.backgroundColor = '';
@@ -253,11 +416,14 @@ document.addEventListener('alpine:init', () => {
                 currentRow = currentRow.nextElementSibling;
             }
 
+            // Update group totals
             const totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
             totalCells.forEach((cell, index) => {
-                cell.textContent = this.formatCurrency(totals[index] || 0);
-                this.setNegativeStyle(cell, totals[index] || 0);
+                const total = totals[index] || 0;
+                cell.textContent = this.formatCurrency(total);
+                this.setNegativeStyle(cell, total);
 
+                // Update card totals
                 const cardQuoteId = cell.dataset.cardquoteid;
                 if (cardQuoteId) {
                     this.calculateCardTotals(cardQuoteId);
@@ -435,95 +601,6 @@ document.addEventListener('alpine:init', () => {
             }).format(value);
         },
 
-        parseNumber(value) {
-            if (typeof value === 'number') return value;
-            return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
-        },
-
-        handleInputBlur(event, type) {
-            if (event.type === 'keydown') {
-                if (event.key !== 'Enter') return;
-                event.target.blur();
-            }
-            const value = event.target.value;
-            const row = event.target.closest('tr');
-            const itemId = row.dataset.itemid;
-            const commentId = row.dataset.commentid;
-            const groupId = row.dataset.groupid;
-
-            switch (type) {
-                case 'item':
-                    if (this.newItems[itemId]) {
-                        this.newItems[itemId].name = value;
-                    }
-                    break;
-                case 'comment':
-                    if (this.newItems[commentId]) {
-                        this.newItems[commentId].content = value;
-                    }
-                    break;
-                case 'group':
-                    if (this.newItems[groupId]) {
-                        this.newItems[groupId].name = value;
-                    }
-                    break;
-                case 'quantity':
-                    if (this.newItems[itemId]) {
-                        this.newItems[itemId].quantity = this.parseNumber(value);
-                        this.updateItemPriceAndTotal(itemId);
-                    }
-                    this.formatDecimalValue(event.target);
-                    break;
-                case 'price':
-                    if (this.newItems[itemId]) {
-                        this.updateItemPriceAndTotal(itemId);
-                    }
-                    this.formatCurrencyValue(event.target);
-                    break;
-                case 'unit':
-                    if (this.newItems[itemId]) {
-                        this.newItems[itemId].unit = value;
-                    }
-                    break;
-                case 'cashDiscount':
-                    let cashDiscountValue = this.parseNumber(event.target.value);
-                    event.target.value = this.formatDecimal(cashDiscountValue || 0);
-                    break;
-                default:
-                    break;
-            }
-
-            if (!this.isInitializing) {
-                this.hasUnsavedChanges = true;
-                this.calculateTotals();
-                this.autoSaveHandler();
-            }
-        },
-
-        updateItemPriceAndTotal(itemId) {
-            if (!itemId || !this.items[itemId]) return [];
-
-            const item = this.items[itemId];
-            const quantity = this.parseNumber(item.quantity || '0');
-
-            const cardQuoteIds = [...new Set(
-                Array.from(document.querySelectorAll('[data-cardquoteid]'),
-                    el => el.dataset.cardquoteid)
-            )];
-
-            const prices = cardQuoteIds.map(quoteId => ({
-                id: quoteId,
-                singlePrice: this.parseNumber(item.price || '0'),
-                totalPrice: quantity * this.parseNumber(item.price || '0')
-            }));
-
-            if (this.items[itemId]) {
-                this.items[itemId].prices = prices;
-            }
-
-            return prices;
-        },
-
         formatDecimalValue(target) {
             target.value = this.formatDecimal(this.parseNumber(target.value));
         },
@@ -532,11 +609,112 @@ document.addEventListener('alpine:init', () => {
             target.value = this.formatCurrency(this.parseNumber(target.value));
         },
 
-        handleOptionalChange(event, itemId) {
-            if (this.items[itemId]) {
-                this.items[itemId].optional = event.target.checked ? 1 : 0;
-                this.calculateTotals();
+        parseNumber(value) {
+            if (typeof value === 'number') return value;
+            return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
+        },
+
+        handleInputBlur(event, type) {
+            if (!event?.target || !type) return;
+            if (event.type === 'keydown' && event.key !== 'Enter') return;
+            if (event.type === 'keydown') event.target.blur();
+
+            const row = event.target.closest('tr');
+            if (!row?.dataset) return;
+
+            const { value } = event.target;
+            const itemId = row.dataset.id;
+            const cardQuoteId = event.target.closest('[data-cardquoteid]')?.dataset.cardquoteid;
+
+            const inputHandlers = {
+                item: () => {
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].name = value;
+                    }
+                },
+                comment: () => {
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].content = value;
+                    }
+                },
+                group: () => {
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].name = value;
+                    }
+                },
+                quantity: () => {
+                    const quantity = this.parseNumber(value);
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].quantity = quantity;
+                        this.updateItemPrices(itemId);
+                        this.formatDecimalValue(event.target);
+                    }
+                },
+                price: () => {
+                    if (this.newItems[itemId] && this.newItems[itemId].prices && cardQuoteId) {
+                        const singlePrice = this.parseNumber(value);
+                        if (!this.newItems[itemId].prices[cardQuoteId]) {
+                            this.newItems[itemId].prices[cardQuoteId] = {
+                                quoteId: cardQuoteId,
+                                type: 'item',
+                                singlePrice: 0,
+                                totalPrice: 0
+                            };
+                        }
+                        this.newItems[itemId].prices[cardQuoteId].singlePrice = singlePrice;
+                        this.newItems[itemId].prices[cardQuoteId].totalPrice = singlePrice * (this.newItems[itemId].quantity || 0);
+                        this.formatCurrencyValue(event.target);
+                    }
+                },
+                unit: () => {
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].unit = value;
+                    }
+                },
+                cashDiscount: () => {
+                    event.target.value = this.formatDecimal(this.parseNumber(value) || 0);
+                }
+            };
+
+            try {
+                inputHandlers[type]?.();
+
+                if (!this.isInitializing) {
+                    this.hasUnsavedChanges = true;
+                    this.calculateTotals();
+                    this.autoSaveHandler();
+                }
+            } catch (error) {
+                console.error(`Error in handleInputBlur: ${error.message}`, { type, value });
             }
+        },
+
+        updateItemPrices(itemId) {
+            if (!this.newItems[itemId]) return;
+
+            const item = this.newItems[itemId];
+            const quantity = item.quantity || 0;
+
+            Object.keys(item.prices || {}).forEach(cardQuoteId => {
+                const price = item.prices[cardQuoteId];
+                price.totalPrice = quantity * (price.singlePrice || 0);
+            });
+        },
+
+        handleOptionalChange(event, itemId) {
+            if (this.newItems[itemId]) {
+                this.newItems[itemId].optional = event.target.checked ? 1 : 0;
+            }
+
+            const row = event.target.closest('tr');
+            const groupId = row.dataset.groupid;
+
+            if (groupId) {
+                this.calculateGroupTotal(groupId);
+            }
+
+            // Update all totals
+            this.calculateTotals();
 
             if (!this.isInitializing) {
                 this.hasUnsavedChanges = true;
@@ -567,122 +745,14 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        filterTable() {
+        searchTableItem() {
             const searchTerm = this.searchQuery.toLowerCase();
-            Object.entries(this.items).forEach(([itemId, item]) => {
-                const row = document.querySelector(`tr[data-itemid="${itemId}"]`);
+            Object.entries(this.newItems).forEach(([itemId, item]) => {
+                const row = document.querySelector(`tr[data-id="${itemId}"]`);
                 if (row) {
-                    row.style.display = item.name.toLowerCase().includes(searchTerm) ||
-                        item.pos.toLowerCase().includes(searchTerm) ? '' : 'none';
+                    const targetKeyword = item.name || item.content;
+                    row.style.display = targetKeyword.toLowerCase().includes(searchTerm) ? '' : 'none';
                 }
-            });
-
-            Object.entries(this.groups).forEach(([groupId, group]) => {
-                const row = document.querySelector(`tr[data-groupid="${groupId}"]`);
-                if (row) {
-                    row.style.display = group.name.toLowerCase().includes(searchTerm) ||
-                        group.pos.toLowerCase().includes(searchTerm) ? '' : 'none';
-                }
-            });
-
-            document.querySelectorAll('tr.item_comment').forEach(row => {
-                const commentInput = row.querySelector('.item-description');
-                const posElement = row.querySelector('.pos-inner');
-
-                if (commentInput && posElement) {
-                    const commentText = commentInput.value.toLowerCase();
-                    const posText = posElement.textContent.toLowerCase();
-
-                    row.style.display = commentText.includes(searchTerm) ||
-                        posText.includes(searchTerm) ? '' : 'none';
-                }
-            });
-        },
-
-        initializeSortable() {
-            $("#estimation-edit-table").sortable({
-                items: 'tbody tr',
-                cursor: 'pointer',
-                axis: 'y',
-                dropOnEmpty: true,
-                handle: '.fa-bars, .fa-up-down',
-                animation: 150,
-                start: function (e, ui) {
-                    ui.item.addClass("selected");
-                },
-                stop: (event, ui) => {
-                    const movedRow = ui.item[0];
-
-                    if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
-                        let currentRow = movedRow.previousElementSibling;
-                        let newGroupRow = null;
-
-                        while (currentRow && !newGroupRow) {
-                            if (currentRow.classList.contains('group_row')) {
-                                newGroupRow = currentRow;
-                            }
-                            currentRow = currentRow.previousElementSibling;
-                        }
-
-                        if (newGroupRow) {
-                            const newGroupId = newGroupRow.dataset.groupid;
-                            const itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
-                            const oldGroupId = movedRow.dataset.groupid;
-
-
-                            movedRow.dataset.groupid = newGroupId;
-
-                            // Update items state
-                            if (movedRow.classList.contains('item_row') && this.items[itemId]) {
-                                this.items[itemId].groupId = newGroupId;
-
-                                // Update newItems if it exists there
-                                if (this.newItems[itemId]) {
-                                    this.newItems[itemId].groupId = newGroupId;
-                                }
-                            }
-
-                            // Update comments state
-                            if (movedRow.classList.contains('item_comment') && this.comments[itemId]) {
-                                this.comments[itemId].groupId = newGroupId;
-
-                                // Update newItems if it exists there
-                                if (this.newItems[itemId]) {
-                                    this.newItems[itemId].groupId = newGroupId;
-                                }
-                            }
-                        }
-                    }
-
-                    this.updatePOSNumbers();
-                    this.calculateTotals();
-                }
-            });
-        },
-
-        initializeLastNumbers() {
-            const posNumbers = new Set();
-
-            document.querySelectorAll('.pos-inner').forEach(element => {
-                const pos = element.textContent.trim();
-                if (pos) {
-                    posNumbers.add(pos);
-                    const [groupNum, itemNum] = pos.split('.');
-                    const groupNumber = parseInt(groupNum);
-                    const itemNumber = parseInt(itemNum);
-
-                    this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
-
-                    if (!this.lastItemNumbers[groupNumber] || itemNumber > this.lastItemNumbers[groupNumber]) {
-
-                        this.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
-                    }
-                }
-            });
-
-            document.querySelectorAll('.grouppos').forEach(element => {
-                const groupNum = parseInt(element.textContent.trim());
-                this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNum);
             });
         },
 
@@ -701,7 +771,7 @@ document.addEventListener('alpine:init', () => {
             if (type !== 'group') return;
 
             const itemTimestamp = Date.now() + 1;
-            const hasAnyGroups = Object.keys(this.groups).length > 0;
+            const hasAnyGroups = Object.values(this.newItems).some(item => item.type === 'group');
 
             // Helper to create a group
             const createGroup = (id, name, itemCount = 0) => ({
@@ -714,15 +784,12 @@ document.addEventListener('alpine:init', () => {
                 itemCount,
             });
 
-            this.groups[timestamp] = createGroup(timestamp, 'Group Name');
             this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
 
             if (!hasAnyGroups) {
-                this.groups[timestamp] = createGroup(timestamp, 'New Group');
                 this.newItems[timestamp] = createGroup(timestamp, 'New Group');
                 this.createItemsAndComments('item', itemTimestamp, targetRowId);
             } else {
-                this.groups[timestamp] = createGroup(timestamp, 'Group Name');
                 this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
             }
 
@@ -740,7 +807,7 @@ document.addEventListener('alpine:init', () => {
 
             const initialPrices = [...new Set(
                 Array.from(document.querySelectorAll('[data-cardquoteid]'), el => el.dataset.cardquoteid)
-            )].map(id => ({ id, singlePrice: 0, totalPrice: 0 }));
+            )].map(quoteId => ({ quoteId, type: 'item', singlePrice: 0, totalPrice: 0 }));
 
             // Use passed targetGroupId or get from current context
             const currentGroupId = targetGroupId || this.getCurrentGroupId();
@@ -760,8 +827,6 @@ document.addEventListener('alpine:init', () => {
                     expanded: false,
                     pos: '',
                 };
-
-                this.items[timestamp] = items;
                 this.newItems[timestamp] = items;
             } else {
                 const comment = {
@@ -772,8 +837,6 @@ document.addEventListener('alpine:init', () => {
                     expanded: false,
                     pos: '',
                 };
-
-                this.comments[timestamp] = comment;
                 this.newItems[timestamp] = comment;
             }
 
@@ -800,23 +863,18 @@ document.addEventListener('alpine:init', () => {
                 if (result.isConfirmed) {
                     const estimationId = this.getFomrData().id;
                     const itemIds = [];
-                    const comments = [];
                     const groupIds = [];
 
                     selectedCheckboxes.forEach(checkbox => {
                         const row = checkbox.closest('tr');
+
                         if (row.classList.contains('group_row')) {
                             groupIds.push(row.dataset.groupid);
-                            delete this.groups[row.dataset.groupid];
                             delete this.newItems[row.dataset.groupid];
                         } else {
-                            itemIds.push(row.dataset.itemid);
-                            delete this.items[row.dataset.itemid];
-                            delete this.newItems[row.dataset.itemid];
-
-                            comments.push(row.dataset.commentid);
-                            delete this.comments[row.dataset.commentid];
-                            delete this.newItems[row.dataset.commentid];
+                            const IDs = row.dataset.id;
+                            itemIds.push(IDs);
+                            delete this.newItems[IDs];
                         }
                         row.remove();
                     });
@@ -828,7 +886,7 @@ document.addEventListener('alpine:init', () => {
                         method: 'DELETE',
                         data: {
                             estimationId: estimationId,
-                            items: itemIds.concat(comments),
+                            items: itemIds,
                             groups: groupIds
                         },
                         success: (response) => {
@@ -861,41 +919,45 @@ document.addEventListener('alpine:init', () => {
         updatePOSNumbers() {
             let currentGroupPos = 0;
             let itemCountInGroup = 0;
-            let lastGroupId = null;
 
-            document.querySelectorAll('tr').forEach(row => {
+            // Get all rows but filter out any that aren't groups, items, or comments
+            document.querySelectorAll('tr.group_row, tr.item_row, tr.item_comment').forEach(row => {
                 if (row.classList.contains('group_row')) {
+                    // Handle group row
                     currentGroupPos++;
                     itemCountInGroup = 0;
-                    lastGroupId = row.dataset.groupid;
+                    const groupId = row.dataset.groupid;
 
+                    // Format group position with leading zeros
                     const groupPos = currentGroupPos.toString().padStart(2, '0');
-                    row.querySelector('.grouppos').textContent = `${groupPos}`;
 
-                    if (this.groups[lastGroupId]) {
-                        this.groups[lastGroupId].pos = groupPos;
+                    // Update DOM
+                    const groupPosElement = row.querySelector('.grouppos');
+                    if (groupPosElement) {
+                        groupPosElement.textContent = groupPos;
                     }
-                }
-                else if (row.classList.contains('item_row')) {
-                    itemCountInGroup++;
-                    const itemPos = `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`;
 
-                    row.querySelector('.pos-inner').textContent = itemPos;
-
-                    const itemId = row.dataset.itemid;
-                    if (this.items[itemId]) {
-                        this.items[itemId].pos = itemPos;
+                    // Update state
+                    if (this.newItems[groupId]) {
+                        this.newItems[groupId].pos = groupPos;
                     }
-                }
-                else if (row.classList.contains('item_comment')) {
+                } else {
+                    // Handle both item and comment rows
                     itemCountInGroup++;
-                    const itemPos = `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`;
-
-                    row.querySelector('.pos-inner').textContent = itemPos;
-
                     const itemId = row.dataset.itemid || row.dataset.commentid;
-                    if (this.comments[itemId]) {
-                        this.comments[itemId].pos = itemPos;
+
+                    // Format position with leading zeros (e.g., "01.01")
+                    const itemPos = `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`;
+
+                    // Update DOM
+                    const posElement = row.querySelector('.pos-inner');
+                    if (posElement) {
+                        posElement.textContent = itemPos;
+                    }
+
+                    // Update state
+                    if (this.newItems[itemId]) {
+                        this.newItems[itemId].pos = itemPos;
                     }
                 }
             });
@@ -1063,10 +1125,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         duplicateRow(rowId) {
-            const originalRow = document.querySelector(`tr[data-id="${rowId}"], 
-                                                 tr[data-itemid="${rowId}"], 
-                                                 tr[data-commentid="${rowId}"], 
-                                                 tr[data-groupid="${rowId}"]`);
+            const originalRow = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-commentid="${rowId}"], tr[data-groupid="${rowId}"]`);
             if (!originalRow) return;
 
             const timestamp = Date.now();
@@ -1074,74 +1133,82 @@ document.addEventListener('alpine:init', () => {
             const isComment = originalRow.classList.contains('item_comment');
             const groupId = isGroup ? null : originalRow.dataset.groupid;
 
+            const cardQuoteIds = [...new Set(
+                Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                    .map(el => el.dataset.cardquoteid)
+            )];
+
             if (isGroup) {
-
-                const groupName = originalRow.querySelector('.grouptitle-input').value;
-
-                const newItem = {
+                const groupName = originalRow.querySelector('.grouptitle-input')?.value || 'Group Name';
+                this.newItems[timestamp] = {
                     id: timestamp,
                     type: 'group',
                     name: `${groupName} - copy`,
                     total: 0,
-                    expanded: false
-                };
-
-
-                this.items[timestamp] = newItem;
-
-
-                this.groups[timestamp] = {
-                    id: timestamp,
-                    pos: '',
-                    name: `${groupName} - copy`,
-                    total: 0,
-                    itemCount: 0
+                    expanded: false,
+                    pos: ''
                 };
             } else if (isComment) {
-
-                const newItem = {
+                this.newItems[timestamp] = {
                     id: timestamp,
                     type: 'comment',
                     groupId: groupId,
-                    content: originalRow.querySelector('.item-description').value,
-                    expanded: false
+                    content: originalRow.querySelector('.item-description')?.value || 'New Comment',
+                    expanded: false,
+                    pos: ''
                 };
+            } else {
+                const prices = {};
+                cardQuoteIds.forEach(quoteId => {
+                    const priceInput = originalRow.querySelector(`.item-price[data-cardquoteid="${quoteId}"]`);
+                    prices[quoteId] = {
+                        quoteId: quoteId,
+                        type: 'item',
+                        singlePrice: this.parseNumber(priceInput?.value || '0'),
+                        totalPrice: 0
+                    };
+                });
 
-                this.items[timestamp] = newItem;
-            }
-            else {
-
-                const newItem = {
+                this.newItems[timestamp] = {
                     id: timestamp,
-                    type: originalRow.classList.contains('item_comment') ? 'comment' : 'item',
+                    type: 'item',
                     groupId: groupId,
-                    name: originalRow.querySelector('.item-name')?.value + ' - copy',
+                    name: (originalRow.querySelector('.item-name')?.value || 'New Item') + ' - copy',
                     quantity: this.parseNumber(originalRow.querySelector('.item-quantity')?.value || '0'),
                     unit: originalRow.querySelector('.item-unit')?.value || '',
-                    optional: originalRow.querySelector('.item-optional').checked ? 1 : 0,
-                    price: this.parseNumber(originalRow.querySelector('.item-price')?.value || '0'),
-                    expanded: false
+                    optional: originalRow.querySelector('.item-optional')?.checked ? 1 : 0,
+                    expanded: false,
+                    pos: '',
+                    prices: prices,
+                    description: originalRow.querySelector('.description_input')?.value || ''
                 };
-
-
-                this.items[timestamp] = newItem;
-
-
-                if (this.groups[groupId]) {
-                    this.groups[groupId].itemCount++;
-                }
             }
 
             this.$nextTick(() => {
+                this.hasUnsavedChanges = true;
 
-                const newRow = document.querySelector(`tr[data-id="${timestamp}"], tr[data-itemid="${timestamp}"], tr[data-commentid="${timestamp}"]`);
-                if (newRow && originalRow.nextSibling) {
-                    originalRow.parentNode.insertBefore(newRow, originalRow.nextSibling);
-                }
+                this.$nextTick(() => {
+                    const insertAfter = (el, referenceNode) => {
+                        referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
+                    };
 
-                this.updatePOSNumbers();
-                this.calculateTotals();
-                this.initializeContextMenu();
+                    const newRow = document.querySelector(`tr[data-id="${timestamp}"], tr[data-itemid="${timestamp}"], tr[data-commentid="${timestamp}"]`);
+
+                    if (newRow && originalRow) {
+                        insertAfter(newRow, originalRow);
+                    }
+
+                    this.updatePOSNumbers();
+                    this.calculateTotals();
+                    this.initializeContextMenu();
+
+                    if (!isGroup && !isComment) {
+                        const descriptionContent = originalRow.querySelector('.description_input')?.value;
+                        if (descriptionContent) {
+                            this.newItems[timestamp].description = descriptionContent;
+                        }
+                    }
+                });
             });
 
             this.contextMenu.show = false;
@@ -1166,16 +1233,10 @@ document.addEventListener('alpine:init', () => {
 
                     if (row.classList.contains('group_row')) {
                         groupIds.push(row.dataset.groupid);
-                        delete this.groups[row.dataset.groupid];
                         delete this.newItems[row.dataset.groupid];
                     } else {
-                        itemIds.push(row.dataset.itemid);
-                        delete this.items[row.dataset.itemid];
-                        delete this.newItems[row.dataset.itemid];
-
-                        comments.push(row.dataset.commentid);
-                        delete this.comments[row.dataset.commentid];
-                        delete this.newItems[row.dataset.commentid];
+                        itemIds.push(row.dataset.id);
+                        delete this.newItems[row.dataset.id];
                     }
 
                     $.ajax({
@@ -1341,9 +1402,6 @@ document.addEventListener('alpine:init', () => {
             const data = {
                 cards: columns,
                 form: this.getFomrData(),
-                items: this.items,
-                comments: this.comments,
-                groups: this.groups,
                 newItems: this.newItems,
             };
 
@@ -1355,42 +1413,53 @@ document.addEventListener('alpine:init', () => {
                     this.lastSaveText = 'is running...';
                     $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
                 },
-                success: ({ items, comments, groups }) => {
+                success: (idMappings) => {
 
-                    // Helper function to update IDs and DOM elements
-                    const updateEntities = (entities, oldNewIds, type) => {
-                        if (!oldNewIds) return;
+                    const updateEntities = (oldId, newId) => {
+                        // Check if this item exists in newItems
+                        const itemKey = Object.keys(this.newItems).find(key =>
+                            this.newItems[key].id.toString() === oldId
+                        );
 
-                        Object.entries(oldNewIds).forEach(([oldId, newId]) => {
-                            // Update state
-                            const itemKey = Object.keys(entities).find(key =>
-                                entities[key].id.toString() === oldId
-                            );
+                        if (itemKey) {
+                            const item = this.newItems[itemKey];
 
-                            if (itemKey) {
-                                entities[newId] = { ...entities[itemKey], id: newId };
-                                delete entities[itemKey];
+                            // Create updated item with new ID
+                            this.newItems[newId] = {
+                                ...item,
+                                id: newId
+                            };
+
+                            // If this is an item (not a group) and has a groupId, update it
+                            if (item.type !== 'group' && item.groupId) {
+                                this.newItems[newId].groupId = idMappings[item.groupId] || item.groupId;
                             }
+
+                            delete this.newItems[itemKey];
 
                             // Update DOM
-                            const row = document.querySelector(`tr[data-${type}id="${oldId}"]`);
+                            const row = document.querySelector(`tr[data-id="${oldId}"]`);
                             if (row) {
-                                row.dataset[`${type}id`] = newId;
                                 row.dataset.id = newId;
+                                if (row.dataset.groupid === oldId) {
+                                    row.dataset.groupid = newId;
+                                }
 
                                 // Update input names
-                                row.querySelectorAll(`[name*="[${oldId}]"]`)
-                                    .forEach(input => {
-                                        input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
-                                    });
+                                row.querySelectorAll(`[name*="[${oldId}]"]`).forEach(input => {
+                                    input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
+                                });
                             }
-                        });
+
+                            console.log(this.newItems[newId]);
+
+                        }
                     };
 
-                    // Update all entity types
-                    updateEntities(this.items, items, 'item');
-                    updateEntities(this.comments, comments, 'comment');
-                    updateEntities(this.groups, groups, 'group');
+                    // Update all entities with new IDs
+                    Object.entries(idMappings).forEach(([oldId, newId]) => {
+                        updateEntities(oldId, newId);
+                    });
 
                     // Update UI state
                     this.lastSaveTimestamp = Date.now();
@@ -1404,7 +1473,7 @@ document.addEventListener('alpine:init', () => {
                 },
                 error: (error) => {
                     console.error('Error saving data:', error);
-                    toastrs("error", "Failed to save changes.");
+                    toastrs("error", error.responseText);
 
                     this.hasUnsavedChanges = true;
                     this.lastSaveText = 'is failed';

@@ -46,7 +46,7 @@ class ProjectEstimation extends Model
         'Quote',
         'project',
         // 'products',
-        'estimationGroups.estimation_products',
+        'estimationGroups.estimation_products.quoteItems',
     ];
 
 

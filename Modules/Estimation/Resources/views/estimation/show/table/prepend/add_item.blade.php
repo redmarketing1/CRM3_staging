@@ -35,7 +35,7 @@
                  @blur="handleInputBlur($event, 'price')">
          </td>
          <td class="column_total_price border-right" data-cardQuoteID="{{ $quotes->id }}"
-             x-text="items[item.id].optional ? '-' : formatCurrency(calculateItemTotal(item.id, {{ $index }}))">
+             x-text="newItems[item.id].optional ? '-' : formatCurrency(calculateItemTotal(item.id, {{ $index }}))">
              -
          </td>
      @endforeach
