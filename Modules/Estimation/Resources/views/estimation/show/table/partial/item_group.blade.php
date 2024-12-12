@@ -1,4 +1,4 @@
-<tr class="group_row group" x-data data-groupid="{{ $estimationGroup->id }}" data-type="group">
+<tr class="group_row group" data-itemID="{{ $estimationGroup->id }}" data-groupid="{{ $estimationGroup->id }}" data-type="group">
 
     <td class="column_reorder">
         <i class="fa-solid fa-up-down reorder-item reorder_group_btn"></i>
@@ -24,4 +24,4 @@
             x-text="formatCurrency(calculateGroupTotal('{{ $estimationGroup->id }}'))">
         </td>
     @endforeach
-</tr>
+</tr> 

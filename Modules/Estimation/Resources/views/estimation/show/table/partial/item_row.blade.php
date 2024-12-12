@@ -1,4 +1,4 @@
-<tr class="item_row" x-data data-groupid="{{ $estimationGroup->id }}" data-itemID="{{ $product->id }}" data-type="item">
+<tr class="item_row" data-groupid="{{ $estimationGroup->id }}" data-itemID="{{ $product->id }}" data-type="item">
     <td class="column_reorder">
         <i class="fa fa-bars reorder-item"></i>
     </td>
@@ -35,7 +35,7 @@
             x-on:change="handleOptionalChange($event, {{ $product->id }})" value="{{ $product->id }}">
     </td>
 
-    @foreach ($quoteItems->get($product->id, []) as $quoteItem)
+    @foreach ($product->quoteItems as $quoteItem)
         <td class="column_single_price border-left" data-cardQuoteID="{{ $quoteItem->estimate_quote_id }}">
             <div class="d-flex">
                 <input type="text" class="form-control item-price"
@@ -50,4 +50,20 @@
         </td>
     @endforeach
 </tr>
- 
+
+<tr class="item_child tr_child_description" 
+    data-itemID="{{ $product->id }}"
+    data-groupid="{{ $estimationGroup->id }}"
+    style="display: none;">
+
+    <td colspan="7" class="column_name desc_column border-right">
+        <textarea 
+            class="description_input w-100 tinyMCE" 
+            name="`item[{{ $product->id }}][description]`"
+            placeholder="{{ trans('Items Description') }}">{{ $product->description }}</textarea>
+    </td>
+
+    @foreach ($product->quoteItems as $quoteItem)
+        <td colspan="2" class="border-right text-center">-</td>
+    @endforeach
+</tr>

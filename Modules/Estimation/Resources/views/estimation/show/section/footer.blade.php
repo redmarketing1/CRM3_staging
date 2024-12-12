@@ -1,22 +1,22 @@
 <div class="button-wrapper-fixed">
     @if (auth()->user()->type == 'company')
-        <div class="button-wrapper-left gap-3">
+        <div class="button-wrapper-left gap-3 insert-row">
             @permission('estimation add item option')
-                <button type="button" @click="addItem('item', getCurrentGroupId())">
+                <button type="button" data-actionInsert="item">
                     <i class="fa-solid fa-plus"></i>
                     {{ __('Item') }}
                 </button>
             @endpermission
 
             @permission('estimation add group option')
-                <button type="button" @click="addItem('group')">
+                <button type="button" data-actionInsert="group">
                     <i class="fa-solid fa-plus"></i>
                     {{ __('Group') }}
                 </button>
             @endpermission
 
             @permission('estimation add comment option')
-                <button type="button" @click="addItem('comment', getCurrentGroupId())">
+                <button type="button" data-actionInsert="comment">
                     <i class="fa-solid fa-plus"></i>
                     {{ __('Comment') }}
                 </button>
