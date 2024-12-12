@@ -80,6 +80,7 @@ class EstimationController extends Controller
             return response()->json($idMappings);
 
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }

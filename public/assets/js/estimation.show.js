@@ -1363,7 +1363,7 @@ document.addEventListener('alpine:init', function () {
         },
         error: function error(_error) {
           console.error('Error saving data:', _error);
-          toastrs("error", "Failed to save changes." + _error.error);
+          toastrs("error", _error.responseText);
           _this29.hasUnsavedChanges = true;
           _this29.lastSaveText = 'is failed';
         }
