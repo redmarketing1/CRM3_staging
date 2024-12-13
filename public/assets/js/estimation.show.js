@@ -94,7 +94,6 @@ $(document).ready(function () {
       var _this2 = this;
       $("#estimation-items").sortable({
         items: 'tr.group_row, tr.item_row, tr.item_comment',
-        // Added item_comment
         handle: '.reorder-item, .reorder_group_btn',
         axis: 'y',
         helper: function helper(e, tr) {
@@ -123,13 +122,6 @@ $(document).ready(function () {
             var groupId = item.data('groupid');
             $("tr.item_row[data-groupid=\"".concat(groupId, "\"], tr.item_comment[data-groupid=\"").concat(groupId, "\"]")).hide();
           }
-          ui.helper.addClass('dragging').css({
-            'display': 'table',
-            'table-layout': 'fixed',
-            'width': '100%',
-            'background': '#fff',
-            'box-shadow': '0 2px 8px rgba(0,0,0,0.1)'
-          });
         },
         stop: function stop(e, ui) {
           var item = ui.item;
@@ -138,9 +130,44 @@ $(document).ready(function () {
             var groupItems = $("tr.item_row[data-groupid=\"".concat(groupId, "\"], tr.item_comment[data-groupid=\"").concat(groupId, "\"]"));
             item.after(groupItems);
             groupItems.show();
+          } else if (item.hasClass('item_row')) {
+            // Get next and previous elements
+            var next = item.next();
+            var prev = item.prev();
+
+            // If next row is a description row but not for this item, move this item elsewhere
+            if (next.hasClass('item_child') && next.data('itemid') !== item.data('itemid')) {
+              // Find proper position
+              var prevItem = item.prevAll('.item_row').first();
+              if (prevItem.length) {
+                prevItem.after(item);
+              } else {
+                var prevGroup = item.prevAll('.group_row').first();
+                if (prevGroup.length) {
+                  prevGroup.after(item);
+                }
+              }
+            }
+
+            // Always keep description row with its item
+            var itemId = item.data('itemid');
+            var descRow = $(".item_child[data-itemid=\"".concat(itemId, "\"]"));
+            if (descRow.length) {
+              item.after(descRow);
+            }
           }
           _this2.handleItemMove(ui.item);
           _this2.updatePOSNumbers();
+        },
+        change: function change(e, ui) {
+          var item = ui.item;
+          var placeholder = ui.placeholder;
+          if (item.hasClass('item_row')) {
+            var next = placeholder.next();
+            if (next.hasClass('item_child') && next.data('itemid') !== item.data('itemid')) {
+              placeholder.insertAfter(next);
+            }
+          }
         }
       });
     },
