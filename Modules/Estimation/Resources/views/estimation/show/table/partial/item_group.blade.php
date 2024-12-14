@@ -8,7 +8,9 @@
         <input type="checkbox" class="item_selection group_selection" data-groupid="{{ $estimationGroup->id }}">
     </td>
 
-    <td class="column_pos grouppos"></td>
+    <td class="column_pos grouppos">
+        {{ $estimationGroup->group_pos }}
+    </td>
 
     <td colspan="4" class="column_name grouptitle border-right">
         <div class="div-desc-toggle">
