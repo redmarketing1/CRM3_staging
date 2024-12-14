@@ -59,7 +59,7 @@
 
     <td colspan="7" class="column_name desc_column border-right">
         <textarea 
-            class="description_input w-100 tinyMCEX" 
+            class="description_input w-100 tinyMCE" 
             name="`item[{{ $product->id }}][description]`"
             placeholder="{{ trans('Items Description') }}">{{ $product->description }}</textarea>
     </td>
