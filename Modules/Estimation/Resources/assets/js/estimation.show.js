@@ -1,5 +1,10 @@
 $(document).ready(function () {
     const EstimationTable = {
+        autoSaveEnabled: $('#autoSaveEnabled').is(':checked'),
+        lastSaveTime: 0,
+        saveTimeout: null,
+        saveInterval: 1000 * 30, // 30 seconds
+        hasUnsavedChanges: false,
         estimation: $('.estimation-show'),
         templates: {
             item: $('#add-item-template').html(),
@@ -13,10 +18,264 @@ $(document).ready(function () {
             this.bindEvents();
             this.initializeSortable();
             this.updateAllCalculations();
+            this.initializeAutoSave();
+        },
+
+        initializeAutoSave() {
+            // Update autoSaveEnabled when checkbox changes
+            $('#autoSaveEnabled').on('change', (e) => {
+                this.autoSaveEnabled = $(e.target).is(':checked');
+
+                // If enabled and there are unsaved changes, start autosave
+                if (this.autoSaveEnabled && this.hasUnsavedChanges) {
+                    this.autoSaveHandler();
+                }
+            });
+
+            // Add beforeunload event listener for unsaved changes
+            $(window).on('beforeunload', (e) => {
+                if (this.hasUnsavedChanges) {
+                    const message = 'You have unsaved changes. Are you sure you want to leave?';
+                    e.preventDefault();
+                    e.returnValue = message;
+                    return message;
+                }
+            });
+        },
+
+        autoSaveHandler() {
+            // Check if autosave is enabled and there are unsaved changes
+            if (!this.autoSaveEnabled || !$('#quote_form').length || !this.hasUnsavedChanges) return;
+
+            // Clear any existing save timeout
+            if (this.saveTimeout) {
+                clearTimeout(this.saveTimeout);
+            }
+
+            const currentTime = Date.now();
+            const timeSinceLastSave = currentTime - this.lastSaveTime;
+
+            // If enough time has passed since last save, save immediately
+            if (timeSinceLastSave >= this.saveInterval) {
+                this.saveTableData();
+                this.lastSaveTime = currentTime;
+            } else {
+                // Otherwise, set a timeout to save later
+                this.saveTimeout = setTimeout(() => {
+                    if (this.hasUnsavedChanges && this.autoSaveEnabled) {
+                        this.saveTableData();
+                        this.lastSaveTime = Date.now();
+                    }
+                }, this.saveInterval);
+            }
+        },
+
+        saveTableData() {
+            // Check again if autosave is enabled before saving
+            if (!this.autoSaveEnabled) return;
+
+            const columns = {};
+            const cardQuoteIds = new Set();
+            $('.column_single_price').each(function () {
+                const quoteId = $(this).data('cardquoteid');
+                if (quoteId) cardQuoteIds.add(quoteId);
+            });
+
+            cardQuoteIds.forEach(cardQuoteId => {
+                columns[cardQuoteId] = {
+                    settings: {
+                        markup: this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][markup]"]`).val() || '0'),
+                        cashDiscount: this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][discount]"]`).val() || '0'),
+                        vat: this.parseGermanDecimal($(`select[name="item[${cardQuoteId}][tax]"]`).val() || '0')
+                    },
+                    totals: {
+                        netIncludingDiscount: this.parseGermanDecimal($(`.total-net-discount[data-cardquoteid="${cardQuoteId}"]`).text()),
+                        grossIncludingDiscount: this.parseGermanDecimal($(`.total-gross-discount[data-cardquoteid="${cardQuoteId}"]`).text()),
+                        net: this.parseGermanDecimal($(`.total-net[data-cardquoteid="${cardQuoteId}"]`).text()),
+                        gross: this.parseGermanDecimal($(`.total-gross-total[data-cardquoteid="${cardQuoteId}"]`).text())
+                    }
+                };
+            });
+
+            const data = {
+                cards: columns,
+                form: this.getFormData(),
+                newItems: this.prepareNewItemsForSubmission()
+            };
+
+            $.ajax({
+                url: route('estimation.update', data.form.id),
+                method: 'PUT',
+                data: data,
+                beforeSend: () => {
+                    $('.lastSaveTimestamp').text('is running...');
+                    $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
+                },
+                success: (idMappings) => {
+
+                    this.updateEntitiesWithNewIds(idMappings);
+
+                    // Update UI state
+                    this.lastSaveTime = Date.now();
+                    this.hasUnsavedChanges = false;
+
+                    let lastSavedText = this.formatTimeAgo(this.lastSaveTime);
+                    this.startTimeAgoUpdates();
+
+                    $('.lastSaveTimestamp').text(lastSavedText);
+                    $('#save-button').html(`Saved last changed.`);
+                },
+                error: (error) => {
+                    toastrs('Failed to save changes.');
+                    $('.lastSaveTimestamp').text('is failed.');
+                    this.hasUnsavedChanges = true;
+                }
+            });
+        },
+
+        formatTimeAgo(timestamp) {
+            if (!timestamp) return 'Never saved';
+
+            const now = Date.now();
+            const diff = Math.floor((now - timestamp) / 1000);
+
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) {
+                const minutes = Math.floor(diff / 60);
+                return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+            }
+            if (diff < 86400) {
+                const hours = Math.floor(diff / 3600);
+                return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            }
+
+            const days = Math.floor(diff / 86400);
+
+            return `${days} day${days > 1 ? 's' : ''} ago`;
+        },
+
+        startTimeAgoUpdates() {
+            if (this.timeAgoInterval) {
+                clearInterval(this.timeAgoInterval);
+            }
+
+            this.timeAgoInterval = setInterval(() => {
+                if (this.lastSaveTime) {
+                    let lastSavedText = this.formatTimeAgo(this.lastSaveTime);
+                    $('.lastSaveTimestamp').text(lastSavedText);
+                }
+            }, 60000);
+        },
+
+        prepareNewItemsForSubmission() {
+            const newItems = [];
+            let $self = this;
+
+            $('.group_row').each(function () {
+                const groupId = $(this).data('groupid');
+                const groupName = $(this).find('.grouptitle-input').val();
+                const groupPos = $(this).find('.grouppos').text().trim();
+
+                const group = {
+                    id: groupId,
+                    type: 'group',
+                    name: groupName,
+                    pos: groupPos,
+                    total: null,
+                };
+                newItems.push(group);
+            });
+
+            $(`.item_row, .item_comment`).each(function () {
+
+                const $row = $(this);
+                const itemId = $row.data('itemid');
+                const type = $row.data('type');
+                const groupId = $row.data('groupid');
+
+                const item = {
+                    id: itemId,
+                    type: type,
+                    groupId: groupId,
+                    pos: $row.find('.pos-inner').text().trim(),
+                    name: $row.find('.item-name').val().trim(),
+                    // description: isComment ? $row.find('.item-description').val() : '',
+                    quantity: $row.find('.item-quantity').val() || '0',
+                    unit: $row.find('.item-unit').val(),
+                    optional: $row.find('.item-optional').is(':checked') ? 0 : 1,
+                    prices: $self.updateItemPriceAndTotal(itemId)
+                };
+
+                newItems.push(item);
+            });
+
+            return newItems;
+        },
+
+        updateItemPriceAndTotal(itemId) {
+            const row = document.querySelector(`.item_row[data-itemid="${itemId}"]`);
+            let $self = this;
+
+            const singlePricing = row.querySelectorAll('.item-price');
+
+            const prices = Array.from(singlePricing).map(element => {
+
+                const quoteId = element.closest('td[data-cardquoteid]').dataset.cardquoteid;
+                const singlePrice = $self.parseNumber(element.value);
+                const quantity = $self.parseNumber(row.querySelector('.item-quantity').value);
+                const total = singlePrice * quantity;
+
+                return {
+                    quoteId: quoteId,
+                    singlePrice: singlePrice,
+                    totalPrice: total
+                };
+            });
+
+            return prices;
+        },
+
+        updateEntitiesWithNewIds(idMappings) {
+            Object.entries(idMappings).forEach(([oldId, newId]) => {
+
+                const row = document.querySelector(`
+                    tr[data-id="${oldId}"], 
+                    tr[data-itemid="${oldId}"], 
+                    tr[data-groupid="${oldId}"]
+                `);
+
+                if (row) {
+                    if (row.dataset.id) row.dataset.id = newId;
+                    if (row.dataset.itemid) row.dataset.itemid = newId;
+                    if (row.dataset.groupid) row.dataset.groupid = newId;
+
+                    // Update input names
+                    row.querySelectorAll(`[name*="[${oldId}]"]`).forEach(input => {
+                        input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
+                    });
+                }
+            });
+        },
+
+        getFormData() {
+            const $form = $('#quote_form');
+            const formData = $form.serializeArray();
+            const formObject = {};
+
+            formData.forEach(item => {
+                formObject[item.name] = item.value;
+            });
+
+            return formObject;
         },
 
         validateTemplates() {
             return Object.values(this.templates).every(template => template);
+        },
+
+        parseNumber(value) {
+            if (typeof value === 'number') return value;
+            return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
         },
 
         bindEvents() {
@@ -29,10 +288,26 @@ $(document).ready(function () {
             this.estimation.on('click', '.desc_toggle', this.toggleDescription);
             this.estimation.on('click', '.grp-dt-control', this.toggleGroup);
 
+            this.estimation.on('blur', '.item-quantity, .item-price, .item-name, input[name^="item"][name$="[markup]"], input[name^="item"][name$="[discount]"]', () => {
+                this.hasUnsavedChanges = true;
+                this.autoSaveHandler();
+            });
+
+            this.estimation.on('change', '.item-optional, select[name^="item"][name$="[tax]"]', () => {
+                this.hasUnsavedChanges = true;
+                this.autoSaveHandler();
+            });
+
             this.estimation.on('blur', '.item-quantity, .item-price', (event) => {
                 const $target = $(event.currentTarget);
                 this.formatInput($target);
                 this.updateAllCalculations();
+            });
+
+            this.estimation.on('click', '#save-button', () => {
+                console.log('click');
+
+                this.saveTableData();
             });
 
             this.estimation.on('change', '.item-optional', () => {
@@ -119,7 +394,7 @@ $(document).ready(function () {
                 const $selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
 
                 if ($selectedCheckboxes.length === 0) {
-                    toastr.error("Please select checkbox to continue delete");
+                    toastrs("Please select checkbox to continue delete");
                     return;
                 }
 
@@ -159,10 +434,10 @@ $(document).ready(function () {
                             success: (response) => {
                                 this.updateAllCalculations();
                                 this.updatePOSNumbers();
-                                toastr.success('Items deleted successfully');
+                                toastrs('Items deleted successfully');
                             },
                             error: (error) => {
-                                toastr.error('Error deleting items');
+                                toastrs('Error deleting items');
                                 console.error(error);
                             }
                         });
@@ -222,6 +497,8 @@ $(document).ready(function () {
 
             this.updatePOSNumbers();
             this.updateAllCalculations();
+            this.hasUnsavedChanges = true;
+            this.autoSaveHandler();
         },
 
         updateSelectAllState() {
@@ -235,7 +512,7 @@ $(document).ready(function () {
             const selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
 
             if (selectedCheckboxes.length === 0) {
-                toastr.error("Please select checkbox to continue delete");
+                toastrs("Please select checkbox to continue delete");
                 return;
             }
 
@@ -275,7 +552,7 @@ $(document).ready(function () {
                         success: (response) => {
                             this.updateAllCalculations();
                             this.updatePOSNumbers();
-                            toastr.success('Items deleted successfully');
+                            toastrs('Items deleted successfully');
                         }
                     });
                 }
@@ -548,7 +825,7 @@ $(document).ready(function () {
             const total = quantity * currentPrice;
 
             return total === 0 ? '-' : this.formatGermanCurrency(total);
-        }, 
+        },
 
         calculateGroupTotal(groupRow, cardQuoteId) {
             let total = 0;
