@@ -2,14 +2,20 @@
 /*!*******************************************************************!*\
   !*** ./Modules/Estimation/Resources/assets/js/estimation.show.js ***!
   \*******************************************************************/
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 $(document).ready(function () {
-  var EstimationTable = {
+  var _EstimationTable;
+  var EstimationTable = (_EstimationTable = {
     estimation: $('.estimation-show'),
     templates: {
       item: $('#add-item-template').html(),
       group: $('#add-group-template').html(),
       comment: $('#add-comment-template').html()
     },
+    originalPrices: new Map(),
     init: function init() {
       if (!this.validateTemplates()) return;
       this.bindEvents();
@@ -38,6 +44,72 @@ $(document).ready(function () {
       });
       this.estimation.on('change', '.item-optional', function () {
         _this.updateAllCalculations();
+      });
+      this.estimation.on('change', 'select[name^="item"][name$="[tax]"]', function () {
+        _this.updateAllCalculations();
+      });
+      this.estimation.on('blur', 'input[name^="item"][name$="[discount]"]', function (event) {
+        var $input = $(event.target);
+        var value = _this.parseGermanDecimal($input.val());
+
+        // Format the number
+        $input.val(_this.formatGermanDecimal(value));
+
+        // Apply styling for negative values
+        if (value < 0) {
+          $input.css({
+            'background-color': '#ffebee',
+            'color': '#d32f2f'
+          });
+        } else {
+          $input.css({
+            'background-color': '',
+            'color': ''
+          });
+        }
+        _this.updateAllCalculations();
+      });
+
+      // Enhanced markup input handler
+      this.estimation.on('blur', 'input[name^="item"][name$="[markup]"]', function (event) {
+        var $input = $(event.target);
+        var value = _this.parseGermanDecimal($input.val());
+        var cardQuoteId = $input.attr('name').match(/\[(\d+)\]/)[1];
+
+        // Format the number
+        $input.val(_this.formatGermanDecimal(value));
+
+        // Apply styling for negative values
+        if (value < 0) {
+          $input.css({
+            'background-color': '#ffebee',
+            'color': '#d32f2f'
+          });
+        } else {
+          $input.css({
+            'background-color': '',
+            'color': ''
+          });
+        }
+        _this.applyMarkupToSinglePrices(cardQuoteId, value);
+        _this.updateAllCalculations();
+      });
+    },
+    storeOriginalPrices: function storeOriginalPrices() {
+      var _this2 = this;
+      // Clear existing stored prices
+      this.originalPrices.clear();
+      $('.item-price').each(function (_, element) {
+        var $price = $(element);
+        var cardQuoteId = $price.data('cardquotesingleprice');
+        var itemId = $price.closest('tr').data('itemid');
+        var key = "".concat(cardQuoteId, "-").concat(itemId);
+
+        // Only store if not already stored
+        if (!_this2.originalPrices.has(key)) {
+          var originalPrice = _this2.parseGermanDecimal($price.val());
+          _this2.originalPrices.set(key, originalPrice);
+        }
       });
     },
     addItems: function addItems(type) {
@@ -99,7 +171,7 @@ $(document).ready(function () {
       });
     },
     initializeSortable: function initializeSortable() {
-      var _this2 = this;
+      var _this3 = this;
       $("#estimation-items").sortable({
         items: 'tr.group_row, tr.item_row, tr.item_comment',
         handle: '.reorder-item, .reorder_group_btn',
@@ -164,9 +236,9 @@ $(document).ready(function () {
               item.after(descRow);
             }
           }
-          _this2.handleItemMove(ui.item);
-          _this2.updatePOSNumbers();
-          _this2.updateAllCalculations();
+          _this3.handleItemMove(ui.item);
+          _this3.updatePOSNumbers();
+          _this3.updateAllCalculations();
         },
         change: function change(e, ui) {
           var item = ui.item;
@@ -256,65 +328,154 @@ $(document).ready(function () {
         style: 'currency',
         currency: 'EUR'
       }).format(value);
-    },
-    calculateItemTotal: function calculateItemTotal(itemRow, cardQuoteId) {
-      // Check if item is optional
-      var isOptional = itemRow.find('.item-optional').is(':checked');
-      if (isOptional) return '-';
-
-      // Find quantity and price specific to this card
-      var quantity = this.parseGermanDecimal(itemRow.find('.item-quantity').val());
-      var singlePrice = this.parseGermanDecimal(itemRow.find(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]")).val());
-
-      // Calculate total
-      var totalPrice = quantity * singlePrice;
-      return totalPrice === 0 ? '-' : this.formatGermanCurrency(totalPrice);
-    },
-    calculateGroupTotal: function calculateGroupTotal(groupRow, cardQuoteId) {
-      var _this3 = this;
-      var groupTotal = 0;
-
-      // Find all items in this group
-      var groupId = groupRow.data('groupid');
-      var groupItems = $(".item_row[data-groupid=\"".concat(groupId, "\"]"));
-      groupItems.each(function (index, itemRow) {
-        var $itemRow = $(itemRow);
-        var isOptional = $itemRow.find('.item-optional').is(':checked');
-        if (!isOptional) {
-          var quantity = _this3.parseGermanDecimal($itemRow.find('.item-quantity').val());
-          var singlePrice = _this3.parseGermanDecimal($itemRow.find(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]")).val());
-          groupTotal += quantity * singlePrice;
-        }
-      });
-      return groupTotal === 0 ? '-' : this.formatGermanCurrency(groupTotal);
-    },
-    updateAllCalculations: function updateAllCalculations() {
-      var _this4 = this;
-      // Get all unique card quote IDs
-      var cardQuoteIds = new Set();
-      $('.column_single_price').each(function () {
-        var quoteId = $(this).data('cardquoteid');
-        if (quoteId) cardQuoteIds.add(quoteId);
-      });
-
-      // Update calculations for each card
-      cardQuoteIds.forEach(function (cardQuoteId) {
-        // Update item totals
-        $('.item_row').each(function (index, row) {
-          var $row = $(row);
-          var totalPrice = _this4.calculateItemTotal($row, cardQuoteId);
-          $row.find(".column_total_price[data-cardquotetotalprice=\"".concat(cardQuoteId, "\"]")).text(totalPrice);
-        });
-
-        // Update group totals
-        $('.group_row').each(function (index, row) {
-          var $row = $(row);
-          var groupTotal = _this4.calculateGroupTotal($row, cardQuoteId);
-          $row.find("[data-cardquotegrouptotalprice=\"".concat(cardQuoteId, "\"]")).text(groupTotal);
-        });
-      });
     }
-  };
+  }, _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_EstimationTable, "storeOriginalPrices", function storeOriginalPrices() {
+    var _this4 = this;
+    $('.item-price').each(function (_, element) {
+      var $price = $(element);
+      var id = $price.data('cardquotesingleprice');
+      var originalPrice = _this4.parseGermanDecimal($price.val());
+      _this4.originalPrices.set("".concat(id, "-").concat($price.closest('tr').data('itemid')), originalPrice);
+    });
+  }), "applyMarkupToSinglePrices", function applyMarkupToSinglePrices(cardQuoteId, markup) {
+    var _this5 = this;
+    // If originalPrices is empty, store them first
+    if (this.originalPrices.size === 0) {
+      this.storeOriginalPrices();
+    }
+    $(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]")).each(function (_, element) {
+      var $price = $(element);
+      var itemId = $price.closest('tr').data('itemid');
+      var key = "".concat(cardQuoteId, "-").concat(itemId);
+      var originalPrice = _this5.originalPrices.get(key);
+      if (originalPrice !== undefined) {
+        var newPrice = markup > 0 ? originalPrice * (1 + markup / 100) : originalPrice;
+        $price.val(_this5.formatGermanCurrency(newPrice));
+      }
+    });
+  }), "calculateItemTotal", function calculateItemTotal(itemRow, cardQuoteId) {
+    if (itemRow.find('.item-optional').is(':checked')) return '-';
+    var quantity = this.parseGermanDecimal(itemRow.find('.item-quantity').val());
+    var currentPrice = this.parseGermanDecimal(itemRow.find(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]")).val());
+    var total = quantity * currentPrice;
+    return total === 0 ? '-' : this.formatGermanCurrency(total);
+  }), "calculateGroupTotal", function calculateGroupTotal(groupRow, cardQuoteId) {
+    var _this6 = this;
+    var total = 0;
+    var groupId = groupRow.data('groupid');
+    $(".item_row[data-groupid=\"".concat(groupId, "\"]")).each(function (_, item) {
+      var $item = $(item);
+      if (!$item.find('.item-optional').is(':checked')) {
+        var quantity = _this6.parseGermanDecimal($item.find('.item-quantity').val());
+        var basePrice = _this6.parseGermanDecimal($item.find(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]")).val());
+        var markup = _this6.parseGermanDecimal($("input[name=\"item[".concat(cardQuoteId, "][markup]\"]")).val()) || 0;
+
+        // Apply markup to single price
+        var priceWithMarkup = basePrice * (1 + markup / 100);
+        total += quantity * priceWithMarkup;
+      }
+    });
+    return total === 0 ? '-' : this.formatGermanCurrency(total);
+  }), "calculateTotals", function calculateTotals(cardQuoteId) {
+    var _this7 = this;
+    var netTotal = 0;
+    $(".group_row [data-cardquotegrouptotalprice=\"".concat(cardQuoteId, "\"]")).each(function (_, element) {
+      var groupTotal = _this7.parseGermanDecimal($(element).text());
+      if (!isNaN(groupTotal)) netTotal += groupTotal;
+    });
+    var cashDiscount = this.parseGermanDecimal($("input[name=\"item[".concat(cardQuoteId, "][discount]\"]")).val()) || 0;
+    var vatRate = parseFloat($("select[name=\"item[".concat(cardQuoteId, "][tax]\"]")).val()) || 0;
+    var netAfterDiscount = netTotal * (1 - cashDiscount / 100);
+    var vatAmount = netTotal * (vatRate / 100);
+    var grossTotal = netTotal + vatAmount;
+    var grossAfterDiscount = netAfterDiscount + netAfterDiscount * vatRate / 100;
+
+    // Update all display values
+    $(".total-net[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(netTotal));
+    $(".total-net-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(netAfterDiscount));
+    $(".total-gross-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(grossAfterDiscount));
+    $(".total-gross-total[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(grossTotal));
+
+    // Update additional gross total display
+    $(".totalnr.total-gross-total[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(grossTotal));
+  }), "updateDisplayValues", function updateDisplayValues(cardQuoteId, values) {
+    var formatCurrency = this.formatGermanCurrency.bind(this);
+    var net = values.net,
+      netAfterDiscount = values.netAfterDiscount,
+      grossAfterDiscount = values.grossAfterDiscount,
+      vatRate = values.vatRate;
+    $(".total-net[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(formatCurrency(net));
+    $(".total-net-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(formatCurrency(netAfterDiscount));
+    $(".total-gross-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(formatCurrency(grossAfterDiscount));
+
+    // Update VAT details
+    var $vatSelect = $("select[name=\"item[".concat(cardQuoteId, "][tax]\"]"));
+    $vatSelect.val(vatRate.toString());
+
+    // Update gross amount with VAT
+    var grossWithVat = net * (1 + vatRate / 100);
+    $(".total-gross[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(formatCurrency(grossWithVat));
+  }), "applySinglePriceMarkup", function applySinglePriceMarkup(price, markup) {
+    return price * (1 + markup / 100);
+  }), "updateItemPrices", function updateItemPrices(cardQuoteId) {
+    var _this8 = this;
+    var markup = this.parseGermanDecimal($("input[name=\"item[".concat(cardQuoteId, "][markup]\"]")).val()) || 0;
+
+    // Update all single prices with markup
+    $(".item_row").each(function (_, row) {
+      var $row = $(row);
+      var $priceInput = $row.find(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]"));
+      var basePrice = _this8.parseGermanDecimal($priceInput.val());
+      var priceWithMarkup = _this8.applySinglePriceMarkup(basePrice, markup);
+      $priceInput.val(_this8.formatGermanCurrency(priceWithMarkup));
+    });
+  }), "updateTotalDisplay", function updateTotalDisplay(cardQuoteId, totals) {
+    // Update Net incl. Discount
+    $(".total-net-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(totals.netIncDiscount));
+
+    // Update Gross incl. Discount (with VAT)
+    $(".total-gross-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(totals.grossIncDiscount));
+
+    // Update Net
+    $(".total-net[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(totals.net));
+
+    // Update both Gross VAT displays
+    $(".total-gross-total[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(totals.gross));
+
+    // Update VAT display on both sides
+    this.updateVatDisplay(cardQuoteId, totals.vatRate);
+  }), "updateVatDisplay", function updateVatDisplay(cardQuoteId, vatRate) {
+    // Update VAT display for both columns
+    $(".total-vat-input[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).each(function (_, element) {
+      var $select = $(element).find('select');
+      $select.val(vatRate.toString());
+    });
+  }), _defineProperty(_EstimationTable, "updateAllCalculations", function updateAllCalculations() {
+    var _this9 = this;
+    var cardQuoteIds = new Set();
+    $('.column_single_price').each(function () {
+      var quoteId = $(this).data('cardquoteid');
+      if (quoteId) cardQuoteIds.add(quoteId);
+    });
+    cardQuoteIds.forEach(function (cardQuoteId) {
+      // Update item totals
+      $('.item_row').each(function (_, row) {
+        var $row = $(row);
+        var totalPrice = _this9.calculateItemTotal($row, cardQuoteId);
+        $row.find(".column_total_price[data-cardquotetotalprice=\"".concat(cardQuoteId, "\"]")).text(totalPrice);
+      });
+
+      // Update group totals
+      $('.group_row').each(function (_, row) {
+        var $row = $(row);
+        var groupTotal = _this9.calculateGroupTotal($row, cardQuoteId);
+        $row.find("[data-cardquotegrouptotalprice=\"".concat(cardQuoteId, "\"]")).text(groupTotal);
+      });
+
+      // Calculate final totals
+      _this9.calculateTotals(cardQuoteId);
+    });
+  }));
   EstimationTable.init();
 });
 /******/ })()

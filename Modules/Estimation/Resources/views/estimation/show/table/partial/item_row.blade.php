@@ -32,7 +32,7 @@
     <td class="column_optional border-right">
         <input type="checkbox" class="item-optional" 
             data-id="{{ $product->id }}" 
-            {{ $product->is_optional == 1 ? 'checked' : '' }}>
+            {{ $product->is_optional == 0 ? 'checked' : '' }}>
     </td>
 
     @foreach ($product->quoteItems as $quoteItem)
