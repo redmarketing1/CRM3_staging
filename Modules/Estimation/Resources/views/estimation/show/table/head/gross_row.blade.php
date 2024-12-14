@@ -17,7 +17,7 @@
                         </option>
                     </select>
                 </div>
-                <div class="totalnr total-gross-total">
+                <div class="totalnr total-gross-total" data-cardQuoteID="{{ $quote->id }}">
                     -
                 </div>
             </span>

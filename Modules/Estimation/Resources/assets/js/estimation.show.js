@@ -1,339 +1,39 @@
-document.addEventListener('alpine:init', () => {
-    Alpine.data('estimationShow', () => ({
-        newItems: {},
-        tableData: {},
-        totals: {},
-        expandedRows: {},
-        lastGroupNumber: 0,
-        lastItemNumbers: {},
-        searchQuery: '',
-        selectAll: false,
-        isFullScreen: false,
-        autoSaveEnabled: true,
+$(document).ready(function () {
+    const EstimationTable = {
+        autoSaveEnabled: $('#autoSaveEnabled').is(':checked'),
         lastSaveTime: 0,
         saveTimeout: null,
-        saveInterval: 1000 * 30, // 30 second
+        saveInterval: 1000 * 30, // 30 seconds
         hasUnsavedChanges: false,
-        isInitializing: true,
-        lastSaveTimestamp: null,
-        lastSaveText: '',
-        contextMenu: {
-            show: false,
-            x: 0,
-            y: 0,
-            selectedRowId: null
+        estimation: $('.estimation-show'),
+        templates: {
+            item: $('#add-item-template').html(),
+            group: $('#add-group-template').html(),
+            comment: $('#add-comment-template').html()
         },
-        columnVisibility: {
-            column_pos: true,
-            column_name: true,
-            column_quantity: true,
-            column_unit: true,
-            column_optional: true,
-            quote_th: true
-        },
+        originalPrices: new Map(),
 
         init() {
-
-            this.tableData = JSON.parse(document.querySelector('#estimation-edit-table').dataset.table);
-
-            this.$nextTick(() => {
-                this.isInitializing = true;
-                this.initializeData();
-                this.initializeSortable();
-                this.initializeLastNumbers();
-                this.initializeContextMenu();
-                this.initializeColumnVisibility();
-                this.initializeCardCalculations();
-                this.initializeAutoSave();
-                this.calculateTotals();
-                this.$nextTick(() => {
-                    this.isInitializing = false; // Reset flag after all initialization is done
-                });
-            });
-
-
-            this.$watch('newItems', (value) => {
-                this.calculateTotals();
-                const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
-                cardQuoteIds.forEach(cardQuoteId => this.calculateCardTotals(cardQuoteId));
-            }, { deep: true });
-
-            this.$watch('searchQuery', () => this.searchTableItem());
-            this.$watch('selectAll', (value) => this.checkboxAll(value));
-
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.context-menu')) {
-                    this.showContextMenu = false;
-                }
-            });
-
-            this.$watch('hasUnsavedChanges', () => {
-                if (!this.hasUnsavedChanges) {
-                    $('#save-button').css({
-                        'cursor': 'not-allowed',
-                        'background': '#bfbfbf',
-                        'border': '0',
-                        'pointer-events': 'none'
-                    });
-                } else {
-                    $('#save-button').removeAttr('style');
-                }
-            });
-
-            document.addEventListener('fullscreenchange', () => {
-                this.isFullScreen = !!document.fullscreenElement;
-                const icon = document.querySelector('.fa-expand, .fa-compress');
-                if (icon) {
-                    icon.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
-                }
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.target.classList.contains('item-quantity') || e.target.classList.contains('item-name') || e.target.classList.contains('item-price') || e.target.classList.contains('form-blur')) {
-                    this.handleInputBlur(e);
-                }
-            });
-
-            if (this.lastSaveTimestamp) {
-                this.startTimeAgoUpdates();
-            }
-        },
-
-        initializeData() {
-            const cardQuoteIds = [...new Set(
-                Array.from(document.querySelectorAll('[data-cardquoteid]'))
-                    .map(el => el.dataset.cardquoteid)
-            )];
-
-            this.tableData.estimation_groups?.forEach(group => {
-                const groupData = {
-                    id: group.id,
-                    type: 'group',
-                    name: group.group_name,
-                    pos: group.group_pos,
-                    total: 0,
-                    expanded: false,
-                };
-
-                this.newItems[group.id] = groupData;
-                this.lastGroupNumber = Math.max(this.lastGroupNumber, parseInt(group.group_pos));
-
-                group.estimation_products?.forEach(item => {
-                    const itemData = {
-                        id: item.id,
-                        type: item.type,
-                        groupId: item.group_id,
-                        name: item.name,
-                        description: item.description,
-                        content: item.comment,
-                        quantity: item.quantity,
-                        unit: item.unit,
-                        optional: item.is_optional,
-                        pos: item.pos,
-                        prices: this.initializePrices(cardQuoteIds, item, item.quote_items || [])
-                    };
-                    this.newItems[item.id] = itemData;
-                });
-            });
-        },
-
-        initializePrices(cardQuoteIds, item = null, quoteItems = []) {
-            return cardQuoteIds.reduce((acc, quoteId) => {
-                const quoteItem = quoteItems.find(quote => quote.estimate_quote_id == quoteId) || {};
-
-                acc[quoteId] = {
-                    quoteId: quoteId,
-                    type: item?.type || null,
-                    singlePrice: quoteItem.base_price || 0,
-                    totalPrice: quoteItem.total_price || (item?.quantity || 0) * (quoteItem.price || 0)
-                };
-
-                return acc;
-            }, {});
-        },
-
-        initializeSortable() {
-            $("#estimation-edit-table").sortable({
-                items: 'tbody tr',
-                cursor: 'pointer',
-                axis: 'y',
-                dropOnEmpty: true,
-                handle: '.fa-bars, .fa-up-down',
-                animation: 150,
-                start: function (e, ui) {
-                    ui.item.addClass("selected");
-                },
-                stop: (event, ui) => {
-                    const movedRow = ui.item[0];
-
-                    if (movedRow.classList.contains('item_row') || movedRow.classList.contains('item_comment')) {
-                        this.handleItemMove(movedRow);
-                    } else if (movedRow.classList.contains('group_row')) {
-                        this.handleGroupMove(movedRow);
-                    }
-
-                    // Force recalculation of all totals
-                    this.recalculateAllTotals();
-
-                    if (!this.isInitializing) {
-                        this.hasUnsavedChanges = true;
-                        this.autoSaveHandler();
-                    }
-                }
-            });
-        },
-
-        handleItemMove(movedRow) {
-            let currentRow = movedRow.previousElementSibling;
-            let newGroupRow = null;
-
-            while (currentRow && !newGroupRow) {
-                if (currentRow.classList.contains('group_row')) {
-                    newGroupRow = currentRow;
-                }
-                currentRow = currentRow.previousElementSibling;
-            }
-
-            if (newGroupRow) {
-                const newGroupId = newGroupRow.dataset.groupid;
-                const itemId = movedRow.dataset.itemid || movedRow.dataset.commentid;
-                const oldGroupId = movedRow.dataset.groupid;
-
-                // Update DOM
-                movedRow.dataset.groupid = newGroupId;
-
-                // Update state
-                if (this.newItems[itemId]) {
-                    this.newItems[itemId].groupId = newGroupId;
-
-                    // Update prices if it's an item
-                    if (movedRow.classList.contains('item_row')) {
-                        this.updateItemPrices(itemId);
-                    }
-                }
-
-                // Update group calculations
-                const cardQuoteIds = [...new Set(
-                    Array.from(document.querySelectorAll('[data-cardquoteid]'))
-                        .map(el => el.dataset.cardquoteid)
-                )];
-
-                cardQuoteIds.forEach(quoteId => {
-                    this.calculateGroupTotal(oldGroupId, quoteId);
-                    this.calculateGroupTotal(newGroupId, quoteId);
-                });
-            }
-        },
-
-        handleGroupMove(groupRow) {
-            const groupId = groupRow.dataset.groupid;
-            if (this.newItems[groupId]) {
-                // Recalculate group totals
-                const cardQuoteIds = [...new Set(
-                    Array.from(document.querySelectorAll('[data-cardquoteid]'))
-                        .map(el => el.dataset.cardquoteid)
-                )];
-
-                cardQuoteIds.forEach(quoteId => {
-                    this.calculateGroupTotal(groupId, quoteId);
-                });
-            }
-        },
-
-        recalculateAllTotals() {
-            // Update positions first
-            this.updatePOSNumbers();
-
-            // Get all groups and quotes
-            const groups = [...document.querySelectorAll('tr.group_row')].map(row => row.dataset.groupid);
-            const cardQuoteIds = [...new Set(
-                Array.from(document.querySelectorAll('[data-cardquoteid]'))
-                    .map(el => el.dataset.cardquoteid)
-            )];
-
-            // Recalculate all items
-            Object.keys(this.newItems).forEach(itemId => {
-                const item = this.newItems[itemId];
-                if (item.type === 'item') {
-                    this.updateItemPrices(itemId);
-                }
-            });
-
-            // Recalculate all group totals
-            groups.forEach(groupId => {
-                cardQuoteIds.forEach(quoteId => {
-                    this.calculateGroupTotal(groupId, quoteId);
-                });
-            });
-
-            // Final total calculation
-            this.calculateTotals();
-
-            // Update UI for all price columns
-            cardQuoteIds.forEach(quoteId => {
-                document.querySelectorAll(`[data-cardquoteid="${quoteId}"] .item-price`).forEach(priceInput => {
-                    const row = priceInput.closest('tr');
-                    if (row) {
-                        const itemId = row.dataset.itemid;
-                        if (itemId && this.newItems[itemId]?.prices?.[quoteId]) {
-                            this.formatCurrencyValue(priceInput);
-                        }
-                    }
-                });
-            });
-        },
-
-        initializeLastNumbers() {
-            const posNumbers = new Set();
-
-            document.querySelectorAll('.pos-inner').forEach(element => {
-                const pos = element.textContent.trim();
-                if (pos) {
-                    posNumbers.add(pos);
-                    const [groupNum, itemNum] = pos.split('.');
-                    const groupNumber = parseInt(groupNum);
-                    const itemNumber = parseInt(itemNum);
-
-                    this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNumber);
-
-                    if (!this.lastItemNumbers[groupNumber] || itemNumber > this.lastItemNumbers[groupNumber]) {
-
-                        this.lastItemNumbers[groupNumber] = Math.min(itemNumber, 99);
-                    }
-                }
-            });
-
-            document.querySelectorAll('.grouppos').forEach(element => {
-                const groupNum = parseInt(element.textContent.trim());
-                this.lastGroupNumber = Math.max(this.lastGroupNumber, groupNum);
-            });
-        },
-
-        initializeFullScreen() {
-            document.addEventListener('fullscreenchange', () => {
-                this.isFullScreen = !!document.fullscreenElement;
-                const btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
-                if (btn) {
-                    btn.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
-                }
-            });
-        },
-
-        toggleFullScreen() {
-            const estimationSection = document.querySelector('.estimation-show');
-            if (!estimationSection) return;
-
-            if (!document.fullscreenElement) {
-                estimationSection.requestFullscreen().catch(err => {
-                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
+            if (!this.validateTemplates()) return;
+            this.bindEvents();
+            this.initializeSortable();
+            this.updateAllCalculations();
+            this.initializeAutoSave();
         },
 
         initializeAutoSave() {
-            window.addEventListener('beforeunload', (e) => {
+            // Update autoSaveEnabled when checkbox changes
+            $('#autoSaveEnabled').on('change', (e) => {
+                this.autoSaveEnabled = $(e.target).is(':checked');
+
+                // If enabled and there are unsaved changes, start autosave
+                if (this.autoSaveEnabled && this.hasUnsavedChanges) {
+                    this.autoSaveHandler();
+                }
+            });
+
+            // Add beforeunload event listener for unsaved changes
+            $(window).on('beforeunload', (e) => {
                 if (this.hasUnsavedChanges) {
                     const message = 'You have unsaved changes. Are you sure you want to leave?';
                     e.preventDefault();
@@ -343,388 +43,11 @@ document.addEventListener('alpine:init', () => {
             });
         },
 
-        calculateItemTotal(itemId, quoteId) {
-            // Early validation
-            if (!itemId || !this.newItems[itemId]) return 0;
-            if (this.newItems[itemId].optional) return 0;
-
-            const item = this.newItems[itemId];
-            const quantity = this.parseNumber(item.quantity || 0);
-            const singlePrice = this.parseNumber(item.prices[quoteId]?.singlePrice || 0);
-            const totalPrice = quantity * singlePrice;
-
-            if (item.prices[quoteId]) {
-                item.prices[quoteId].totalPrice = totalPrice;
-            }
-
-            return totalPrice;
-        },
-
-        calculateTotals() {
-            this.totals = {};
-            document.querySelectorAll('tr.group_row').forEach(row => {
-                const groupId = row.dataset.groupid;
-                if (!groupId) return;
-
-                this.calculateGroupTotal(groupId);
-
-                if (this.newItems[groupId]) {
-                    this.newItems[groupId].total = this.parseNumber(
-                        row.querySelector('.text-right.grouptotal')?.textContent || '0'
-                    );
-                }
-            });
-        },
-
-        calculateGroupTotal(groupId) {
-            let totals = {};
-            const groupRow = document.querySelector(`tr.group_row[data-groupid="${groupId}"]`);
-            if (!groupRow) return 0;
-
-            let currentRow = groupRow.nextElementSibling;
-            while (currentRow && !currentRow.classList.contains('group_row')) {
-                if (currentRow.classList.contains('item_row')) {
-                    const itemId = currentRow.dataset.itemid;
-                    const isOptional = currentRow.querySelector('.item-optional')?.checked;
-
-                    if (!isOptional) {
-                        const quantity = this.parseNumber(currentRow.querySelector('.item-quantity')?.value || '0');
-                        const priceInputs = currentRow.querySelectorAll('.item-price');
-
-                        priceInputs.forEach((priceInput, index) => {
-                            if (!totals[index]) totals[index] = 0;
-                            const price = this.parseNumber(priceInput.value || '0');
-                            const total = quantity * price;
-                            totals[index] += total;
-
-                            // Update individual item total
-                            const totalCell = currentRow.querySelectorAll('.column_total_price')[index];
-                            if (totalCell) {
-                                totalCell.textContent = this.formatCurrency(total);
-                                this.setNegativeStyle(totalCell, total);
-                            }
-                        });
-                    } else {
-                        // Clear totals for optional items
-                        currentRow.querySelectorAll('.column_total_price').forEach(cell => {
-                            cell.textContent = '-';
-                            cell.style.backgroundColor = '';
-                            cell.style.color = '';
-                        });
-                    }
-                }
-                currentRow = currentRow.nextElementSibling;
-            }
-
-            // Update group totals
-            const totalCells = groupRow.querySelectorAll('.text-right.grouptotal');
-            totalCells.forEach((cell, index) => {
-                const total = totals[index] || 0;
-                cell.textContent = this.formatCurrency(total);
-                this.setNegativeStyle(cell, total);
-
-                // Update card totals
-                const cardQuoteId = cell.dataset.cardquoteid;
-                if (cardQuoteId) {
-                    this.calculateCardTotals(cardQuoteId);
-                }
-            });
-
-            return totals[0] || 0;
-        },
-
-        calculateCardTotals(cardQuoteId) {
-            let subtotal = 0;
-            const groupTotalCells = document.querySelectorAll(`td[data-cardquoteid="${cardQuoteId}"].grouptotal`);
-            groupTotalCells.forEach(cell => {
-                subtotal += this.parseNumber(cell.textContent);
-            });
-
-            const markupInput = document.querySelector(`#quoteMarkup[name="item[${cardQuoteId}][markup]"]`);
-            const markup = this.parseNumber(markupInput?.value || '0');
-            const netAmount = subtotal + markup;
-
-            const discountInput = document.querySelector(`input[name="item[${cardQuoteId}][discount]"]`);
-            const cashDiscount = this.parseNumber(discountInput?.value || '0');
-            const discountAmount = (netAmount * cashDiscount) / 100;
-            const netWithDiscount = netAmount - discountAmount;
-
-            const vatSelect = document.querySelector(`select[name="item[${cardQuoteId}][tax]"]`);
-            const vatRate = vatSelect ? this.parseNumber(vatSelect.value) / 100 : 0;
-
-            let grossWithDiscount = netWithDiscount;
-            if (vatRate > 0) {
-                const vatAmount = grossWithDiscount * vatRate;
-                grossWithDiscount = netWithDiscount + vatAmount;
-            }
-
-            this.updateCardTotalUI(cardQuoteId, {
-                netAmount,
-                netWithDiscount,
-                grossWithDiscount,
-                subtotal
-            });
-        },
-
-        updateCardTotalUI(cardQuoteId, totals) {
-
-            const netDiscountElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net-discount`);
-            if (netDiscountElement) {
-                netDiscountElement.textContent = this.formatCurrency(totals.netWithDiscount);
-            }
-
-
-            const grossDiscountElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-gross-discount`);
-            if (grossDiscountElement) {
-                grossDiscountElement.textContent = this.formatCurrency(totals.grossWithDiscount);
-            }
-
-
-            const netElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net`);
-            if (netElement) {
-                netElement.textContent = this.formatCurrency(totals.netAmount);
-            }
-
-
-            const grossElement = document.querySelector(`th[data-cardquoteid="${cardQuoteId}"] .total-gross-total`);
-            if (grossElement) {
-                grossElement.textContent = this.formatCurrency(totals.grossWithDiscount);
-            }
-
-            this.autoSaveHandler();
-        },
-
-        initializeCardCalculations() {
-            const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
-
-            cardQuoteIds.forEach(cardQuoteId => {
-                // Get initial values
-                const markupInput = document.querySelector(`#quoteMarkup[name="item[${cardQuoteId}][markup]"]`);
-                const discountInput = document.querySelector(`input[name="item[${cardQuoteId}][discount]"]`);
-                const vatSelect = document.querySelector(`select[name="item[${cardQuoteId}][tax]"]`);
-
-                // Format and apply markup
-                if (markupInput) {
-                    const value = this.parseNumber(markupInput.value);
-                    markupInput.value = this.formatDecimal(value);
-                    this.setNegativeStyle(markupInput, value);
-
-                    // Apply markup calculations
-                    this.updateMarkupCalculations({ target: markupInput }, cardQuoteId);
-                }
-
-                // Format and apply discount
-                if (discountInput) {
-                    const value = this.parseNumber(discountInput.value);
-                    discountInput.value = this.formatDecimal(value);
-                    // Trigger discount calculations
-                    this.handleInputBlur({ target: discountInput }, 'cashDiscount');
-                }
-
-                // Apply VAT calculations if set
-                if (vatSelect) {
-                    this.handleVatChangeAmount({ target: vatSelect }, cardQuoteId);
-                }
-
-                // Calculate all totals for this column
-                this.calculateCardTotals(cardQuoteId);
-            });
-        },
-
-        handleVatChangeAmount(event, cardQuoteId) {
-            this.calculateCardTotals(cardQuoteId);
-        },
-
-        updateMarkupCalculations(event, cardQuoteId) {
-            const target = event.target;
-            const markup = this.parseNumber(target.value || '0');
-            target.value = this.formatDecimal(markup);
-            this.setMarkupStyle(target, markup);
-
-            const priceInputs = document.querySelectorAll(`[data-cardquoteid="${cardQuoteId}"] .item-price`);
-
-            priceInputs.forEach(input => {
-                const originalPrice = input.dataset.originalPrice ? this.parseNumber(input.dataset.originalPrice) : this.parseNumber(input.value);
-
-                if (!input.dataset.originalPrice) {
-                    input.dataset.originalPrice = originalPrice;
-                }
-
-                const newPrice = this.parseNumber(input.dataset.originalPrice) + markup;
-                input.value = this.formatCurrency(newPrice);
-
-                const row = input.closest('tr');
-                if (row) {
-                    const itemId = row.dataset.itemid;
-                    if (itemId) {
-                        this.calculateItemTotal(itemId);
-                    }
-                }
-            });
-
-            this.calculateGroupTotal(this.lastGroupId);
-            this.calculateTotals();
-            this.calculateCardTotals(cardQuoteId);
-        },
-
-        setMarkupStyle(input, value) {
-            if (value < 0) {
-                input.style.backgroundColor = 'rgb(255 240 240)';
-                input.style.color = 'rgb(255 6 6)';
-            } else {
-                input.style.backgroundColor = '';
-                input.style.color = '';
-            }
-        },
-
-        setNegativeStyle(element, value) {
-            if (value < 0) {
-                element.style.backgroundColor = 'rgb(255 240 240)';
-                element.style.color = 'rgb(255 6 6)';
-            } else {
-                element.style.backgroundColor = '';
-                element.style.color = '';
-            }
-        },
-
-        formatDecimal(value) {
-            return new Intl.NumberFormat('de-DE', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(value);
-        },
-
-        formatCurrency(value) {
-            return new Intl.NumberFormat('de-DE', {
-                style: 'currency',
-                currency: 'EUR'
-            }).format(value);
-        },
-
-        formatDecimalValue(target) {
-            target.value = this.formatDecimal(this.parseNumber(target.value));
-        },
-
-        formatCurrencyValue(target) {
-            target.value = this.formatCurrency(this.parseNumber(target.value));
-        },
-
-        parseNumber(value) {
-            if (typeof value === 'number') return value;
-            return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
-        },
-
-        handleInputBlur(event, type) {
-            if (!event?.target || !type) return;
-            if (event.type === 'keydown' && event.key !== 'Enter') return;
-            if (event.type === 'keydown') event.target.blur();
-
-            const row = event.target.closest('tr');
-            if (!row?.dataset) return;
-
-            const { value } = event.target;
-            const itemId = row.dataset.id;
-            const cardQuoteId = event.target.closest('[data-cardquoteid]')?.dataset.cardquoteid;
-
-            const inputHandlers = {
-                item: () => {
-                    if (this.newItems[itemId]) {
-                        this.newItems[itemId].name = value;
-                    }
-                },
-                comment: () => {
-                    if (this.newItems[itemId]) {
-                        this.newItems[itemId].content = value;
-                    }
-                },
-                group: () => {
-                    if (this.newItems[itemId]) {
-                        this.newItems[itemId].name = value;
-                    }
-                },
-                quantity: () => {
-                    const quantity = this.parseNumber(value);
-                    if (this.newItems[itemId]) {
-                        this.newItems[itemId].quantity = quantity;
-                        this.updateItemPrices(itemId);
-                        this.formatDecimalValue(event.target);
-                    }
-                },
-                price: () => {
-                    if (this.newItems[itemId] && this.newItems[itemId].prices && cardQuoteId) {
-                        const singlePrice = this.parseNumber(value);
-                        if (!this.newItems[itemId].prices[cardQuoteId]) {
-                            this.newItems[itemId].prices[cardQuoteId] = {
-                                quoteId: cardQuoteId,
-                                type: 'item',
-                                singlePrice: 0,
-                                totalPrice: 0
-                            };
-                        }
-                        this.newItems[itemId].prices[cardQuoteId].singlePrice = singlePrice;
-                        this.newItems[itemId].prices[cardQuoteId].totalPrice = singlePrice * (this.newItems[itemId].quantity || 0);
-                        this.formatCurrencyValue(event.target);
-                    }
-                },
-                unit: () => {
-                    if (this.newItems[itemId]) {
-                        this.newItems[itemId].unit = value;
-                    }
-                },
-                cashDiscount: () => {
-                    event.target.value = this.formatDecimal(this.parseNumber(value) || 0);
-                }
-            };
-
-            try {
-                inputHandlers[type]?.();
-
-                if (!this.isInitializing) {
-                    this.hasUnsavedChanges = true;
-                    this.calculateTotals();
-                    this.autoSaveHandler();
-                }
-            } catch (error) {
-                console.error(`Error in handleInputBlur: ${error.message}`, { type, value });
-            }
-        },
-
-        updateItemPrices(itemId) {
-            if (!this.newItems[itemId]) return;
-
-            const item = this.newItems[itemId];
-            const quantity = item.quantity || 0;
-
-            Object.keys(item.prices || {}).forEach(cardQuoteId => {
-                const price = item.prices[cardQuoteId];
-                price.totalPrice = quantity * (price.singlePrice || 0);
-            });
-        },
-
-        handleOptionalChange(event, itemId) {
-            if (this.newItems[itemId]) {
-                this.newItems[itemId].optional = event.target.checked ? 1 : 0;
-            }
-
-            const row = event.target.closest('tr');
-            const groupId = row.dataset.groupid;
-
-            if (groupId) {
-                this.calculateGroupTotal(groupId);
-            }
-
-            // Update all totals
-            this.calculateTotals();
-
-            if (!this.isInitializing) {
-                this.hasUnsavedChanges = true;
-                this.autoSaveHandler();
-            }
-        },
-
         autoSaveHandler() {
-            if (!this.autoSaveEnabled || !document.querySelector('#quote_form') || !this.hasUnsavedChanges) return;
+            // Check if autosave is enabled and there are unsaved changes
+            if (!this.autoSaveEnabled || !$('#quote_form').length || !this.hasUnsavedChanges) return;
 
+            // Clear any existing save timeout
             if (this.saveTimeout) {
                 clearTimeout(this.saveTimeout);
             }
@@ -732,12 +55,14 @@ document.addEventListener('alpine:init', () => {
             const currentTime = Date.now();
             const timeSinceLastSave = currentTime - this.lastSaveTime;
 
+            // If enough time has passed since last save, save immediately
             if (timeSinceLastSave >= this.saveInterval) {
                 this.saveTableData();
                 this.lastSaveTime = currentTime;
             } else {
+                // Otherwise, set a timeout to save later
                 this.saveTimeout = setTimeout(() => {
-                    if (this.hasUnsavedChanges) {
+                    if (this.hasUnsavedChanges && this.autoSaveEnabled) {
                         this.saveTableData();
                         this.lastSaveTime = Date.now();
                     }
@@ -745,603 +70,67 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        searchTableItem() {
-            const searchTerm = this.searchQuery.toLowerCase();
-            Object.entries(this.newItems).forEach(([itemId, item]) => {
-                const row = document.querySelector(`tr[data-id="${itemId}"]`);
-                if (row) {
-                    const targetKeyword = item.name || item.content;
-                    row.style.display = targetKeyword.toLowerCase().includes(searchTerm) ? '' : 'none';
-                }
-            });
-        },
+        saveTableData() {
+            // Check again if autosave is enabled before saving
+            if (!this.autoSaveEnabled) return;
 
-        addItem(type, targetGroupId = null) {
-            const timestamp = Date.now();
-
-            if (type === 'group') {
-                this.createGroups(type, timestamp);
-            } else if (type === 'item' || type === 'comment') {
-                this.createItemsAndComments(type, timestamp, targetGroupId);
-            }
-        },
-
-        createGroups(type, timestamp, targetRowId) {
-
-            if (type !== 'group') return;
-
-            const itemTimestamp = Date.now() + 1;
-            const hasAnyGroups = Object.values(this.newItems).some(item => item.type === 'group');
-
-            // Helper to create a group
-            const createGroup = (id, name, itemCount = 0) => ({
-                id,
-                type: 'group',
-                name,
-                total: 0,
-                expanded: false,
-                pos: '',
-                itemCount,
+            const columns = {};
+            const cardQuoteIds = new Set();
+            $('.column_single_price').each(function () {
+                const quoteId = $(this).data('cardquoteid');
+                if (quoteId) cardQuoteIds.add(quoteId);
             });
 
-            this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
-
-            if (!hasAnyGroups) {
-                this.newItems[timestamp] = createGroup(timestamp, 'New Group');
-                this.createItemsAndComments('item', itemTimestamp, targetRowId);
-            } else {
-                this.newItems[timestamp] = createGroup(timestamp, 'Group Name');
-            }
-
-            this.$nextTick(() => {
-                this.initializeSortable();
-                this.updatePOSNumbers();
-                this.calculateTotals();
-            });
-
-            return;
-        },
-
-        createItemsAndComments(type, timestamp, targetGroupId = null) {
-            if (type !== 'item' && type !== 'comment') return;
-
-            const initialPrices = [...new Set(
-                Array.from(document.querySelectorAll('[data-cardquoteid]'), el => el.dataset.cardquoteid)
-            )].map(quoteId => ({ quoteId, type: 'item', singlePrice: 0, totalPrice: 0 }));
-
-            // Use passed targetGroupId or get from current context
-            const currentGroupId = targetGroupId || this.getCurrentGroupId();
-            if (!currentGroupId) return;
-
-            if (type === 'item') {
-                const items = {
-                    id: timestamp,
-                    type: 'item',
-                    groupId: currentGroupId,
-                    name: 'New Item',
-                    quantity: 0,
-                    price: 0,
-                    prices: initialPrices,
-                    unit: '',
-                    optional: 0,
-                    expanded: false,
-                    pos: '',
-                };
-                this.newItems[timestamp] = items;
-            } else {
-                const comment = {
-                    id: timestamp,
-                    type: 'comment',
-                    groupId: currentGroupId,
-                    content: 'New Comment',
-                    expanded: false,
-                    pos: '',
-                };
-                this.newItems[timestamp] = comment;
-            }
-
-            this.$nextTick(() => {
-                this.updatePOSNumbers();
-                this.calculateTotals();
-            });
-        },
-
-        removeItem() {
-            const selectedCheckboxes = document.querySelectorAll('.item_selection:checked');
-            if (selectedCheckboxes.length === 0) {
-                toastrs("Error", "Please select checkbox to continue delete");
-                return;
-            }
-
-            Swal.fire({
-                title: 'Confirmation Delete',
-                text: 'Really! You want to remove them? You can\'t undo',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Delete it',
-                cancelButtonText: "No, cancel",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const estimationId = this.getFomrData().id;
-                    const itemIds = [];
-                    const groupIds = [];
-
-                    selectedCheckboxes.forEach(checkbox => {
-                        const row = checkbox.closest('tr');
-
-                        if (row.classList.contains('group_row')) {
-                            groupIds.push(row.dataset.groupid);
-                            delete this.newItems[row.dataset.groupid];
-                        } else {
-                            const IDs = row.dataset.id;
-                            itemIds.push(IDs);
-                            delete this.newItems[IDs];
-                        }
-                        row.remove();
-                    });
-
-                    document.querySelector('.SelectAllCheckbox').checked = false;
-
-                    $.ajax({
-                        url: route('estimation.destroy', estimationId),
-                        method: 'DELETE',
-                        data: {
-                            estimationId: estimationId,
-                            items: itemIds,
-                            groups: groupIds
-                        },
-                        success: (response) => {
-                            console.log(response);
-                        }
-                    });
-
-                    this.calculateTotals();
-                    this.updatePOSNumbers();
-                }
-            });
-        },
-
-        getCurrentGroupId(targetRowId) {
-            if (targetRowId) {
-                const targetRow = document.querySelector(
-                    `tr[data-id="${targetRowId}"], 
-                 tr[data-itemid="${targetRowId}"], 
-                 tr[data-commentid="${targetRowId}"], 
-                 tr[data-groupid="${targetRowId}"]`
-                );
-                return targetRow?.dataset.groupid || null;
-            } else {
-                const allGroupRows = document.querySelectorAll('tr.group.group_row');
-                const lastGroupRow = allGroupRows[allGroupRows.length - 1];
-                return lastGroupRow?.dataset.groupid || null;
-            }
-        },
-
-        updatePOSNumbers() {
-            let currentGroupPos = 0;
-            let itemCountInGroup = 0;
-
-            // Get all rows but filter out any that aren't groups, items, or comments
-            document.querySelectorAll('tr.group_row, tr.item_row, tr.item_comment').forEach(row => {
-                if (row.classList.contains('group_row')) {
-                    // Handle group row
-                    currentGroupPos++;
-                    itemCountInGroup = 0;
-                    const groupId = row.dataset.groupid;
-
-                    // Format group position with leading zeros
-                    const groupPos = currentGroupPos.toString().padStart(2, '0');
-
-                    // Update DOM
-                    const groupPosElement = row.querySelector('.grouppos');
-                    if (groupPosElement) {
-                        groupPosElement.textContent = groupPos;
+            cardQuoteIds.forEach(cardQuoteId => {
+                columns[cardQuoteId] = {
+                    settings: {
+                        markup: this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][markup]"]`).val() || '0'),
+                        cashDiscount: this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][discount]"]`).val() || '0'),
+                        vat: this.parseGermanDecimal($(`select[name="item[${cardQuoteId}][tax]"]`).val() || '0')
+                    },
+                    totals: {
+                        netIncludingDiscount: this.parseGermanDecimal($(`.total-net-discount[data-cardquoteid="${cardQuoteId}"]`).text()),
+                        grossIncludingDiscount: this.parseGermanDecimal($(`.total-gross-discount[data-cardquoteid="${cardQuoteId}"]`).text()),
+                        net: this.parseGermanDecimal($(`.total-net[data-cardquoteid="${cardQuoteId}"]`).text()),
+                        gross: this.parseGermanDecimal($(`.total-gross-total[data-cardquoteid="${cardQuoteId}"]`).text())
                     }
-
-                    // Update state
-                    if (this.newItems[groupId]) {
-                        this.newItems[groupId].pos = groupPos;
-                    }
-                } else {
-                    // Handle both item and comment rows
-                    itemCountInGroup++;
-                    const itemId = row.dataset.itemid || row.dataset.commentid;
-
-                    // Format position with leading zeros (e.g., "01.01")
-                    const itemPos = `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`;
-
-                    // Update DOM
-                    const posElement = row.querySelector('.pos-inner');
-                    if (posElement) {
-                        posElement.textContent = itemPos;
-                    }
-
-                    // Update state
-                    if (this.newItems[itemId]) {
-                        this.newItems[itemId].pos = itemPos;
-                    }
-                }
-            });
-        },
-
-        getCurrentGroupId() {
-            // Get the last group from sorted groups
-            const groups = this.getSortedGroups();
-            return groups.length > 0 ? groups[groups.length - 1].id : null;
-        },
-
-        getSortedGroups() {
-            // Get all groups from newItems
-            const groups = Object.values(this.newItems)
-                .filter(item => item.type === 'group')
-                .sort((a, b) => this.comparePOS(a.pos, b.pos));
-
-            return groups;
-        },
-
-        getSortedItemsForGroup(groupId) {
-            if (!groupId) return [];
-
-            // Get all items and comments for this group from newItems
-            return Object.values(this.newItems)
-                .filter(item =>
-                    item.groupId === groupId &&
-                    (item.type === 'item' || item.type === 'comment')
-                )
-                .sort((a, b) => this.comparePOS(a.pos, b.pos));
-        },
-
-        comparePOS(posA, posB) {
-            if (!posA || !posB) return 0;
-
-            const [groupA, itemA = "0"] = String(posA).split('.');
-            const [groupB, itemB = "0"] = String(posB).split('.');
-
-            const groupDiff = parseInt(groupA) - parseInt(groupB);
-            if (groupDiff !== 0) return groupDiff;
-
-            return parseInt(itemA) - parseInt(itemB);
-        },
-
-        duplicateCardColumn(quoteId) {
-            alert('Action for duplicateCardColumn' + quoteId);
-        },
-
-        deleteCardColumn(quoteId) {
-            Swal.fire({
-                title: 'Confirmation Delete',
-                text: 'Really! You want to remove this column? You can\'t undo',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Delete it',
-                cancelButtonText: "No, cancel",
-                customClass: {
-                    confirmButton: 'btn btn-danger',
-                    cancelButton: 'btn btn-secondary'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    try {
-
-                        const elements = document.querySelectorAll(`[data-cardquoteid="${quoteId}"]`);
-                        elements.forEach(el => el.remove());
-
-                        this.calculateTotals();
-
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: `The Column has been deleted successfully`,
-                            icon: 'success',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    } catch (error) {
-                        console.error('Error deleting column:', error);
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'An error occurred while deleting the column',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                }
-            });
-        },
-
-        toggleDescription(index, event) {
-            event.stopPropagation();
-
-            if (!this.expandedRows) {
-                this.expandedRows = {};
-            }
-
-            this.expandedRows[index] = !this.expandedRows[index];
-
-            const parentRow = event.target.closest('tr');
-            const childRow = document.querySelector(`tr.item_child[data-id="${index}"]`);
-
-            if (childRow) {
-                childRow.style.display = this.expandedRows[index] ? 'table-row' : 'none';
-
-                const icon = parentRow.querySelector('.desc_toggle');
-                if (icon) {
-                    icon.classList.toggle('fa-caret-right');
-                    icon.classList.toggle('fa-caret-down');
-                }
-            }
-        },
-
-        isExpanded(index) {
-            return this.expandedRows[index] || false;
-        },
-
-        initializeContextMenu() {
-            document.querySelector('#estimation-edit-table').addEventListener('contextmenu', (e) => {
-
-                const row = e.target.closest('tr.item_row, tr.group_row, tr.item_comment');
-                if (!row) return;
-
-                e.preventDefault();
-
-                const viewportWidth = window.innerWidth;
-                const viewportHeight = window.innerHeight;
-
-                let x = e.clientX;
-                let y = e.clientY;
-
-                if (x + 160 > viewportWidth) x = viewportWidth - 160;
-                if (y + 160 > viewportHeight) y = viewportHeight - 160;
-
-                this.contextMenu = {
-                    show: true,
-                    x: x,
-                    y: y,
-                    selectedRowId: row.dataset.id || row.dataset.itemid || row.dataset.commentid || row.dataset.groupid
                 };
             });
-        },
 
-        moveRow(direction, rowId) {
-            const row = document.querySelector(`tr[data-id="${rowId}"], 
-                                         tr[data-itemid="${rowId}"], 
-                                         tr[data-commentid="${rowId}"], 
-                                         tr[data-groupid="${rowId}"]`);
-            if (!row) return;
+            const data = {
+                cards: columns,
+                form: this.getFormData(),
+                newItems: this.prepareNewItemsForSubmission()
+            };
 
-            if (direction === 'up') {
-                const prevRow = row.previousElementSibling;
-                if (prevRow) {
-                    row.parentNode.insertBefore(row, prevRow);
-                }
-            } else {
-                const nextRow = row.nextElementSibling;
-                if (nextRow) {
-                    row.parentNode.insertBefore(nextRow, row);
-                }
-            }
+            $.ajax({
+                url: route('estimation.update', data.form.id),
+                method: 'PUT',
+                data: data,
+                beforeSend: () => {
+                    $('.lastSaveTimestamp').text('is running...');
+                    $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
+                },
+                success: (idMappings) => {
 
-            this.updatePOSNumbers();
-            this.calculateTotals();
-            this.contextMenu.show = false;
-        },
+                    this.updateEntitiesWithNewIds(idMappings);
 
-        duplicateRow(rowId) {
-            const originalRow = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-commentid="${rowId}"], tr[data-groupid="${rowId}"]`);
-            if (!originalRow) return;
+                    // Update UI state
+                    this.lastSaveTime = Date.now();
+                    this.hasUnsavedChanges = false;
 
-            const timestamp = Date.now();
-            const isGroup = originalRow.classList.contains('group_row');
-            const isComment = originalRow.classList.contains('item_comment');
-            const groupId = isGroup ? null : originalRow.dataset.groupid;
+                    let lastSavedText = this.formatTimeAgo(this.lastSaveTime);
+                    this.startTimeAgoUpdates();
 
-            const cardQuoteIds = [...new Set(
-                Array.from(document.querySelectorAll('[data-cardquoteid]'))
-                    .map(el => el.dataset.cardquoteid)
-            )];
-
-            if (isGroup) {
-                const groupName = originalRow.querySelector('.grouptitle-input')?.value || 'Group Name';
-                this.newItems[timestamp] = {
-                    id: timestamp,
-                    type: 'group',
-                    name: `${groupName} - copy`,
-                    total: 0,
-                    expanded: false,
-                    pos: ''
-                };
-            } else if (isComment) {
-                this.newItems[timestamp] = {
-                    id: timestamp,
-                    type: 'comment',
-                    groupId: groupId,
-                    content: originalRow.querySelector('.item-description')?.value || 'New Comment',
-                    expanded: false,
-                    pos: ''
-                };
-            } else {
-                const prices = {};
-                cardQuoteIds.forEach(quoteId => {
-                    const priceInput = originalRow.querySelector(`.item-price[data-cardquoteid="${quoteId}"]`);
-                    prices[quoteId] = {
-                        quoteId: quoteId,
-                        type: 'item',
-                        singlePrice: this.parseNumber(priceInput?.value || '0'),
-                        totalPrice: 0
-                    };
-                });
-
-                this.newItems[timestamp] = {
-                    id: timestamp,
-                    type: 'item',
-                    groupId: groupId,
-                    name: (originalRow.querySelector('.item-name')?.value || 'New Item') + ' - copy',
-                    quantity: this.parseNumber(originalRow.querySelector('.item-quantity')?.value || '0'),
-                    unit: originalRow.querySelector('.item-unit')?.value || '',
-                    optional: originalRow.querySelector('.item-optional')?.checked ? 1 : 0,
-                    expanded: false,
-                    pos: '',
-                    prices: prices,
-                    description: originalRow.querySelector('.description_input')?.value || ''
-                };
-            }
-
-            this.$nextTick(() => {
-                this.hasUnsavedChanges = true;
-
-                this.$nextTick(() => {
-                    const insertAfter = (el, referenceNode) => {
-                        referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
-                    };
-
-                    const newRow = document.querySelector(`tr[data-id="${timestamp}"], tr[data-itemid="${timestamp}"], tr[data-commentid="${timestamp}"]`);
-
-                    if (newRow && originalRow) {
-                        insertAfter(newRow, originalRow);
-                    }
-
-                    this.updatePOSNumbers();
-                    this.calculateTotals();
-                    this.initializeContextMenu();
-
-                    if (!isGroup && !isComment) {
-                        const descriptionContent = originalRow.querySelector('.description_input')?.value;
-                        if (descriptionContent) {
-                            this.newItems[timestamp].description = descriptionContent;
-                        }
-                    }
-                });
-            });
-
-            this.contextMenu.show = false;
-        },
-
-        removeRowFromMenu(rowId) {
-            Swal.fire({
-                title: 'Confirmation Delete',
-                text: 'Really! You want to remove this item? You can\'t undo',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Delete it',
-                cancelButtonText: "No, cancel",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const estimationId = this.getFomrData().id;
-                    const itemIds = [];
-                    const comments = [];
-                    const groupIds = [];
-
-                    const row = document.querySelector(`tr[data-id="${rowId}"], tr[data-itemid="${rowId}"], tr[data-groupid="${rowId}"]`);
-                    if (!row) return;
-
-                    if (row.classList.contains('group_row')) {
-                        groupIds.push(row.dataset.groupid);
-                        delete this.newItems[row.dataset.groupid];
-                    } else {
-                        itemIds.push(row.dataset.id);
-                        delete this.newItems[row.dataset.id];
-                    }
-
-                    $.ajax({
-                        url: route('estimation.destroy', estimationId),
-                        method: 'DELETE',
-                        data: {
-                            estimationId: estimationId,
-                            items: itemIds.concat(comments),
-                            groups: groupIds
-                        },
-                        success: (response) => {
-                            console.log(response);
-                        }
-                    });
-
-                    row.remove();
-                    this.updatePOSNumbers();
-                    this.calculateTotals();
-
-                    document.querySelector('.SelectAllCheckbox').checked = false;
+                    $('.lastSaveTimestamp').text(lastSavedText);
+                    $('#save-button').html(`Saved last changed.`);
+                },
+                error: (error) => {
+                    toastrs('Failed to save changes.');
+                    $('.lastSaveTimestamp').text('is failed.');
+                    this.hasUnsavedChanges = true;
                 }
             });
-
-            this.contextMenu.show = false;
-        },
-
-        handleGroupSelection(event, groupId) {
-            const checked = event.target.checked;
-            const groupRow = event.target.closest('tr.group_row');
-
-            if (!groupRow) return;
-
-
-            let currentRow = groupRow.nextElementSibling;
-            while (currentRow && !currentRow.classList.contains('group_row')) {
-                const checkbox = currentRow.querySelector('.item_selection');
-                if (checkbox) {
-                    checkbox.checked = checked;
-                }
-                currentRow = currentRow.nextElementSibling;
-            }
-        },
-
-        checkboxAll(value) {
-            document.querySelectorAll('.item_selection').forEach(checkbox => {
-                checkbox.checked = value;
-            });
-        },
-
-        initializeColumnVisibility() {
-            document.querySelectorAll('.column-toggle').forEach(checkbox => {
-                checkbox.addEventListener('change', (e) => {
-
-                    const columnClass = e.target.dataset.column;
-                    const quoteId = e.target.dataset.quoteid;
-
-                    if (columnClass === 'quote_th' && quoteId) {
-
-                        this.columnVisibility[columnClass] = e.target.checked;
-                        this.applyColumnVisibility(quoteId);
-                    } else {
-
-                        this.columnVisibility[columnClass] = e.target.checked;
-                        this.applyColumnVisibility();
-                    }
-                });
-            });
-        },
-
-        applyColumnVisibility(quoteId = null) {
-
-            Object.entries(this.columnVisibility).forEach(([columnClass, isVisible]) => {
-
-                if (columnClass === 'quote_th' && quoteId) {
-
-                    const elements = document.querySelectorAll(
-                        `.quote_th${quoteId}, ` +
-                        `[data-cardquoteid="${quoteId}"]`
-                    );
-
-                    elements.forEach(el => {
-                        el.style.display = isVisible ? '' : 'none';
-                    });
-                } else {
-                    const elements = document.querySelectorAll(`.${columnClass}`);
-                    elements.forEach(el => {
-                        if (el.closest('td, th')) {
-                            el.closest('td, th').style.display = isVisible ? '' : 'none';
-                        }
-                    });
-                }
-            });
-        },
-
-        toggleColumn(columnClass, quoteId = null) {
-            this.columnVisibility[columnClass] = !this.columnVisibility[columnClass];
-            this.applyColumnVisibility(quoteId);
-
-            const selector = quoteId
-                ? `.column-toggle[data-column="${columnClass}"][data-quote="${quoteId}"]`
-                : `.column-toggle[data-column="${columnClass}"]`;
-            const checkbox = document.querySelector(selector);
-            if (checkbox) {
-                checkbox.checked = this.columnVisibility[columnClass];
-            }
         },
 
         formatTimeAgo(timestamp) {
@@ -1361,6 +150,7 @@ document.addEventListener('alpine:init', () => {
             }
 
             const days = Math.floor(diff / 86400);
+
             return `${days} day${days > 1 ? 's' : ''} ago`;
         },
 
@@ -1370,125 +160,808 @@ document.addEventListener('alpine:init', () => {
             }
 
             this.timeAgoInterval = setInterval(() => {
-                if (this.lastSaveTimestamp) {
-                    this.lastSaveText = this.formatTimeAgo(this.lastSaveTimestamp);
+                if (this.lastSaveTime) {
+                    let lastSavedText = this.formatTimeAgo(this.lastSaveTime);
+                    $('.lastSaveTimestamp').text(lastSavedText);
                 }
             }, 60000);
         },
 
-        saveTableData() {
+        prepareNewItemsForSubmission() {
+            const newItems = [];
+            let $self = this;
 
-            if (!this.hasUnsavedChanges || !document.querySelector('#quote_form')) return;
+            $('.group_row').each(function () {
+                const groupId = $(this).data('groupid');
+                const groupName = $(this).find('.grouptitle-input').val();
+                const groupPos = $(this).find('.grouppos').text().trim();
 
-            const columns = {};
-            const cardQuoteIds = [...new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(el => el.dataset.cardquoteid))];
+                const group = {
+                    id: groupId,
+                    type: 'group',
+                    name: groupName,
+                    pos: groupPos,
+                    total: null,
+                };
+                newItems.push(group);
+            });
 
-            cardQuoteIds.forEach(cardQuoteId => {
-                columns[cardQuoteId] = {
-                    settings: {
-                        markup: this.parseNumber(document.querySelector(`input[name="item[${cardQuoteId}][markup]"]`)?.value || '0'),
-                        cashDiscount: this.parseNumber(document.querySelector(`input[name="item[${cardQuoteId}][discount]"]`)?.value || '0'),
-                        vat: this.parseNumber(document.querySelector(`select[name="item[${cardQuoteId}][tax]"]`)?.value || '0')
-                    },
-                    totals: {
-                        netIncludingDiscount: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net-discount`)?.textContent),
-                        grossIncludingDiscount: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-gross-discount`)?.textContent),
-                        net: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"].total-net`)?.textContent),
-                        gross: this.parseNumber(document.querySelector(`th[data-cardquoteid="${cardQuoteId}"] .total-gross-total`)?.textContent)
-                    }
+            $(`.item_row, .item_comment`).each(function () {
+
+                const $row = $(this);
+                const itemId = $row.data('itemid');
+                const type = $row.data('type');
+                const groupId = $row.data('groupid');
+
+                const item = {
+                    id: itemId,
+                    type: type,
+                    groupId: groupId,
+                    pos: $row.find('.pos-inner').text().trim(),
+                    name: $row.find('.item-name').val().trim(),
+                    // description: isComment ? $row.find('.item-description').val() : '',
+                    quantity: $row.find('.item-quantity').val() || '0',
+                    unit: $row.find('.item-unit').val(),
+                    optional: $row.find('.item-optional').is(':checked') ? 0 : 1,
+                    prices: $self.updateItemPriceAndTotal(itemId)
+                };
+
+                newItems.push(item);
+            });
+
+            return newItems;
+        },
+
+        updateItemPriceAndTotal(itemId) {
+            const row = document.querySelector(`.item_row[data-itemid="${itemId}"]`);
+            let $self = this;
+
+            const singlePricing = row.querySelectorAll('.item-price');
+
+            const prices = Array.from(singlePricing).map(element => {
+
+                const quoteId = element.closest('td[data-cardquoteid]').dataset.cardquoteid;
+                const singlePrice = $self.parseNumber(element.value);
+                const quantity = $self.parseNumber(row.querySelector('.item-quantity').value);
+                const total = singlePrice * quantity;
+
+                return {
+                    quoteId: quoteId,
+                    singlePrice: singlePrice,
+                    totalPrice: total
                 };
             });
 
-            const data = {
-                cards: columns,
-                form: this.getFomrData(),
-                newItems: this.newItems,
-            };
+            return prices;
+        },
 
-            $.ajax({
-                url: route('estimation.update', data.form.id),
-                method: 'PUT',
-                data: data,
-                beforeSend: () => {
-                    this.lastSaveText = 'is running...';
-                    $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
-                },
-                success: (idMappings) => {
+        updateEntitiesWithNewIds(idMappings) {
+            Object.entries(idMappings).forEach(([oldId, newId]) => {
 
-                    const updateEntities = (oldId, newId) => {
-                        // Check if this item exists in newItems
-                        const itemKey = Object.keys(this.newItems).find(key =>
-                            this.newItems[key].id.toString() === oldId
-                        );
+                const row = document.querySelector(`
+                    tr[data-id="${oldId}"], 
+                    tr[data-itemid="${oldId}"], 
+                    tr[data-groupid="${oldId}"]
+                `);
 
-                        if (itemKey) {
-                            const item = this.newItems[itemKey];
+                if (row) {
+                    if (row.dataset.id) row.dataset.id = newId;
+                    if (row.dataset.itemid) row.dataset.itemid = newId;
+                    if (row.dataset.groupid) row.dataset.groupid = newId;
 
-                            // Create updated item with new ID
-                            this.newItems[newId] = {
-                                ...item,
-                                id: newId
-                            };
-
-                            // If this is an item (not a group) and has a groupId, update it
-                            if (item.type !== 'group' && item.groupId) {
-                                this.newItems[newId].groupId = idMappings[item.groupId] || item.groupId;
-                            }
-
-                            delete this.newItems[itemKey];
-
-                            // Update DOM
-                            const row = document.querySelector(`tr[data-id="${oldId}"]`);
-                            if (row) {
-                                row.dataset.id = newId;
-                                if (row.dataset.groupid === oldId) {
-                                    row.dataset.groupid = newId;
-                                }
-
-                                // Update input names
-                                row.querySelectorAll(`[name*="[${oldId}]"]`).forEach(input => {
-                                    input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
-                                });
-                            }
-
-                            console.log(this.newItems[newId]);
-
-                        }
-                    };
-
-                    // Update all entities with new IDs
-                    Object.entries(idMappings).forEach(([oldId, newId]) => {
-                        updateEntities(oldId, newId);
+                    // Update input names
+                    row.querySelectorAll(`[name*="[${oldId}]"]`).forEach(input => {
+                        input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
                     });
-
-                    // Update UI state
-                    this.lastSaveTimestamp = Date.now();
-                    this.lastSaveText = this.formatTimeAgo(this.lastSaveTimestamp);
-
-                    toastrs("success", "Estimation data has been saved.");
-                    $('#save-button').html(`Saved last changed.`);
-
-                    this.hasUnsavedChanges = false;
-                    this.startTimeAgoUpdates();
-                },
-                error: (error) => {
-                    console.error('Error saving data:', error);
-                    toastrs("error", error.responseText);
-
-                    this.hasUnsavedChanges = true;
-                    this.lastSaveText = 'is failed';
                 }
             });
         },
 
-        getFomrData() {
-            const form = this.$el.closest('form');
-            if (!form) {
-                console.warn('Form not found');
-                return {};
-            }
-            const formData = new FormData(form);
-            return Object.fromEntries(formData);
+        getFormData() {
+            const $form = $('#quote_form');
+            const formData = $form.serializeArray();
+            const formObject = {};
+
+            formData.forEach(item => {
+                formObject[item.name] = item.value;
+            });
+
+            return formObject;
         },
-    }));
+
+        validateTemplates() {
+            return Object.values(this.templates).every(template => template);
+        },
+
+        parseNumber(value) {
+            if (typeof value === 'number') return value;
+            return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
+        },
+
+        bindEvents() {
+            this.estimation.find('button[data-actioninsert]').on('click', (event) => {
+                event.preventDefault();
+                const button = $(event.currentTarget);
+                const target = button.data('actioninsert');
+                if (target) this.addItems(target);
+            });
+            this.estimation.on('click', '.desc_toggle', this.toggleDescription);
+            this.estimation.on('click', '.grp-dt-control', this.toggleGroup);
+
+            this.estimation.on('blur', '.item-quantity, .item-price, .item-name, input[name^="item"][name$="[markup]"], input[name^="item"][name$="[discount]"]', () => {
+                this.hasUnsavedChanges = true;
+                this.autoSaveHandler();
+            });
+
+            this.estimation.on('change', '.item-optional, select[name^="item"][name$="[tax]"]', () => {
+                this.hasUnsavedChanges = true;
+                this.autoSaveHandler();
+            });
+
+            this.estimation.on('blur', '.item-quantity, .item-price', (event) => {
+                const $target = $(event.currentTarget);
+                this.formatInput($target);
+                this.updateAllCalculations();
+            });
+
+            this.estimation.on('click', '#save-button', () => {
+                console.log('click');
+
+                this.saveTableData();
+            });
+
+            this.estimation.on('change', '.item-optional', () => {
+                this.updateAllCalculations();
+            });
+
+            this.estimation.on('change', 'select[name^="item"][name$="[tax]"]', () => {
+                this.updateAllCalculations();
+            });
+
+            this.estimation.on('blur', 'input[name^="item"][name$="[discount]"]', (event) => {
+                const $input = $(event.target);
+                const value = this.parseGermanDecimal($input.val());
+
+                // Format the number
+                $input.val(this.formatGermanDecimal(value));
+
+                // Apply styling for negative values
+                if (value < 0) {
+                    $input.css({
+                        'background-color': '#ffebee',
+                        'color': '#d32f2f'
+                    });
+                } else {
+                    $input.css({
+                        'background-color': '',
+                        'color': ''
+                    });
+                }
+
+                this.updateAllCalculations();
+            });
+
+            // Enhanced markup input handler
+            this.estimation.on('blur', 'input[name^="item"][name$="[markup]"]', (event) => {
+                const $input = $(event.target);
+                const value = this.parseGermanDecimal($input.val());
+                const cardQuoteId = $input.attr('name').match(/\[(\d+)\]/)[1];
+
+                // Format the number
+                $input.val(this.formatGermanDecimal(value));
+
+                // Apply styling for negative values
+                if (value < 0) {
+                    $input.css({
+                        'background-color': '#ffebee',
+                        'color': '#d32f2f'
+                    });
+                } else {
+                    $input.css({
+                        'background-color': '',
+                        'color': ''
+                    });
+                }
+
+                this.applyMarkupToSinglePrices(cardQuoteId, value);
+                this.updateAllCalculations();
+            });
+
+            this.estimation.on('change', '.SelectAllCheckbox', (e) => {
+                const isChecked = $(e.target).prop('checked');
+                $('.item_selection').prop('checked', isChecked);
+            });
+
+            // Group selection handler
+            this.estimation.on('change', '.group_selection', (e) => {
+                const $groupCheckbox = $(e.target);
+                const groupId = $groupCheckbox.data('groupid');
+                const isChecked = $groupCheckbox.prop('checked');
+
+                // Select/deselect all items in the group
+                $(`.item_selection[data-groupid="${groupId}"]`).prop('checked', isChecked);
+
+                // Update main select all checkbox
+                this.updateSelectAllState();
+            });
+
+            // Individual item selection handler
+            this.estimation.on('change', '.item_selection:not(.group_selection)', () => {
+                this.updateSelectAllState();
+            });
+
+            $('button[data-actionremove]').on('click', () => {
+                const $selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
+
+                if ($selectedCheckboxes.length === 0) {
+                    toastrs("Please select checkbox to continue delete");
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Confirmation Delete',
+                    text: 'Really! You want to remove them? You can\'t undo',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Delete it',
+                    cancelButtonText: "No, cancel",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const estimationId = $('#quote_form').find('input[name="id"]').val();
+                        const itemIds = [];
+                        const groupIds = [];
+
+                        $selectedCheckboxes.each(function () {
+                            const $row = $(this).closest('tr');
+
+                            if ($row.hasClass('group_row')) {
+                                const groupId = $row.data('groupid');
+                                groupIds.push(groupId);
+
+                                // Remove all items in the group
+                                $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`).remove();
+                            } else {
+                                itemIds.push($row.data('id'));
+                            }
+                            $row.remove();
+                        });
+
+                        $('.SelectAllCheckbox').prop('checked', false);
+
+                        $.ajax({
+                            url: route('estimation.destroy', estimationId),
+                            method: 'DELETE',
+                            data: { estimationId, items: itemIds, groups: groupIds },
+                            success: (response) => {
+                                this.updateAllCalculations();
+                                this.updatePOSNumbers();
+                                toastrs('Items deleted successfully');
+                            },
+                            error: (error) => {
+                                toastrs('Error deleting items');
+                                console.error(error);
+                            }
+                        });
+                    }
+                });
+            });
+        },
+
+        storeOriginalPrices() {
+            // Clear existing stored prices
+            this.originalPrices.clear();
+
+            $('.item-price').each((_, element) => {
+                const $price = $(element);
+                const cardQuoteId = $price.data('cardquotesingleprice');
+                const itemId = $price.closest('tr').data('itemid');
+                const key = `${cardQuoteId}-${itemId}`;
+
+                // Only store if not already stored
+                if (!this.originalPrices.has(key)) {
+                    const originalPrice = this.parseGermanDecimal($price.val());
+                    this.originalPrices.set(key, originalPrice);
+                }
+            });
+        },
+
+        addItems(type) {
+            if (!this.templates[type]) return;
+
+            const timestamp = Date.now();
+            const template = this.templates[type];
+
+            if (type === 'group') {
+                const newGroup = template
+                    .replace(/{TEMPLATE_ID}/g, timestamp)
+                    .replace(/{TEMPLATE_POS}/g, this.getNextGroupPosition());
+
+                $('#estimation-items').append(newGroup);
+                this.updatePOSNumbers();
+                this.updateAllCalculations();
+                return;
+            }
+
+            const currentGroupId = this.getCurrentGroupId();
+            if (!currentGroupId) {
+                toastr?.error('Please create a group first');
+                return;
+            }
+
+            const newItem = template
+                .replace(/{TEMPLATE_ID}/g, timestamp)
+                .replace(/{TEMPLATE_GROUP_ID}/g, currentGroupId)
+                .replace(/{TEMPLATE_POS}/g, this.getNextItemPosition(currentGroupId));
+
+            const lastGroupItem = $(`tr[data-groupid="${currentGroupId}"]:last`);
+            lastGroupItem.length ? lastGroupItem.after(newItem) : $(`tr[data-groupid="${currentGroupId}"]`).after(newItem);
+
+            this.updatePOSNumbers();
+            this.updateAllCalculations();
+            this.hasUnsavedChanges = true;
+            this.autoSaveHandler();
+        },
+
+        updateSelectAllState() {
+            const totalCheckboxes = $('.item_selection:not(.SelectAllCheckbox)').length;
+            const checkedCheckboxes = $('.item_selection:not(.SelectAllCheckbox):checked').length;
+
+            $('.SelectAllCheckbox').prop('checked', totalCheckboxes === checkedCheckboxes && totalCheckboxes > 0);
+        },
+
+        removeItem() {
+            const selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
+
+            if (selectedCheckboxes.length === 0) {
+                toastrs("Please select checkbox to continue delete");
+                return;
+            }
+
+            Swal.fire({
+                title: 'Confirmation Delete',
+                text: 'Really! You want to remove them? You can\'t undo',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Delete it',
+                cancelButtonText: "No, cancel",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const estimationId = this.getFormData().id;
+                    const itemIds = [];
+                    const groupIds = [];
+
+                    selectedCheckboxes.each(function () {
+                        const $row = $(this).closest('tr');
+
+                        if ($row.hasClass('group_row')) {
+                            const groupId = $row.data('groupid');
+                            groupIds.push(groupId);
+
+                            // Remove all items in the group
+                            $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`).remove();
+                        } else {
+                            itemIds.push($row.data('id'));
+                        }
+                        $row.remove();
+                    });
+
+                    $('.SelectAllCheckbox').prop('checked', false);
+
+                    $.ajax({
+                        url: route('estimation.destroy', estimationId),
+                        method: 'DELETE',
+                        data: { estimationId, items: itemIds, groups: groupIds },
+                        success: (response) => {
+                            this.updateAllCalculations();
+                            this.updatePOSNumbers();
+                            toastrs('Items deleted successfully');
+                        }
+                    });
+                }
+            });
+        },
+
+        getCurrentGroupId() {
+            const lastGroup = $('.group_row').last();
+            return lastGroup.length ? lastGroup.data('groupid') : Date.now() + 10;
+        },
+
+        getNextGroupPosition() {
+            let maxPos = 0;
+            $('.group_row').each(function () {
+                const pos = parseInt($(this).find('.grouppos').text()) || 0;
+                maxPos = Math.max(maxPos, pos);
+            });
+            return (maxPos + 1).toString().padStart(2, '0');
+        },
+
+        getNextItemPosition(groupId) {
+            let maxPos = 0;
+            $(`tr[data-groupid="${groupId}"]`).not('.group_row').each(function () {
+                const pos = parseInt($(this).find('.pos-inner').text().split('.')[1]) || 0;
+                maxPos = Math.max(maxPos, pos);
+            });
+
+            const groupPos = $(`tr[data-groupid="${groupId}"].group_row .grouppos`).text();
+            return `${groupPos}.${(maxPos + 1).toString().padStart(2, '0')}`;
+        },
+
+        updatePOSNumbers() {
+            let currentGroupPos = 0;
+            let itemCountInGroup = 0;
+
+            $('.group_row, .item_row, .item_comment').each(function () {
+                if ($(this).hasClass('group_row')) {
+                    currentGroupPos++;
+                    itemCountInGroup = 0;
+                    $(this).find('.grouppos').text(currentGroupPos.toString().padStart(2, '0'));
+                } else {
+                    itemCountInGroup++;
+                    $(this).find('.pos-inner').text(
+                        `${currentGroupPos.toString().padStart(2, '0')}.${itemCountInGroup.toString().padStart(2, '0')}`
+                    );
+                }
+            });
+        },
+
+        initializeSortable() {
+            $("#estimation-items").sortable({
+                items: 'tr.group_row, tr.item_row, tr.item_comment',
+                handle: '.reorder-item, .reorder_group_btn',
+                axis: 'y',
+                helper: function (e, tr) {
+                    const item = $(e.target).closest('tr');
+                    const helperContainer = $('<div class="drag-helper"></div>');
+
+                    if (item.hasClass('group_row')) {
+                        const groupId = item.data('groupid');
+                        const clonedGroup = item.clone();
+                        helperContainer.append(clonedGroup);
+
+                        $(`tr.item_row[data-groupid="${groupId}"], tr.item_comment[data-groupid="${groupId}"]`).each(function () {
+                            helperContainer.append($(this).clone());
+                        });
+                    } else {
+                        helperContainer.append(item.clone());
+                    }
+
+                    const originalCells = item.children();
+                    helperContainer.find('td').each(function (index) {
+                        $(this).width(originalCells.eq(index).outerWidth());
+                    });
+                    helperContainer.width(item.closest('table').width());
+
+                    return helperContainer;
+                },
+                start: function (e, ui) {
+                    const item = ui.item;
+
+                    if (item.hasClass('group_row')) {
+                        const groupId = item.data('groupid');
+                        $(`tr.item_row[data-groupid="${groupId}"], tr.item_comment[data-groupid="${groupId}"]`).hide();
+                    }
+                },
+                stop: (e, ui) => {
+                    const item = ui.item;
+
+                    if (item.hasClass('group_row')) {
+                        const groupId = item.data('groupid');
+                        const groupItems = $(`tr.item_row[data-groupid="${groupId}"], tr.item_comment[data-groupid="${groupId}"]`);
+                        item.after(groupItems);
+                        groupItems.show();
+                    } else if (item.hasClass('item_row')) {
+                        // Get next and previous elements
+                        const next = item.next();
+                        const prev = item.prev();
+
+                        // If next row is a description row but not for this item, move this item elsewhere
+                        if (next.hasClass('item_child') && next.data('itemid') !== item.data('itemid')) {
+                            // Find proper position
+                            const prevItem = item.prevAll('.item_row').first();
+                            if (prevItem.length) {
+                                prevItem.after(item);
+                            } else {
+                                const prevGroup = item.prevAll('.group_row').first();
+                                if (prevGroup.length) {
+                                    prevGroup.after(item);
+                                }
+                            }
+                        }
+
+                        // Always keep description row with its item
+                        const itemId = item.data('itemid');
+                        const descRow = $(`.item_child[data-itemid="${itemId}"]`);
+                        if (descRow.length) {
+                            item.after(descRow);
+                        }
+                    }
+
+                    this.handleItemMove(ui.item);
+                    this.updatePOSNumbers();
+                    this.updateAllCalculations();
+                },
+                change: function (e, ui) {
+                    const item = ui.item;
+                    const placeholder = ui.placeholder;
+
+                    if (item.hasClass('item_row')) {
+                        const next = placeholder.next();
+                        if (next.hasClass('item_child') && next.data('itemid') !== item.data('itemid')) {
+                            placeholder.insertAfter(next);
+                        }
+                    }
+                }
+            });
+        },
+
+        handleItemMove(movedItem) {
+            if (movedItem.hasClass('item_row') || movedItem.hasClass('item_comment')) {
+                let prevGroup = movedItem.prevAll('.group_row').first();
+                if (prevGroup.length) {
+                    const newGroupId = prevGroup.data('groupid');
+                    const itemId = movedItem.data('itemid');
+                    const oldGroupId = movedItem.data('groupid');
+
+                    movedItem.attr('data-groupid', newGroupId);
+
+                    // For item rows, also move description
+                    if (movedItem.hasClass('item_row')) {
+                        $(`.item_child[data-itemid="${itemId}"]`).attr('data-groupid', newGroupId);
+                    }
+
+                    if (this.templates[itemId]) {
+                        this.templates[itemId].groupId = newGroupId;
+                    }
+                }
+            }
+        },
+
+        toggleGroup(event) {
+            const icon = $(event.currentTarget);
+            const row = icon.closest('tr.group_row');
+            const groupId = row.data('groupid');
+
+            // First toggle all main items
+            const mainItems = $(`tr.item_row[data-groupid="${groupId}"], tr.item_comment[data-groupid="${groupId}"]`);
+            mainItems.toggle();
+
+            // Handle description rows based on their item's toggle state
+            mainItems.each(function () {
+                const itemId = $(this).data('itemid');
+                const descRow = $(`.item_child[data-itemid="${itemId}"]`);
+                const itemToggleIcon = $(this).find('.desc_toggle');
+
+                // Only show description if parent is visible AND toggle is expanded
+                if ($(this).is(':visible') && itemToggleIcon.hasClass('fa-caret-down')) {
+                    descRow.show();
+                } else {
+                    descRow.hide();
+                }
+            });
+
+            icon.toggleClass('fa-caret-right fa-caret-down');
+        },
+
+        toggleDescription(event) {
+            const icon = $(event.currentTarget);
+            const row = icon.closest('tr');
+            const parentID = row.data('itemid');
+            const descRow = $(`.item_child.tr_child_description[data-itemID="${parentID}"]`);
+
+            descRow.toggle();
+            icon.toggleClass('fa-caret-right fa-caret-down');
+        },
+
+        formatInput(target) {
+            const $target = $(target);
+            if ($target.hasClass('item-quantity')) {
+                const formattedQuantity = this.formatGermanDecimal(
+                    this.parseGermanDecimal($target.val())
+                );
+                $target.val(formattedQuantity);
+            } else if ($target.hasClass('item-price')) {
+                const formattedPrice = this.formatGermanCurrency(
+                    this.parseGermanDecimal($target.val())
+                );
+                $target.val(formattedPrice);
+            }
+        },
+
+        parseGermanDecimal(value) {
+            if (typeof value === 'number') return value;
+            return parseFloat(
+                String(value)
+                    .replace(/[^\d,-]/g, '')
+                    .replace(',', '.')
+            ) || 0;
+        },
+
+        formatGermanDecimal(value) {
+            return new Intl.NumberFormat('de-DE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+        },
+
+        formatGermanCurrency(value) {
+            return new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(value);
+        },
+        storeOriginalPrices() {
+            $('.item-price').each((_, element) => {
+                const $price = $(element);
+                const id = $price.data('cardquotesingleprice');
+                const originalPrice = this.parseGermanDecimal($price.val());
+                this.originalPrices.set(`${id}-${$price.closest('tr').data('itemid')}`, originalPrice);
+            });
+        },
+
+        applyMarkupToSinglePrices(cardQuoteId, markup) {
+            // If originalPrices is empty, store them first
+            if (this.originalPrices.size === 0) {
+                this.storeOriginalPrices();
+            }
+
+            $(`.item-price[data-cardquotesingleprice="${cardQuoteId}"]`).each((_, element) => {
+                const $price = $(element);
+                const itemId = $price.closest('tr').data('itemid');
+                const key = `${cardQuoteId}-${itemId}`;
+                const originalPrice = this.originalPrices.get(key);
+
+                if (originalPrice !== undefined) {
+                    const newPrice = markup > 0 ? originalPrice * (1 + markup / 100) : originalPrice;
+                    $price.val(this.formatGermanCurrency(newPrice));
+                }
+            });
+        },
+
+        calculateItemTotal(itemRow, cardQuoteId) {
+            if (itemRow.find('.item-optional').is(':checked')) return '-';
+
+            const quantity = this.parseGermanDecimal(itemRow.find('.item-quantity').val());
+            const currentPrice = this.parseGermanDecimal(
+                itemRow.find(`.item-price[data-cardquotesingleprice="${cardQuoteId}"]`).val()
+            );
+            const total = quantity * currentPrice;
+
+            return total === 0 ? '-' : this.formatGermanCurrency(total);
+        },
+
+        calculateGroupTotal(groupRow, cardQuoteId) {
+            let total = 0;
+            const groupId = groupRow.data('groupid');
+
+            $(`.item_row[data-groupid="${groupId}"]`).each((_, item) => {
+                const $item = $(item);
+                if (!$item.find('.item-optional').is(':checked')) {
+                    const quantity = this.parseGermanDecimal($item.find('.item-quantity').val());
+                    const basePrice = this.parseGermanDecimal($item.find(`.item-price[data-cardquotesingleprice="${cardQuoteId}"]`).val());
+                    const markup = this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][markup]"]`).val()) || 0;
+
+                    // Apply markup to single price
+                    const priceWithMarkup = basePrice * (1 + markup / 100);
+                    total += quantity * priceWithMarkup;
+                }
+            });
+
+            return total === 0 ? '-' : this.formatGermanCurrency(total);
+        },
+
+        calculateTotals(cardQuoteId) {
+            let netTotal = 0;
+            $(`.group_row [data-cardquotegrouptotalprice="${cardQuoteId}"]`).each((_, element) => {
+                const groupTotal = this.parseGermanDecimal($(element).text());
+                if (!isNaN(groupTotal)) netTotal += groupTotal;
+            });
+
+            const cashDiscount = this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][discount]"]`).val()) || 0;
+            const vatRate = parseFloat($(`select[name="item[${cardQuoteId}][tax]"]`).val()) || 0;
+
+            const netAfterDiscount = netTotal * (1 - cashDiscount / 100);
+            const vatAmount = netTotal * (vatRate / 100);
+            const grossTotal = netTotal + vatAmount;
+            const grossAfterDiscount = netAfterDiscount + (netAfterDiscount * vatRate / 100);
+
+            // Update all display values
+            $(`.total-net[data-cardquoteid="${cardQuoteId}"]`).text(this.formatGermanCurrency(netTotal));
+            $(`.total-net-discount[data-cardquoteid="${cardQuoteId}"]`).text(this.formatGermanCurrency(netAfterDiscount));
+            $(`.total-gross-discount[data-cardquoteid="${cardQuoteId}"]`).text(this.formatGermanCurrency(grossAfterDiscount));
+            $(`.total-gross-total[data-cardquoteid="${cardQuoteId}"]`).text(this.formatGermanCurrency(grossTotal));
+
+            // Update additional gross total display
+            $(`.totalnr.total-gross-total[data-cardquoteid="${cardQuoteId}"]`).text(this.formatGermanCurrency(grossTotal));
+        },
+
+        updateDisplayValues(cardQuoteId, values) {
+            const formatCurrency = this.formatGermanCurrency.bind(this);
+            const { net, netAfterDiscount, grossAfterDiscount, vatRate } = values;
+
+            $(`.total-net[data-cardquoteid="${cardQuoteId}"]`).text(formatCurrency(net));
+            $(`.total-net-discount[data-cardquoteid="${cardQuoteId}"]`).text(formatCurrency(netAfterDiscount));
+            $(`.total-gross-discount[data-cardquoteid="${cardQuoteId}"]`).text(formatCurrency(grossAfterDiscount));
+
+            // Update VAT details
+            const $vatSelect = $(`select[name="item[${cardQuoteId}][tax]"]`);
+            $vatSelect.val(vatRate.toString());
+
+            // Update gross amount with VAT
+            const grossWithVat = net * (1 + vatRate / 100);
+            $(`.total-gross[data-cardquoteid="${cardQuoteId}"]`).text(formatCurrency(grossWithVat));
+        },
+
+        applySinglePriceMarkup(price, markup) {
+            return price * (1 + markup / 100);
+        },
+
+        updateItemPrices(cardQuoteId) {
+            const markup = this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][markup]"]`).val()) || 0;
+
+            // Update all single prices with markup
+            $(`.item_row`).each((_, row) => {
+                const $row = $(row);
+                const $priceInput = $row.find(`.item-price[data-cardquotesingleprice="${cardQuoteId}"]`);
+                const basePrice = this.parseGermanDecimal($priceInput.val());
+                const priceWithMarkup = this.applySinglePriceMarkup(basePrice, markup);
+                $priceInput.val(this.formatGermanCurrency(priceWithMarkup));
+            });
+        },
+
+        updateTotalDisplay(cardQuoteId, totals) {
+            // Update Net incl. Discount
+            $(`.total-net-discount[data-cardquoteid="${cardQuoteId}"]`)
+                .text(this.formatGermanCurrency(totals.netIncDiscount));
+
+            // Update Gross incl. Discount (with VAT)
+            $(`.total-gross-discount[data-cardquoteid="${cardQuoteId}"]`)
+                .text(this.formatGermanCurrency(totals.grossIncDiscount));
+
+            // Update Net
+            $(`.total-net[data-cardquoteid="${cardQuoteId}"]`)
+                .text(this.formatGermanCurrency(totals.net));
+
+            // Update both Gross VAT displays
+            $(`.total-gross-total[data-cardquoteid="${cardQuoteId}"]`)
+                .text(this.formatGermanCurrency(totals.gross));
+
+            // Update VAT display on both sides
+            this.updateVatDisplay(cardQuoteId, totals.vatRate);
+        },
+
+        updateVatDisplay(cardQuoteId, vatRate) {
+            // Update VAT display for both columns
+            $(`.total-vat-input[data-cardquoteid="${cardQuoteId}"]`).each((_, element) => {
+                const $select = $(element).find('select');
+                $select.val(vatRate.toString());
+            });
+        },
+
+        updateAllCalculations() {
+            const cardQuoteIds = new Set();
+            $('.column_single_price').each(function () {
+                const quoteId = $(this).data('cardquoteid');
+                if (quoteId) cardQuoteIds.add(quoteId);
+            });
+
+            cardQuoteIds.forEach(cardQuoteId => {
+                // Update item totals
+                $('.item_row').each((_, row) => {
+                    const $row = $(row);
+                    const totalPrice = this.calculateItemTotal($row, cardQuoteId);
+                    $row.find(`.column_total_price[data-cardquotetotalprice="${cardQuoteId}"]`).text(totalPrice);
+                });
+
+                // Update group totals
+                $('.group_row').each((_, row) => {
+                    const $row = $(row);
+                    const groupTotal = this.calculateGroupTotal($row, cardQuoteId);
+                    $row.find(`[data-cardquotegrouptotalprice="${cardQuoteId}"]`).text(groupTotal);
+                });
+
+                // Calculate final totals
+                this.calculateTotals(cardQuoteId);
+            });
+        },
+    };
+
+    EstimationTable.init();
 });

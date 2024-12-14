@@ -26,7 +26,9 @@
                     <div class="total-discount-input">
                         <input type="text" name="item[{{ $quote->id }}][discount]"
                             class="form-control cash-discount form-blur"
-                            x-on:blur="handleInputBlur($event, 'cashDiscount')" value="{{ $quote->discount }}">
+                            min="0.1"
+                            max="100"
+                            value="{{ $quote->discount }}">
                     </div>
                 </div>
             </span>

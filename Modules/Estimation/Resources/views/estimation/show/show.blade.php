@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-    <div class="row estimation-show" x-cloak x-data="estimationShow">
+    <div class="row estimation-show">
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
