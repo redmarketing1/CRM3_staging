@@ -23,7 +23,7 @@
             @endpermission
 
             @permission('estimation remove option')
-                <button type="button" @click="removeItem()">
+                <button type="button" data-actionremove>
                     <i class="fa-solid fa-plus"></i>
                     {{ __('Remove') }}
                 </button>

@@ -91,6 +91,84 @@ $(document).ready(function () {
                 this.applyMarkupToSinglePrices(cardQuoteId, value);
                 this.updateAllCalculations();
             });
+
+            this.estimation.on('change', '.SelectAllCheckbox', (e) => {
+                const isChecked = $(e.target).prop('checked');
+                $('.item_selection').prop('checked', isChecked);
+            });
+
+            // Group selection handler
+            this.estimation.on('change', '.group_selection', (e) => {
+                const $groupCheckbox = $(e.target);
+                const groupId = $groupCheckbox.data('groupid');
+                const isChecked = $groupCheckbox.prop('checked');
+
+                // Select/deselect all items in the group
+                $(`.item_selection[data-groupid="${groupId}"]`).prop('checked', isChecked);
+
+                // Update main select all checkbox
+                this.updateSelectAllState();
+            });
+
+            // Individual item selection handler
+            this.estimation.on('change', '.item_selection:not(.group_selection)', () => {
+                this.updateSelectAllState();
+            });
+
+            $('button[data-actionremove]').on('click', () => {
+                const $selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
+
+                if ($selectedCheckboxes.length === 0) {
+                    toastr.error("Please select checkbox to continue delete");
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Confirmation Delete',
+                    text: 'Really! You want to remove them? You can\'t undo',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Delete it',
+                    cancelButtonText: "No, cancel",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const estimationId = $('#quote_form').find('input[name="id"]').val();
+                        const itemIds = [];
+                        const groupIds = [];
+
+                        $selectedCheckboxes.each(function () {
+                            const $row = $(this).closest('tr');
+
+                            if ($row.hasClass('group_row')) {
+                                const groupId = $row.data('groupid');
+                                groupIds.push(groupId);
+
+                                // Remove all items in the group
+                                $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`).remove();
+                            } else {
+                                itemIds.push($row.data('id'));
+                            }
+                            $row.remove();
+                        });
+
+                        $('.SelectAllCheckbox').prop('checked', false);
+
+                        $.ajax({
+                            url: route('estimation.destroy', estimationId),
+                            method: 'DELETE',
+                            data: { estimationId, items: itemIds, groups: groupIds },
+                            success: (response) => {
+                                this.updateAllCalculations();
+                                this.updatePOSNumbers();
+                                toastr.success('Items deleted successfully');
+                            },
+                            error: (error) => {
+                                toastr.error('Error deleting items');
+                                console.error(error);
+                            }
+                        });
+                    }
+                });
+            });
         },
 
         storeOriginalPrices() {
@@ -144,6 +222,64 @@ $(document).ready(function () {
 
             this.updatePOSNumbers();
             this.updateAllCalculations();
+        },
+
+        updateSelectAllState() {
+            const totalCheckboxes = $('.item_selection:not(.SelectAllCheckbox)').length;
+            const checkedCheckboxes = $('.item_selection:not(.SelectAllCheckbox):checked').length;
+
+            $('.SelectAllCheckbox').prop('checked', totalCheckboxes === checkedCheckboxes && totalCheckboxes > 0);
+        },
+
+        removeItem() {
+            const selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
+
+            if (selectedCheckboxes.length === 0) {
+                toastr.error("Please select checkbox to continue delete");
+                return;
+            }
+
+            Swal.fire({
+                title: 'Confirmation Delete',
+                text: 'Really! You want to remove them? You can\'t undo',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Delete it',
+                cancelButtonText: "No, cancel",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const estimationId = this.getFormData().id;
+                    const itemIds = [];
+                    const groupIds = [];
+
+                    selectedCheckboxes.each(function () {
+                        const $row = $(this).closest('tr');
+
+                        if ($row.hasClass('group_row')) {
+                            const groupId = $row.data('groupid');
+                            groupIds.push(groupId);
+
+                            // Remove all items in the group
+                            $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`).remove();
+                        } else {
+                            itemIds.push($row.data('id'));
+                        }
+                        $row.remove();
+                    });
+
+                    $('.SelectAllCheckbox').prop('checked', false);
+
+                    $.ajax({
+                        url: route('estimation.destroy', estimationId),
+                        method: 'DELETE',
+                        data: { estimationId, items: itemIds, groups: groupIds },
+                        success: (response) => {
+                            this.updateAllCalculations();
+                            this.updatePOSNumbers();
+                            toastr.success('Items deleted successfully');
+                        }
+                    });
+                }
+            });
         },
 
         getCurrentGroupId() {

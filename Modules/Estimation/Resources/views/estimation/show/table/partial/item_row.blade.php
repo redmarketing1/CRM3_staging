@@ -4,7 +4,7 @@
     </td>
 
     <td class="column_checkbox">
-        <input type="checkbox" class="item_selection" data-id="{{ $product->id }}">
+        <input type="checkbox" class="item_selection" data-id="{{ $product->id }}" data-groupid="{{ $estimationGroup->id }}">
     </td>
 
     <td class="column_pos">

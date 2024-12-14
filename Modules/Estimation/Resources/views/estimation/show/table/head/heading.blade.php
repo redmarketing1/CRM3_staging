@@ -3,7 +3,7 @@
     </th>
 
     <th class="column_checkbox">
-        <input type="checkbox" class="SelectAllCheckbox" x-model="selectAll">
+        <input type="checkbox" class="SelectAllCheckbox">
     </th>
 
     <th class="column_pos">
