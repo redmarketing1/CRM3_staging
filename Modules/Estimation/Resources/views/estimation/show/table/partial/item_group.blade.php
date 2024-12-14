@@ -5,7 +5,7 @@
     </td>
 
     <td class="column_checkbox">
-        <input type="checkbox" class="item_selection" @change="handleGroupSelection($event, '{{ $estimationGroup->id }}')">
+        <input type="checkbox" class="item_selection group_selection" data-groupid="{{ $estimationGroup->id }}">
     </td>
 
     <td class="column_pos grouppos"></td>
@@ -14,14 +14,17 @@
         <div class="div-desc-toggle">
             <i class="desc_toggle fa fas fa-solid fa-caret-right grp-dt-control"></i>
             <input type="text" name="item[{{ $estimationGroup->id }}]['group']"
-                class="form-control grouptitle-input heading" value="{{ $estimationGroup->group_name }}"
-                x-on:blur="handleInputBlur($event, 'group')">
+                class="form-control grouptitle-input heading" 
+                value="{{ $estimationGroup->group_name }}">
         </div>
     </td>
 
     @foreach ($allQuotes as $quote)
-        <td class="text-right grouptotal border-left-right" colspan="2" data-cardQuoteID="{{ $quote->id }}"
-            x-text="formatCurrency(calculateGroupTotal('{{ $estimationGroup->id }}'))">
+        <td class="text-right grouptotal border-left-right" 
+            colspan="2" 
+            id="cardQuoteGroupTotalPrice"
+            data-cardQuoteGroupTotalPrice="{{ $quote->id }}">
+            -
         </td>
     @endforeach
 </tr> 

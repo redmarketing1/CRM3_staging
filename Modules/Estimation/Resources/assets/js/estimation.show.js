@@ -11,6 +11,7 @@ $(document).ready(function () {
             if (!this.validateTemplates()) return;
             this.bindEvents();
             this.initializeSortable();
+            this.updateAllCalculations();
         },
 
         validateTemplates() {
@@ -25,6 +26,17 @@ $(document).ready(function () {
                 if (target) this.addItems(target);
             });
             this.estimation.on('click', '.desc_toggle', this.toggleDescription);
+            this.estimation.on('click', '.grp-dt-control', this.toggleGroup);
+
+            this.estimation.on('blur', '.item-quantity, .item-price', (event) => {
+                const $target = $(event.currentTarget);
+                this.formatInput($target);
+                this.updateAllCalculations();
+            });
+
+            this.estimation.on('change', '.item-optional', () => {
+                this.updateAllCalculations();
+            });
         },
 
         addItems(type) {
@@ -40,6 +52,7 @@ $(document).ready(function () {
 
                 $('#estimation-items').append(newGroup);
                 this.updatePOSNumbers();
+                this.updateAllCalculations();
                 return;
             }
 
@@ -58,6 +71,7 @@ $(document).ready(function () {
             lastGroupItem.length ? lastGroupItem.after(newItem) : $(`tr[data-groupid="${currentGroupId}"]`).after(newItem);
 
             this.updatePOSNumbers();
+            this.updateAllCalculations();
         },
 
         getCurrentGroupId() {
@@ -177,6 +191,7 @@ $(document).ready(function () {
 
                     this.handleItemMove(ui.item);
                     this.updatePOSNumbers();
+                    this.updateAllCalculations();
                 },
                 change: function (e, ui) {
                     const item = ui.item;
@@ -214,17 +229,30 @@ $(document).ready(function () {
             }
         },
 
-        handleItemMove(movedItem) {
-            if (movedItem.hasClass('item_row')) {
-                let prevGroup = movedItem.prevAll('.group_row').first();
-                if (prevGroup.length) {
-                    const newGroupId = prevGroup.data('groupid');
-                    const itemId = movedItem.data('itemid');
+        toggleGroup(event) {
+            const icon = $(event.currentTarget);
+            const row = icon.closest('tr.group_row');
+            const groupId = row.data('groupid');
 
-                    movedItem.attr('data-groupid', newGroupId);
-                    $(`.item_child[data-itemid="${itemId}"]`).attr('data-groupid', newGroupId);
+            // First toggle all main items
+            const mainItems = $(`tr.item_row[data-groupid="${groupId}"], tr.item_comment[data-groupid="${groupId}"]`);
+            mainItems.toggle();
+
+            // Handle description rows based on their item's toggle state
+            mainItems.each(function () {
+                const itemId = $(this).data('itemid');
+                const descRow = $(`.item_child[data-itemid="${itemId}"]`);
+                const itemToggleIcon = $(this).find('.desc_toggle');
+
+                // Only show description if parent is visible AND toggle is expanded
+                if ($(this).is(':visible') && itemToggleIcon.hasClass('fa-caret-down')) {
+                    descRow.show();
+                } else {
+                    descRow.hide();
                 }
-            }
+            });
+
+            icon.toggleClass('fa-caret-right fa-caret-down');
         },
 
         toggleDescription(event) {
@@ -235,6 +263,109 @@ $(document).ready(function () {
 
             descRow.toggle();
             icon.toggleClass('fa-caret-right fa-caret-down');
+        },
+
+        formatInput(target) {
+            const $target = $(target);
+            if ($target.hasClass('item-quantity')) {
+                const formattedQuantity = this.formatGermanDecimal(
+                    this.parseGermanDecimal($target.val())
+                );
+                $target.val(formattedQuantity);
+            } else if ($target.hasClass('item-price')) {
+                const formattedPrice = this.formatGermanCurrency(
+                    this.parseGermanDecimal($target.val())
+                );
+                $target.val(formattedPrice);
+            }
+        },
+
+        parseGermanDecimal(value) {
+            if (typeof value === 'number') return value;
+            return parseFloat(
+                String(value)
+                    .replace(/[^\d,-]/g, '')
+                    .replace(',', '.')
+            ) || 0;
+        },
+
+        formatGermanDecimal(value) {
+            return new Intl.NumberFormat('de-DE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+        },
+
+        formatGermanCurrency(value) {
+            return new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(value);
+        },
+
+        calculateItemTotal(itemRow, cardQuoteId) {
+            // Check if item is optional
+            const isOptional = itemRow.find('.item-optional').is(':checked');
+            if (isOptional) return '-';
+
+            // Find quantity and price specific to this card
+            const quantity = this.parseGermanDecimal(itemRow.find('.item-quantity').val());
+            const singlePrice = this.parseGermanDecimal(
+                itemRow.find(`.item-price[data-cardquotesingleprice="${cardQuoteId}"]`).val()
+            );
+
+            // Calculate total
+            const totalPrice = quantity * singlePrice;
+            return totalPrice === 0 ? '-' : this.formatGermanCurrency(totalPrice);
+        },
+
+        calculateGroupTotal(groupRow, cardQuoteId) {
+            let groupTotal = 0;
+
+            // Find all items in this group
+            const groupId = groupRow.data('groupid');
+            const groupItems = $(`.item_row[data-groupid="${groupId}"]`);
+
+            groupItems.each((index, itemRow) => {
+                const $itemRow = $(itemRow);
+                const isOptional = $itemRow.find('.item-optional').is(':checked');
+
+                if (!isOptional) {
+                    const quantity = this.parseGermanDecimal($itemRow.find('.item-quantity').val());
+                    const singlePrice = this.parseGermanDecimal(
+                        $itemRow.find(`.item-price[data-cardquotesingleprice="${cardQuoteId}"]`).val()
+                    );
+                    groupTotal += quantity * singlePrice;
+                }
+            });
+
+            return groupTotal === 0 ? '-' : this.formatGermanCurrency(groupTotal);
+        },
+
+        updateAllCalculations() {
+            // Get all unique card quote IDs
+            const cardQuoteIds = new Set();
+            $('.column_single_price').each(function () {
+                const quoteId = $(this).data('cardquoteid');
+                if (quoteId) cardQuoteIds.add(quoteId);
+            });
+
+            // Update calculations for each card
+            cardQuoteIds.forEach(cardQuoteId => {
+                // Update item totals
+                $('.item_row').each((index, row) => {
+                    const $row = $(row);
+                    const totalPrice = this.calculateItemTotal($row, cardQuoteId);
+                    $row.find(`.column_total_price[data-cardquotetotalprice="${cardQuoteId}"]`).text(totalPrice);
+                });
+
+                // Update group totals
+                $('.group_row').each((index, row) => {
+                    const $row = $(row);
+                    const groupTotal = this.calculateGroupTotal($row, cardQuoteId);
+                    $row.find(`[data-cardquotegrouptotalprice="${cardQuoteId}"]`).text(groupTotal);
+                });
+            });
         },
     };
 

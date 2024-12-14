@@ -2,12 +2,8 @@
 /*!*******************************************************************!*\
   !*** ./Modules/Estimation/Resources/assets/js/estimation.show.js ***!
   \*******************************************************************/
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 $(document).ready(function () {
-  var EstimationTable = _defineProperty(_defineProperty({
+  var EstimationTable = {
     estimation: $('.estimation-show'),
     templates: {
       item: $('#add-item-template').html(),
@@ -18,6 +14,7 @@ $(document).ready(function () {
       if (!this.validateTemplates()) return;
       this.bindEvents();
       this.initializeSortable();
+      this.updateAllCalculations();
     },
     validateTemplates: function validateTemplates() {
       return Object.values(this.templates).every(function (template) {
@@ -33,6 +30,15 @@ $(document).ready(function () {
         if (target) _this.addItems(target);
       });
       this.estimation.on('click', '.desc_toggle', this.toggleDescription);
+      this.estimation.on('click', '.grp-dt-control', this.toggleGroup);
+      this.estimation.on('blur', '.item-quantity, .item-price', function (event) {
+        var $target = $(event.currentTarget);
+        _this.formatInput($target);
+        _this.updateAllCalculations();
+      });
+      this.estimation.on('change', '.item-optional', function () {
+        _this.updateAllCalculations();
+      });
     },
     addItems: function addItems(type) {
       if (!this.templates[type]) return;
@@ -42,6 +48,7 @@ $(document).ready(function () {
         var newGroup = template.replace(/{TEMPLATE_ID}/g, timestamp).replace(/{TEMPLATE_POS}/g, this.getNextGroupPosition());
         $('#estimation-items').append(newGroup);
         this.updatePOSNumbers();
+        this.updateAllCalculations();
         return;
       }
       var currentGroupId = this.getCurrentGroupId();
@@ -54,6 +61,7 @@ $(document).ready(function () {
       var lastGroupItem = $("tr[data-groupid=\"".concat(currentGroupId, "\"]:last"));
       lastGroupItem.length ? lastGroupItem.after(newItem) : $("tr[data-groupid=\"".concat(currentGroupId, "\"]")).after(newItem);
       this.updatePOSNumbers();
+      this.updateAllCalculations();
     },
     getCurrentGroupId: function getCurrentGroupId() {
       var lastGroup = $('.group_row').last();
@@ -158,6 +166,7 @@ $(document).ready(function () {
           }
           _this2.handleItemMove(ui.item);
           _this2.updatePOSNumbers();
+          _this2.updateAllCalculations();
         },
         change: function change(e, ui) {
           var item = ui.item;
@@ -189,25 +198,123 @@ $(document).ready(function () {
           }
         }
       }
-    }
-  }, "handleItemMove", function handleItemMove(movedItem) {
-    if (movedItem.hasClass('item_row')) {
-      var prevGroup = movedItem.prevAll('.group_row').first();
-      if (prevGroup.length) {
-        var newGroupId = prevGroup.data('groupid');
-        var itemId = movedItem.data('itemid');
-        movedItem.attr('data-groupid', newGroupId);
-        $(".item_child[data-itemid=\"".concat(itemId, "\"]")).attr('data-groupid', newGroupId);
+    },
+    toggleGroup: function toggleGroup(event) {
+      var icon = $(event.currentTarget);
+      var row = icon.closest('tr.group_row');
+      var groupId = row.data('groupid');
+
+      // First toggle all main items
+      var mainItems = $("tr.item_row[data-groupid=\"".concat(groupId, "\"], tr.item_comment[data-groupid=\"").concat(groupId, "\"]"));
+      mainItems.toggle();
+
+      // Handle description rows based on their item's toggle state
+      mainItems.each(function () {
+        var itemId = $(this).data('itemid');
+        var descRow = $(".item_child[data-itemid=\"".concat(itemId, "\"]"));
+        var itemToggleIcon = $(this).find('.desc_toggle');
+
+        // Only show description if parent is visible AND toggle is expanded
+        if ($(this).is(':visible') && itemToggleIcon.hasClass('fa-caret-down')) {
+          descRow.show();
+        } else {
+          descRow.hide();
+        }
+      });
+      icon.toggleClass('fa-caret-right fa-caret-down');
+    },
+    toggleDescription: function toggleDescription(event) {
+      var icon = $(event.currentTarget);
+      var row = icon.closest('tr');
+      var parentID = row.data('itemid');
+      var descRow = $(".item_child.tr_child_description[data-itemID=\"".concat(parentID, "\"]"));
+      descRow.toggle();
+      icon.toggleClass('fa-caret-right fa-caret-down');
+    },
+    formatInput: function formatInput(target) {
+      var $target = $(target);
+      if ($target.hasClass('item-quantity')) {
+        var formattedQuantity = this.formatGermanDecimal(this.parseGermanDecimal($target.val()));
+        $target.val(formattedQuantity);
+      } else if ($target.hasClass('item-price')) {
+        var formattedPrice = this.formatGermanCurrency(this.parseGermanDecimal($target.val()));
+        $target.val(formattedPrice);
       }
+    },
+    parseGermanDecimal: function parseGermanDecimal(value) {
+      if (typeof value === 'number') return value;
+      return parseFloat(String(value).replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
+    },
+    formatGermanDecimal: function formatGermanDecimal(value) {
+      return new Intl.NumberFormat('de-DE', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(value);
+    },
+    formatGermanCurrency: function formatGermanCurrency(value) {
+      return new Intl.NumberFormat('de-DE', {
+        style: 'currency',
+        currency: 'EUR'
+      }).format(value);
+    },
+    calculateItemTotal: function calculateItemTotal(itemRow, cardQuoteId) {
+      // Check if item is optional
+      var isOptional = itemRow.find('.item-optional').is(':checked');
+      if (isOptional) return '-';
+
+      // Find quantity and price specific to this card
+      var quantity = this.parseGermanDecimal(itemRow.find('.item-quantity').val());
+      var singlePrice = this.parseGermanDecimal(itemRow.find(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]")).val());
+
+      // Calculate total
+      var totalPrice = quantity * singlePrice;
+      return totalPrice === 0 ? '-' : this.formatGermanCurrency(totalPrice);
+    },
+    calculateGroupTotal: function calculateGroupTotal(groupRow, cardQuoteId) {
+      var _this3 = this;
+      var groupTotal = 0;
+
+      // Find all items in this group
+      var groupId = groupRow.data('groupid');
+      var groupItems = $(".item_row[data-groupid=\"".concat(groupId, "\"]"));
+      groupItems.each(function (index, itemRow) {
+        var $itemRow = $(itemRow);
+        var isOptional = $itemRow.find('.item-optional').is(':checked');
+        if (!isOptional) {
+          var quantity = _this3.parseGermanDecimal($itemRow.find('.item-quantity').val());
+          var singlePrice = _this3.parseGermanDecimal($itemRow.find(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]")).val());
+          groupTotal += quantity * singlePrice;
+        }
+      });
+      return groupTotal === 0 ? '-' : this.formatGermanCurrency(groupTotal);
+    },
+    updateAllCalculations: function updateAllCalculations() {
+      var _this4 = this;
+      // Get all unique card quote IDs
+      var cardQuoteIds = new Set();
+      $('.column_single_price').each(function () {
+        var quoteId = $(this).data('cardquoteid');
+        if (quoteId) cardQuoteIds.add(quoteId);
+      });
+
+      // Update calculations for each card
+      cardQuoteIds.forEach(function (cardQuoteId) {
+        // Update item totals
+        $('.item_row').each(function (index, row) {
+          var $row = $(row);
+          var totalPrice = _this4.calculateItemTotal($row, cardQuoteId);
+          $row.find(".column_total_price[data-cardquotetotalprice=\"".concat(cardQuoteId, "\"]")).text(totalPrice);
+        });
+
+        // Update group totals
+        $('.group_row').each(function (index, row) {
+          var $row = $(row);
+          var groupTotal = _this4.calculateGroupTotal($row, cardQuoteId);
+          $row.find("[data-cardquotegrouptotalprice=\"".concat(cardQuoteId, "\"]")).text(groupTotal);
+        });
+      });
     }
-  }), "toggleDescription", function toggleDescription(event) {
-    var icon = $(event.currentTarget);
-    var row = icon.closest('tr');
-    var parentID = row.data('itemid');
-    var descRow = $(".item_child.tr_child_description[data-itemID=\"".concat(parentID, "\"]"));
-    descRow.toggle();
-    icon.toggleClass('fa-caret-right fa-caret-down');
-  });
+  };
   EstimationTable.init();
 });
 /******/ })()
