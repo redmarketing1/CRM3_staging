@@ -26,7 +26,6 @@
             colspan="2" 
             id="cardQuoteGroupTotalPrice"
             data-cardQuoteGroupTotalPrice="{{ $quote->id }}">
-            -
         </td>
     @endforeach
 </tr> 

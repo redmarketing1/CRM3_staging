@@ -33,6 +33,7 @@ $(document).ready(function () {
       this.bindEvents();
       this.initializeSortable();
       this.updateAllCalculations();
+      this.updatePOSNumbers();
       this.initializeAutoSave();
     },
     initializeAutoSave: function initializeAutoSave() {
@@ -113,6 +114,7 @@ $(document).ready(function () {
         form: this.getFormData(),
         newItems: this.prepareNewItemsForSubmission()
       };
+      console.log(data.newItems);
       $.ajax({
         url: route('estimation.update', data.form.id),
         method: 'PUT',
@@ -133,7 +135,7 @@ $(document).ready(function () {
           $('#save-button').html("Saved last changed.");
         },
         error: function error(_error) {
-          toastrs('Failed to save changes.');
+          toastrs('error', 'Failed to save changes.');
           $('.lastSaveTimestamp').text('is failed.');
           _this3.hasUnsavedChanges = true;
         }
@@ -168,12 +170,15 @@ $(document).ready(function () {
       }, 60000);
     },
     prepareNewItemsForSubmission: function prepareNewItemsForSubmission() {
+      var _this5 = this;
       var newItems = [];
-      var $self = this;
-      $('.group_row').each(function () {
-        var groupId = $(this).data('groupid');
-        var groupName = $(this).find('.grouptitle-input').val();
-        var groupPos = $(this).find('.grouppos').text().trim();
+
+      // Collect group rows
+      var groupRows = document.querySelectorAll('.group_row');
+      groupRows.forEach(function (row) {
+        var groupId = row.dataset.groupid;
+        var groupName = row.querySelector('.grouptitle-input').value;
+        var groupPos = row.querySelector('.grouppos').textContent.trim();
         var group = {
           id: groupId,
           type: 'group',
@@ -183,26 +188,45 @@ $(document).ready(function () {
         };
         newItems.push(group);
       });
-      $(".item_row, .item_comment").each(function () {
-        var $row = $(this);
-        var itemId = $row.data('itemid');
-        var type = $row.data('type');
-        var groupId = $row.data('groupid');
+
+      // Collect items and comments
+      var itemRows = document.querySelectorAll('.item_row, .item_comment');
+      itemRows.forEach(function (row) {
+        var _row$querySelector, _$$next$find, _row$querySelector2, _row$querySelector3, _row$querySelector4, _row$querySelector5;
+        var itemId = row.dataset.itemid;
+        var type = row.dataset.type;
+        var groupId = row.dataset.groupid;
+        var name = ((_row$querySelector = row.querySelector('.item-name, .item-comment')) === null || _row$querySelector === void 0 ? void 0 : _row$querySelector.value.trim()) || null;
+        var description = ((_$$next$find = $(row).next(".tr_child_description[data-itemid=\"".concat(itemId, "\"]")).find('.description_input')) === null || _$$next$find === void 0 ? void 0 : _$$next$find.val()) || null;
+        var comment = ((_row$querySelector2 = row.querySelector('.item-comment')) === null || _row$querySelector2 === void 0 ? void 0 : _row$querySelector2.value.trim()) || null;
         var item = {
           id: itemId,
           type: type,
           groupId: groupId,
-          pos: $row.find('.pos-inner').text().trim(),
-          name: $row.find('.item-name').val().trim(),
-          // description: isComment ? $row.find('.item-description').val() : '',
-          quantity: $row.find('.item-quantity').val() || '0',
-          unit: $row.find('.item-unit').val(),
-          optional: $row.find('.item-optional').is(':checked') ? 0 : 1,
-          prices: $self.updateItemPriceAndTotal(itemId)
+          pos: row.querySelector('.pos-inner').textContent.trim(),
+          name: name,
+          description: description,
+          comment: comment,
+          quantity: _this5.parseGermanDecimal(((_row$querySelector3 = row.querySelector('.item-quantity')) === null || _row$querySelector3 === void 0 ? void 0 : _row$querySelector3.value) || '0'),
+          unit: ((_row$querySelector4 = row.querySelector('.item-unit')) === null || _row$querySelector4 === void 0 ? void 0 : _row$querySelector4.value) || 0,
+          optional: (_row$querySelector5 = row.querySelector('.item-optional')) !== null && _row$querySelector5 !== void 0 && _row$querySelector5.checked ? 0 : 1,
+          prices: type == 'item' ? _this5.updateItemPriceAndTotal(itemId) : _this5.updateCommentPrices()
         };
         newItems.push(item);
       });
       return newItems;
+    },
+    updateCommentPrices: function updateCommentPrices() {
+      var cardQuoteIds = Array.from(new Set(Array.from(document.querySelectorAll('[data-cardquoteid]')).map(function (el) {
+        return el.dataset.cardquoteid;
+      })));
+      return cardQuoteIds.map(function (quoteId) {
+        return {
+          quoteId: quoteId,
+          singlePrice: 0,
+          totalPrice: 0
+        };
+      });
     },
     updateItemPriceAndTotal: function updateItemPriceAndTotal(itemId) {
       var row = document.querySelector(".item_row[data-itemid=\"".concat(itemId, "\"]"));
@@ -226,17 +250,17 @@ $(document).ready(function () {
         var _ref2 = _slicedToArray(_ref, 2),
           oldId = _ref2[0],
           newId = _ref2[1];
-        var row = document.querySelector("\n                    tr[data-id=\"".concat(oldId, "\"], \n                    tr[data-itemid=\"").concat(oldId, "\"], \n                    tr[data-groupid=\"").concat(oldId, "\"]\n                "));
-        if (row) {
-          if (row.dataset.id) row.dataset.id = newId;
-          if (row.dataset.itemid) row.dataset.itemid = newId;
-          if (row.dataset.groupid) row.dataset.groupid = newId;
+        var rows = document.querySelectorAll("\n                    tr[data-itemid=\"".concat(oldId, "\"], \n                    tr[data-groupid=\"").concat(oldId, "\"]\n                "));
+        rows.forEach(function (row) {
+          // Update dataset attributes
+          if (row.dataset.itemid == oldId) row.dataset.itemid = newId;
+          if (row.dataset.groupid == oldId) row.dataset.groupid = newId;
 
           // Update input names
           row.querySelectorAll("[name*=\"[".concat(oldId, "]\"]")).forEach(function (input) {
             input.name = input.name.replace("[".concat(oldId, "]"), "[".concat(newId, "]"));
           });
-        }
+        });
       });
     },
     getFormData: function getFormData() {
@@ -258,44 +282,44 @@ $(document).ready(function () {
       return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
     },
     bindEvents: function bindEvents() {
-      var _this5 = this;
+      var _this6 = this;
       this.estimation.find('button[data-actioninsert]').on('click', function (event) {
         event.preventDefault();
         var button = $(event.currentTarget);
         var target = button.data('actioninsert');
-        if (target) _this5.addItems(target);
+        if (target) _this6.addItems(target);
       });
       this.estimation.on('click', '.desc_toggle', this.toggleDescription);
       this.estimation.on('click', '.grp-dt-control', this.toggleGroup);
       this.estimation.on('blur', '.item-quantity, .item-price, .item-name, input[name^="item"][name$="[markup]"], input[name^="item"][name$="[discount]"]', function () {
-        _this5.hasUnsavedChanges = true;
-        _this5.autoSaveHandler();
+        _this6.hasUnsavedChanges = true;
+        _this6.autoSaveHandler();
       });
       this.estimation.on('change', '.item-optional, select[name^="item"][name$="[tax]"]', function () {
-        _this5.hasUnsavedChanges = true;
-        _this5.autoSaveHandler();
+        _this6.hasUnsavedChanges = true;
+        _this6.autoSaveHandler();
       });
       this.estimation.on('blur', '.item-quantity, .item-price', function (event) {
         var $target = $(event.currentTarget);
-        _this5.formatInput($target);
-        _this5.updateAllCalculations();
+        _this6.formatInput($target);
+        _this6.updateAllCalculations();
       });
       this.estimation.on('click', '#save-button', function () {
         console.log('click');
-        _this5.saveTableData();
+        _this6.saveTableData();
       });
       this.estimation.on('change', '.item-optional', function () {
-        _this5.updateAllCalculations();
+        _this6.updateAllCalculations();
       });
       this.estimation.on('change', 'select[name^="item"][name$="[tax]"]', function () {
-        _this5.updateAllCalculations();
+        _this6.updateAllCalculations();
       });
       this.estimation.on('blur', 'input[name^="item"][name$="[discount]"]', function (event) {
         var $input = $(event.target);
-        var value = _this5.parseGermanDecimal($input.val());
+        var value = _this6.parseGermanDecimal($input.val());
 
         // Format the number
-        $input.val(_this5.formatGermanDecimal(value));
+        $input.val(_this6.formatGermanDecimal(value));
 
         // Apply styling for negative values
         if (value < 0) {
@@ -309,17 +333,17 @@ $(document).ready(function () {
             'color': ''
           });
         }
-        _this5.updateAllCalculations();
+        _this6.updateAllCalculations();
       });
 
       // Enhanced markup input handler
       this.estimation.on('blur', 'input[name^="item"][name$="[markup]"]', function (event) {
         var $input = $(event.target);
-        var value = _this5.parseGermanDecimal($input.val());
+        var value = _this6.parseGermanDecimal($input.val());
         var cardQuoteId = $input.attr('name').match(/\[(\d+)\]/)[1];
 
         // Format the number
-        $input.val(_this5.formatGermanDecimal(value));
+        $input.val(_this6.formatGermanDecimal(value));
 
         // Apply styling for negative values
         if (value < 0) {
@@ -333,8 +357,8 @@ $(document).ready(function () {
             'color': ''
           });
         }
-        _this5.applyMarkupToSinglePrices(cardQuoteId, value);
-        _this5.updateAllCalculations();
+        _this6.applyMarkupToSinglePrices(cardQuoteId, value);
+        _this6.updateAllCalculations();
       });
       this.estimation.on('change', '.SelectAllCheckbox', function (e) {
         var isChecked = $(e.target).prop('checked');
@@ -351,17 +375,17 @@ $(document).ready(function () {
         $(".item_selection[data-groupid=\"".concat(groupId, "\"]")).prop('checked', isChecked);
 
         // Update main select all checkbox
-        _this5.updateSelectAllState();
+        _this6.updateSelectAllState();
       });
 
       // Individual item selection handler
       this.estimation.on('change', '.item_selection:not(.group_selection)', function () {
-        _this5.updateSelectAllState();
+        _this6.updateSelectAllState();
       });
       $('button[data-actionremove]').on('click', function () {
         var $selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
         if ($selectedCheckboxes.length === 0) {
-          toastrs("Please select checkbox to continue delete");
+          toastrs("error", "Please select checkbox to continue delete");
           return;
         }
         Swal.fire({
@@ -377,18 +401,11 @@ $(document).ready(function () {
             var groupIds = [];
             $selectedCheckboxes.each(function () {
               var $row = $(this).closest('tr');
-              if ($row.hasClass('group_row')) {
-                var groupId = $row.data('groupid');
-                groupIds.push(groupId);
-
-                // Remove all items in the group
-                $(".item_row[data-groupid=\"".concat(groupId, "\"], .item_comment[data-groupid=\"").concat(groupId, "\"]")).remove();
-              } else {
-                itemIds.push($row.data('id'));
-              }
+              var id = $row.data('itemid') || $row.data('groupid');
+              var isGroup = $row.hasClass('group_row');
+              (isGroup ? groupIds : itemIds).push(id);
               $row.remove();
             });
-            $('.SelectAllCheckbox').prop('checked', false);
             $.ajax({
               url: route('estimation.destroy', estimationId),
               method: 'DELETE',
@@ -396,23 +413,18 @@ $(document).ready(function () {
                 estimationId: estimationId,
                 items: itemIds,
                 groups: groupIds
-              },
-              success: function success(response) {
-                _this5.updateAllCalculations();
-                _this5.updatePOSNumbers();
-                toastrs('Items deleted successfully');
-              },
-              error: function error(_error2) {
-                toastrs('Error deleting items');
-                console.error(_error2);
               }
+            }).done(function () {
+              document.querySelector('.SelectAllCheckbox').checked = false;
+              _this6.updateAllCalculations();
+              _this6.updatePOSNumbers();
             });
           }
         });
       });
     },
     storeOriginalPrices: function storeOriginalPrices() {
-      var _this6 = this;
+      var _this7 = this;
       // Clear existing stored prices
       this.originalPrices.clear();
       $('.item-price').each(function (_, element) {
@@ -422,9 +434,9 @@ $(document).ready(function () {
         var key = "".concat(cardQuoteId, "-").concat(itemId);
 
         // Only store if not already stored
-        if (!_this6.originalPrices.has(key)) {
-          var originalPrice = _this6.parseGermanDecimal($price.val());
-          _this6.originalPrices.set(key, originalPrice);
+        if (!_this7.originalPrices.has(key)) {
+          var originalPrice = _this7.parseGermanDecimal($price.val());
+          _this7.originalPrices.set(key, originalPrice);
         }
       });
     },
@@ -457,55 +469,6 @@ $(document).ready(function () {
       var totalCheckboxes = $('.item_selection:not(.SelectAllCheckbox)').length;
       var checkedCheckboxes = $('.item_selection:not(.SelectAllCheckbox):checked').length;
       $('.SelectAllCheckbox').prop('checked', totalCheckboxes === checkedCheckboxes && totalCheckboxes > 0);
-    },
-    removeItem: function removeItem() {
-      var _this7 = this;
-      var selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
-      if (selectedCheckboxes.length === 0) {
-        toastrs("Please select checkbox to continue delete");
-        return;
-      }
-      Swal.fire({
-        title: 'Confirmation Delete',
-        text: 'Really! You want to remove them? You can\'t undo',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, Delete it',
-        cancelButtonText: "No, cancel"
-      }).then(function (result) {
-        if (result.isConfirmed) {
-          var estimationId = _this7.getFormData().id;
-          var itemIds = [];
-          var groupIds = [];
-          selectedCheckboxes.each(function () {
-            var $row = $(this).closest('tr');
-            if ($row.hasClass('group_row')) {
-              var groupId = $row.data('groupid');
-              groupIds.push(groupId);
-
-              // Remove all items in the group
-              $(".item_row[data-groupid=\"".concat(groupId, "\"], .item_comment[data-groupid=\"").concat(groupId, "\"]")).remove();
-            } else {
-              itemIds.push($row.data('id'));
-            }
-            $row.remove();
-          });
-          $('.SelectAllCheckbox').prop('checked', false);
-          $.ajax({
-            url: route('estimation.destroy', estimationId),
-            method: 'DELETE',
-            data: {
-              estimationId: estimationId,
-              items: itemIds,
-              groups: groupIds
-            },
-            success: function success(response) {
-              _this7.updateAllCalculations();
-              _this7.updatePOSNumbers();
-              toastrs('Items deleted successfully');
-            }
-          });
-        }
-      });
     },
     getCurrentGroupId: function getCurrentGroupId() {
       var lastGroup = $('.group_row').last();

@@ -8,7 +8,9 @@
     </td>
 
     <td class="column_pos">
-        <div class="pos-inner"></div>
+        <div class="pos-inner">
+            {{ $product->pos }}
+        </div>
     </td>
 
     <td class="column_name">

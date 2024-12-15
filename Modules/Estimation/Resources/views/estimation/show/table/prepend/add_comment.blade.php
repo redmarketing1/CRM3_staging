@@ -16,7 +16,7 @@
             value="{{ trans('Wriye your comment') }}" x-on:blur="handleInputBlur($event, 'comment')">
     </td>
 
-    @foreach ($product->quoteItems as $quoteItem)
+     @foreach ($allQuotes as $quoteItem)
         <td class="column_single_price border-left" data-cardQuoteID="{{ $quoteItem->id }}">-</td>
         <td class="column_total_price border-right" data-cardQuoteID="{{ $quoteItem->id }}">-</td>
     @endforeach

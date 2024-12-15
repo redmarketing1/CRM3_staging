@@ -18,6 +18,7 @@ $(document).ready(function () {
             this.bindEvents();
             this.initializeSortable();
             this.updateAllCalculations();
+            this.updatePOSNumbers();
             this.initializeAutoSave();
         },
 
@@ -102,6 +103,7 @@ $(document).ready(function () {
                 form: this.getFormData(),
                 newItems: this.prepareNewItemsForSubmission()
             };
+            console.log(data.newItems);
 
             $.ajax({
                 url: route('estimation.update', data.form.id),
@@ -126,7 +128,7 @@ $(document).ready(function () {
                     $('#save-button').html(`Saved last changed.`);
                 },
                 error: (error) => {
-                    toastrs('Failed to save changes.');
+                    toastrs('error','Failed to save changes.');
                     $('.lastSaveTimestamp').text('is failed.');
                     this.hasUnsavedChanges = true;
                 }
@@ -169,12 +171,13 @@ $(document).ready(function () {
 
         prepareNewItemsForSubmission() {
             const newItems = [];
-            let $self = this;
 
-            $('.group_row').each(function () {
-                const groupId = $(this).data('groupid');
-                const groupName = $(this).find('.grouptitle-input').val();
-                const groupPos = $(this).find('.grouppos').text().trim();
+            // Collect group rows
+            const groupRows = document.querySelectorAll('.group_row');
+            groupRows.forEach(row => {
+                const groupId = row.dataset.groupid;
+                const groupName = row.querySelector('.grouptitle-input').value;
+                const groupPos = row.querySelector('.grouppos').textContent.trim();
 
                 const group = {
                     id: groupId,
@@ -186,30 +189,48 @@ $(document).ready(function () {
                 newItems.push(group);
             });
 
-            $(`.item_row, .item_comment`).each(function () {
-
-                const $row = $(this);
-                const itemId = $row.data('itemid');
-                const type = $row.data('type');
-                const groupId = $row.data('groupid');
+            // Collect items and comments
+            const itemRows = document.querySelectorAll('.item_row, .item_comment');
+            itemRows.forEach(row => {
+                const itemId = row.dataset.itemid;
+                const type = row.dataset.type;
+                const groupId = row.dataset.groupid;
+                const name = row.querySelector('.item-name, .item-comment')?.value.trim() || null;
+                const description = $(row).next(`.tr_child_description[data-itemid="${itemId}"]`).find('.description_input')?.val() || null;
+                const comment = row.querySelector('.item-comment')?.value.trim() || null;
 
                 const item = {
                     id: itemId,
                     type: type,
                     groupId: groupId,
-                    pos: $row.find('.pos-inner').text().trim(),
-                    name: $row.find('.item-name').val().trim(),
-                    // description: isComment ? $row.find('.item-description').val() : '',
-                    quantity: $row.find('.item-quantity').val() || '0',
-                    unit: $row.find('.item-unit').val(),
-                    optional: $row.find('.item-optional').is(':checked') ? 0 : 1,
-                    prices: $self.updateItemPriceAndTotal(itemId)
+                    pos: row.querySelector('.pos-inner').textContent.trim(),
+                    name: name,
+                    description: description,
+                    comment: comment,
+                    quantity: this.parseGermanDecimal(row.querySelector('.item-quantity')?.value || '0'),
+                    unit: row.querySelector('.item-unit')?.value || 0,
+                    optional: row.querySelector('.item-optional')?.checked ? 0 : 1,
+                    prices: (type == 'item') ? this.updateItemPriceAndTotal(itemId) : this.updateCommentPrices(),
                 };
 
                 newItems.push(item);
             });
 
             return newItems;
+        },
+
+        updateCommentPrices() {
+            const cardQuoteIds = Array.from(
+                new Set(
+                    Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                        .map(el => el.dataset.cardquoteid)
+                )
+            );
+            return cardQuoteIds.map(quoteId => ({
+                quoteId,
+                singlePrice: 0,
+                totalPrice: 0
+            }));
         },
 
         updateItemPriceAndTotal(itemId) {
@@ -238,22 +259,21 @@ $(document).ready(function () {
         updateEntitiesWithNewIds(idMappings) {
             Object.entries(idMappings).forEach(([oldId, newId]) => {
 
-                const row = document.querySelector(`
-                    tr[data-id="${oldId}"], 
+                const rows = document.querySelectorAll(`
                     tr[data-itemid="${oldId}"], 
                     tr[data-groupid="${oldId}"]
                 `);
 
-                if (row) {
-                    if (row.dataset.id) row.dataset.id = newId;
-                    if (row.dataset.itemid) row.dataset.itemid = newId;
-                    if (row.dataset.groupid) row.dataset.groupid = newId;
+                rows.forEach(row => {
+                    // Update dataset attributes
+                    if (row.dataset.itemid == oldId) row.dataset.itemid = newId;
+                    if (row.dataset.groupid == oldId) row.dataset.groupid = newId;
 
                     // Update input names
                     row.querySelectorAll(`[name*="[${oldId}]"]`).forEach(input => {
                         input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
                     });
-                }
+                });
             });
         },
 
@@ -394,7 +414,7 @@ $(document).ready(function () {
                 const $selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
 
                 if ($selectedCheckboxes.length === 0) {
-                    toastrs("Please select checkbox to continue delete");
+                    toastrs("error","Please select checkbox to continue delete");
                     return;
                 }
 
@@ -412,34 +432,21 @@ $(document).ready(function () {
 
                         $selectedCheckboxes.each(function () {
                             const $row = $(this).closest('tr');
+                            const id = $row.data('itemid') || $row.data('groupid');
+                            const isGroup = $row.hasClass('group_row');
 
-                            if ($row.hasClass('group_row')) {
-                                const groupId = $row.data('groupid');
-                                groupIds.push(groupId);
-
-                                // Remove all items in the group
-                                $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`).remove();
-                            } else {
-                                itemIds.push($row.data('id'));
-                            }
+                            (isGroup ? groupIds : itemIds).push(id);
                             $row.remove();
                         });
-
-                        $('.SelectAllCheckbox').prop('checked', false);
 
                         $.ajax({
                             url: route('estimation.destroy', estimationId),
                             method: 'DELETE',
                             data: { estimationId, items: itemIds, groups: groupIds },
-                            success: (response) => {
-                                this.updateAllCalculations();
-                                this.updatePOSNumbers();
-                                toastrs('Items deleted successfully');
-                            },
-                            error: (error) => {
-                                toastrs('Error deleting items');
-                                console.error(error);
-                            }
+                        }).done(() => {
+                            document.querySelector('.SelectAllCheckbox').checked = false;
+                            this.updateAllCalculations();
+                            this.updatePOSNumbers();
                         });
                     }
                 });
@@ -506,58 +513,7 @@ $(document).ready(function () {
             const checkedCheckboxes = $('.item_selection:not(.SelectAllCheckbox):checked').length;
 
             $('.SelectAllCheckbox').prop('checked', totalCheckboxes === checkedCheckboxes && totalCheckboxes > 0);
-        },
-
-        removeItem() {
-            const selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
-
-            if (selectedCheckboxes.length === 0) {
-                toastrs("Please select checkbox to continue delete");
-                return;
-            }
-
-            Swal.fire({
-                title: 'Confirmation Delete',
-                text: 'Really! You want to remove them? You can\'t undo',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Delete it',
-                cancelButtonText: "No, cancel",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const estimationId = this.getFormData().id;
-                    const itemIds = [];
-                    const groupIds = [];
-
-                    selectedCheckboxes.each(function () {
-                        const $row = $(this).closest('tr');
-
-                        if ($row.hasClass('group_row')) {
-                            const groupId = $row.data('groupid');
-                            groupIds.push(groupId);
-
-                            // Remove all items in the group
-                            $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`).remove();
-                        } else {
-                            itemIds.push($row.data('id'));
-                        }
-                        $row.remove();
-                    });
-
-                    $('.SelectAllCheckbox').prop('checked', false);
-
-                    $.ajax({
-                        url: route('estimation.destroy', estimationId),
-                        method: 'DELETE',
-                        data: { estimationId, items: itemIds, groups: groupIds },
-                        success: (response) => {
-                            this.updateAllCalculations();
-                            this.updatePOSNumbers();
-                            toastrs('Items deleted successfully');
-                        }
-                    });
-                }
-            });
-        },
+        }, 
 
         getCurrentGroupId() {
             const lastGroup = $('.group_row').last();
