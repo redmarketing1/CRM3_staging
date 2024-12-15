@@ -3883,7 +3883,8 @@ span.feedback-preview {
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
-    color: #666; 
+    color: #666;
+    visibility: hidden;
 }
 
 .total-markup-input:hover::after,
