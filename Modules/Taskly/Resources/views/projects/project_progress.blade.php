@@ -26,7 +26,52 @@
 @endsection
 @push('css')
 	<style>
+		.select-payment-progress .select-payment-progress-inner {
+			display: flex !important;
+		}
 
+		.select-payment-progress .select-payment-progress-inner .payment-slider-value {
+			text-wrap: nowrap !important;
+			font-weight: bold!important;
+			font-size: 18px!important;
+			min-width: 50px!important;
+			text-align: right!important;
+			margin-left: 5px !important;
+		}
+
+		.select-payment-progress-inner input[type='range'] {
+			overflow: hidden!important;
+			-webkit-appearance: none!important;
+			background-color: #ececec!important;
+			height: 30px!important;
+		}
+
+		.select-payment-progress-inner input[type='range']::-webkit-slider-runnable-track {
+			height: 10px!important;
+			-webkit-appearance: none!important;
+			color: #FFBF00!important;
+			margin-top: -1px!important;
+		}
+
+		.select-payment-progress-inner input[type='range']::-webkit-slider-thumb {
+			width: 30px!important;
+			-webkit-appearance: none!important;
+			height: 40px!important;
+			margin-top: -10px!important;
+			cursor: ew-resize!important;
+			background: #FFBF00!important;
+			box-shadow: -180px 0 0 180px #FFAC1C!important;
+			content: "+"!important;
+		}
+
+		.payment-progress{
+			border-radius: 10px!important;
+		}
+
+		/* .finance-items{
+			display: none!important;
+		} */
+		
 	</style>
 @endpush
 @push('scripts')
@@ -38,132 +83,60 @@
 	<script src="{{ asset('Modules/Taskly/Resources/assets/js/custom.js')}}"></script>
 @endpush
 @section('content')
-<div class="row">
-	<div class="col-sm-12">
-		<div class="card">
-
-			<div class="card-header d-flex justify-content-between align-items-center">
-				<h2>{{ __('Project Progress') }} - {{ \Carbon\Carbon::now('Europe/Berlin')->format('d.m.Y') }}</h2>
-                <div class="select-progress total-progress CHANGE">
-											
-											<div class="select-progress-inner">
-												
-												<input class="progress" name="progress[' . $item->id . ']" type="range" id="progress-slider-' . $item->id . '" class="form-control"
-													min="0" value="50%" data-min="50%" max="100" step="5" data-id="' . $item->id . '"
-													style="width: 100%;">
-												<span id="slider-value-' . $item->id . '" class="slider-value">50%</span>
-											</div>
-											<div class="progress-numbers">
-													<span class="progress-numbers"><b>Total Progress: </b>650,00 € / 1.000,00 € (Remaining: 350,00 €)</span>
-													<span class="invoice-numbers"><b>Total Invoice: </b>500,00 € / 1.000,00 € (Remaining: 500,00 €)</span>
-												</div>
-										</div>
-            </div>
-	
-			<div class="card-body table-border-style">
-				<div class="card-body table-responsive" id="progress-div">
-				{{ Form::open(['route' => ['progress.sign.store'], 'enctype' => 'multipart/form-data', 'class' => 'project-progress-form']) }}
-					<table class="table w-100 table-hover table-bordered" id="progress-table">
-						<thead>
-							{{-- <th data-dt-order="disable">&nbsp;</th> --}}
-							{{-- <th data-dt-order="disable">{{ __('POS') }}</th> --}}
-							
-							<th data-dt-order="disable">{{ __('Name') }}</th>
-							<th data-dt-order="disable">{{ __('Group') }}</th>
-							<th data-dt-order="disable">{{ __('Quantity') }}</th>
-							<th data-dt-order="disable">{{ __('Progress') }}</th>
-							<th data-dt-order="disable">{{ __('Description') }}</th>
-							@if ($show_everything == 1)
-								<!-- <th data-dt-order="disable">{{ __('Single Price') }}</th>
-								<th data-dt-order="disable">{{ __('Total Price') }}</th>
-								<th data-dt-order="disable">{{ __('Progress') }}</th>
-								<th data-dt-order="disable">{{ __('Remaining') }}</th> -->
-							@endif
-							<th data-dt-order="disable">{{ __('History') }}</th>
-						</thead>
-					</table>
-					<div class="progress-footer">
-						<div class="float-end confirm_div_top" data-id="">
-							<div class="progress-text">
-								<label><input type="checkbox" class="form-check-input" name="progress_final_confirm_checkbox" id="progress_final_confirm_checkbox" /> {{ __('I confirm the Progress above') }}.</label><br>
-								<a href="javascript:void(0);" class="progress-final-comment-icon"><small>({{ __('add Comments') }})</small></a>
-								<div class="progress-final-comment d-none"><textarea name="progress_final_comment" id="progress_final_comment" placeholder="{{ __('Comments...') }}"></textarea></div>
-							</div>
-							<div class="progress-date">
-								<input type="text" id="progress-date-time-picker" name="progress-date-time" value="{{ \Carbon\Carbon::now('Europe/Berlin')->format('d.m.Y - H:i') }}" readonly>
-							</div>
-							<div class="progress-client">
-								<input type="text" name="progress_final_user_name" id="progress_final_user_name" placeholder="{{ __('Name') }}" value="{{isset(\Auth::user()->name) ? \Auth::user()->name : '' }}" required>
-							</div>
-							<div class="progress-signature">
-								<canvas id="signature-pad" class="signature-pad progress-final-signature" height="100" width="300"></canvas>
-								<div class="sign_btn_block">
-									<div class="sign_btn_block_small">
-										<button type="button" class="btn btn-sm btn-danger progress_final_clear_sig" id="progress_final_clear_sig"><i class="fa-regular fa-trash-can"></i></button>
-									</div>
-								</div>
-								<input type="hidden" id="progress_final_signature" name="progress_final_signature" value="" />
-							</div>
-						</div>
-						<div class="confirm_div" data-id="{{ isset($active_estimation->id) ? $active_estimation->id : 0}}">
-							<a href="javascript:void(0)" class="confirm-progress-btn btn btn-sm btn-primary btn-icon m-1" data-id="{{ isset($active_estimation->id) ? $active_estimation->id : 0}}">
-								<span class="text-white">
-									{{ __('Confirm Progress') }}
-								</span>
-							</a>
-						</div>
-					</div>
-					{{ Form::close() }}
-				</div>
-			</div>
+	<div class="row">
+		<div class="col-sm-12 progress-html">
+			
 		</div>
 	</div>
-</div>
 @endsection
+
 @push("scripts")
-<script>
-	var csrfToken = $('meta[name="csrf-token"]').attr('content');
-		var show_everything = '{{$show_everything}}';
-		var signaturePad = {};
+	<script>
+		var csrfToken = $('meta[name="csrf-token"]').attr('content');
 		var active_estimation_id = '{{ isset($active_estimation->id) ? $active_estimation->id : 0}}';
+		var project_id = '{{ $project->id }}';
 		let moneyFormat = '{{$site_money_format}}';
 		var moneyFormatter = site_money_format(moneyFormat);
-		var project_id = '{{\Crypt::encrypt($project->id)}}';
-		$(document).ready(function() {
+		var signaturePad = {};
+
+		$(document).ready(function(){
+			
+			//Fetch Estimation Items
 			getItems(active_estimation_id);
 
-			$(document).on("click", ".btn_sign_here", function(e) {
-				e.preventDefault();
-				var item_id = $(this).data('id');
-				var data = signaturePad[item_id].toDataURL('image/png');
-				$('#SignupImage1').val(data);
+			//Not sure about use
+			// $(document).on("click", ".btn_sign_here", function(e) {
+			// 	e.preventDefault();
+			// 	var item_id = $(this).data('id');
+			// 	var data = signaturePad[item_id].toDataURL('image/png');
+			// 	$('#SignupImage1').val(data);
 
-				var form = $(this).closest("form");
-				let estimation_id = $(this).closest("form").find("input[name='estimation_id']").val();
-				$.ajax({
-					url: "{{ route('progress.sign.store') }}",
-					type: 'POST',
-					data: form.serialize(),
-					beforeSend: function() {
-						$("#addSig").attr("disabled", true);
-						$("#loader").removeClass("hidden");
-					},
-					success: function(data) {
-						$("#addSign").attr("disabled", false);
-						$("#loader").addClass("hidden");
-						$("#exampleModal").modal("hide");
-						$(".modal-backdrop").remove();
-						$("body").css("overflow", "scroll");
-						toastrs("success", "Progress Approved.");
-						getItems(estimation_id);
-						$("body").css("overflow", "auto");
-					},
-					error: function(data) {
-						$("#addSign").prop("disabled", false);
-						$("#loader").addClass("hidden");
-					}
-				});
-			});
+			// 	var form = $(this).closest("form");
+			// 	let estimation_id = $(this).closest("form").find("input[name='estimation_id']").val();
+			// 	$.ajax({
+			// 		url: "{{ route('progress.sign.store') }}",
+			// 		type: 'POST',
+			// 		data: form.serialize(),
+			// 		beforeSend: function() {
+			// 			$("#addSig").attr("disabled", true);
+			// 			$("#loader").removeClass("hidden");
+			// 		},
+			// 		success: function(data) {
+			// 			$("#addSign").attr("disabled", false);
+			// 			$("#loader").addClass("hidden");
+			// 			$("#exampleModal").modal("hide");
+			// 			$(".modal-backdrop").remove();
+			// 			$("body").css("overflow", "scroll");
+			// 			toastrs("success", "Progress Approved.");
+			// 			getItems(estimation_id);
+			// 			$("body").css("overflow", "auto");
+			// 		},
+			// 		error: function(data) {
+			// 			$("#addSign").prop("disabled", false);
+			// 			$("#loader").addClass("hidden");
+			// 		}
+			// 	});
+			// });
 
 			$(document).on("click", ".clearSig", function(e) {
 				e.preventDefault();
@@ -222,111 +195,30 @@
 			});
 		});
 
-        function getItems(estimation_id) {
-			if ( $.fn.DataTable.isDataTable('#progress-table') ) {
-				$('#progress-table').DataTable().destroy();
-			}
-			$('#progress-table tbody').empty();
-			$('#progress-table colgroup').empty();
+		//Estimation Items Function
+		function getItems(estimation_id) {
+			$.ajax({
+				url: "{{route('progress.estimation.progressitem')}}",
+				type: 'POST',
+				data:{estimation_id:estimation_id,project_id:project_id, html:true,_token:csrfToken},
+				beforeSend: function() {
+					$("#addSig").attr("disabled", true);
+					$("#loader").removeClass("hidden");
+				},
+				success: function(data) {
+					$("#addSign").attr("disabled", false);
+					$("#loader").addClass("hidden");
+					$('.progress-html').html(data);
+					init_signature();
+					confirm_signature();
+					$('.finance-items').hide(); // Hide all matching elements
 
-			var columns_data = [
-                {{-- { "data": "product_id", "className": "product-id", "orderable": false }, --}}
-                { "data": "name", 
-                    "className": "name", 
-                    "orderable": false,
-                    "render": function(data, type, row) {
-                        return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
-                    }
-                },
-				{ "data": "group", "className": "group", "orderable": false },
-                { "data": "quantity", "className": "quantity", "orderable": false },
-                { "data": "item_signature", "className": "item-signature", "orderable": false },
-				{ "data": "description", "className": "description", "orderable": false },
-                { "data": "history", "className": "history", "orderable": false },
-            ];
-
-			if (show_everything == 1) {
-				columns_data = [
-                    {{-- { "data": "product_id", "className": "product-id", "orderable": false }, --}}
-                   
-                    { "data": "name", 
-                    "className": "name", 
-                    "orderable": false,
-                    "render": function(data, type, row) {
-                        return '<div class="name-container"><div class="pos-prefix">' + row.pos + '</div>' + data + '</div>';
-                    }
-                    },
-					{ "data": "group", "className": "group", "orderable": false },
-                    { "data": "quantity", "className": "quantity", "orderable": false },
-                    { "data": "item_signature", "className": "item-signature", "orderable": false },
-					{ "data": "description", "className": "description", "orderable": false },
-                    // { "data": "price", "className": "price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-                    // { "data": "totalPrice", "className": "total-price", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-                    // { "data": "progress_amount", "className": "progress-amount", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-                    // { "data": "progress_remaining", "className": "progress-remaining", "orderable": false, "render": DataTable.render.intlNumber('de', { style: 'currency', currency: 'EUR' }) },
-                    { "data": "history", "className": "history", "orderable": false },
-                ];
-			}
-
-            var csrfToken = $('meta[name="csrf-token"]').attr('content');
-            var groupColumn = 1;
-            $('#progress-table').DataTable({
-                "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
-                'pageLength': 200,
-                'dom': 'lrt',
-                "bPaginate": false,
-                "bFilter": false,
-                "bInfo": false,
-                "destroy": true,
-                "processing": true,
-                "serverSide": true,
-                'order': [[1, 'ASC']],
-				"bSort": false,
-                "ajax": {
-                    "url": "{{route('progress.estimation.item')}}",
-                    "type": "POST",
-                    data:{estimation_id:estimation_id,html:true,_token:csrfToken},
-                },
-                "columns": columns_data,
-                initComplete: function (settings, json) {
-                    setTimeout(function(){
-						init_signature();
-						confirm_signature();
-					}, 500);
-                },
-                "columnDefs": [{ visible: false, targets: groupColumn }],
-                "drawCallback": function (res) {
-                    var api = this.api();
-                    var rows = api.rows({ page: 'current' }).nodes();
-                    var last = null;
-                    var aData = [];
-					var col_span = (show_everything == 1) ? 10 : 6;
-					
-                   api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
-                        var vals = api.row(api.row($(rows).eq(i)).index()).data();
-                        $(rows).eq(i).find('.history').append('<div class="progress_files_row progress-files-group-'+vals.progress_item_id+'">'+vals.item_files+'</div>');
-
-                        var totalPrice = vals['totalPrice'] ? parseFloat(vals['totalPrice']) : 0;
-                        if (typeof aData[group] == 'undefined') {
-                            aData[group] = new Array();
-                            aData[group].rows = [];
-                            aData[group].totalPrice = [];
-                        }
-                        aData[group].rows.push(i); 
-                        aData[group].totalPrice.push(totalPrice); 
-                    });
-                    
-					var idx= 0;
-                    for(var group in aData){
-                        idx = Math.min.apply(Math,aData[group].rows);
-                        var sum = 0; 
-                        $.each(aData[group].totalPrice,function(k,v){
-                            sum = sum + v;
-                        });
-                        $(rows).eq(idx).before('<tr class="group progress-group"><td colspan="'+col_span+'">'+group+'</td></tr>');
-                    }; 
-                },
-            });
+				},
+				error: function(data) {
+					$("#addSign").prop("disabled", false);
+					$("#loader").addClass("hidden");
+				}
+			});
         }
 
 		function init_signature() {
@@ -418,24 +310,26 @@
 					if (item_id > 0) {
 						var comment = '';
 						var progress_bar = '';
+						var payment_progress_bar = '';
 						var signature = '';
 						var progress_amount = '';
 						var progress_total_qty = '';
 						var progress_old_qty = '';
 						comment = $('#comment-'+item_id).val();
 						progress_bar = $('#progress-slider-'+item_id).val();
+						payment_progress_bar = $('#payment-progress-slider-'+item_id).val();
 						signature = $('#SignupImage'+item_id).val();
 						progress_amount = parseFloat($('#progress_amount_'+item_id).val());
 						progress_total_qty = parseFloat($('#progress_amount_'+item_id).attr('max'));
 						progress_old_qty = parseFloat($('#progress_amount_'+item_id).attr('min'));
 						if(signature != "" && signature != null){
-							form_data[item_id] = {progress: progress_bar, signature: signature, comment: comment, progress_amount: progress_amount, progress_old_qty: progress_old_qty, progress_total_qty: progress_total_qty};
+							form_data[item_id] = {progress: progress_bar, payment_progress: payment_progress_bar, signature: signature, comment: comment, progress_amount: progress_amount, progress_old_qty: progress_old_qty, progress_total_qty: progress_total_qty};
 						}
 					}
 				});
 				var estimation_id = $(this).data('id');
-				var project_id = '{{\Crypt::encrypt($project->id)}}';
-				var user_id = '{{\Crypt::encrypt(\Auth::user()->id)}}';
+				var project_id = '{{ $project->id }}';
+				var user_id = '{{ Auth::user()->id }}';
 				var confirm_signature = "";
 				var confirm_user_name = "";
 				var confirm_comment = "";
@@ -455,10 +349,11 @@
 									},
 									success: function(response) {
 										showHideLoader('hidden');
-										$('#progress_final_confirm_checkbox').prop('checked', false);
-										$('#progress_final_comment').val('');
-										//$('#progress_final_user_name').val('');
+										
 										if (response.status == true){
+											$('#progress_final_confirm_checkbox').prop('checked', false);
+											$('#progress_final_comment').val('');
+											$('#progress_final_user_name').val('');
 											toastrs('Success', response.message, 'success');
 											getItems(estimation_id);
 										} else {
@@ -485,137 +380,137 @@
 			});
 
 			/*** delete selected progress files ****/
-			$(document).on("submit", "#progress_bulk_delete_form", function(e) {
-				e.preventDefault();
-				const formData = new FormData(this);
-				var estimation_id = $('input[name="estimation_id"]').val();
-				$.ajax({
-					url:"{{route('progress.files.delete')}}",
-					type:"POST",
-					data:formData,
-					contentType:false,
-					processData:false,
-					beforeSend:function () {
-						showHideLoader('visible');
-					},
-					success:function (response) {
-						if(response.status == true){
-							showHideLoader('hidden');
-							toastrs('Success', response.message, 'success')
-							getItems(estimation_id);
-						} else {
-							toastrs('Error', response.message)
-						}
-					}
-				});
-			});
+			// $(document).on("submit", "#progress_bulk_delete_form", function(e) {
+			// 	e.preventDefault();
+			// 	const formData = new FormData(this);
+			// 	var estimation_id = $('input[name="estimation_id"]').val();
+			// 	$.ajax({
+			// 		url:"{{route('progress.files.delete')}}",
+			// 		type:"POST",
+			// 		data:formData,
+			// 		contentType:false,
+			// 		processData:false,
+			// 		beforeSend:function () {
+			// 			showHideLoader('visible');
+			// 		},
+			// 		success:function (response) {
+			// 			if(response.status == true){
+			// 				showHideLoader('hidden');
+			// 				toastrs('Success', response.message, 'success')
+			// 				getItems(estimation_id);
+			// 			} else {
+			// 				toastrs('Error', response.message)
+			// 			}
+			// 		}
+			// 	});
+			// });
 
 		});
 
 		function handleProgressDragOver(event) {
-            event.preventDefault();
-            event.dataTransfer.dropEffect = 'copy';
-            document.getElementById('progressdropBox').style.border = '2px dashed #4CAF50';
-        }
+			event.preventDefault();
+			event.dataTransfer.dropEffect = 'copy';
+			document.getElementById('progressdropBox').style.border = '2px dashed #4CAF50';
+		}
 
-        function handleProgressDrop(event, item) {
-            event.preventDefault();
-            document.getElementById('progressdropBox').style.border = '2px dashed #ccc';
-            const files = event.dataTransfer.files;
-            handleProgressFiles(files, item);
-        }
+		function handleProgressDrop(event, item) {
+			event.preventDefault();
+			document.getElementById('progressdropBox').style.border = '2px dashed #ccc';
+			const files = event.dataTransfer.files;
+			handleProgressFiles(files, item);
+		}
 
 		function handleProgressFileSelect(event, item) {
-            const files = event.target.files;
-            handleProgressFiles(files, item);
-        }
+			const files = event.target.files;
+			handleProgressFiles(files, item);
+		}
 
 		/*** selected progress files preview ****/
 		function handleProgressFiles(files, item) {
 			var product_id = $(item).data('id');
 			var estimation_id = $(item).data('estimationid');
 			const ProgressFilesPreviewContainer = document.getElementById('ProgressFilesPreviewContainer'+product_id);
-            ProgressFilesPreviewContainer.innerHTML = '';
-            let formData = new FormData();
-            let counter = 0;
+			ProgressFilesPreviewContainer.innerHTML = '';
+			let formData = new FormData();
+			let counter = 0;
 			formData.append('estimation_id', estimation_id);
 			formData.append('product_id', product_id);
 			formData.append('description', '');
-            Array.from(files).forEach((file) => {
-                if (!file.type.startsWith('image/')) {
-                    formData.append('files[]', file, file.name);
-                    counter++;
-                    if (counter === files.length) {
-                        uploadProgressFile(formData, estimation_id, product_id);
-                    }
-                } else {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        const img = new Image();
-                        img.src = event.target.result;
-                        img.onload = function() {
-                            EXIF.getData(img, function() {
-                                const dateTaken = EXIF.getTag(this, 'DateTimeOriginal');
-                                const canvas = document.createElement('canvas');
-                                const ctx = canvas.getContext('2d');
-                                const max_width = 1500;
-                                const scaleFactor = max_width / img.width;
-                                canvas.width = max_width;
-                                canvas.height = img.height * scaleFactor;
-                                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                function drawTextWithBackground(ctx, text, x, y, bgColor, textColor, padding) {
-                                    ctx.fillStyle = bgColor;
-                                    ctx.font = 'bold 20px Arial';
-                                    const textMetrics = ctx.measureText(text);
-                                    const textWidth = textMetrics.width;
-                                    const textHeight = 20;
-                                    const backgroundX = canvas.width - textWidth - padding.leftRight - x;
-                                    const backgroundY = canvas.height - textHeight - padding.topBottom - y;
-                                    const backgroundWidth = textWidth + padding.leftRight * 2;
-                                    const backgroundHeight = textHeight + padding.topBottom * 2;
-                                    ctx.fillRect(backgroundX, backgroundY, backgroundWidth, backgroundHeight);
-                                    ctx.fillStyle = textColor;
-                                    ctx.fillText(text, backgroundX + padding.leftRight, backgroundY + textHeight);
-                                }
-                                const dateText = dateTaken ? formatDate(dateTaken) : '';
-                                drawTextWithBackground(ctx, dateText, 10, 10, '#ee232ac2', '#FFF', { topBottom: 2, leftRight: 5 });
-                                ctx.canvas.toBlob(function(blob) {
-                                    const compressedFile = new File([blob], file.name, {
-                                        type: 'image/jpeg',
-                                        lastModified: Date.now(),
-                                    });
-                                    formData.append('files[]', compressedFile, compressedFile.name);
-                                    const preview = document.createElement('img');
-                                    preview.src = URL.createObjectURL(compressedFile);
-                                    preview.classList.add('preview');
-                                    preview.classList.add('img-thumbnail');
-                                    ProgressFilesPreviewContainer.appendChild(preview);
-                                    counter++;
-                                    if (counter === files.length) {
-                                        uploadProgressFile(formData, estimation_id, product_id);
-                                    }
-                                }, 'image/jpeg', 0.85);
-                            });
-                        };
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
+			Array.from(files).forEach((file) => {
+				if (!file.type.startsWith('image/')) {
+					formData.append('files[]', file, file.name);
+					counter++;
+					if (counter === files.length) {
+						uploadProgressFile(formData, estimation_id, product_id);
+					}
+				} else {
+					const reader = new FileReader();
+					reader.onload = function(event) {
+						const img = new Image();
+						img.src = event.target.result;
+						img.onload = function() {
+							EXIF.getData(img, function() {
+								const dateTaken = EXIF.getTag(this, 'DateTimeOriginal');
+								const canvas = document.createElement('canvas');
+								const ctx = canvas.getContext('2d');
+								const max_width = 1500;
+								const scaleFactor = max_width / img.width;
+								canvas.width = max_width;
+								canvas.height = img.height * scaleFactor;
+								ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+								function drawTextWithBackground(ctx, text, x, y, bgColor, textColor, padding) {
+									ctx.fillStyle = bgColor;
+									ctx.font = 'bold 20px Arial';
+									const textMetrics = ctx.measureText(text);
+									const textWidth = textMetrics.width;
+									const textHeight = 20;
+									const backgroundX = canvas.width - textWidth - padding.leftRight - x;
+									const backgroundY = canvas.height - textHeight - padding.topBottom - y;
+									const backgroundWidth = textWidth + padding.leftRight * 2;
+									const backgroundHeight = textHeight + padding.topBottom * 2;
+									ctx.fillRect(backgroundX, backgroundY, backgroundWidth, backgroundHeight);
+									ctx.fillStyle = textColor;
+									ctx.fillText(text, backgroundX + padding.leftRight, backgroundY + textHeight);
+								}
+								const dateText = dateTaken ? formatDate(dateTaken) : '';
+								drawTextWithBackground(ctx, dateText, 10, 10, '#ee232ac2', '#FFF', { topBottom: 2, leftRight: 5 });
+								ctx.canvas.toBlob(function(blob) {
+									const compressedFile = new File([blob], file.name, {
+										type: 'image/jpeg',
+										lastModified: Date.now(),
+									});
+									formData.append('files[]', compressedFile, compressedFile.name);
+									const preview = document.createElement('img');
+									preview.src = URL.createObjectURL(compressedFile);
+									preview.classList.add('preview');
+									preview.classList.add('img-thumbnail');
+									ProgressFilesPreviewContainer.appendChild(preview);
+									counter++;
+									if (counter === files.length) {
+										uploadProgressFile(formData, estimation_id, product_id);
+									}
+								}, 'image/jpeg', 0.85);
+							});
+						};
+					};
+					reader.readAsDataURL(file);
+				}
+			});
+		}
 
 		/*** upload progress files****/
 		function uploadProgressFile(formData, estimation_id, product_id) {
-            $.ajax({
-                url: "{{ route('progress.file.store') }}",
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    showHideLoader('visible');
-                },
-                success: function(response) {
-                    showHideLoader('hidden');
+			$.ajax({
+				url: "{{ route('progress.file.store') }}",
+				type: 'POST',
+				data: formData,
+				contentType: false,
+				processData: false,
+				beforeSend: function() {
+					showHideLoader('visible');
+				},
+				success: function(response) {
+					showHideLoader('hidden');
 					if (response.status == true){
 						// toastrs('Success', response.message, 'success');
 						// getItems(estimation_id);
@@ -624,36 +519,101 @@
 					} else {
 						toastrs('Error', response.message, 'error');
 					}
-                },
-                error: function(xhr, status, error) {
-                    console.error('Upload failed:', error);
-                    showHideLoader('hidden');
-                }
-            });
-        }
+				},
+				error: function(xhr, status, error) {
+					console.error('Upload failed:', error);
+					showHideLoader('hidden');
+				}
+			});
+		}
 
 		/*** select progress files for delete ****/
 		function selected_progress_images(item) {
-			var total_selected = 0;
-			var files_ids = [];
-			var product_id = $(item).data('item-id');
+			let total_selected = 0;
+			let files_ids = [];
+			const product_id = $(item).data('item-id');
+
 			$('.progress_image_selection').each(function () {
-				var id = $(this).data('id');
-				if ($(this).prop('checked')==true){
+				const id = $(this).data('id');
+				if ($(this).prop('checked')) {
 					total_selected++;
-					var file_id = $(this).val();
+					const file_id = $(this).val();
 					files_ids.push(file_id);
-					$(".project_progress_file_"+id).parents('.progress_mediaimg').addClass('selected_image');
+					$(".project_progress_file_" + id).parents('.progress_mediaimg').addClass('selected_image');
 				} else {
-					$(".project_progress_file_"+id).parents('.progress_mediaimg').removeClass('selected_image');
+					$(".project_progress_file_" + id).parents('.progress_mediaimg').removeClass('selected_image');
 				}
 			});
-			if(total_selected > 0){
-				$('.btn_progress_bulk_delete_files_'+product_id).removeClass('d-none');
+
+			if (total_selected > 0) {
+				$('.btn_progress_bulk_delete_files_' + product_id).removeClass('d-none').data('file-ids', JSON.stringify(files_ids));
 			} else {
-				$('.btn_progress_bulk_delete_files_'+product_id).addClass('d-none');
+				$('.btn_progress_bulk_delete_files_' + product_id).addClass('d-none').removeData('file-ids');
 			}
-			$('#remove_progress_files_ids'+product_id).val(JSON.stringify(files_ids));
 		}
-</script>
+
+		//delete files
+		function triggerDeleteFiles(button) {
+			const product_id = $(button).data('product-id');
+			const estimation_id = $(button).data('estimation-id');
+			const files_ids = $(button).data('file-ids');
+
+			if (!files_ids || files_ids.length === 0) {
+				toastrs('Error', 'No files selected for deletion.', 'error');
+				return;
+			}
+
+			$.ajax({
+				url: "{{ route('progress.files.delete') }}",
+				type: "POST",
+				data: {
+					_token: "{{ csrf_token() }}",
+					remove_progress_files_ids: files_ids,
+					estimation_id: estimation_id,
+				},
+				beforeSend: function () {
+					showHideLoader('visible');
+				},
+				success: function (response) {
+					showHideLoader('hidden');
+					if (response.status) {
+						getItems(estimation_id);
+						toastrs('Success', response.message, 'success');
+					} else {
+						toastrs('Error', response.message, 'error');
+					}
+				},
+				error: function () {
+					showHideLoader('hidden');
+					toastrs('Error', 'An unexpected error occurred.', 'error');
+				},
+			});
+		}
+
+		// New JS for Payment Progress
+		$(document).ready(function () {
+			
+			$(document).on('change', 'input#show-payment-progress', function () {
+				if ($(this).is(':checked')) {
+					$('.finance-items').show(); // Show all matching elements
+				} else {
+					$('.finance-items').hide(); // Hide all matching elements
+				}
+			});
+
+            $(document).on("input change", ".payment-progress", function() {
+				var item_id = $(this).data('id');
+				var scrolled_value = $(this).val();
+				var limiting_value = $(this).data('min');
+				if (scrolled_value < limiting_value) {
+					$(this).val(limiting_value);
+				} else {
+					$('#payment-slider-value-' + item_id).text(scrolled_value + "%")
+					$('#payment-progress-slider-' + item_id).val(scrolled_value);
+				}
+			});
+
+		});
+
+	</script>
 @endpush

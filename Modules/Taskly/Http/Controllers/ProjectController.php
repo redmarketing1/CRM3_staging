@@ -3043,24 +3043,6 @@ class ProjectController extends Controller
         }
     }
 
-    public function project_progress($project_id = "")
-    {
-        Meta::prependTitle(trans('Project Progress'));
-
-        if (!Auth::user()->isAbleTo('progress manage')){
-            abort(403, __('Permission Denied!'));
-        }
-        $objUser   = Auth::user();
-        $projectID = isset($project_id) ? Crypt::decrypt($project_id) : 0;
-        if ($projectID > 0) {
-            $project           = Project::find($projectID);
-            $active_estimation = ProjectEstimation::where('project_id', $projectID)->where('is_active', 1)->first();
-            $site_money_format = site_money_format();
-
-            return view('taskly::projects.project_progress', compact('project', 'project_id', 'site_money_format', 'active_estimation'));
-        }
-    }
-
     public function project_map(Request $request)
     {
         if (Auth::user()->isAbleTo('project manage')) {

@@ -995,9 +995,19 @@ td a.btn-primary i {
 }
 
 .CHANGE {
-    outline: 4px solid #FF08FF;
+    outline: 7px dashed #FF08FF;
 }
-
+.CHANGE:before {
+    content: "CHANGE THIS:";
+    color: #FFF;
+    font-weight: bold;
+    position: absolute;
+    margin-top: -7px;
+    font-size: 8px;
+    background: #FF08FF;
+    margin-left: -7px;
+    padding: 0 5px;
+}
 #estimation-table {
     table-layout:
 }
@@ -3201,9 +3211,6 @@ td.item-signature .form-control {
     background: transparent;
 }
 
-table#progress-table td.description {
-    min-width: 250px;
-}
 
 table#progress-table td.description .desc-inner {
     max-height: 200px;
@@ -3214,6 +3221,7 @@ table#progress-table td.name {
     font-size: 120%;
     line-height: 115%;
     min-width: 180px !important;
+    hyphens: auto;
 }
 
 tr.progress-group td {
@@ -6293,7 +6301,8 @@ td.project-comments {
 }
 
 table#progress-table td.description {
-    min-width: 250px;
+    min-width: 150px;
+    line-height: 16px;
 }
 
 table#progress-table td.description .desc-inner {
@@ -6396,7 +6405,199 @@ table#progress-table td.position {
     content: "+";
 }
 
+		
+#card2 {
+    right: -61px;
+    width: 48%;
+}
 
+#card1 {
+    width: 48%;
+}
+
+#useradd-8 {
+    display: flex;
+}
+
+#progressdropBox {
+    width: 100%;
+    height: 100px !important;
+    border: 2px dashed #ccc !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+#progressdropBox:hover {
+    border-color: #4CAF50 !important;
+}
+
+.item-signature .progress_files{
+    margin-top: 10px !important;
+}
+
+.progressfileInput {
+    display: none;
+}
+
+#previewContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.preview {
+    max-width: 100%;
+    max-height: 150px;
+    margin: 10px;
+}
+/* The container */
+.checkbox-btn .container {
+    display: block;
+    position: relative;
+    margin-bottom: 25px !important;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkbox-btn .container input {
+position: absolute;
+opacity: 0;
+cursor: pointer;
+height: 0;
+width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+}
+.header_buttons .checkmark {
+    background-color: #0427e9 !important;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.selected_image .actionbuttons .bg-danger, .default_file .header_buttons .action-btn{
+    visibility: visible;
+}
+
+.progress-step {
+    position: relative !important;
+}
+
+.flex-div span {
+    display: flex;
+}
+
+#progress-table tr.group, #progress-table tr.group:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
+.construction_detail_address span, .client_invoice_address span, .address-class span { 
+    display : block;
+}
+
+.CellWithComment{
+    position:relative;
+}
+.CellWithComment i{
+    color: #333333 !important;
+}
+.CellWithComment:hover span.CellComment{
+    display:block;
+}
+.CellWithComment .CellComment{
+    top: 33px !important;
+}
+.CellWithComment .CellComment:before{
+    margin-top: -28px !important;
+    margin-right: 28px !important;
+}
+.progress-signature .sign_btn_block{
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-signature .sign_btn_block_small {
+    display: flex;
+    gap: 1px;
+}
+.progress-signature .progress_final_clear_sig, .progress-signature .progress_final_clear_sig:hover {
+    color: #333 !important;
+    background: none !important;
+    border: none !important;
+    margin-top: 1px !important;
+}
+.item-signature .progress_amount input {
+    border: 1px solid #d8d8d8 !important;
+    padding: 10px !important;
+    background: #ffffff !important;
+    margin-top: 5px !important;
+}
+.progress_files_row .progress_mediaimg{
+    padding: 10px !important;
+}
+.progress_files_row .lightbox-link{
+    margin: 0 auto !important;
+    display: block !important;
+}
+.progress_files_row .mediabox .mediainfo{
+    text-align: center !important;
+}
+.progress_files_row .preview{
+    margin: 10px !important;
+}
+.media-body a .fileprev{
+    margin: 0 auto !important;
+}
+.progress_files_row #progress_bulk_delete_form .btn-primary{
+    background: #48494B !important;
+    padding: 5px 10px !important;
+    color: #fff !important;
+}
+.progress_files_row #progress_bulk_delete_form .btn-primary i{
+    color: #fff !important;
+}  
+.pos-prefix {
+    color: #666;
+    font-weight: 500;
+    min-width: 45px;
+}
 
 td.item-signature {
     padding: 20px 20px 10px !important;
@@ -6459,13 +6660,15 @@ td a.btn-primary.btn_sign_here {
     display: flex;
     gap: 1px;
 }
-
+.select-progress {
+    margin-bottom: 10px;
+}
 canvas.signature-pad {
     border: 3px dashed #53a65e !important;
     border-radius: 5px;
-    /* width: 200px;
-    height: 50px; */
     background: #ffffffc7;
+    box-shadow: 0 0px 10px #000000a8;
+    outline: 5px solid #FFF;
 }
 .signature-placeholder {
     position: absolute;
@@ -6496,8 +6699,8 @@ td.item-signature {
 .sign_btn_block {
     position: absolute;
     z-index: 3;
-    right: 23px;
-    margin-top: 7px;
+    left: 290px;
+    margin-top: 5px;
 }
 .sign_btn_block,
 td.item-signature .form-control {
@@ -6508,10 +6711,6 @@ td.item-signature .form-control {
 
 td.item-signature .form-control {
     background: transparent;
-}
-
-table#progress-table td.description {
-    min-width: 250px;
 }
 
 table#progress-table td.description .desc-inner {
@@ -6689,10 +6888,6 @@ html:before {
 
 
 
-
-.CHANGE {
-    border: 10px dashed rgb(255, 0, 217) !important
-}
 
 input[type="color"] {
     border-radius: 20px;
@@ -8677,7 +8872,8 @@ button.btn.badge {
 }
 
 .dash-container {
-    top: 60px !important;
+    top: unset !important;
+    position: unset !important;
 }
 
 .dash-container .dash-content {
@@ -8856,40 +9052,6 @@ span.timeline-step {
     font-size: 0.875rem;
 }
 
-#search-pro input.input-s {
-    opacity: 1 !important;
-    height: auto;
-}
-
-#search-pro #search-results {
-    background: #f5f5f5;
-    position: absolute;
-    display: flex;
-    flex-wrap: wrap;
-    width: auto;
-    margin: 0;
-    padding: 20px 20px;
-    left: 8px;
-    border-top: 0 !important;
-    border: 1px solid rgba(206, 206, 206, 0.2);
-    column-gap: 10px;
-}
-
-#search-results .search-result-item {
-    margin-bottom: 10px;
-}
-
-#search-results .search-result-item .card {
-    margin: 0 !important;
-    border: none;
-    background: #FFF;
-    /* box-shadow: 0 0px 2px #00000012; */
-    border: 2px solid #f3f3f3;
-}
-
-#search-results .search-result-item .card:hover {
-    border: 2px solid #ddd;
-}
 
 table.table tr.top-quote {
     border: 2px solid #FFF;
@@ -9032,16 +9194,74 @@ body .progress_files_row .progress_mediaimg {
     color: #bbb;
     font-size: 13px;
 }
+.dash-header ul {
+    margin-bottom: 0;
+    display: inline-flex;
+    flex-flow: wrap;
+}
+.dash-header .dash-h-item
+{min-height: unset !important;}
 
+.dash-header {
+    min-height: unset !important;
+    position: unset !important;
+    padding-top: 20px;
+}
+header.dash-header * {
+    font-size: 13px;
+}
 
+#search-pro input {
+    opacity: 1 !important;
+        font-size: 18px !important;
+    }
 
+#search-pro #search-results {
+    background: #f5f5f5;
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    width: auto;
+    margin: 0;
+    padding: 20px 20px;
+    left: 8px;
+    border-top: 0 !important;
+    border: 1px solid rgba(206, 206, 206, 0.2);
+    column-gap: 10px;
+    z-index: 999;
+}
 
+#search-results .search-result-item {
+    margin-bottom: 10px;
+}
 
+#search-results .search-result-item .card {
+    margin: 0 !important;
+    border: none;
+    background: #FFF;
+    /* box-shadow: 0 0px 2px #00000012; */
+    border: 2px solid #f3f3f3;
+}
 
-
-
-
-
+#search-results .search-result-item .card:hover {
+    border: 2px solid #ddd;
+}
+body #search-pro .dash-head-link {
+    border: 2px solid #ececec !important;
+}
+.progress-numbers {
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+.progress-numbers span {
+    display: flex
+;
+    margin: 0;
+}
+table#progress-table td.quantity .single-price {
+    white-space: nowrap !important;
+    display: block;
+}
 
 
 
@@ -9116,7 +9336,11 @@ body .progress_files_row .progress_mediaimg {
         max-width: unset !important;
         height: auto !important;
     }
-
+    .dash-header 
+    {
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
 }
 
 
@@ -9185,9 +9409,42 @@ body .progress_files_row .progress_mediaimg {
     .search-input-box .search-input {
         width: 50px !important;
     }
-    table td, table th {
-        display: block;
+    table#progress-table td.name {
+        font-weight: bold;
     }
+    #progress-table tr.group td {
+        background: transparent !important;
+    }
+
+    /******* MOBILE TABLE ******/
+    table, thead, tbody, tr, th, td {
+        display: flex !important;
+        width: 100% !important;
+        flex-wrap:wrap !important;
+        border:none !important;
+    }
+  
+    table th {
+    }
+    
+    table thead tr {
+        border: 2px solid #ddd !important;    
+    }
+    table thead th {
+        flex-basis: content;    
+    }
+    
+    table tbody tr {
+        border: 2px solid #ddd !important;
+        border-top:none !important;
+        background: #f1f1f1 !important;
+    }
+    table tbody td {
+        background: #FFF !important;
+        margin: 1px !important;
+        flex-basis: content;
+    }
+    /********** MOBILE TABLE END *********/
 }
 
     /************************************+ MEDIA QUERIES ONLY ********************************************/

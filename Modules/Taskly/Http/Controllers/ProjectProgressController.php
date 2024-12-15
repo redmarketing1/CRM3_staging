@@ -20,6 +20,7 @@ use App\Models\InvoiceProduct;
 use App\Http\Controllers\InvoiceController;
 use App\Models\InvoicePayment;
 use App\Services\LexoOfficeService;
+use Butschster\Head\Facades\Meta;
 use Modules\Account\Entities\BankAccount;
 use Modules\ProductService\Entities\Tax;
 use Modules\Taskly\Emails\InvoiceForClientMail;
@@ -36,10 +37,11 @@ use Modules\Taskly\Entities\ProjectClientFeedback;
 class ProjectProgressController extends Controller
 {
 	protected $lexoffice;
+
 	public function __construct(LexoOfficeService $lexoffice) {
 		$this->lexoffice = $lexoffice;
 	}
-
+	//List In Project View
 	public function list(Request $request)
 	{
 		$order          = $request->order;
@@ -72,7 +74,7 @@ class ProjectProgressController extends Controller
 			if (Auth::user()->isAbleTo('progress view')){
 				$action = '<div class="action_btn btn-primary">';
 				$action .= '<div class="">
-								<a href="' . route('progress.finalize', \Crypt::encrypt($item->id)) . '" class="action-btn btn-info mx-1  btn btn-sm d-inline-flex align-items-center" target="_blank" title="' . __('View Progress') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Progress') . '"> <span class=""> <i class="ti ti-eye"></i></span></a>
+								<a href="' . route('progress.finalize', $item->id) . '" class="action-btn btn-info mx-1  btn btn-sm d-inline-flex align-items-center" target="_blank" title="' . __('View Progress') . '" data-bs-toggle="tooltip" data-bs-original-title="' . __('View Progress') . '"> <span class=""> <i class="ti ti-eye"></i></span></a>
 								'.$invoice_link.'
 							</div>';
 				$action .= '</div>';
@@ -96,13 +98,50 @@ class ProjectProgressController extends Controller
 		return $response;
 	}
 
+	//Create Project Progress
+	public function project_progress($project_id = "")
+    {
+        Meta::prependTitle(trans('Project Progress'));
+
+        if (!Auth::user()->isAbleTo('progress manage')){
+            abort(403, __('Permission Denied!'));
+        }
+        $objUser   = Auth::user();
+        $projectID = isset($project_id) ? $project_id : 0;
+        if ($projectID > 0) {
+            $project           = Project::find($projectID);
+            $active_estimation = ProjectEstimation::where('project_id', $projectID)->where('is_active', 1)->first();
+            $site_money_format = site_money_format();
+
+		//	$estimate_quote = EstimateQuote::where("project_estimation_id", $active_estimation->id)->where("is_final", 1)->first();
+		//	$estimation_quote_items = EstimateQuoteItem::where("estimate_quote_id", $estimate_quote->id)->with('projectEstimationProduct')->get();
+			
+		//	$html = view('taskly::project_progress.project_estimations_items', compact('project','estimate_quote','estimation_quote_items'))->render();
+            
+			return view('taskly::projects.project_progress', compact('project', 'project_id', 'site_money_format', 'active_estimation'));
+        }
+    }
+
+	//Get Estimation Items For Project Progress
+	public function progressestimationItem(Request $request){
+		
+		//	$items = ProjectEstimationProduct::where("project_estimation_id", $request->estimation_id)->where("type", "item")->get();
+		$project = Project::find($request->project_id);
+		
+		$estimate_quote = EstimateQuote::where("project_estimation_id", $request->estimation_id)->where("is_final", 1)->first();
+		
+		$estimation_quote_items = EstimateQuoteItem::where("estimate_quote_id", $estimate_quote->id)->with('projectEstimationProduct','quote')->get();
+		
+		return view('taskly::project_progress.project_estimations_items',compact('project','estimate_quote','estimation_quote_items'));
+	}
+
 	public function progressFinalize($id)
 	{
 		if (!Auth::user()->isAbleTo('progress view')){
 			abort(403, __('Permission Denied!'));
 		}
 
-		$id 					= Crypt::decrypt($id);
+		$id 					= $id;
 		$main_progress_id 		= $id;
 		$progress_main_details 	= ProjectProgressMain::where('id', $id)->first();
 		$estimation 			= ProjectEstimation::whereId($progress_main_details->estimation_id)->first();
@@ -129,7 +168,7 @@ class ProjectProgressController extends Controller
 		/*** without render use ****/
 		// return view("project.project_progress_finalize", compact('estimation', 'quote', 'settings','progressFinalizeEmailTemplate', 'items','main_progress_id'));
 	}
-
+	
 	public function estimationItem(Request $request)
 	{
 		$order          = $request->order;
@@ -254,31 +293,31 @@ class ProjectProgressController extends Controller
 					$item_progress_files = '<div class="progress_files d-none" data-id="' . $item->id . '"><div id="progressdropBox" ondrop="handleProgressDrop(event)" ondragover="handleProgressDragOver(event, this)" data-id="' . $item->id . '" data-estimationid="' . $item->project_estimation_id . '"><p style="font-size:20px ">Drag & Drop files here or click to select</p></div><input type="file" id="progressfileInput' . $item->id . '" class="progressfileInput" multiple onchange="handleProgressFileSelect(event, this)" data-id="' . $item->id . '" data-estimationid="' . $item->project_estimation_id . '" /></div>';
 
 					$item_progress_id = isset($old_progress->id) ? $old_progress->id : 0;
-$item_progress_comment = isset($item->comment) ? $item->comment : "";
-$item_signature = '<div class="sign_btn_block">
-    <div class="dropdown">
-        <button type="button" class="btn btn-sm btn-sig-menu" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fa-solid fa-caret-down"></i>
-        </button>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item clearSig" href="#" data-id="' . $item->id . '"><i class="fa-regular fa-trash-can me-2"></i>'.__('Delete').'</a></li>
-            <li><a class="dropdown-item commentSig" href="#" data-id="' . $item->id . '"><i class="fa-regular fa-comment-dots me-2"></i>'.__('Comment').'</a></li>
-            <li><a class="dropdown-item quantitySig" href="#" data-id="' . $item->id . '"><i class="fa-solid fa-hashtag me-2"></i>'.__('Quantity').'</a></li>
-            <li><a class="dropdown-item uploadSig" href="#" data-id="' . $item->id . '"><i class="fa-solid fa-camera me-2"></i>'.__('Upload').'</a></li>
-        </ul>
-    </div>
-</div>
-<div class="signature-field form-control position-relative">
-	<div class="signature-placeholder" id="signature-placeholder-' . $item->id . '">' . trans('Signature') . '</div>
-    <input type="hidden" name="signatures[' . $item->id . ']" id="SignupImage' . $item->id . '" value="">
-    <canvas id="items-signature-pad-' . $item->id . '" class="signature-pad" data-id="' . $item->id . '" height="100" width="300"></canvas>
-    
-</div>
-<input type="hidden" name="estimation_id" value="' . $item->project_estimation_id . '">
-<input type="hidden" name="progress_product_id" value="' . $item->id . '">
-<div class="input-fields mt-2">
-    ' . $item_comment . $item_progress_amount . '
-</div>';
+					$item_progress_comment = isset($item->comment) ? $item->comment : "";
+					$item_signature = '<div class="sign_btn_block">
+						<div class="dropdown">
+							<button type="button" class="btn btn-sm btn-sig-menu" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="fa-solid fa-caret-down"></i>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item clearSig" href="#" data-id="' . $item->id . '"><i class="fa-regular fa-trash-can me-2"></i>'.__('Delete').'</a></li>
+								<li><a class="dropdown-item commentSig" href="#" data-id="' . $item->id . '"><i class="fa-regular fa-comment-dots me-2"></i>'.__('Comment').'</a></li>
+								<li><a class="dropdown-item quantitySig" href="#" data-id="' . $item->id . '"><i class="fa-solid fa-hashtag me-2"></i>'.__('Quantity').'</a></li>
+								<li><a class="dropdown-item uploadSig" href="#" data-id="' . $item->id . '"><i class="fa-solid fa-camera me-2"></i>'.__('Upload').'</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="signature-field form-control position-relative">
+						<div class="signature-placeholder" id="signature-placeholder-' . $item->id . '">' . trans('Signature') . '</div>
+						<input type="hidden" name="signatures[' . $item->id . ']" id="SignupImage' . $item->id . '" value="">
+						<canvas id="items-signature-pad-' . $item->id . '" class="signature-pad" data-id="' . $item->id . '" height="100" width="300"></canvas>
+						
+					</div>
+					<input type="hidden" name="estimation_id" value="' . $item->project_estimation_id . '">
+					<input type="hidden" name="progress_product_id" value="' . $item->id . '">
+					<div class="input-fields mt-2">
+						' . $item_comment . $item_progress_amount . '
+					</div>';
 					$progress_files_preview = '<div class="progress_files_preview_' . $item->id . '"><div id="ProgressFilesPreviewContainer' . $item->id . '"></div></div>';
 
 					$progress_files_remove_btn = '<div class="float-start d-flex">';
@@ -369,6 +408,29 @@ $item_signature = '<div class="sign_btn_block">
 		}
 	}
 
+	public function deleteProgressFiles(Request $request)
+	{
+		$remove_files_ids = $request->remove_progress_files_ids ? json_decode($request->remove_progress_files_ids, true) : [];
+
+		if (!empty($remove_files_ids)) {
+			foreach ($remove_files_ids as $encrypted_id) {
+				$id = \Crypt::decrypt($encrypted_id);
+				$file = ProjectProgressFiles::find($id);
+
+				if ($file) {
+					delete_file(public_path('uploads/progress_files/' . $file->file));
+					$file->delete();
+				}
+			}
+			return response()->json(['status' => true, 'message' => __('Files Deleted Successfully.')]);
+		}
+
+		return response()->json([
+			'status' => false,
+			'message'    => __('Failed to Delete.'),
+		]);
+	}
+
 	public function update(Request $request, ProjectProgress $projectProgress)
 	{
 		// $return = array();
@@ -445,6 +507,7 @@ $item_signature = '<div class="sign_btn_block">
 						"product_id" => $key,
 						'progress' => $total_progress,
 						'progress_amount' => isset($row['progress_amount']) ? trim($row['progress_amount']) : 0,
+						'progress_payment' => $row['payment_progress'],
 						'remarks' => isset($row['comment']) ? $row['comment'] : '',
 						'signature' => $row['signature'],
 						"status" => 1,
@@ -461,8 +524,8 @@ $item_signature = '<div class="sign_btn_block">
 				// All items have valid signatures, proceed with saving ProjectProgressMain
 				$progress_confirmation = new ProjectProgressMain();
 				$progress_confirmation->estimation_id = $request->estimation_id;
-				$progress_confirmation->project_id = isset($request->project_id) ? Crypt::decrypt($request->project_id) : '';
-				$progress_confirmation->user_id = isset($request->user_id) ? Crypt::decrypt($request->user_id) : '';
+				$progress_confirmation->project_id = isset($request->project_id) ? $request->project_id : '';
+				$progress_confirmation->user_id = isset($request->user_id) ? $request->user_id : '';
 				$progress_confirmation->name = trim($request->confirm_user_name);
 				$progress_confirmation->signature = $request->confirm_signature;
 				$progress_confirmation->comment = trim($request->confirm_comment);
@@ -903,16 +966,16 @@ $item_signature = '<div class="sign_btn_block">
 		try {
 			$main_progress 		= ProjectProgressMain::find($progress_id);
 			$project_id = $main_progress->project_id;
-			$estimation = ProjectEstimation::find($main_progress->estimation_id);
-			$quote 	= EstimateQuote::where("project_estimation_id", $main_progress->estimation_id)->where("is_final", 1)->first();
-			$tax = Tax::where('rate', $quote->tax)->first();
-			$discount = $quote->discount;
+			$project_estimation = ProjectEstimation::find($main_progress->estimation_id);
+			$estimation_quote 	= EstimateQuote::where("project_estimation_id", $main_progress->estimation_id)->where("is_final", 1)->first();
+			$tax = Tax::where('rate', $estimation_quote->tax)->first();
+			$discount = $estimation_quote->discount;
 			
-			if (!$quote) {
+			if (!$estimation_quote) {
 				return redirect()->back()->with('error', __('Quote not found.'));
 			}
 
-			$quoteItem 	= EstimateQuoteItem::where("estimate_quote_id", $quote->id)->with('projectEstimationProduct')->get();
+			$estimation_quote_items 	= EstimateQuoteItem::where("estimate_quote_id", $estimation_quote->id)->with('projectEstimationProduct')->get();
 			
 			$invoice = Invoice::create([
 				"invoice_id" 			=> company_setting('invoice_starting_number'),
@@ -921,24 +984,25 @@ $item_signature = '<div class="sign_btn_block">
 				'issue_date' 			=> date("Y-m-d H:i:s"),
 				'due_date' 				=> date("Y-m-d H:i:s", strtotime("+7Days")),
 				'send_date' 			=> date("Y-m-d H:i:s"),
-				'user_id' 			=> $estimation->project()->client,
-				'customer_id' 			=> $estimation->project()->client,
-				'client' 				=> $estimation->project()->client,
-				'project' 				=> $estimation->project()->id,
+				'user_id' 			=> $project_estimation->project()->client,
+				'customer_id' 			=> $project_estimation->project()->client,
+				'client' 				=> $project_estimation->project()->client,
+				'project' 				=> $project_estimation->project()->id,
 				'progress_id'           => $main_progress->id,
 				'type' 					=> __('Progress'),
 				'tax' 					=> 0,
 				'discount' 				=> $discount,
-				'project_estimation_id' => $estimation->id,
+				'project_estimation_id' => $project_estimation->id,
 				'invoice_template' 		=> 'template10',
 				'workspace' 			=> getActiveWorkSpace(),
 				'created_by' 			=> Auth::user()->id,
 			]);
 			Invoice::starting_number($invoice->invoice_id + 1, 'invoice');
 
-			foreach ($quoteItem as $item) {
+			foreach ($estimation_quote_items as $item) {
 				$latest_progress = 0;
 				$previous_progress = 0;
+				$latest_invoice_payment = 0;
 				$overallprog = 0;
 				if ($item->progress) {
 					// Fetch progress records related to the current product
@@ -956,6 +1020,7 @@ $item_signature = '<div class="sign_btn_block">
 					
 					$latest_progress = isset($progress) ? $progress->progress : 0;
 					$previous_progress = isset($old_progress) ? $old_progress->progress : 0;
+					$latest_invoice_payment = isset($progress) ? $progress->progress_payment : 0;
 				}
 				
 				$new_progress = floatval($latest_progress) - floatval($previous_progress);
@@ -965,13 +1030,17 @@ $item_signature = '<div class="sign_btn_block">
 				$qty = 0;
 				if ($new_progress > 0) {
 					$qty = ($new_progress / 100) * $item->projectEstimationProduct->quantity;
+					
 					$progress_amount = ($new_progress / 100) * $total_price;
 				}
 
-				
+				if($latest_invoice_payment >= $latest_progress){
+					$price = 0;
+				}
+
 				$currentProgressBar = $this->getProgressBar($new_progress);
 				$totalProgressBar = $this->getProgressBar(floatval($new_progress) + floatval($previous_progress));
-				
+				$invoiceProgressBar = $this->getProgressBar($latest_invoice_payment);
 				// Create new InvoiceProduct
 				$invoiceProduct = new InvoiceProduct();
 				$invoiceProduct->invoice_id = $invoice->id;
@@ -989,7 +1058,8 @@ $item_signature = '<div class="sign_btn_block">
     			"<strong class='pprice'>".__('Price').":</strong> <span class='pprice_value'>" . $item->price . "</span><br>" .
     			"<strong class='ptotal'>".__('Total Price').":</strong> <span class='ptotal_value'>" . $item->total_price . "</span><br>" .
     			"<strong class='pprogress'>".__('Current Progress').":</strong> <span class='progress_value'>" . $currentProgressBar . " (" . $new_progress . "%)</span><br>" .
-    			"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <span class='ptotalprogress_value'>" . $totalProgressBar . " (" . (floatval($new_progress) + floatval($previous_progress)) . "%)</span>";
+    			"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <span class='ptotalprogress_value'>" . $totalProgressBar . " (" . (floatval($new_progress) + floatval($previous_progress)) . "%)</span><br>".
+				"<strong class='ptotalinvoiceprogress'>".__('Advance Payment').":</strong> <span class='ptotalinvoiceprogress_value'>" . $invoiceProgressBar . " (" . $latest_invoice_payment . "%)</span>";
 				$invoiceProduct->progress = $new_progress;
 				$invoiceProduct->progress_amount = $progress_amount;
 				$invoiceProduct->save();
