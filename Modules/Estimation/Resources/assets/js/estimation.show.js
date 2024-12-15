@@ -5,278 +5,14 @@ $(document).ready(function () {
         saveTimeout: null,
         saveInterval: 1000 * 30, // 30 seconds
         hasUnsavedChanges: false,
+        isFullScreen: false,
         estimation: $('.estimation-show'),
+        originalPrices: new Map(),
         templates: {
             item: $('#add-item-template').html(),
             group: $('#add-group-template').html(),
             comment: $('#add-comment-template').html()
-        },
-        originalPrices: new Map(),
-
-        init() {
-            if (!this.validateTemplates()) return;
-            this.bindEvents();
-            this.initializeSortable();
-            this.updateAllCalculations();
-            this.initializeAutoSave();
-        },
-
-        initializeAutoSave() {
-            // Update autoSaveEnabled when checkbox changes
-            $('#autoSaveEnabled').on('change', (e) => {
-                this.autoSaveEnabled = $(e.target).is(':checked');
-
-                // If enabled and there are unsaved changes, start autosave
-                if (this.autoSaveEnabled && this.hasUnsavedChanges) {
-                    this.autoSaveHandler();
-                }
-            });
-
-            // Add beforeunload event listener for unsaved changes
-            $(window).on('beforeunload', (e) => {
-                if (this.hasUnsavedChanges) {
-                    const message = 'You have unsaved changes. Are you sure you want to leave?';
-                    e.preventDefault();
-                    e.returnValue = message;
-                    return message;
-                }
-            });
-        },
-
-        autoSaveHandler() {
-            // Check if autosave is enabled and there are unsaved changes
-            if (!this.autoSaveEnabled || !$('#quote_form').length || !this.hasUnsavedChanges) return;
-
-            // Clear any existing save timeout
-            if (this.saveTimeout) {
-                clearTimeout(this.saveTimeout);
-            }
-
-            const currentTime = Date.now();
-            const timeSinceLastSave = currentTime - this.lastSaveTime;
-
-            // If enough time has passed since last save, save immediately
-            if (timeSinceLastSave >= this.saveInterval) {
-                this.saveTableData();
-                this.lastSaveTime = currentTime;
-            } else {
-                // Otherwise, set a timeout to save later
-                this.saveTimeout = setTimeout(() => {
-                    if (this.hasUnsavedChanges && this.autoSaveEnabled) {
-                        this.saveTableData();
-                        this.lastSaveTime = Date.now();
-                    }
-                }, this.saveInterval);
-            }
-        },
-
-        saveTableData() {
-            // Check again if autosave is enabled before saving
-            if (!this.autoSaveEnabled) return;
-
-            const columns = {};
-            const cardQuoteIds = new Set();
-            $('.column_single_price').each(function () {
-                const quoteId = $(this).data('cardquoteid');
-                if (quoteId) cardQuoteIds.add(quoteId);
-            });
-
-            cardQuoteIds.forEach(cardQuoteId => {
-                columns[cardQuoteId] = {
-                    settings: {
-                        markup: this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][markup]"]`).val() || '0'),
-                        cashDiscount: this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][discount]"]`).val() || '0'),
-                        vat: this.parseGermanDecimal($(`select[name="item[${cardQuoteId}][tax]"]`).val() || '0')
-                    },
-                    totals: {
-                        netIncludingDiscount: this.parseGermanDecimal($(`.total-net-discount[data-cardquoteid="${cardQuoteId}"]`).text()),
-                        grossIncludingDiscount: this.parseGermanDecimal($(`.total-gross-discount[data-cardquoteid="${cardQuoteId}"]`).text()),
-                        net: this.parseGermanDecimal($(`.total-net[data-cardquoteid="${cardQuoteId}"]`).text()),
-                        gross: this.parseGermanDecimal($(`.total-gross-total[data-cardquoteid="${cardQuoteId}"]`).text())
-                    }
-                };
-            });
-
-            const data = {
-                cards: columns,
-                form: this.getFormData(),
-                newItems: this.prepareNewItemsForSubmission()
-            };
-
-            $.ajax({
-                url: route('estimation.update', data.form.id),
-                method: 'PUT',
-                data: data,
-                beforeSend: () => {
-                    $('.lastSaveTimestamp').text('is running...');
-                    $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
-                },
-                success: (idMappings) => {
-
-                    this.updateEntitiesWithNewIds(idMappings);
-
-                    // Update UI state
-                    this.lastSaveTime = Date.now();
-                    this.hasUnsavedChanges = false;
-
-                    let lastSavedText = this.formatTimeAgo(this.lastSaveTime);
-                    this.startTimeAgoUpdates();
-
-                    $('.lastSaveTimestamp').text(lastSavedText);
-                    $('#save-button').html(`Saved last changed.`);
-                },
-                error: (error) => {
-                    toastrs('Failed to save changes.');
-                    $('.lastSaveTimestamp').text('is failed.');
-                    this.hasUnsavedChanges = true;
-                }
-            });
-        },
-
-        formatTimeAgo(timestamp) {
-            if (!timestamp) return 'Never saved';
-
-            const now = Date.now();
-            const diff = Math.floor((now - timestamp) / 1000);
-
-            if (diff < 60) return 'Just now';
-            if (diff < 3600) {
-                const minutes = Math.floor(diff / 60);
-                return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-            }
-            if (diff < 86400) {
-                const hours = Math.floor(diff / 3600);
-                return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-            }
-
-            const days = Math.floor(diff / 86400);
-
-            return `${days} day${days > 1 ? 's' : ''} ago`;
-        },
-
-        startTimeAgoUpdates() {
-            if (this.timeAgoInterval) {
-                clearInterval(this.timeAgoInterval);
-            }
-
-            this.timeAgoInterval = setInterval(() => {
-                if (this.lastSaveTime) {
-                    let lastSavedText = this.formatTimeAgo(this.lastSaveTime);
-                    $('.lastSaveTimestamp').text(lastSavedText);
-                }
-            }, 60000);
-        },
-
-        prepareNewItemsForSubmission() {
-            const newItems = [];
-            let $self = this;
-
-            $('.group_row').each(function () {
-                const groupId = $(this).data('groupid');
-                const groupName = $(this).find('.grouptitle-input').val();
-                const groupPos = $(this).find('.grouppos').text().trim();
-
-                const group = {
-                    id: groupId,
-                    type: 'group',
-                    name: groupName,
-                    pos: groupPos,
-                    total: null,
-                };
-                newItems.push(group);
-            });
-
-            $(`.item_row, .item_comment`).each(function () {
-
-                const $row = $(this);
-                const itemId = $row.data('itemid');
-                const type = $row.data('type');
-                const groupId = $row.data('groupid');
-
-                const item = {
-                    id: itemId,
-                    type: type,
-                    groupId: groupId,
-                    pos: $row.find('.pos-inner').text().trim(),
-                    name: $row.find('.item-name').val().trim(),
-                    // description: isComment ? $row.find('.item-description').val() : '',
-                    quantity: $row.find('.item-quantity').val() || '0',
-                    unit: $row.find('.item-unit').val(),
-                    optional: $row.find('.item-optional').is(':checked') ? 0 : 1,
-                    prices: $self.updateItemPriceAndTotal(itemId)
-                };
-
-                newItems.push(item);
-            });
-
-            return newItems;
-        },
-
-        updateItemPriceAndTotal(itemId) {
-            const row = document.querySelector(`.item_row[data-itemid="${itemId}"]`);
-            let $self = this;
-
-            const singlePricing = row.querySelectorAll('.item-price');
-
-            const prices = Array.from(singlePricing).map(element => {
-
-                const quoteId = element.closest('td[data-cardquoteid]').dataset.cardquoteid;
-                const singlePrice = $self.parseNumber(element.value);
-                const quantity = $self.parseNumber(row.querySelector('.item-quantity').value);
-                const total = singlePrice * quantity;
-
-                return {
-                    quoteId: quoteId,
-                    singlePrice: singlePrice,
-                    totalPrice: total
-                };
-            });
-
-            return prices;
-        },
-
-        updateEntitiesWithNewIds(idMappings) {
-            Object.entries(idMappings).forEach(([oldId, newId]) => {
-
-                const row = document.querySelector(`
-                    tr[data-id="${oldId}"], 
-                    tr[data-itemid="${oldId}"], 
-                    tr[data-groupid="${oldId}"]
-                `);
-
-                if (row) {
-                    if (row.dataset.id) row.dataset.id = newId;
-                    if (row.dataset.itemid) row.dataset.itemid = newId;
-                    if (row.dataset.groupid) row.dataset.groupid = newId;
-
-                    // Update input names
-                    row.querySelectorAll(`[name*="[${oldId}]"]`).forEach(input => {
-                        input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
-                    });
-                }
-            });
-        },
-
-        getFormData() {
-            const $form = $('#quote_form');
-            const formData = $form.serializeArray();
-            const formObject = {};
-
-            formData.forEach(item => {
-                formObject[item.name] = item.value;
-            });
-
-            return formObject;
-        },
-
-        validateTemplates() {
-            return Object.values(this.templates).every(template => template);
-        },
-
-        parseNumber(value) {
-            if (typeof value === 'number') return value;
-            return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
-        },
+        }, 
 
         bindEvents() {
             this.estimation.find('button[data-actioninsert]').on('click', (event) => {
@@ -287,6 +23,7 @@ $(document).ready(function () {
             });
             this.estimation.on('click', '.desc_toggle', this.toggleDescription);
             this.estimation.on('click', '.grp-dt-control', this.toggleGroup);
+            this.estimation.on('click', '#toggleFullScreen', this.toggleFullScreen);
 
             this.estimation.on('blur', '.item-quantity, .item-price, .item-name, input[name^="item"][name$="[markup]"], input[name^="item"][name$="[discount]"]', () => {
                 this.hasUnsavedChanges = true;
@@ -305,9 +42,11 @@ $(document).ready(function () {
             });
 
             this.estimation.on('click', '#save-button', () => {
-                console.log('click');
-
                 this.saveTableData();
+            });
+
+            this.estimation.on('input', '#table-search', () => {
+                this.searchTableItem();
             });
 
             this.estimation.on('change', '.item-optional', () => {
@@ -378,8 +117,10 @@ $(document).ready(function () {
                 const groupId = $groupCheckbox.data('groupid');
                 const isChecked = $groupCheckbox.prop('checked');
 
-                // Select/deselect all items in the group
-                $(`.item_selection[data-groupid="${groupId}"]`).prop('checked', isChecked);
+                // Select/deselect all items and comments in the group
+                $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`)
+                    .find('.item_selection')
+                    .prop('checked', isChecked);
 
                 // Update main select all checkbox
                 this.updateSelectAllState();
@@ -394,7 +135,7 @@ $(document).ready(function () {
                 const $selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
 
                 if ($selectedCheckboxes.length === 0) {
-                    toastrs("Please select checkbox to continue delete");
+                    toastrs("error", "Please select checkbox to continue delete");
                     return;
                 }
 
@@ -412,40 +153,341 @@ $(document).ready(function () {
 
                         $selectedCheckboxes.each(function () {
                             const $row = $(this).closest('tr');
+                            const id = $row.data('itemid') || $row.data('groupid');
+                            const isGroup = $row.hasClass('group_row');
 
-                            if ($row.hasClass('group_row')) {
-                                const groupId = $row.data('groupid');
-                                groupIds.push(groupId);
-
-                                // Remove all items in the group
-                                $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`).remove();
-                            } else {
-                                itemIds.push($row.data('id'));
-                            }
+                            (isGroup ? groupIds : itemIds).push(id);
                             $row.remove();
                         });
-
-                        $('.SelectAllCheckbox').prop('checked', false);
 
                         $.ajax({
                             url: route('estimation.destroy', estimationId),
                             method: 'DELETE',
                             data: { estimationId, items: itemIds, groups: groupIds },
-                            success: (response) => {
-                                this.updateAllCalculations();
-                                this.updatePOSNumbers();
-                                toastrs('Items deleted successfully');
-                            },
-                            error: (error) => {
-                                toastrs('Error deleting items');
-                                console.error(error);
-                            }
                         });
+                        document.querySelector('.SelectAllCheckbox').checked = false;
+                        this.updateAllCalculations();
+                        this.updatePOSNumbers();
                     }
                 });
             });
         },
 
+        init() {
+            if (!this.validateTemplates()) return;
+            this.bindEvents();
+            this.initializeSortable();
+            this.updateAllCalculations();
+            this.updatePOSNumbers();
+            this.initializeAutoSave();
+
+            document.addEventListener('fullscreenchange', () => {
+                this.isFullScreen = !!document.fullscreenElement;
+                const icon = document.querySelector('.fa-expand, .fa-compress');
+                if (icon) {
+                    icon.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                }
+            });
+        }, 
+
+        initializeFullScreen() {
+            document.addEventListener('fullscreenchange', () => {
+                this.isFullScreen = !!document.fullscreenElement;
+                const btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
+                if (btn) {
+                    btn.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                }
+            });
+        }, 
+
+        initializeAutoSave() {
+            // Update autoSaveEnabled when checkbox changes
+            $('#autoSaveEnabled').on('change', (e) => {
+                this.autoSaveEnabled = $(e.target).is(':checked');
+
+                // If enabled and there are unsaved changes, start autosave
+                if (this.autoSaveEnabled && this.hasUnsavedChanges) {
+                    this.autoSaveHandler();
+                }
+            });
+
+            // Add beforeunload event listener for unsaved changes
+            $(window).on('beforeunload', (e) => {
+                if (this.hasUnsavedChanges) {
+                    const message = 'You have unsaved changes. Are you sure you want to leave?';
+                    e.preventDefault();
+                    e.returnValue = message;
+                    return message;
+                }
+            });
+        },
+
+        toggleFullScreen() {
+            const estimationSection = document.querySelector('.estimation-show');
+            if (!estimationSection) return;
+
+            if (!document.fullscreenElement) {
+                estimationSection.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        },
+
+        autoSaveHandler() {
+            // Check if autosave is enabled and there are unsaved changes
+            if (!this.autoSaveEnabled || !$('#quote_form').length || !this.hasUnsavedChanges) return;
+
+            // Clear any existing save timeout
+            if (this.saveTimeout) {
+                clearTimeout(this.saveTimeout);
+            }
+
+            const currentTime = Date.now();
+            const timeSinceLastSave = currentTime - this.lastSaveTime;
+
+            // If enough time has passed since last save, save immediately
+            if (timeSinceLastSave >= this.saveInterval) {
+                this.saveTableData();
+                this.lastSaveTime = currentTime;
+            } else {
+                // Otherwise, set a timeout to save later
+                this.saveTimeout = setTimeout(() => {
+                    if (this.hasUnsavedChanges && this.autoSaveEnabled) {
+                        this.saveTableData();
+                        this.lastSaveTime = Date.now();
+                    }
+                }, this.saveInterval);
+            }
+        },
+
+        saveTableData() {
+            // Check again if autosave is enabled before saving
+            if (!this.autoSaveEnabled) return;
+
+            const columns = {};
+            const cardQuoteIds = new Set();
+            $('.column_single_price').each(function () {
+                const quoteId = $(this).data('cardquoteid');
+                if (quoteId) cardQuoteIds.add(quoteId);
+            });
+
+            cardQuoteIds.forEach(cardQuoteId => {
+                columns[cardQuoteId] = {
+                    settings: {
+                        markup: this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][markup]"]`).val() || '0'),
+                        cashDiscount: this.parseGermanDecimal($(`input[name="item[${cardQuoteId}][discount]"]`).val() || '0'),
+                        vat: this.parseGermanDecimal($(`select[name="item[${cardQuoteId}][tax]"]`).val() || '0')
+                    },
+                    totals: {
+                        netIncludingDiscount: this.parseGermanDecimal($(`.total-net-discount[data-cardquoteid="${cardQuoteId}"]`).text()),
+                        grossIncludingDiscount: this.parseGermanDecimal($(`.total-gross-discount[data-cardquoteid="${cardQuoteId}"]`).text()),
+                        net: this.parseGermanDecimal($(`.total-net[data-cardquoteid="${cardQuoteId}"]`).text()),
+                        gross: this.parseGermanDecimal($(`.total-gross-total[data-cardquoteid="${cardQuoteId}"]`).text())
+                    }
+                };
+            });
+
+            const data = {
+                cards: columns,
+                form: this.getFormData(),
+                newItems: this.prepareNewItemsForSubmission()
+            };  
+
+            $.ajax({
+                url: route('estimation.update', data.form.id),
+                method: 'PUT',
+                data: data,
+                beforeSend: () => {
+                    $('.lastSaveTimestamp').text('is running...');
+                    $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
+                },
+                success: (idMappings) => {
+
+                    this.updateEntitiesWithNewIds(idMappings);
+
+                    // Update UI state
+                    this.lastSaveTime = Date.now();
+                    this.hasUnsavedChanges = false;
+
+                    let lastSavedText = this.formatTimeAgo(this.lastSaveTime);
+                    this.startTimeAgoUpdates();
+
+                    $('.lastSaveTimestamp').text(lastSavedText);
+                    $('#save-button').html(`Saved last changed.`);
+                },
+                error: (error) => {
+                    toastrs('error', 'Failed to save changes.');
+                    $('.lastSaveTimestamp').text('is failed.');
+                    this.hasUnsavedChanges = true;
+                }
+            });
+        },
+
+        formatTimeAgo(timestamp) {
+            if (!timestamp) return 'Never saved';
+
+            const now = Date.now();
+            const diff = Math.floor((now - timestamp) / 1000);
+
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) {
+                const minutes = Math.floor(diff / 60);
+                return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+            }
+            if (diff < 86400) {
+                const hours = Math.floor(diff / 3600);
+                return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            }
+
+            const days = Math.floor(diff / 86400);
+
+            return `${days} day${days > 1 ? 's' : ''} ago`;
+        },
+
+        startTimeAgoUpdates() {
+            if (this.timeAgoInterval) {
+                clearInterval(this.timeAgoInterval);
+            }
+
+            this.timeAgoInterval = setInterval(() => {
+                if (this.lastSaveTime) {
+                    let lastSavedText = this.formatTimeAgo(this.lastSaveTime);
+                    $('.lastSaveTimestamp').text(lastSavedText);
+                }
+            }, 60000);
+        },
+
+        prepareNewItemsForSubmission() {
+            const newItems = [];
+
+            // Collect group rows
+            const groupRows = document.querySelectorAll('.group_row');
+            groupRows.forEach(row => {
+                const groupId = row.dataset.groupid;
+                const groupName = row.querySelector('.grouptitle-input').value;
+                const groupPos = row.querySelector('.grouppos').textContent.trim();
+
+                const group = {
+                    id: groupId,
+                    type: 'group',
+                    name: groupName,
+                    pos: groupPos,
+                    total: null,
+                };
+                newItems.push(group);
+            });
+
+            const itemRows = document.querySelectorAll('.item_row, .item_comment');
+            itemRows.forEach(row => {
+                const itemId = row.dataset.itemid;
+                const type = row.dataset.type;
+                const groupId = row.dataset.groupid;
+                const name = row.querySelector('.item-name, .item-comment')?.value.trim() || null;
+                const comment = row.querySelector('.item-comment')?.value.trim() || null;
+                const descriptionID = $(row).next(`.tr_child_description[data-itemid="${itemId}"]`).find('.description_input').attr('id');
+                const description = tinymce?.get(descriptionID)?.getContent() || $(descriptionID)?.val() || null;
+
+                const item = {
+                    id: itemId,
+                    type: type,
+                    groupId: groupId,
+                    pos: row.querySelector('.pos-inner').textContent.trim(),
+                    name: name,
+                    description: description,
+                    comment: comment,
+                    quantity: this.parseGermanDecimal(row.querySelector('.item-quantity')?.value || '0'),
+                    unit: row.querySelector('.item-unit')?.value || 0,
+                    optional: row.querySelector('.item-optional')?.checked ? 0 : 1,
+                    prices: (type == 'item') ? this.updateItemPriceAndTotal(itemId) : this.updateCommentPrices(),
+                };
+
+                newItems.push(item);
+            });
+
+            return newItems;
+        },
+
+        updateCommentPrices() {
+            const cardQuoteIds = Array.from(
+                new Set(
+                    Array.from(document.querySelectorAll('[data-cardquoteid]'))
+                        .map(el => el.dataset.cardquoteid)
+                )
+            );
+            return cardQuoteIds.map(quoteId => ({
+                quoteId,
+                singlePrice: 0,
+                totalPrice: 0
+            }));
+        },
+
+        updateItemPriceAndTotal(itemId) {
+            const row = document.querySelector(`.item_row[data-itemid="${itemId}"]`);
+            let $self = this;
+
+            const singlePricing = row.querySelectorAll('.item-price');
+
+            const prices = Array.from(singlePricing).map(element => {
+
+                const quoteId = element.closest('td[data-cardquoteid]').dataset.cardquoteid;
+                const singlePrice = $self.parseNumber(element.value);
+                const quantity = $self.parseNumber(row.querySelector('.item-quantity').value);
+                const total = singlePrice * quantity;
+
+                return {
+                    quoteId: quoteId,
+                    singlePrice: singlePrice,
+                    totalPrice: total
+                };
+            });
+
+            return prices;
+        },
+
+        updateEntitiesWithNewIds(idMappings) {
+            Object.entries(idMappings).forEach(([oldId, newId]) => {
+
+                const rows = document.querySelectorAll(`
+                    tr[data-itemid="${oldId}"], 
+                    tr[data-groupid="${oldId}"]
+                `);
+
+                rows.forEach(row => {
+                    // Update dataset attributes
+                    if (row.dataset.itemid == oldId) row.dataset.itemid = newId;
+                    if (row.dataset.groupid == oldId) row.dataset.groupid = newId;
+
+                    // Update input names
+                    row.querySelectorAll(`[name*="[${oldId}]"]`).forEach(input => {
+                        input.name = input.name.replace(`[${oldId}]`, `[${newId}]`);
+                    });
+                });
+            });
+        },
+
+        getFormData() {
+            const $form = $('#quote_form');
+            const formData = $form.serializeArray();
+            const formObject = {};
+
+            formData.forEach(item => {
+                formObject[item.name] = item.value;
+            });
+
+            return formObject;
+        },
+
+        validateTemplates() {
+            return Object.values(this.templates).every(template => template);
+        },
+
+        parseNumber(value) {
+            if (typeof value === 'number') return value;
+            return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
+        },
+ 
         storeOriginalPrices() {
             // Clear existing stored prices
             this.originalPrices.clear();
@@ -481,18 +523,23 @@ $(document).ready(function () {
                 return;
             }
 
-            const currentGroupId = this.getCurrentGroupId();
-            if (!currentGroupId) {
-                toastr?.error('Please create a group first');
-                return;
+            const existingGroups = document.querySelectorAll('.group_row');
+
+            if (existingGroups.length === 0) {
+                this.addItems('group');
             }
+
+            // Now add the new item
+            const currentGroupId = this.getCurrentGroupId();
 
             const newItem = template
                 .replace(/{TEMPLATE_ID}/g, timestamp)
                 .replace(/{TEMPLATE_GROUP_ID}/g, currentGroupId)
                 .replace(/{TEMPLATE_POS}/g, this.getNextItemPosition(currentGroupId));
 
+
             const lastGroupItem = $(`tr[data-groupid="${currentGroupId}"]:last`);
+
             lastGroupItem.length ? lastGroupItem.after(newItem) : $(`tr[data-groupid="${currentGroupId}"]`).after(newItem);
 
             this.updatePOSNumbers();
@@ -508,60 +555,13 @@ $(document).ready(function () {
             $('.SelectAllCheckbox').prop('checked', totalCheckboxes === checkedCheckboxes && totalCheckboxes > 0);
         },
 
-        removeItem() {
-            const selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
-
-            if (selectedCheckboxes.length === 0) {
-                toastrs("Please select checkbox to continue delete");
-                return;
-            }
-
-            Swal.fire({
-                title: 'Confirmation Delete',
-                text: 'Really! You want to remove them? You can\'t undo',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Delete it',
-                cancelButtonText: "No, cancel",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const estimationId = this.getFormData().id;
-                    const itemIds = [];
-                    const groupIds = [];
-
-                    selectedCheckboxes.each(function () {
-                        const $row = $(this).closest('tr');
-
-                        if ($row.hasClass('group_row')) {
-                            const groupId = $row.data('groupid');
-                            groupIds.push(groupId);
-
-                            // Remove all items in the group
-                            $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`).remove();
-                        } else {
-                            itemIds.push($row.data('id'));
-                        }
-                        $row.remove();
-                    });
-
-                    $('.SelectAllCheckbox').prop('checked', false);
-
-                    $.ajax({
-                        url: route('estimation.destroy', estimationId),
-                        method: 'DELETE',
-                        data: { estimationId, items: itemIds, groups: groupIds },
-                        success: (response) => {
-                            this.updateAllCalculations();
-                            this.updatePOSNumbers();
-                            toastrs('Items deleted successfully');
-                        }
-                    });
-                }
-            });
-        },
-
         getCurrentGroupId() {
-            const lastGroup = $('.group_row').last();
-            return lastGroup.length ? lastGroup.data('groupid') : Date.now() + 10;
+            const groupRows = document.querySelectorAll('.group_row');
+            if (groupRows.length > 0) {
+                return groupRows[groupRows.length - 1].dataset.groupid;
+            } else {
+                return Date.now() + 10;
+            }
         },
 
         getNextGroupPosition() {
@@ -960,7 +960,40 @@ $(document).ready(function () {
                 // Calculate final totals
                 this.calculateTotals(cardQuoteId);
             });
-        },
+        }, 
+        searchTableItem() {
+            const searchInput = document.querySelector('#table-search');
+            const tableRows = document.querySelectorAll('#estimation-edit-table tbody tr:not(.item_child)');
+            const searchTerm = searchInput.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                const nameCell = row.querySelector('.column_name');
+                const name = nameCell.textContent.toLowerCase();
+
+                if (searchTerm === '') {
+                    // If the search input is empty, show all rows
+                    row.style.display = '';
+                    const descRow = row.nextElementSibling;
+                    if (descRow && descRow.classList.contains('item_child')) {
+                        descRow.style.display = '';
+                    }
+                } else if (name.includes(searchTerm)) {
+                    // If the name contains the search term, show the row and its description
+                    row.style.display = '';
+                    const descRow = row.nextElementSibling;
+                    if (descRow && descRow.classList.contains('item_child')) {
+                        descRow.style.display = '';
+                    }
+                } else {
+                    // If the name does not contain the search term, hide the row and its description
+                    row.style.display = 'none';
+                    const descRow = row.nextElementSibling;
+                    if (descRow && descRow.classList.contains('item_child')) {
+                        descRow.style.display = 'none';
+                    }
+                }
+            });
+        }
     };
 
     EstimationTable.init();

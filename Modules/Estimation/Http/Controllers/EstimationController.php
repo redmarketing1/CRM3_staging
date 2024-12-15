@@ -3,16 +3,11 @@
 namespace Modules\Estimation\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\SmartTemplate;
-use App\Models\SmartPromptQueue;
 use Butschster\Head\Facades\Meta;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
-use Modules\Taskly\Entities\Project;
 use Modules\Taskly\Entities\EstimateQuote;
-use Illuminate\Contracts\Support\Renderable;
 use Modules\Taskly\Entities\EstimationGroup;
-use Modules\Taskly\Entities\EstimateQuoteItem;
 use Modules\Estimation\Entities\ProjectEstimation;
 use Modules\Taskly\Entities\ProjectEstimationProduct;
 
@@ -61,7 +56,7 @@ class EstimationController extends Controller
                     $newProduct              = $this->createEstimationProduct($item, $newGroup);
                     $idMappings[$item['id']] = $newProduct->id;
 
-                    if ($item['type'] === 'item') {
+                    if (in_array($item['type'], ['item', 'comment'])) {
                         $this->createQuoteItems($item, $newProduct);
                     }
                 });
@@ -85,28 +80,6 @@ class EstimationController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-    private function createEstimationStructure($newItems, $form)
-    {
-        $idMappings = [];
-
-        $newItems->where('type', 'group')->each(function ($group) use ($newItems, $form, &$idMappings) {
-            $newGroup                 = $this->createEstimationGroup($form, $group);
-            $idMappings[$group['id']] = $newGroup->id;
-
-            $newItems->where('groupId', $group['id'])->each(function ($item) use ($newGroup, &$idMappings) {
-                $newProduct              = $this->createEstimationProduct($item, $newGroup);
-                $idMappings[$item['id']] = $newProduct->id;
-
-                if ($item['type'] === 'item') {
-                    $this->createQuoteItems($item, $newProduct);
-                }
-            });
-        });
-
-        return $idMappings;
-    }
-
     private function createEstimationGroup($form, $group)
     {
         return EstimationGroup::create([
@@ -119,28 +92,28 @@ class EstimationController extends Controller
     private function createEstimationProduct($item, $group)
     {
         return $group->estimation_products()->create([
-            'name'        => $item['name'] ?? null,
-            'comment'     => $item['content'] ?? null,
-            'pos'         => $item['pos'],
-            'type'        => $item['type'],
-            'quantity'    => $item['quantity'] ?? 0,
-            'unit'        => $item['unit'] ?? null,
-            'is_optional' => $item['optional'] ?? false,
+            'project_estimation_id ' => $group['estimation_id'],
+            'name'                   => $item['name'] ?? null,
+            'comment'                => $item['comment'] ?? null,
+            'pos'                    => $item['pos'],
+            'type'                   => $item['type'],
+            'description'            => $item['description'],
+            'quantity'               => $item['quantity'] ?? 0,
+            'unit'                   => $item['unit'] ?? null,
+            'is_optional'            => $item['optional'] ?? false,
         ]);
     }
 
     private function createQuoteItems($item, $product)
     {
-        if ($item['type'] === 'item' && ! empty($item['prices'])) {
-            collect($item['prices'])->each(function ($price) use ($product) {
-                $product->quoteItems()->create([
-                    'estimate_quote_id' => $price['quoteId'],
-                    'base_price'        => $price['singlePrice'],
-                    'price'             => $price['singlePrice'],
-                    'total_price'       => $price['totalPrice'],
-                ]);
-            });
-        }
+        collect($item['prices'])->each(function ($price) use ($product) {
+            $product->quoteItems()->create([
+                'estimate_quote_id' => $price['quoteId'],
+                'base_price'        => $price['singlePrice'],
+                'price'             => $price['singlePrice'],
+                'total_price'       => $price['totalPrice'],
+            ]);
+        });
     }
 
     private function estimateQuote($quotes)

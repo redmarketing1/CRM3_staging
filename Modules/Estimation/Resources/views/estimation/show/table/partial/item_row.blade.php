@@ -8,7 +8,9 @@
     </td>
 
     <td class="column_pos">
-        <div class="pos-inner"></div>
+        <div class="pos-inner">
+            {{ $product->pos }}
+        </div>
     </td>
 
     <td class="column_name">
@@ -59,7 +61,8 @@
 
     <td colspan="7" class="column_name desc_column border-right">
         <textarea 
-            class="description_input w-100 tinyMCEX" 
+            class="description_input w-100 tinyMCE" 
+            id="description_{{ $product->id }}"
             name="`item[{{ $product->id }}][description]`"
             placeholder="{{ trans('Items Description') }}">{{ $product->description }}</textarea>
     </td>

@@ -8,12 +8,15 @@
     </td>
 
     <td class="column_pos">
-        <div class="pos-inner"></div>
+        <div class="pos-inner">
+            {{ $product->pos }}
+        </div>
     </td>
 
     <td colspan="4" class="border-right column_name">
-        <input type="text" class="form-control mr-2 item-description" name="item[{{ $product->id }}]['group']"
-            value="{{ $product->comment }}" x-on:blur="handleInputBlur($event, 'comment')">
+        <input type="text" class="form-control mr-2 item-comment" 
+            name="item[{{ $product->id }}]['group']"
+            value="{{ $product->comment }}">
     </td>
 
     @foreach ($product->quoteItems as $quoteItem)
