@@ -26,7 +26,7 @@ class EstimateQuoteItem extends Model
         return \Modules\Taskly\Database\factories\EstimateQuoteItemFactory::new();
     }
 
-    public function  quote(){
+    public function quote(){
         return $this->hasOne(EstimateQuote::class,'id','estimate_quote_id');
     }
 

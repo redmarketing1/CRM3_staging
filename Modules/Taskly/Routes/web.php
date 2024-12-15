@@ -253,9 +253,10 @@ Route::group(['middleware' => 'PlanModuleCheck:Taskly'], function () {
     Route::post('estimation/remove-estimation-user', [ProjectEstimationController::class, 'remove_estimation_user'])->name('estimation.remove_estimation_user');
 
     //Project Progress Routes
-    Route::get('project/{project_id}/project-progress', [ProjectController::class, 'project_progress'])->name('project.project_progress');
+    Route::get('project/{project_id}/project-progress', [ProjectProgressController::class, 'project_progress'])->name('project.project_progress');
     Route::post('estimation/progress/sign/update', [ProjectProgressController::class, 'update'])->name('progress.sign.store');
     Route::post('progress/estimation/item', [ProjectProgressController::class, 'estimationItem'])->name('progress.estimation.item');
+    Route::post('progress/estimation/progress-item', [ProjectProgressController::class, 'progressestimationItem'])->name('progress.estimation.progressitem');
     Route::post('estimation/progress/delete-files', [ProjectProgressController::class, 'deleteProgressFiles'])->name('progress.files.delete');
     Route::post('estimation/progress/file', [ProjectProgressController::class, 'progressFileStore'])->name('progress.file.store');
     Route::get('estimations/{id}/progress-finalize', [ProjectProgressController::class, 'progressFinalize'])->name('progress.finalize');
