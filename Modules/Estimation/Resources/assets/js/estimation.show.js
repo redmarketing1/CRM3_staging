@@ -5,13 +5,173 @@ $(document).ready(function () {
         saveTimeout: null,
         saveInterval: 1000 * 30, // 30 seconds
         hasUnsavedChanges: false,
+        isFullScreen: false,
         estimation: $('.estimation-show'),
+        originalPrices: new Map(),
         templates: {
             item: $('#add-item-template').html(),
             group: $('#add-group-template').html(),
             comment: $('#add-comment-template').html()
+        }, 
+
+        bindEvents() {
+            this.estimation.find('button[data-actioninsert]').on('click', (event) => {
+                event.preventDefault();
+                const button = $(event.currentTarget);
+                const target = button.data('actioninsert');
+                if (target) this.addItems(target);
+            });
+            this.estimation.on('click', '.desc_toggle', this.toggleDescription);
+            this.estimation.on('click', '.grp-dt-control', this.toggleGroup);
+            this.estimation.on('click', '#toggleFullScreen', this.toggleFullScreen);
+
+            this.estimation.on('blur', '.item-quantity, .item-price, .item-name, input[name^="item"][name$="[markup]"], input[name^="item"][name$="[discount]"]', () => {
+                this.hasUnsavedChanges = true;
+                this.autoSaveHandler();
+            });
+
+            this.estimation.on('change', '.item-optional, select[name^="item"][name$="[tax]"]', () => {
+                this.hasUnsavedChanges = true;
+                this.autoSaveHandler();
+            });
+
+            this.estimation.on('blur', '.item-quantity, .item-price', (event) => {
+                const $target = $(event.currentTarget);
+                this.formatInput($target);
+                this.updateAllCalculations();
+            });
+
+            this.estimation.on('click', '#save-button', () => {
+                this.saveTableData();
+            });
+
+            this.estimation.on('input', '#table-search', () => {
+                this.searchTableItem();
+            });
+
+            this.estimation.on('change', '.item-optional', () => {
+                this.updateAllCalculations();
+            });
+
+            this.estimation.on('change', 'select[name^="item"][name$="[tax]"]', () => {
+                this.updateAllCalculations();
+            });
+
+            this.estimation.on('blur', 'input[name^="item"][name$="[discount]"]', (event) => {
+                const $input = $(event.target);
+                const value = this.parseGermanDecimal($input.val());
+
+                // Format the number
+                $input.val(this.formatGermanDecimal(value));
+
+                // Apply styling for negative values
+                if (value < 0) {
+                    $input.css({
+                        'background-color': '#ffebee',
+                        'color': '#d32f2f'
+                    });
+                } else {
+                    $input.css({
+                        'background-color': '',
+                        'color': ''
+                    });
+                }
+
+                this.updateAllCalculations();
+            });
+
+            // Enhanced markup input handler
+            this.estimation.on('blur', 'input[name^="item"][name$="[markup]"]', (event) => {
+                const $input = $(event.target);
+                const value = this.parseGermanDecimal($input.val());
+                const cardQuoteId = $input.attr('name').match(/\[(\d+)\]/)[1];
+
+                // Format the number
+                $input.val(this.formatGermanDecimal(value));
+
+                // Apply styling for negative values
+                if (value < 0) {
+                    $input.css({
+                        'background-color': '#ffebee',
+                        'color': '#d32f2f'
+                    });
+                } else {
+                    $input.css({
+                        'background-color': '',
+                        'color': ''
+                    });
+                }
+
+                this.applyMarkupToSinglePrices(cardQuoteId, value);
+                this.updateAllCalculations();
+            });
+
+            this.estimation.on('change', '.SelectAllCheckbox', (e) => {
+                const isChecked = $(e.target).prop('checked');
+                $('.item_selection').prop('checked', isChecked);
+            });
+
+            // Group selection handler
+            this.estimation.on('change', '.group_selection', (e) => {
+                const $groupCheckbox = $(e.target);
+                const groupId = $groupCheckbox.data('groupid');
+                const isChecked = $groupCheckbox.prop('checked');
+
+                // Select/deselect all items and comments in the group
+                $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`)
+                    .find('.item_selection')
+                    .prop('checked', isChecked);
+
+                // Update main select all checkbox
+                this.updateSelectAllState();
+            });
+
+            // Individual item selection handler
+            this.estimation.on('change', '.item_selection:not(.group_selection)', () => {
+                this.updateSelectAllState();
+            });
+
+            $('button[data-actionremove]').on('click', () => {
+                const $selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
+
+                if ($selectedCheckboxes.length === 0) {
+                    toastrs("error", "Please select checkbox to continue delete");
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Confirmation Delete',
+                    text: 'Really! You want to remove them? You can\'t undo',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Delete it',
+                    cancelButtonText: "No, cancel",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const estimationId = $('#quote_form').find('input[name="id"]').val();
+                        const itemIds = [];
+                        const groupIds = [];
+
+                        $selectedCheckboxes.each(function () {
+                            const $row = $(this).closest('tr');
+                            const id = $row.data('itemid') || $row.data('groupid');
+                            const isGroup = $row.hasClass('group_row');
+
+                            (isGroup ? groupIds : itemIds).push(id);
+                            $row.remove();
+                        });
+
+                        $.ajax({
+                            url: route('estimation.destroy', estimationId),
+                            method: 'DELETE',
+                            data: { estimationId, items: itemIds, groups: groupIds },
+                        });
+                        document.querySelector('.SelectAllCheckbox').checked = false;
+                        this.updateAllCalculations();
+                        this.updatePOSNumbers();
+                    }
+                });
+            });
         },
-        originalPrices: new Map(),
 
         init() {
             if (!this.validateTemplates()) return;
@@ -20,7 +180,25 @@ $(document).ready(function () {
             this.updateAllCalculations();
             this.updatePOSNumbers();
             this.initializeAutoSave();
-        },
+
+            document.addEventListener('fullscreenchange', () => {
+                this.isFullScreen = !!document.fullscreenElement;
+                const icon = document.querySelector('.fa-expand, .fa-compress');
+                if (icon) {
+                    icon.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                }
+            });
+        }, 
+
+        initializeFullScreen() {
+            document.addEventListener('fullscreenchange', () => {
+                this.isFullScreen = !!document.fullscreenElement;
+                const btn = document.querySelector('.tools-btn button i.fa-expand, .tools-btn button i.fa-compress');
+                if (btn) {
+                    btn.className = this.isFullScreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                }
+            });
+        }, 
 
         initializeAutoSave() {
             // Update autoSaveEnabled when checkbox changes
@@ -42,6 +220,19 @@ $(document).ready(function () {
                     return message;
                 }
             });
+        },
+
+        toggleFullScreen() {
+            const estimationSection = document.querySelector('.estimation-show');
+            if (!estimationSection) return;
+
+            if (!document.fullscreenElement) {
+                estimationSection.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
         },
 
         autoSaveHandler() {
@@ -102,8 +293,7 @@ $(document).ready(function () {
                 cards: columns,
                 form: this.getFormData(),
                 newItems: this.prepareNewItemsForSubmission()
-            };
-            console.log(data.newItems);
+            };  
 
             $.ajax({
                 url: route('estimation.update', data.form.id),
@@ -297,163 +487,7 @@ $(document).ready(function () {
             if (typeof value === 'number') return value;
             return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
         },
-
-        bindEvents() {
-            this.estimation.find('button[data-actioninsert]').on('click', (event) => {
-                event.preventDefault();
-                const button = $(event.currentTarget);
-                const target = button.data('actioninsert');
-                if (target) this.addItems(target);
-            });
-            this.estimation.on('click', '.desc_toggle', this.toggleDescription);
-            this.estimation.on('click', '.grp-dt-control', this.toggleGroup);
-
-            this.estimation.on('blur', '.item-quantity, .item-price, .item-name, input[name^="item"][name$="[markup]"], input[name^="item"][name$="[discount]"]', () => {
-                this.hasUnsavedChanges = true;
-                this.autoSaveHandler();
-            });
-
-            this.estimation.on('change', '.item-optional, select[name^="item"][name$="[tax]"]', () => {
-                this.hasUnsavedChanges = true;
-                this.autoSaveHandler();
-            });
-
-            this.estimation.on('blur', '.item-quantity, .item-price', (event) => {
-                const $target = $(event.currentTarget);
-                this.formatInput($target);
-                this.updateAllCalculations();
-            });
-
-            this.estimation.on('click', '#save-button', () => {
-                console.log('click');
-
-                this.saveTableData();
-            });
-
-            this.estimation.on('change', '.item-optional', () => {
-                this.updateAllCalculations();
-            });
-
-            this.estimation.on('change', 'select[name^="item"][name$="[tax]"]', () => {
-                this.updateAllCalculations();
-            });
-
-            this.estimation.on('blur', 'input[name^="item"][name$="[discount]"]', (event) => {
-                const $input = $(event.target);
-                const value = this.parseGermanDecimal($input.val());
-
-                // Format the number
-                $input.val(this.formatGermanDecimal(value));
-
-                // Apply styling for negative values
-                if (value < 0) {
-                    $input.css({
-                        'background-color': '#ffebee',
-                        'color': '#d32f2f'
-                    });
-                } else {
-                    $input.css({
-                        'background-color': '',
-                        'color': ''
-                    });
-                }
-
-                this.updateAllCalculations();
-            });
-
-            // Enhanced markup input handler
-            this.estimation.on('blur', 'input[name^="item"][name$="[markup]"]', (event) => {
-                const $input = $(event.target);
-                const value = this.parseGermanDecimal($input.val());
-                const cardQuoteId = $input.attr('name').match(/\[(\d+)\]/)[1];
-
-                // Format the number
-                $input.val(this.formatGermanDecimal(value));
-
-                // Apply styling for negative values
-                if (value < 0) {
-                    $input.css({
-                        'background-color': '#ffebee',
-                        'color': '#d32f2f'
-                    });
-                } else {
-                    $input.css({
-                        'background-color': '',
-                        'color': ''
-                    });
-                }
-
-                this.applyMarkupToSinglePrices(cardQuoteId, value);
-                this.updateAllCalculations();
-            });
-
-            this.estimation.on('change', '.SelectAllCheckbox', (e) => {
-                const isChecked = $(e.target).prop('checked');
-                $('.item_selection').prop('checked', isChecked);
-            });
-
-            // Group selection handler
-            this.estimation.on('change', '.group_selection', (e) => {
-                const $groupCheckbox = $(e.target);
-                const groupId = $groupCheckbox.data('groupid');
-                const isChecked = $groupCheckbox.prop('checked');
-
-                // Select/deselect all items and comments in the group
-                $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`)
-                    .find('.item_selection')
-                    .prop('checked', isChecked);
-
-                // Update main select all checkbox
-                this.updateSelectAllState();
-            });
-
-            // Individual item selection handler
-            this.estimation.on('change', '.item_selection:not(.group_selection)', () => {
-                this.updateSelectAllState();
-            });
-
-            $('button[data-actionremove]').on('click', () => {
-                const $selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
-
-                if ($selectedCheckboxes.length === 0) {
-                    toastrs("error", "Please select checkbox to continue delete");
-                    return;
-                }
-
-                Swal.fire({
-                    title: 'Confirmation Delete',
-                    text: 'Really! You want to remove them? You can\'t undo',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, Delete it',
-                    cancelButtonText: "No, cancel",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const estimationId = $('#quote_form').find('input[name="id"]').val();
-                        const itemIds = [];
-                        const groupIds = [];
-
-                        $selectedCheckboxes.each(function () {
-                            const $row = $(this).closest('tr');
-                            const id = $row.data('itemid') || $row.data('groupid');
-                            const isGroup = $row.hasClass('group_row');
-
-                            (isGroup ? groupIds : itemIds).push(id);
-                            $row.remove();
-                        });
-
-                        $.ajax({
-                            url: route('estimation.destroy', estimationId),
-                            method: 'DELETE',
-                            data: { estimationId, items: itemIds, groups: groupIds },
-                        });
-                        document.querySelector('.SelectAllCheckbox').checked = false;
-                        this.updateAllCalculations();
-                        this.updatePOSNumbers();
-                    }
-                });
-            });
-        },
-
+ 
         storeOriginalPrices() {
             // Clear existing stored prices
             this.originalPrices.clear();
@@ -926,7 +960,40 @@ $(document).ready(function () {
                 // Calculate final totals
                 this.calculateTotals(cardQuoteId);
             });
-        },
+        }, 
+        searchTableItem() {
+            const searchInput = document.querySelector('#table-search');
+            const tableRows = document.querySelectorAll('#estimation-edit-table tbody tr:not(.item_child)');
+            const searchTerm = searchInput.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                const nameCell = row.querySelector('.column_name');
+                const name = nameCell.textContent.toLowerCase();
+
+                if (searchTerm === '') {
+                    // If the search input is empty, show all rows
+                    row.style.display = '';
+                    const descRow = row.nextElementSibling;
+                    if (descRow && descRow.classList.contains('item_child')) {
+                        descRow.style.display = '';
+                    }
+                } else if (name.includes(searchTerm)) {
+                    // If the name contains the search term, show the row and its description
+                    row.style.display = '';
+                    const descRow = row.nextElementSibling;
+                    if (descRow && descRow.classList.contains('item_child')) {
+                        descRow.style.display = '';
+                    }
+                } else {
+                    // If the name does not contain the search term, hide the row and its description
+                    row.style.display = 'none';
+                    const descRow = row.nextElementSibling;
+                    if (descRow && descRow.classList.contains('item_child')) {
+                        descRow.style.display = 'none';
+                    }
+                }
+            });
+        }
     };
 
     EstimationTable.init();

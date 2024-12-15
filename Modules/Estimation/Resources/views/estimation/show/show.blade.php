@@ -30,10 +30,8 @@
                 </div>
             </div>
         </div>
-        @include('estimation::estimation.show.section.contextmenu')
+        {{-- @include('estimation::estimation.show.section.contextmenu') --}}
     </div>
-
-    {{-- @include('estimation::estimation.show.Modal.index') --}}
 @endsection
 
 @push('scripts')

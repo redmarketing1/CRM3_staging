@@ -133,12 +133,12 @@ return [
             'name'      => 'Nprogress Js',
             'placement' => 'head',
         ],
-        [
-            'url'       => 'https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.3/cdn.min.js',
-            'name'      => 'Alpine Js',
-            'placement' => 'head',
-            'attribues' => ['defer'],
-        ],
+        // [
+        //     'url'       => 'https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.3/cdn.min.js',
+        //     'name'      => 'Alpine Js',
+        //     'placement' => 'head',
+        //     'attribues' => ['defer'],
+        // ],
         // Foter script 
         [
             'url'  => '/js/jquery.validate.min.js',
