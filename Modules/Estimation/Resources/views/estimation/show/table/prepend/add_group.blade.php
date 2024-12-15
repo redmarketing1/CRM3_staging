@@ -8,7 +8,7 @@
         <input type="checkbox" class="item_selection">
     </td>
 
-    <td class="column_pos grouppos"></td>
+    <td class="column_pos grouppos">{TEMPLATE_POS}</td>
 
     <td colspan="4" class="column_name grouptitle border-right">
         <div class="div-desc-toggle">
@@ -25,6 +25,7 @@
             colspan="2" 
             id="cardQuoteGroupTotalPrice"
             data-cardQuoteID="{{ $quote->id }}">
+            -
         </td>
     @endforeach
 </tr>

@@ -128,7 +128,7 @@ $(document).ready(function () {
                     $('#save-button').html(`Saved last changed.`);
                 },
                 error: (error) => {
-                    toastrs('error','Failed to save changes.');
+                    toastrs('error', 'Failed to save changes.');
                     $('.lastSaveTimestamp').text('is failed.');
                     this.hasUnsavedChanges = true;
                 }
@@ -189,15 +189,15 @@ $(document).ready(function () {
                 newItems.push(group);
             });
 
-            // Collect items and comments
             const itemRows = document.querySelectorAll('.item_row, .item_comment');
             itemRows.forEach(row => {
                 const itemId = row.dataset.itemid;
                 const type = row.dataset.type;
                 const groupId = row.dataset.groupid;
                 const name = row.querySelector('.item-name, .item-comment')?.value.trim() || null;
-                const description = $(row).next(`.tr_child_description[data-itemid="${itemId}"]`).find('.description_input')?.val() || null;
                 const comment = row.querySelector('.item-comment')?.value.trim() || null;
+                const descriptionID = $(row).next(`.tr_child_description[data-itemid="${itemId}"]`).find('.description_input').attr('id');
+                const description = tinymce?.get(descriptionID)?.getContent() || $(descriptionID)?.val() || null;
 
                 const item = {
                     id: itemId,
@@ -398,8 +398,10 @@ $(document).ready(function () {
                 const groupId = $groupCheckbox.data('groupid');
                 const isChecked = $groupCheckbox.prop('checked');
 
-                // Select/deselect all items in the group
-                $(`.item_selection[data-groupid="${groupId}"]`).prop('checked', isChecked);
+                // Select/deselect all items and comments in the group
+                $(`.item_row[data-groupid="${groupId}"], .item_comment[data-groupid="${groupId}"]`)
+                    .find('.item_selection')
+                    .prop('checked', isChecked);
 
                 // Update main select all checkbox
                 this.updateSelectAllState();
@@ -414,7 +416,7 @@ $(document).ready(function () {
                 const $selectedCheckboxes = $('.item_selection:checked:not(.SelectAllCheckbox)');
 
                 if ($selectedCheckboxes.length === 0) {
-                    toastrs("error","Please select checkbox to continue delete");
+                    toastrs("error", "Please select checkbox to continue delete");
                     return;
                 }
 
@@ -443,11 +445,10 @@ $(document).ready(function () {
                             url: route('estimation.destroy', estimationId),
                             method: 'DELETE',
                             data: { estimationId, items: itemIds, groups: groupIds },
-                        }).done(() => {
-                            document.querySelector('.SelectAllCheckbox').checked = false;
-                            this.updateAllCalculations();
-                            this.updatePOSNumbers();
                         });
+                        document.querySelector('.SelectAllCheckbox').checked = false;
+                        this.updateAllCalculations();
+                        this.updatePOSNumbers();
                     }
                 });
             });
@@ -488,18 +489,23 @@ $(document).ready(function () {
                 return;
             }
 
-            const currentGroupId = this.getCurrentGroupId();
-            if (!currentGroupId) {
-                toastr?.error('Please create a group first');
-                return;
+            const existingGroups = document.querySelectorAll('.group_row');
+
+            if (existingGroups.length === 0) {
+                this.addItems('group');
             }
+
+            // Now add the new item
+            const currentGroupId = this.getCurrentGroupId();
 
             const newItem = template
                 .replace(/{TEMPLATE_ID}/g, timestamp)
                 .replace(/{TEMPLATE_GROUP_ID}/g, currentGroupId)
                 .replace(/{TEMPLATE_POS}/g, this.getNextItemPosition(currentGroupId));
 
+
             const lastGroupItem = $(`tr[data-groupid="${currentGroupId}"]:last`);
+
             lastGroupItem.length ? lastGroupItem.after(newItem) : $(`tr[data-groupid="${currentGroupId}"]`).after(newItem);
 
             this.updatePOSNumbers();
@@ -513,11 +519,15 @@ $(document).ready(function () {
             const checkedCheckboxes = $('.item_selection:not(.SelectAllCheckbox):checked').length;
 
             $('.SelectAllCheckbox').prop('checked', totalCheckboxes === checkedCheckboxes && totalCheckboxes > 0);
-        }, 
+        },
 
         getCurrentGroupId() {
-            const lastGroup = $('.group_row').last();
-            return lastGroup.length ? lastGroup.data('groupid') : Date.now() + 10;
+            const groupRows = document.querySelectorAll('.group_row');
+            if (groupRows.length > 0) {
+                return groupRows[groupRows.length - 1].dataset.groupid;
+            } else {
+                return Date.now() + 10;
+            }
         },
 
         getNextGroupPosition() {

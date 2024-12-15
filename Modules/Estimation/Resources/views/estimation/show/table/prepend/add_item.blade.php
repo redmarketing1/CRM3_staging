@@ -56,6 +56,7 @@
     <td colspan="7" class="column_name desc_column border-right">
         <textarea 
             class="description_input w-100 tinyMCE" 
+            id="description_{TEMPLATE_ID}"
             name="`item[{TEMPLATE_ID}][description]`"
             placeholder="{{ trans('Write a message') }}"></textarea>
     </td>

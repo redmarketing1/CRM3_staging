@@ -1,10 +1,10 @@
-<tr class="item_comment" data-ID="{TEMPLATE_ID}" data-groupid="{TEMPLATE_GROUP_ID}" data-type="comment">
+<tr class="item_comment" data-itemID="{TEMPLATE_ID}" data-groupid="{TEMPLATE_GROUP_ID}" data-type="comment">
     <td class="column_reorder">
         <i class="fa fa-bars reorder-item"></i>
     </td>
 
     <td class="column_checkbox">
-        <input type="checkbox" class="item_selection" value="1">
+        <input type="checkbox" class="item_selection" data-id="{TEMPLATE_ID}" data-groupid="{TEMPLATE_GROUP_ID}">
     </td>
 
     <td class="column_pos">
@@ -13,7 +13,7 @@
 
     <td colspan="4" class="border-right column_name">
         <input type="text" class="form-control mr-2 item-description" name="item[{TEMPLATE_ID}]['group']"
-            value="{{ trans('Wriye your comment') }}" x-on:blur="handleInputBlur($event, 'comment')">
+            value="{{ trans('Wriye your comment') }}">
     </td>
 
      @foreach ($allQuotes as $quoteItem)

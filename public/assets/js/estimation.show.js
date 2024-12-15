@@ -188,17 +188,16 @@ $(document).ready(function () {
         };
         newItems.push(group);
       });
-
-      // Collect items and comments
       var itemRows = document.querySelectorAll('.item_row, .item_comment');
       itemRows.forEach(function (row) {
-        var _row$querySelector, _$$next$find, _row$querySelector2, _row$querySelector3, _row$querySelector4, _row$querySelector5;
+        var _row$querySelector, _row$querySelector2, _tinymce, _$, _row$querySelector3, _row$querySelector4, _row$querySelector5;
         var itemId = row.dataset.itemid;
         var type = row.dataset.type;
         var groupId = row.dataset.groupid;
         var name = ((_row$querySelector = row.querySelector('.item-name, .item-comment')) === null || _row$querySelector === void 0 ? void 0 : _row$querySelector.value.trim()) || null;
-        var description = ((_$$next$find = $(row).next(".tr_child_description[data-itemid=\"".concat(itemId, "\"]")).find('.description_input')) === null || _$$next$find === void 0 ? void 0 : _$$next$find.val()) || null;
         var comment = ((_row$querySelector2 = row.querySelector('.item-comment')) === null || _row$querySelector2 === void 0 ? void 0 : _row$querySelector2.value.trim()) || null;
+        var descriptionID = $(row).next(".tr_child_description[data-itemid=\"".concat(itemId, "\"]")).find('.description_input').attr('id');
+        var description = ((_tinymce = tinymce) === null || _tinymce === void 0 || (_tinymce = _tinymce.get(descriptionID)) === null || _tinymce === void 0 ? void 0 : _tinymce.getContent()) || ((_$ = $(descriptionID)) === null || _$ === void 0 ? void 0 : _$.val()) || null;
         var item = {
           id: itemId,
           type: type,
@@ -371,8 +370,8 @@ $(document).ready(function () {
         var groupId = $groupCheckbox.data('groupid');
         var isChecked = $groupCheckbox.prop('checked');
 
-        // Select/deselect all items in the group
-        $(".item_selection[data-groupid=\"".concat(groupId, "\"]")).prop('checked', isChecked);
+        // Select/deselect all items and comments in the group
+        $(".item_row[data-groupid=\"".concat(groupId, "\"], .item_comment[data-groupid=\"").concat(groupId, "\"]")).find('.item_selection').prop('checked', isChecked);
 
         // Update main select all checkbox
         _this6.updateSelectAllState();
@@ -414,11 +413,10 @@ $(document).ready(function () {
                 items: itemIds,
                 groups: groupIds
               }
-            }).done(function () {
-              document.querySelector('.SelectAllCheckbox').checked = false;
-              _this6.updateAllCalculations();
-              _this6.updatePOSNumbers();
             });
+            document.querySelector('.SelectAllCheckbox').checked = false;
+            _this6.updateAllCalculations();
+            _this6.updatePOSNumbers();
           }
         });
       });
@@ -451,12 +449,13 @@ $(document).ready(function () {
         this.updateAllCalculations();
         return;
       }
-      var currentGroupId = this.getCurrentGroupId();
-      if (!currentGroupId) {
-        var _toastr;
-        (_toastr = toastr) === null || _toastr === void 0 || _toastr.error('Please create a group first');
-        return;
+      var existingGroups = document.querySelectorAll('.group_row');
+      if (existingGroups.length === 0) {
+        this.addItems('group');
       }
+
+      // Now add the new item
+      var currentGroupId = this.getCurrentGroupId();
       var newItem = template.replace(/{TEMPLATE_ID}/g, timestamp).replace(/{TEMPLATE_GROUP_ID}/g, currentGroupId).replace(/{TEMPLATE_POS}/g, this.getNextItemPosition(currentGroupId));
       var lastGroupItem = $("tr[data-groupid=\"".concat(currentGroupId, "\"]:last"));
       lastGroupItem.length ? lastGroupItem.after(newItem) : $("tr[data-groupid=\"".concat(currentGroupId, "\"]")).after(newItem);
@@ -471,8 +470,12 @@ $(document).ready(function () {
       $('.SelectAllCheckbox').prop('checked', totalCheckboxes === checkedCheckboxes && totalCheckboxes > 0);
     },
     getCurrentGroupId: function getCurrentGroupId() {
-      var lastGroup = $('.group_row').last();
-      return lastGroup.length ? lastGroup.data('groupid') : Date.now() + 10;
+      var groupRows = document.querySelectorAll('.group_row');
+      if (groupRows.length > 0) {
+        return groupRows[groupRows.length - 1].dataset.groupid;
+      } else {
+        return Date.now() + 10;
+      }
     },
     getNextGroupPosition: function getNextGroupPosition() {
       var maxPos = 0;
