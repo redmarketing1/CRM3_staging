@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-    <div class="row estimation-show" x-cloak x-data="estimationShow">
+    <div class="row estimation-show">
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
@@ -30,10 +30,8 @@
                 </div>
             </div>
         </div>
-        @include('estimation::estimation.show.section.contextmenu')
+        {{-- @include('estimation::estimation.show.section.contextmenu') --}}
     </div>
-
-    {{-- @include('estimation::estimation.show.Modal.index') --}}
 @endsection
 
 @push('scripts')

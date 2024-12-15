@@ -1,7 +1,7 @@
 <div class="tools-btn m-b-10">
 
     <div class="d-inline-block mb-10 mr-2 search">
-        <input type="search" placeholder="{{ __('Search') }}..." class="px-3" id="table-search" x-model="searchQuery">
+        <input type="search" placeholder="{{ __('Search') }}..." class="px-3" id="table-search">
     </div>
 
     <div class="align-items-center d-inline-flex gap-2 m-l-25">
@@ -98,7 +98,7 @@
                 </div>
             </div> --}}
 
-            <button type="button" @click="toggleFullScreen">
+            <button type="button" id="toggleFullScreen">
                 <i class="fa-solid fa-expand"></i>
             </button>
         @endif

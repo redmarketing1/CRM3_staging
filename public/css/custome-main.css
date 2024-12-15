@@ -2016,3 +2016,18 @@ fieldset[disabled] .not-disable>* {
 [x-cloak] {
     display: none !important;
 }
+
+.drag-helper {
+    display: table !important;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.drag-helper tr {
+    display: table-row !important;
+}
+
+.drag-helper td {
+    display: table-cell !important;
+}

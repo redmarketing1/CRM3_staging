@@ -4,13 +4,42 @@
 
 This is a custom development project for neu-west.com using Laravel 10 framework & PHP 8.2
 
-version : 0.7
+## Version: 0.7
+ 
+
+### What's Changed in 0.7
+* Added PDF download and mail for an invoice by @AsadZaman177 in https://github.com/redmarketing1/CRM3_staging/pull/85
+* Fxcjahid by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/86
+* Fixed Invoice by @AsadZaman177 in https://github.com/redmarketing1/CRM3_staging/pull/87
+* Asad by @AsadZaman177 in https://github.com/redmarketing1/CRM3_staging/pull/88
+* Fxcjahid by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/89
+* Changes to be committed: by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/90
+* Changes to be committed: by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/91
+* invoice fixes by @AsadZaman177 in https://github.com/redmarketing1/CRM3_staging/pull/92
+* Invoice default template fix by @AsadZaman177 in https://github.com/redmarketing1/CRM3_staging/pull/93
+* Fixed Invoice to Lexo Office by @AsadZaman177 in https://github.com/redmarketing1/CRM3_staging/pull/94
+* Fixed Invoice minor issue by @AsadZaman177 in https://github.com/redmarketing1/CRM3_staging/pull/95
+* Fixed invoice minor issues by @AsadZaman177 in https://github.com/redmarketing1/CRM3_staging/pull/96
+* fixed lexo by @AsadZaman177 in https://github.com/redmarketing1/CRM3_staging/pull/97
+* Fxcjahid by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/98
+* Fxcjahid by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/99
+* Fxcjahid by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/100
+* Fxcjahid by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/101
+* Fxcjahid by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/102
+* Changes to be committed: by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/103
+* Fxcjahid by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/104
+* Main Search: Show only Active projects by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/105
+* ✅ Project List + Details: Add / Change Creation Date by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/106
+* Fxcjahid by @fxcjahid in https://github.com/redmarketing1/CRM3_staging/pull/107
+
+**Full Changelog**: https://github.com/redmarketing1/CRM3_staging/compare/0.6...0.7
 
 ## Features Checklist
 
-**Newly arrived :**
+**Newly arrived:**
 
-- [x] Search Engine (Search for whole apps like projects,menu,estimation etc)
+- [x] Estimation with Alpine js
+- [ ] Search Engine (Search for whole apps like projects,menu,estimation etc)
 - [x] Invoice
 
 **Outdate Features:**

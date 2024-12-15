@@ -7,22 +7,31 @@
                  {{ $project->name }}
              </h4>
              <div class="d-flex  align-items-center row1">
-                 <div class="px-3">
-                     <span class="text-white text-sm">{{ __('Start Date') }}:</span>
-                     <input type="text" class="text-white text-nowrap inline-edit edit-dateField"
-                         contenteditable="true" data-field="start_date"
-                         data-message="{{ trans('Project start date has been updated.') }}" data-toggle="tooltip"
-                         title="{{ __('Edit Project Start Date') }}" data-original-text="{{ $project->start_date }}"
-                         value="{{ $project->start_date }}">
-                 </div>
-                 <div class="px-3">
-                     <span class="text-white text-sm">{{ __('Due Date') }}:</span>
-                     <input type="text" class="text-white text-nowrap inline-edit edit-dateField"
-                         contenteditable="true" data-field="end_date"
-                         data-message="{{ trans('Project edning date has been updated.') }}" data-toggle="tooltip"
-                         title="{{ __('Edit Project Ending Date') }}" data-original-text="{{ $project->end_date }}"
-                         value="{{ $project->end_date }}">
-                 </div>
+                <div class="px-3">
+                    <span class="text-white text-sm">{{ __('Created Date') }}:</span>
+                    <div class="text-white text-nowrap" 
+                         data-toggle="tooltip" 
+                         title="{{ $project->created_at->format('d-m-Y H:i') }}">
+                        {{ $project->created_at->diffForHumans() }}
+                    </div>
+                </div>                
+                
+                <div class="px-3">
+                    <span class="text-white text-sm">{{ __('Start Date') }}:</span>
+                    <input type="text" class="text-white text-nowrap inline-edit edit-dateField"
+                        contenteditable="true" data-field="start_date"
+                        data-message="{{ trans('Project start date has been updated.') }}" data-toggle="tooltip"
+                        title="{{ __('Edit Project Start Date') }}" data-original-text="{{ $project->start_date }}"
+                        value="{{ $project->start_date }}">
+                </div>
+                <div class="px-3">
+                    <span class="text-white text-sm">{{ __('Due Date') }}:</span>
+                    <input type="text" class="text-white text-nowrap inline-edit edit-dateField"
+                        contenteditable="true" data-field="end_date"
+                        data-message="{{ trans('Project edning date has been updated.') }}" data-toggle="tooltip"
+                        title="{{ __('Edit Project Ending Date') }}" data-original-text="{{ $project->end_date }}"
+                        value="{{ $project->end_date }}">
+                </div>
                  {{-- <div class="px-3">
                          <span class="text-white text-sm">{{ __('Total Members') }}:</span>
                          <h5 class="text-white text-nowrap">

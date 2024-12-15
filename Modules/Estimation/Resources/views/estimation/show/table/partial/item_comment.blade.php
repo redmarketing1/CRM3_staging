@@ -1,5 +1,4 @@
-<tr class="item_comment" x-data data-groupid="{{ $estimationGroup->id }}" data-commentID="{{ $product->id }}"
-    data-type="comment">
+<tr class="item_comment" data-groupid="{{ $estimationGroup->id }}" data-itemID="{{ $product->id }}" data-type="comment">
     <td class="column_reorder">
         <i class="fa fa-bars reorder-item"></i>
     </td>
@@ -9,16 +8,18 @@
     </td>
 
     <td class="column_pos">
-        <div class="pos-inner"></div>
+        <div class="pos-inner">
+            {{ $product->pos }}
+        </div>
     </td>
 
     <td colspan="4" class="border-right column_name">
-        <input type="text" class="form-control mr-2 item-description" name="item[{{ $product->id }}]['group']"
-            value="{{ $product->comment }}" x-on:blur="handleInputBlur($event, 'comment')">
+        <input type="text" class="form-control mr-2 item-comment" 
+            name="item[{{ $product->id }}]['group']"
+            value="{{ $product->comment }}">
     </td>
 
-    @foreach ($allQuotes as $quote)
-        <td class="column_single_price border-left" data-cardQuoteID="{{ $quote->id }}">-</td>
-        <td class="column_total_price border-right" data-cardQuoteID="{{ $quote->id }}">-</td>
+    @foreach ($product->quoteItems as $quoteItem)
+        <td colspan="2" class="border-right text-center">-</td>
     @endforeach
 </tr>
