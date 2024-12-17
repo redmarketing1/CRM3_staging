@@ -66,8 +66,8 @@ class LexoOfficeService
             // Send company data with contact person
             $payload['company'] = [
                 'name' => $customer->company_name ?? null,
-                'taxNumber' => $customer->tax_number ?? '12345',
-                'vatRegistrationId' => null,
+                'taxNumber' => '12345',
+                'vatRegistrationId' => '12345',
                 'allowTaxFreeInvoices' => false,
                 'contactPersons' => [
                     [
