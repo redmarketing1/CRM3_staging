@@ -892,9 +892,6 @@ $(document).ready(function () {
       if (edit) {
         var clone_id = $("#clone-id").val();
         var markup = $("#mark-up").val();
-        if (sub_contractor > 0) {
-          //    title = $("#sub-contractor option:selected").text();
-        }
         var new_table_data = [];
         $('.item_row').each(function (value) {
           var tableData = {};
