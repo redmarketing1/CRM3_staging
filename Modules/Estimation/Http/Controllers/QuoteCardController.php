@@ -36,10 +36,14 @@ class QuoteCardController extends Controller
 
             $estimateQuote = EstimateQuote::findOrFail($request->id);
 
+            if ($request->subContractor) {
+                $subContractor = User::findOrFail(request('subContractor'));
+            }
+
             // Update only the provided fields
             $estimateQuote->fill(array_filter([
-                'title'   => $request->title,
-                'user_id' => $request->subContractor,
+                'title'   => $subContractor->name ?? $request->title,
+                'user_id' => $subContractor->id ?? null,
             ]));
 
             // Check if anything actually changed
@@ -106,4 +110,15 @@ class QuoteCardController extends Controller
         }
     }
 
+    /**
+     * Delete Quote and their related items 
+     */
+    public function deleteQuote(Request $request)
+    {
+        $estimateQuote = EstimateQuote::findOrFail($request->id);
+        foreach($estimateQuote->quoteItem as $item){
+            $item->delete();
+        }
+        $estimateQuote->delete();
+    }
 }

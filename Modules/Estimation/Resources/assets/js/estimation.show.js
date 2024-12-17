@@ -169,6 +169,30 @@ $(document).ready(function () {
                     }
                 });
             });
+
+            $(document).on('click', '#delete-quate', function (event) {
+                event.preventDefault(); 
+                Swal.fire({
+                    title: 'Confirmation Delete',
+                    text: 'Really! You want to remove them? You can\'t undo',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Delete it',
+                    cancelButtonText: "No, cancel",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const IDs = $(this).data('id');
+                        $.ajax({
+                            url: route('estimation.deleteQuote', IDs),
+                            method: 'DELETE',
+                            data: { id: IDs },
+                            success: () => {
+                                window.location.reload();
+                            }
+                        });
+                    }
+                });
+
+            });
         },
 
         init() {
@@ -1042,8 +1066,8 @@ $(document).ready(function () {
             $('#sub-contractor').select2({
                 dropdownParent: $("#commonModal")
             });
-        } 
+        }
     });
 
     EstimationTable.init();
-});
+}); 

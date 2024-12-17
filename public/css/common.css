@@ -4336,12 +4336,6 @@ label.dropdown-item:last-child {
     border-bottom: none !important;
 }
 
-.dropdown-menu a:hover,
-.dropdown-menu li:hover {
-    border-radius: 10px;
-    overflow: hidden;
-}
-
 body:not(.minimenu) .dash-sidebar .dash-submenu .dash-submenu>.dash-item:before {
     display: none;
 }

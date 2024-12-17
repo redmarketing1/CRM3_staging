@@ -74,12 +74,14 @@
                         @endif
 
                         <li>
-                            <a class="dropdown-item" href="javascript:void(0)"
-                                @click="deleteCardColumn('{{ $quotes->id }}')">
+                            <a class="dropdown-item" 
+                                href="javascript:void(0)"
+                                id="delete-quate" 
+                                data-id="{{ $quotes->id }}">
                                 <i class="fa-regular fa-trash-can"></i>
                                 {{ __('Delete') }}
                             </a>
-                        </li>
+                        </li> 
 
                         @if (auth()->user()->type == 'company')
                             <li>
