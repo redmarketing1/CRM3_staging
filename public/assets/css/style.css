@@ -29421,7 +29421,7 @@ body.anim-slip-from-top.modal-open .dash-header {
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: calc(1.5em + 0.75rem + 2px);
+    height: calc(2em + 0.75rem + 2px);
 }
 
 .select2-container--default .select2-selection--multiple {

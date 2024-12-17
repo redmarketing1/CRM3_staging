@@ -13,7 +13,6 @@
                     </div>
                     <div class="total-markup-input">
                         <input type="text" name="item[{{ $quote->id }}][markup]"
-                            x-on:blur="updateMarkupCalculations($event, '{{ $quote->id }}')"
                             value="{{ $quote->markup ?? 0 }}" id="quoteMarkup" class="form-control form-blur">
                     </div>
                 </div>

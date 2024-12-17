@@ -16,7 +16,7 @@
     @foreach ($allQuotes as $quotes)
         <th colspan="2" class="totalnr toptotal total-net-discount border-left-right"
             data-cardQuoteID="{{ $quotes->id }}">
-            -
+            {{ currency_format_with_sym($quotes->net_with_discount) }}
         </th>
     @endforeach
 </tr>
