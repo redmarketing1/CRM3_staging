@@ -156,25 +156,25 @@ class LexoOfficeService
 
         foreach ($invoice->items as $item) {
 
-            $html = $item->description;
-            $dom = new DOMDocument();
-            @$dom->loadHTML($html);
-            $xpath = new DOMXPath($dom);
+            // $html = $item->description;
+            // $dom = new DOMDocument();
+            // @$dom->loadHTML($html);
+            // $xpath = new DOMXPath($dom);
 
-            // Extract values based on class names
-            $name = $xpath->query("//span[@class='pname_value']")->item(0)->textContent ?? '';
-            $quantity = $xpath->query("//span[@class='pquantity_value']")->item(0)->textContent ?? '';
-            $price = $xpath->query("//span[@class='pprice_value']")->item(0)->textContent ?? '';
-            $total = $xpath->query("//span[@class='ptotal_value']")->item(0)->textContent ?? '';
-            $currentProgress = $xpath->query("//span[@class='progress_value']")->item(0)->textContent ?? '';
-            $totalProgress = $xpath->query("//span[@class='ptotalprogress_value']")->item(0)->textContent ?? '';
+            // // Extract values based on class names
+            // $name = $xpath->query("//span[@class='pname_value']")->item(0)->textContent ?? '';
+            // $quantity = $xpath->query("//span[@class='pquantity_value']")->item(0)->textContent ?? '';
+            // $price = $xpath->query("//span[@class='pprice_value']")->item(0)->textContent ?? '';
+            // $total = $xpath->query("//span[@class='ptotal_value']")->item(0)->textContent ?? '';
+            // $currentProgress = $xpath->query("//span[@class='progress_value']")->item(0)->textContent ?? '';
+            // $totalProgress = $xpath->query("//span[@class='ptotalprogress_value']")->item(0)->textContent ?? '';
 
-            $formattedDescription = __("Name") . ": $name - " . 
-                                    __("Quantity") . ": $quantity - " . 
-                                    __("Price") . ": $price - " . 
-                                    __("Total Price") . ": $total - " . 
-                                    __("Current Progress") . ": $currentProgress - " . 
-                                    __("Total Progress") . ": $totalProgress";
+            // $formattedDescription = __("Name") . ": $name - " . 
+            //                         __("Quantity") . ": $quantity - " . 
+            //                         __("Price") . ": $price - " . 
+            //                         __("Total Price") . ": $total - " . 
+            //                         __("Current Progress") . ": $currentProgress - " . 
+            //                         __("Total Progress") . ": $totalProgress";
 
             // Add group as a text element
             if ($item->group->group_name) {
@@ -197,7 +197,7 @@ class LexoOfficeService
                     "taxRatePercentage" => 19,
                 ],
                 "discountPercentage" => $invoice->discount,
-                "description" =>  $formattedDescription, 
+                "description" =>  strip_tags($item->description), 
             ];
         }
 
