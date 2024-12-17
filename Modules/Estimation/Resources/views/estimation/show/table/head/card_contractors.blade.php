@@ -36,7 +36,7 @@
             class="total-main-title text-center">
 
             <div class="font-bold text-lg">
-                <span> {{ $quotes->subContractor->name ?? $quotes->title }} </span>
+                <span> {{ $quotes->title ?? $quotes->subContractor->name }} </span>
                 <div class="company-total-settings">
                     <i class="ti ti-settings float-end" id="dropdownMenuButton{{ $quotes->id }}"
                         data-bs-toggle="dropdown" aria-expanded="false"></i>
@@ -47,11 +47,10 @@
                             <li>
                                 <a class="dropdown-item" 
                                     href="javascript:void(0)"
-                                    data-url="{{ route('estimation.duplicateQuoteCard', $quotes->id) }}" 
+                                    data-url="{{ route('estimation.duplicateQuoteCard', ['id' => $quotes->id, 'mode' => 'duplicate']) }}" 
                                     data-ajax-popup="true"
-                                    data-toggle="tooltip"
-                                    title="{{ trans('Duplicate Card Quate') }}"
-                                    data-bs-original-title="{{ trans('Duplicate Card Quate') }}">
+                                    data-toggle="tooltip"  
+                                    data-title="{{ trans('Duplicate Card Quate') }}">
                                     <i class="fa-regular fa-copy"></i>
                                     {{ __('Duplicate') }}
                                 </a>
@@ -60,10 +59,16 @@
 
                         @if (auth()->user()->type == 'company')
                             <li>
-                                <a class="dropdown-item  gap-2" href="javascript:void(0)"
-                                    onclick="duplicateColumn('{{ $quotes->id }}','{{ $quotes->title }}','{{ $quotes->user_id }}','{{ $quotes->markup }}',true)">
+                                <a class="dropdown-item" 
+                                    href="javascript:void(0)"
+                                    id="edit-clone-quate-modal"
+                                    data-id="edit-clone-quate-modal"
+                                    data-url="{{ route('estimation.duplicateQuoteCard', ['id' => $quotes->id, 'mode' => 'edit', 'userID' => $quotes->user_id, 'title' => $quotes->title]) }}" 
+                                    data-ajax-popup="true"
+                                    data-toggle="tooltip" 
+                                    data-title="{{ trans('Change Name or Contract') }}">
                                     <i class="fa-solid fa-pencil"></i>
-                                    {{ __('Change Name or Contact') }}
+                                    {{ trans('Change Name or Contract') }}
                                 </a>
                             </li>
                         @endif

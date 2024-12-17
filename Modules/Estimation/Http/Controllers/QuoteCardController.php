@@ -6,11 +6,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Modules\Estimation\Entities\EstimateQuote;
 use Modules\Estimation\Entities\ProjectEstimation;
 
-class QuoteCard extends Controller
+class QuoteCardController extends Controller
 {
     /**
      * Handle the clone estimation request
@@ -20,20 +19,48 @@ class QuoteCard extends Controller
     {
         if ($request->isMethod('get')) {
             return view('estimation::estimation.show.section.duplicate-quote-card');
-        } else {
-            try {
-                $estimateQuote = EstimateQuote::findOrFail($request->id);
-                $this->cloneEstimateQuote($estimateQuote);
+        }
 
+        return $request->isMethod('PUT')
+            ? $this->updateQuote($request)
+            : $this->cloneQuote($request);
+    }
+
+    /**
+     * Update existing quote
+     */
+    private function updateQuote(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $estimateQuote = EstimateQuote::findOrFail($request->id);
+
+            // Update only the provided fields
+            $estimateQuote->fill(array_filter([
+                'title'   => $request->title,
+                'user_id' => $request->subContractor,
+            ]));
+
+            // Check if anything actually changed
+            if (! $estimateQuote->isDirty()) {
                 return redirect()
                     ->back()
-                    ->with('success', __('Estimation qoute cloned successfully'));
-
-            } catch (\Exception $e) {
-                return redirect()
-                    ->back()
-                    ->with('error', $e->getMessage());
+                    ->with('success', __('No changes were made'));
             }
+
+            $estimateQuote->save();
+            DB::commit();
+
+            return redirect()
+                ->back()
+                ->with('success', __('Quote has been updated successfully'));
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()
+                ->back()
+                ->with('error', $e->getMessage());
         }
     }
 
@@ -41,10 +68,12 @@ class QuoteCard extends Controller
      * Clone an existing estimation quote with all its related data
      * @param ProjectEstimation $estimation 
      */
-    public function cloneEstimateQuote(EstimateQuote $estimateQuote)
+    private function cloneQuote(Request $request)
     {
         try {
             DB::beginTransaction();
+
+            $estimateQuote = EstimateQuote::findOrFail($request->id);
 
             if (request('subContractor')) {
                 $subContractor = User::findOrFail(request('subContractor'));
@@ -64,9 +93,16 @@ class QuoteCard extends Controller
             }
 
             DB::commit();
+
+            return redirect()
+                ->back()
+                ->with('success', __('Estimation qoute cloned successfully'));
+
         } catch (\Exception $e) {
             DB::rollBack();
-            throw $e;
+            return redirect()
+                ->back()
+                ->with('error', $e->getMessage());
         }
     }
 
