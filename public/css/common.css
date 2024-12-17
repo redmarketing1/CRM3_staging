@@ -2571,11 +2571,12 @@ td.project-budget {
 }
 
 .selct2-custom .select2-container .select2-selection--single {
-    height: 38px !important;
+    padding-top: 3px;
+    height: 45px !important;
 }
 
 .selct2-custom .select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 35px !important;
+    line-height: 41px !important;
 }
 
 .selct2-custom .select2-container--default .select2-selection--single .select2-selection__placeholder {
@@ -4298,36 +4299,12 @@ label.dropdown-item:last-child {
 .select2-results__options,
 .select2-container--default .select2-results>.select2-results__options {
     padding: 10px;
-    width: auto !important;
-    /* min-width: 200px; */
+    width: auto !important; 
     background: #FFF;
-    max-height: 500px !important;
-    /* margin-left: -50px; */
+    max-height: 500px !important; 
     border-radius: 10px;
-}
-
-.select2-dropdown {
-    width: auto !important;
-    border: none !important;
-    background: transparent;
-    /* min-width: 200px; */
-    border-radius: 10px !important;
-    width: auto !important;
-    border: none !important;
-    background: transparent;
-    /* min-width: 200px; */
-    border-radius: 10px !important;
-}
-
-/* .select2-results__option:hover {
-			color: #8492A6 !important;
-			background-color: #EFF2F7 !important;
-		}
-		
-		.select2-container--default .select2-results__option[aria-selected="true"] {
-			color: #8492A6 !important;
-			background-color: #EFF2F7 !important;
-		} */
+} 
+ 
 .select2-results .select2-results__option,
 .dropdown-menu .dropdown-item {
     padding: 5px 12px;
@@ -5387,11 +5364,7 @@ td.column_ai_description.ai-content:hover .ai-result {
 
 .selct2-custom .select2-container--default .select2-selection--single .select2-selection__clear {
     margin-top: 0px !important;
-}
-
-.selct2-custom .select2-container .select2-selection--single {
-    height: 38px !important;
-}
+} 
 
 .selct2-custom .select2-container--default .select2-selection--single .select2-selection__rendered {
     line-height: 35px !important;
@@ -7982,9 +7955,9 @@ span.select2-selection.select2-selection--multiple {
 
 .select2-container--default {
     border: none !important;
-    background: #f9f9f9;
-    padding: 3px;
-    margin: 2px !important;
+    background: #fff;
+    padding: 0px 0px;
+    margin: 0px !important;
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
@@ -9187,6 +9160,10 @@ body .progress_files_row .progress_mediaimg {
     table td, table th {
         display: block;
     }
+}
+
+#clone-form .select2-container--default{
+
 }
 
     /************************************+ MEDIA QUERIES ONLY ********************************************/

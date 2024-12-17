@@ -17,6 +17,9 @@ Route::prefix('project')->group(function () {
 
     Route::prefix('estimation')->group(function () {
 
+        Route::match(['get', 'post'], 'duplicateQuoteCard/{id}', 'QuoteCard@duplicateQuoteCard')
+            ->name('estimation.duplicateQuoteCard');
+
         Route::resource('', 'EstimationController')
             ->parameters(['' => 'estimation'])
             ->names('estimation');

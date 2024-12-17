@@ -2,9 +2,11 @@
 
 namespace Modules\Estimation\Entities;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Taskly\Entities\EstimateQuoteItem;
+use Modules\Taskly\Entities\ProjectEstimationProduct;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class EstimateQuote extends Model
 {
@@ -31,12 +33,7 @@ class EstimateQuote extends Model
         'final_for_client',
         'final_for_sub_contractor',
     ];
-
-    protected static function newFactory()
-    {
-        return \Modules\Taskly\Database\factories\EstimateQuoteFactory::new();
-    }
-
+ 
     public function estimation()
     {
         return $this->hasOne(ProjectEstimation::class, 'id', 'project_estimation_id')->withTrashed();

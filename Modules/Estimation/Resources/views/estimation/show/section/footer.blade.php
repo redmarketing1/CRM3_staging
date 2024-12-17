@@ -32,11 +32,11 @@
     @endif
 
     <div class="align-items-center d-inline-flex">
-        <div class="align-items-center d-inline-flex gap-2 m-r-20 text-xl">
+        {{-- <div class="align-items-center d-inline-flex gap-2 m-r-20 text-xl">
             <input type="checkbox" class="form-check-input" id="autoSaveEnabled" checked>
             <label class="form-check-label" for="autoSaveEnabled">Enable auto save</label>
             <div class="last-time lastSaveTimestamp"></div>
-        </div>
+        </div> --}}
 
         @if ($estimation->status != 2 && $estimation->status != 3 && auth()->user()->type == 'company')
             <button type="button" id="save-button" class="btn btn-primary">

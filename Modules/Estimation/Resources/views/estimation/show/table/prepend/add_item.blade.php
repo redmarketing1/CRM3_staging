@@ -34,17 +34,18 @@
 
      @foreach ($allQuotes as $quoteItem)
         <td class="column_single_price border-left" data-cardQuoteID="{{ $quoteItem->id }}">
-            <div class="d-flex">
-                <input type="text" class="form-control item-price"
-                    name="cardQuote[][{{ $quoteItem->id }}]"
+            <div class="d-flex"> 
+                <input type="text" class="form-control item-price" 
+                    id="cardQuoteSinglePrice" 
+                    data-cardquotesingleprice="{{ $quoteItem->id }}" 
+                    name="cardQuote[][{{ $quoteItem->id }}]" 
                     value="{{ currency_format_with_sym(0,00)  }}">
             </div>
         </td>
-
+        
         <td class="column_total_price border-right" 
-            data-cardQuoteID="{{ $quoteItem->id }}">
-            {{ currency_format_with_sym(0,00) }}
-        </td>
+            id="cardQuoteTotalPrice" 
+            data-cardquotetotalprice="{{ $quoteItem->id }}">-</td>
     @endforeach
 </tr>
 

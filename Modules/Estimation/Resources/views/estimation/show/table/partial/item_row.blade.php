@@ -49,7 +49,7 @@
         </td>
 
         <td class="column_total_price border-right" id="cardQuoteTotalPrice" data-cardQuoteTotalPrice="{{ $quoteItem->estimate_quote_id }}">
-            -
+            {{ $product->is_optional == 1 ? currency_format_with_sym($quoteItem->total_price) : '-' }}
         </td>
     @endforeach
 </tr>

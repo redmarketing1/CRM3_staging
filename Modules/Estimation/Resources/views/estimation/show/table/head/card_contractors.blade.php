@@ -45,8 +45,13 @@
 
                         @permission('estimation duplicate quote option')
                             <li>
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    @click="duplicateCardColumn('{{ $quotes->id }}')">
+                                <a class="dropdown-item" 
+                                    href="javascript:void(0)"
+                                    data-url="{{ route('estimation.duplicateQuoteCard', $quotes->id) }}" 
+                                    data-ajax-popup="true"
+                                    data-toggle="tooltip"
+                                    title="{{ trans('Duplicate Card Quate') }}"
+                                    data-bs-original-title="{{ trans('Duplicate Card Quate') }}">
                                     <i class="fa-regular fa-copy"></i>
                                     {{ __('Duplicate') }}
                                 </a>

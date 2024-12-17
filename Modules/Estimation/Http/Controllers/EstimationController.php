@@ -92,15 +92,15 @@ class EstimationController extends Controller
     private function createEstimationProduct($item, $group)
     {
         return $group->estimation_products()->create([
-            'project_estimation_id ' => $group['estimation_id'],
-            'name'                   => $item['name'] ?? null,
-            'comment'                => $item['comment'] ?? null,
-            'pos'                    => $item['pos'],
-            'type'                   => $item['type'],
-            'description'            => $item['description'],
-            'quantity'               => $item['quantity'] ?? 0,
-            'unit'                   => $item['unit'] ?? null,
-            'is_optional'            => $item['optional'] ?? false,
+            'project_estimation_id' => $group['estimation_id'],
+            'name'                  => $item['name'] ?? null,
+            'comment'               => $item['comment'] ?? null,
+            'pos'                   => $item['pos'],
+            'type'                  => $item['type'],
+            'description'           => $item['description'],
+            'quantity'              => $item['quantity'] ?? 0,
+            'unit'                  => $item['unit'] ?? null,
+            'is_optional'           => $item['optional'] ?? false,
         ]);
     }
 
