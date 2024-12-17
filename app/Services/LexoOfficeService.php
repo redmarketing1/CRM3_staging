@@ -68,11 +68,7 @@ class LexoOfficeService
                 'name' => $customer->company_name ?? null,
                 'taxNumber' => '12345',
                 'vatRegistrationId' => '12345',
-<<<<<<< HEAD
                 'allowTaxFreeInvoices' => false,
-=======
-                'allowTaxFreeInvoices' => true,
->>>>>>> 1faa122 (from server)
                 'contactPersons' => [
                     [
                         'salutation' => isset($customerSalutation) ? $customerSalutation : 'Herr/Frau',
