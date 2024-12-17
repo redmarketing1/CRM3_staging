@@ -63,7 +63,7 @@ class LexoOfficeService
 
         // Check if company name exists, send company data or just person data
         if ($customer->company_name) {
-            // Send company data with contact person
+            // Send company data with contact person data fixed
             $payload['company'] = [
                 'name' => $customer->company_name ?? null,
                 'taxNumber' => '12345',
