@@ -3034,5 +3034,9 @@
     "Payment Not found.": "Payment Not found.",
     "Something Wrent Wrong.": "Something Wrent Wrong.",
     "Payment added Successfully!": "Payment added Successfully!",
-    "Unable to retrieve PayPal access token.": "Unable to retrieve PayPal access token."
+    "Unable to retrieve PayPal access token.": "Unable to retrieve PayPal access token.",
+    "Group": "Group",
+    "Current Progress": "Current Progress",
+    "Total Progress": "Total Progress",
+    "Total Price": "Total Price"
 }

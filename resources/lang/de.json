@@ -3037,5 +3037,9 @@
   "Payment Not found.": "Zahlung nicht gefunden.",
   "Something Wrent Wrong.": "Etwas stimmte nicht.",
   "Payment added Successfully!": "Zahlung erfolgreich hinzugefügt!",
-  "Unable to retrieve PayPal access token.": "PayPal-Zugriffstoken konnte nicht abgerufen werden."
+  "Unable to retrieve PayPal access token.": "PayPal-Zugriffstoken konnte nicht abgerufen werden.",
+  "Group": "Gruppe",
+  "Current Progress": "Aktueller Fortschritt",
+  "Total Progress": "Gesamtfortschritt",
+  "Total Price": "Gesamtpreis"
 }
