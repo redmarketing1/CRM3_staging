@@ -201,10 +201,6 @@ th.border-left-right.finalized_sub_contractor_quote {
     display: none;
 }
 
-.table#estimation-edit-table thead th {
-    background: #f8f9fd;
-}
-
 .fa.fa-spinner {
     background: transparent !important;
 }
@@ -997,6 +993,7 @@ td a.btn-primary i {
 .CHANGE {
     outline: 7px dashed #FF08FF;
 }
+
 .CHANGE:before {
     content: "CHANGE THIS:";
     color: #FFF;
@@ -1008,6 +1005,7 @@ td a.btn-primary i {
     margin-left: -7px;
     padding: 0 5px;
 }
+
 #estimation-table {
     table-layout:
 }
@@ -1116,9 +1114,11 @@ span.progress-comment-content {
 span.progress-percent {
     font-weight: bold;
 }
+
 .progress_files {
     margin: 10px 0;
 }
+
 /*.progress-history .progress-step:last-child {
 	display: none;
 	}*/
@@ -1526,13 +1526,6 @@ th.toptotal.total-net-discount {
     border-top: 2px solid #777 !important;
 }
 
-th.border-left-right,
-td.border-left-right,
-th.toplabel.total-main-title.smartblock.smartblock-generate.border-left-right {
-    border-left: 2px solid #777 !important;
-    border-right: 2px solid #777 !important;
-}
-
 th.border-left,
 td.border-left {
     border-left: 2px solid #777 !important;
@@ -1655,7 +1648,7 @@ div#estimation-edit-table_wrapper .dt-search {
 }
 
 .company-total-settings i.ti-settings:before {
-    color: #ffffff42;
+    color: #000000;
     content: "\f142";
     font-family: 'Font Awesome 5 Free';
     font-weight: 600;
@@ -1679,20 +1672,10 @@ tfoot th input,
     border-radius: 5px;
 }
 
-th.total-main-title {
-    background: #4f4f4f !important;
-    color: #FFF !important;
-}
-
 #estimation-edit-table tr.group,
 #estimation-edit-table tr.group:hover {
     background-color: rgb(237 237 237) !important;
 }
-
-/* #estimation-edit-table tr.group td {
-		border-top: 2px solid #000 !important;
-		border-bottom: 2px solid #000 !important;
-	} */
 
 td.column_name,
 td.column_quantity,
@@ -2202,9 +2185,9 @@ a#grammarCheck {
 }
 
 table thead th {
-    background: #f7f7f7 !important;
+    background: #f7f7f7;
     text-transform: none;
-    padding: 10px 10px !important;
+    padding: 10px 10px;
     font-weight: 600;
 }
 
@@ -2216,10 +2199,6 @@ table thead th {
 
 .select2-container--default .select2-selection--multiple {
     background: transparent;
-}
-
-span.select2-search.select2-search--inline {
-    /* display: none; */
 }
 
 .select2-container--default .select2-search--inline .select2-search__field {
@@ -2367,12 +2346,6 @@ tr.total-line-top th.total-settings {
 
 .total-gross-total {
     margin-left: 10px;
-}
-
-.total-main-title span.dt-column-title {
-    /* display: flex;
-		line-height: 20px;
-		justify-content: space-between; */
 }
 
 .result-inner .result-description,
@@ -4308,12 +4281,12 @@ label.dropdown-item:last-child {
 .select2-results__options,
 .select2-container--default .select2-results>.select2-results__options {
     padding: 10px;
-    width: auto !important; 
+    width: auto !important;
     background: #FFF;
-    max-height: 500px !important; 
+    max-height: 500px !important;
     border-radius: 10px;
-} 
- 
+}
+
 .select2-results .select2-results__option,
 .dropdown-menu .dropdown-item {
     padding: 5px 12px;
@@ -4661,14 +4634,6 @@ th.toplabel.sb-settings.border-right {
     border-right: 2px solid #777 !important;
 }
 
-/* table#estimation-edit-table tfoot tr:last-child th.column_single_price, 
-table#estimation-edit-table tfoot tr:last-child th.column_total_price,
-table#estimation-edit-table tfoot tr:last-child th.column_material_cost_all_results,
-table#estimation-edit-table tfoot tr:last-child th.column_material_cost_final_value,
-tfoot th.column_smartblock_value,
-tfoot th.column_final_value {
-    border-bottom: 2px solid #777 !important;
-} */
 
 #estimation-edit-table td:last-child {
     border-right: none !important;
@@ -4773,15 +4738,6 @@ div#estimation-edit-table_wrapper .dt-search {
     display: none;
 }
 
-.company-total-settings i.ti-settings:before {
-    color: #ffffff42;
-    content: "\f142";
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 600;
-    padding-top: 2px !important;
-    display: inline-block;
-}
-
 .company-total-settings {
     float: right !important;
     align-content: space-around;
@@ -4796,11 +4752,6 @@ tfoot th input,
     padding: 6px 8px !important;
     border: 2px solid #e1e1e1;
     border-radius: 5px;
-}
-
-th.total-main-title {
-    background: #4f4f4f !important;
-    color: #FFF !important;
 }
 
 #estimation-edit-table tr.group,
@@ -5323,12 +5274,6 @@ tr.total-line-top th.total-settings {
     margin-left: 10px;
 }
 
-.total-main-title span.dt-column-title {
-    /* display: flex;
-    line-height: 20px;
-    justify-content: space-between; */
-}
-
 .result-inner .result-description,
 .variable-box .variable-items,
 .CellWithComment .CellComment,
@@ -5367,7 +5312,7 @@ td.column_ai_description.ai-content:hover .ai-result {
 
 .selct2-custom .select2-container--default .select2-selection--single .select2-selection__clear {
     margin-top: 0px !important;
-} 
+}
 
 .selct2-custom .select2-container--default .select2-selection--single .select2-selection__rendered {
     line-height: 35px !important;
@@ -5469,12 +5414,16 @@ span.select2-selection textarea {
     justify-content: left;
     padding-left: 7px;
 }
+
 div#progress-div {
     padding: 0;
 }
-#progress-table tr.group td, #progress-table tr.group td:hover {
+
+#progress-table tr.group td,
+#progress-table tr.group td:hover {
     background: rgb(238 238 238) !important;
 }
+
 .actionbuttons .action-btn {
     width: 20px;
     height: 20px;
@@ -6033,10 +5982,6 @@ table#estimation-edit-table .card:not(.table-card) .table tr th:last-child {
     padding-right: unset !important;
 }
 
-table#estimation-edit-table tr th:last-child {
-    padding-right: 10px;
-}
-
 #estimation-edit-table td {
     padding: 3px 5px !important;
 }
@@ -6372,7 +6317,7 @@ table#progress-table td.position {
     content: "+";
 }
 
-		
+
 #card2 {
     right: -61px;
     width: 48%;
@@ -6401,7 +6346,7 @@ table#progress-table td.position {
     border-color: #4CAF50 !important;
 }
 
-.item-signature .progress_files{
+.item-signature .progress_files {
     margin-top: 10px !important;
 }
 
@@ -6421,6 +6366,7 @@ table#progress-table td.position {
     max-height: 150px;
     margin: 10px;
 }
+
 /* The container */
 .checkbox-btn .container {
     display: block;
@@ -6436,11 +6382,11 @@ table#progress-table td.position {
 
 /* Hide the browser's default checkbox */
 .checkbox-btn .container input {
-position: absolute;
-opacity: 0;
-cursor: pointer;
-height: 0;
-width: 0;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
 }
 
 /* Create a custom checkbox */
@@ -6452,6 +6398,7 @@ width: 0;
     width: 15px;
     background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
 }
+
 .header_buttons .checkmark {
     background-color: #0427e9 !important;
 }
@@ -6464,7 +6411,7 @@ width: 0;
 }
 
 /* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
+.container input:checked~.checkmark:after {
     display: block;
 }
 
@@ -6480,7 +6427,9 @@ width: 0;
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
 }
-.selected_image .actionbuttons .bg-danger, .default_file .header_buttons .action-btn{
+
+.selected_image .actionbuttons .bg-danger,
+.default_file .header_buttons .action-btn {
     visibility: visible;
 }
 
@@ -6492,30 +6441,39 @@ width: 0;
     display: flex;
 }
 
-#progress-table tr.group, #progress-table tr.group:hover {
+#progress-table tr.group,
+#progress-table tr.group:hover {
     background-color: rgba(0, 0, 0, 0.1) !important;
 }
-.construction_detail_address span, .client_invoice_address span, .address-class span { 
-    display : block;
+
+.construction_detail_address span,
+.client_invoice_address span,
+.address-class span {
+    display: block;
 }
 
-.CellWithComment{
-    position:relative;
+.CellWithComment {
+    position: relative;
 }
-.CellWithComment i{
+
+.CellWithComment i {
     color: #333333 !important;
 }
-.CellWithComment:hover span.CellComment{
-    display:block;
+
+.CellWithComment:hover span.CellComment {
+    display: block;
 }
-.CellWithComment .CellComment{
+
+.CellWithComment .CellComment {
     top: 33px !important;
 }
-.CellWithComment .CellComment:before{
+
+.CellWithComment .CellComment:before {
     margin-top: -28px !important;
     margin-right: 28px !important;
 }
-.progress-signature .sign_btn_block{
+
+.progress-signature .sign_btn_block {
     display: flex;
     justify-content: space-between;
 }
@@ -6524,42 +6482,53 @@ width: 0;
     display: flex;
     gap: 1px;
 }
-.progress-signature .progress_final_clear_sig, .progress-signature .progress_final_clear_sig:hover {
+
+.progress-signature .progress_final_clear_sig,
+.progress-signature .progress_final_clear_sig:hover {
     color: #333 !important;
     background: none !important;
     border: none !important;
     margin-top: 1px !important;
 }
+
 .item-signature .progress_amount input {
     border: 1px solid #d8d8d8 !important;
     padding: 10px !important;
     background: #ffffff !important;
     margin-top: 5px !important;
 }
-.progress_files_row .progress_mediaimg{
+
+.progress_files_row .progress_mediaimg {
     padding: 10px !important;
 }
-.progress_files_row .lightbox-link{
+
+.progress_files_row .lightbox-link {
     margin: 0 auto !important;
     display: block !important;
 }
-.progress_files_row .mediabox .mediainfo{
+
+.progress_files_row .mediabox .mediainfo {
     text-align: center !important;
 }
-.progress_files_row .preview{
+
+.progress_files_row .preview {
     margin: 10px !important;
 }
-.media-body a .fileprev{
+
+.media-body a .fileprev {
     margin: 0 auto !important;
 }
-.progress_files_row #progress_bulk_delete_form .btn-primary{
+
+.progress_files_row #progress_bulk_delete_form .btn-primary {
     background: #48494B !important;
     padding: 5px 10px !important;
     color: #fff !important;
 }
-.progress_files_row #progress_bulk_delete_form .btn-primary i{
+
+.progress_files_row #progress_bulk_delete_form .btn-primary i {
     color: #fff !important;
-}  
+}
+
 .pos-prefix {
     color: #666;
     font-weight: 500;
@@ -6627,9 +6596,11 @@ td a.btn-primary.btn_sign_here {
     display: flex;
     gap: 1px;
 }
+
 .select-progress {
     margin-bottom: 10px;
 }
+
 canvas.signature-pad {
     border: 3px dashed #53a65e !important;
     border-radius: 5px;
@@ -6637,6 +6608,7 @@ canvas.signature-pad {
     box-shadow: 0 0px 10px #000000a8;
     outline: 5px solid #FFF;
 }
+
 .signature-placeholder {
     position: absolute;
     top: 13px;
@@ -6644,9 +6616,11 @@ canvas.signature-pad {
     font-size: 14px;
     font-family: 'Open Sans';
 }
+
 .progress_files p {
     font-size: 15px !important;
 }
+
 .progress_files #progressdropBox {
     width: 100%;
     height: 100px !important;
@@ -6659,6 +6633,7 @@ canvas.signature-pad {
     background: #ebf8ff;
     border-radius: 10px;
 }
+
 td.item-signature {
     position: relative;
 }
@@ -6669,6 +6644,7 @@ td.item-signature {
     left: 290px;
     margin-top: 5px;
 }
+
 .sign_btn_block,
 td.item-signature .form-control {
     display: flex;
@@ -7128,9 +7104,38 @@ body.project.show .description-card .card-body {
     padding-bottom: 0 !important;
 }
 
+.table#estimation-edit-table .total-main-title.cardQuote:not(.quote, .clientQuote, .subcontractor) {
+    background: #4f4f4f;
+    color: #FFF;
+}
+
 .table#estimation-edit-table thead th.total-net-discount.totalnr,
 .table#estimation-edit-table thead th.toplabel.total-net-discount {
     padding-top: 15px !important;
+}
+
+.table#estimation-edit-table .cardQuote.quote {
+    background-color: #fff5e1;
+}
+
+.table#estimation-edit-table .total-main-title.cardQuote.quote {
+    background: #ffce66;
+}
+
+.table#estimation-edit-table .cardQuote.clientQuote {
+    background-color: #e6fbff;
+}
+
+.table#estimation-edit-table .total-main-title.cardQuote.clientQuote {
+    background-color: #91e8f9;
+}
+
+.table#estimation-edit-table .cardQuote.subcontractor {
+    background-color: #c9ffe5;
+}
+
+.table#estimation-edit-table .total-main-title.cardQuote.subcontractor {
+    background-color: #30ef93;
 }
 
 .grouptotal {
@@ -9106,12 +9111,12 @@ table.table tr.top-quote.subcontractor_final_quote:hover {
     border: none !important
 }
 
-table.table tr.top-quote.client_final_quote
-{
+table.table tr.top-quote.client_final_quote {
     position: sticky;
     top: 0;
     z-index: 10;
 }
+
 /* 
 table.table tr.top-quote.subcontractor_final_quote {
     top: 124px !important;!i;!;
@@ -9121,24 +9126,29 @@ table.table tr.top-quote.only_final_quotes_profit {
     top: 202px;
 } */
 
-#progress-table tr td, tr.group.progress_files_row td {
+#progress-table tr td,
+tr.group.progress_files_row td {
     background: #fff;
 }
+
 td.item-signature button {
     background: #d5d7da;
     background: transparent;
     border: none;
     margin: 1px;
 }
+
 td.item-signature button i {
     color: #999 !important;
     font-size: 18px !important;
 }
+
 td.item-signature button:hover,
 td.item-signature button:active,
 td.item-signature button:focus {
     background: transparent;
 }
+
 .progress_files_row .mediabox .media img {
     height: 80px;
 }
@@ -9155,33 +9165,38 @@ td.item-signature button:focus {
 body .progress_files_row .progress_mediaimg {
     padding: 1px 0px !important;
 }
+
 .project_progress .pos-prefix div {
     font-weight: 100;
     text-align: left;
     color: #bbb;
     font-size: 13px;
 }
+
 .dash-header ul {
     margin-bottom: 0;
     display: inline-flex;
     flex-flow: wrap;
 }
-.dash-header .dash-h-item
-{min-height: unset !important;}
+
+.dash-header .dash-h-item {
+    min-height: unset !important;
+}
 
 .dash-header {
     min-height: unset !important;
     position: unset !important;
     padding-top: 20px;
 }
+
 header.dash-header * {
     font-size: 13px;
 }
 
 #search-pro input {
     opacity: 1 !important;
-        font-size: 18px !important;
-    }
+    font-size: 18px !important;
+}
 
 #search-pro #search-results {
     background: #f5f5f5;
@@ -9213,18 +9228,21 @@ header.dash-header * {
 #search-results .search-result-item .card:hover {
     border: 2px solid #ddd;
 }
+
 body #search-pro .dash-head-link {
     border: 2px solid #ececec !important;
 }
+
 .progress-numbers {
     font-size: 11px;
     margin-bottom: 5px;
 }
+
 .progress-numbers span {
-    display: flex
-;
+    display: flex;
     margin: 0;
 }
+
 table#progress-table td.quantity .single-price {
     white-space: nowrap !important;
     display: block;
@@ -9303,8 +9321,8 @@ table#progress-table td.quantity .single-price {
         max-width: unset !important;
         height: auto !important;
     }
-    .dash-header 
-    {
+
+    .dash-header {
         padding-bottom: 15px;
         margin-bottom: 15px;
     }
@@ -9376,46 +9394,49 @@ table#progress-table td.quantity .single-price {
     .search-input-box .search-input {
         width: 50px !important;
     }
+
     table#progress-table td.name {
         font-weight: bold;
     }
+
     #progress-table tr.group td {
         background: transparent !important;
     }
 
     /******* MOBILE TABLE ******/
-    table, thead, tbody, tr, th, td {
+    table,
+    thead,
+    tbody,
+    tr,
+    th,
+    td {
         display: flex !important;
         width: 100% !important;
-        flex-wrap:wrap !important;
-        border:none !important;
+        flex-wrap: wrap !important;
+        border: none !important;
     }
-  
-    table th {
-    }
-    
+
+    table th {}
+
     table thead tr {
-        border: 2px solid #ddd !important;    
+        border: 2px solid #ddd !important;
     }
+
     table thead th {
-        flex-basis: content;    
+        flex-basis: content;
     }
-    
+
     table tbody tr {
         border: 2px solid #ddd !important;
-        border-top:none !important;
+        border-top: none !important;
         background: #f1f1f1 !important;
     }
+
     table tbody td {
         background: #FFF !important;
         margin: 1px !important;
         flex-basis: content;
     }
+
     /********** MOBILE TABLE END *********/
 }
-
-#clone-form .select2-container--default{
-
-}
-
-    /************************************+ MEDIA QUERIES ONLY ********************************************/

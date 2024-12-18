@@ -4,7 +4,14 @@
     </th>
 
     @foreach ($allQuotes as $quote)
-        <th colspan="2" class="toptotal total-gross border-left-right" data-cardQuoteID="{{ $quote->id }}">
+        <th colspan="2"
+            @class([
+                'toptotal total-gross border-left-right cardQuote',
+                'quote' => $quote->is_final,
+                'clientQuote' => $quote->final_for_client,
+                'subcontractor' => $quote->final_for_sub_contractor
+            ])
+            data-cardQuoteID="{{ $quote->id }}">
             <span class="dt-column-title">
                 <div class="totalnr toptotal total-discount total-vat-input">
                     <select name="item[{{ $quote->id }}][tax]">
