@@ -92,19 +92,9 @@ $(document).ready(function () {
                 const value = this.parseGermanDecimal($input.val());
                 const cardQuoteId = $input.attr('name').match(/\[(\d+)\]/)[1];
 
+                // Format and style markup input
                 $input.val(this.formatGermanDecimal(value));
-
-                if (value < 0) {
-                    $input.css({
-                        'background-color': '#ffebee',
-                        'color': '#d32f2f'
-                    });
-                } else {
-                    $input.css({
-                        'background-color': '',
-                        'color': ''
-                    });
-                }
+                this.styleNegativeInput($input, value);
 
                 this.applyMarkupToSinglePrices(cardQuoteId, value);
                 this.updateAllCalculations();
@@ -200,6 +190,12 @@ $(document).ready(function () {
                 });
 
             });
+
+            this.estimation.on('blur', '.item-price', (event) => {
+                const $input = $(event.target);
+                this.updateBasePrice($input);
+                this.updateAllCalculations();
+            });
         },
 
         init() {
@@ -211,6 +207,7 @@ $(document).ready(function () {
             this.updateAllCalculations();
             this.updatePOSNumbers();
             this.initializeAutoSave();
+            this.initializePriceStyles();
 
             document.addEventListener('fullscreenchange', () => {
                 this.isFullScreen = !!document.fullscreenElement;
@@ -247,6 +244,14 @@ $(document).ready(function () {
                     e.returnValue = message;
                     return message;
                 }
+            });
+        },
+
+        initializePriceStyles() {
+            $('.item-price').each((_, element) => {
+                const $price = $(element);
+                const value = this.parseGermanDecimal($price.val());
+                this.styleNegativeInput($price, value);
             });
         },
 
@@ -509,19 +514,24 @@ $(document).ready(function () {
         },
 
         storeOriginalPrices() {
-            this.originalPrices.clear();
-
-            $('.item-price').each((_, element) => {
-                const $price = $(element);
-                const cardQuoteId = $price.data('cardquotesingleprice');
-                const itemId = $price.closest('tr').data('itemid');
-                const key = `${cardQuoteId}-${itemId}`;
-
-                if (!this.originalPrices.has(key)) {
+            if (this.originalPrices.size === 0) {
+                $('.item-price').each((_, element) => {
+                    const $price = $(element);
+                    const cardQuoteId = $price.data('cardquotesingleprice');
+                    const itemId = $price.closest('tr').data('itemid');
+                    const key = `${cardQuoteId}-${itemId}`;
                     const originalPrice = this.parseGermanDecimal($price.val());
                     this.originalPrices.set(key, originalPrice);
-                }
-            });
+                });
+            }
+        },
+
+        updateBasePrice($input) {
+            const cardQuoteId = $input.data('cardquotesingleprice');
+            const itemId = $input.closest('tr').data('itemid');
+            const key = `${cardQuoteId}-${itemId}`;
+            const newBasePrice = this.parseGermanDecimal($input.val());
+            this.originalPrices.set(key, newBasePrice);
         },
 
         addItems(type) {
@@ -658,6 +668,7 @@ $(document).ready(function () {
                         const clonedGroup = item.clone();
                         helperContainer.append(clonedGroup);
 
+                        // Clone all related items regardless of visibility
                         $(`tr.item_row[data-groupid="${groupId}"], tr.item_comment[data-groupid="${groupId}"]`).each(function () {
                             helperContainer.append($(this).clone());
                         });
@@ -675,9 +686,10 @@ $(document).ready(function () {
                 },
                 start: function (e, ui) {
                     const item = ui.item;
-                    if (item.hasClass('group_row')) {
-                        const groupId = item.data('groupid');
-                        $(`tr.item_row[data-groupid="${groupId}"], tr.item_comment[data-groupid="${groupId}"], tr.item_child[data-groupid="${groupId}"]`).hide();
+                    if (!item.hasClass('group_row')) {
+                        // Only hide description row for individual items
+                        const itemId = item.data('itemid');
+                        $(`.item_child[data-itemid="${itemId}"]`).hide();
                     }
                 },
                 stop: (e, ui) => {
@@ -685,45 +697,37 @@ $(document).ready(function () {
 
                     if (item.hasClass('group_row')) {
                         const groupId = item.data('groupid');
-                        const groupItems = $(`tr.item_row[data-groupid="${groupId}"], tr.item_comment[data-groupid="${groupId}"], tr.item_child[data-groupid="${groupId}"]`);
+                        const groupItems = $(`tr[data-groupid="${groupId}"]`).not('.group_row');
                         item.after(groupItems);
-                        groupItems.show();
+
+                        // Maintain visibility state of group items based on group's expanded state
+                        const isGroupExpanded = item.find('.grp-dt-control.fa-caret-down').length > 0;
+                        if (isGroupExpanded) {
+                            groupItems.filter('.item_row, .item_comment').each(function () {
+                                const $row = $(this);
+                                const itemId = $row.data('itemid');
+                                const isItemExpanded = $row.find('.desc_toggle.fa-caret-down').length > 0;
+                                if (isItemExpanded) {
+                                    $(`.item_child[data-itemid="${itemId}"]`).show();
+                                }
+                            });
+                        }
                     } else if (item.hasClass('item_row') || item.hasClass('item_comment')) {
-                        // Handle item movement between groups
                         const prevGroup = item.prevAll('.group_row').first();
                         if (prevGroup.length) {
                             const newGroupId = prevGroup.data('groupid');
                             const itemId = item.data('itemid');
 
-                            // Update group ID for the item and its description
                             item.attr('data-groupid', newGroupId);
-                            $(`.item_child[data-itemid="${itemId}"]`).attr('data-groupid', newGroupId);
-
-                            // Ensure description row follows the item
                             const descRow = $(`.item_child[data-itemid="${itemId}"]`);
-                            if (descRow.length) {
-                                item.after(descRow);
-                            }
-
-                            // Update position numbers
-                            this.updatePOSNumbers();
+                            descRow.attr('data-groupid', newGroupId);
                         }
                     }
 
+                    this.updatePOSNumbers();
                     this.updateAllCalculations();
                     this.hasUnsavedChanges = true;
                     this.autoSaveHandler();
-                },
-                change: function (e, ui) {
-                    const item = ui.item;
-                    const placeholder = ui.placeholder;
-
-                    if (item.hasClass('item_row') || item.hasClass('item_comment')) {
-                        const next = placeholder.next();
-                        if (next.hasClass('item_child') && next.data('itemid') !== item.data('itemid')) {
-                            placeholder.insertAfter(next);
-                        }
-                    }
                 }
             });
         },
@@ -833,6 +837,20 @@ $(document).ready(function () {
             });
         },
 
+        styleNegativeInput($input, value) {
+            if (value < 0) {
+                $input.css({
+                    'background-color': '#ffebee',
+                    'color': '#d32f2f'
+                });
+            } else {
+                $input.css({
+                    'background-color': '',
+                    'color': ''
+                });
+            }
+        },
+
         applyMarkupToSinglePrices(cardQuoteId, markup) {
             if (this.originalPrices.size === 0) {
                 this.storeOriginalPrices();
@@ -842,11 +860,12 @@ $(document).ready(function () {
                 const $price = $(element);
                 const itemId = $price.closest('tr').data('itemid');
                 const key = `${cardQuoteId}-${itemId}`;
-                const originalPrice = this.originalPrices.get(key);
+                const basePrice = this.originalPrices.get(key);
 
-                if (originalPrice !== undefined) {
-                    const newPrice = markup > 0 ? originalPrice * (1 + markup / 100) : originalPrice;
+                if (basePrice !== undefined) {
+                    const newPrice = markup === 0 ? basePrice : basePrice * (1 + markup / 100);
                     $price.val(this.formatGermanCurrency(newPrice));
+                    this.styleNegativeInput($price, newPrice);
                 }
             });
         },
@@ -1039,36 +1058,37 @@ $(document).ready(function () {
         searchTableItem() {
             const searchInput = document.querySelector('#table-search');
             const tableRows = document.querySelectorAll('#estimation-edit-table tbody tr:not(.item_child)');
-            const searchTerm = searchInput.value.toLowerCase();
+
+            if (!searchInput || !tableRows.length) {
+                console.error('Required elements not found');
+                return;
+            }
+
+            const searchTerm = searchInput.value.trim().toLowerCase();
 
             tableRows.forEach(row => {
-                const nameCell = row.querySelector('.column_name');
-                const name = nameCell.textContent.toLowerCase();
+                const nameCell = row.querySelector('.column_name input');
 
+                if (!nameCell) {
+                    row.style.display = 'none';
+                    return;
+                }
+
+                const name = nameCell.value.trim().toLowerCase();
+
+                // If search is empty, show all rows
                 if (searchTerm === '') {
                     row.style.display = '';
-                    const descRow = row.nextElementSibling;
-                    if (descRow && descRow.classList.contains('item_child')) {
-                        descRow.style.display = '';
-                    }
-                } else if (name.includes(searchTerm)) {
-                    row.style.display = '';
-                    const descRow = row.nextElementSibling;
-                    if (descRow && descRow.classList.contains('item_child')) {
-                        descRow.style.display = '';
-                    }
-                } else {
-                    row.style.display = 'none';
-                    const descRow = row.nextElementSibling;
-                    if (descRow && descRow.classList.contains('item_child')) {
-                        descRow.style.display = 'none';
-                    }
+                    return;
                 }
+
+                // Show/hide based on search match
+                row.style.display = name.includes(searchTerm) ? '' : 'none';
             });
         },
 
-        updateQuateTypeStatus(Checkbox, QuoteId, Type) { 
-            const checkboxValue = Checkbox ? 1 : 0;   
+        updateQuateTypeStatus(Checkbox, QuoteId, Type) {
+            const checkboxValue = Checkbox ? 1 : 0;
             const $cardQuote = $(`.cardQuote[data-cardquoteid="${QuoteId}"]`);
 
             $cardQuote.removeClass('quote clientQuote subcontractor');

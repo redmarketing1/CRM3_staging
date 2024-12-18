@@ -87,7 +87,8 @@
                         @if (auth()->user()->type == 'company')
                             <li>
                                 <label class="dropdown-item gap-2">
-                                    <input type="checkbox"
+                                    <input type="radio"
+                                        name="QuateTypesStatus{{ $quotes->id }}"
                                         id="QuateTypesStatus"
                                         data-id="{{ $quotes->id }}"
                                         data-type="quote"
@@ -98,7 +99,8 @@
 
                             <li>
                                 <label class="dropdown-item gap-2">
-                                    <input type="checkbox" 
+                                    <input type="radio"
+                                        name="QuateTypesStatus{{ $quotes->id }}"
                                         id="QuateTypesStatus"
                                         data-id="{{ $quotes->id }}"
                                         data-type="clientQuote"
@@ -109,7 +111,8 @@
 
                             <li>
                                 <label class="dropdown-item gap-2">
-                                    <input type="checkbox"
+                                    <input type="radio"
+                                        name="QuateTypesStatus{{ $quotes->id }}"
                                         id="QuateTypesStatus"
                                         data-id="{{ $quotes->id }}"
                                         data-type="subcontractor"
