@@ -32,8 +32,14 @@
     @endif
 
     @foreach ($allQuotes as $key => $quotes)
-        <th colspan="2" data-orderable="false" data-cardQuoteID="{{ $quotes->id }}"
-            class="total-main-title text-center">
+        <th colspan="2" data-orderable="false" 
+            @class([
+                'total-main-title text-center cardQuote',
+                'quote' => $quotes->is_final,
+                'clientQuote' => $quotes->final_for_client,
+                'subcontractor' => $quotes->final_for_sub_contractor
+            ])
+            data-cardQuoteID="{{ $quotes->id }}">
 
             <div class="font-bold text-lg">
                 <span> {{ $quotes->title ?? $quotes->subContractor->name }} </span>
@@ -84,7 +90,8 @@
                                     <input type="checkbox"
                                         id="QuateTypesStatus"
                                         data-id="{{ $quotes->id }}"
-                                        data-type="quote">
+                                        data-type="quote"
+                                        @checked($quotes->is_final)>
                                     {{ __('Client Quote') }}
                                 </label>
                             </li>
@@ -94,7 +101,8 @@
                                     <input type="checkbox" 
                                         id="QuateTypesStatus"
                                         data-id="{{ $quotes->id }}"
-                                        data-type="clientQuote">
+                                        data-type="clientQuote"
+                                        @checked($quotes->final_for_client)>
                                     {{ __('Final Estimation for Client') }}
                                 </label>
                             </li>
@@ -104,7 +112,8 @@
                                     <input type="checkbox"
                                         id="QuateTypesStatus"
                                         data-id="{{ $quotes->id }}"
-                                        data-type="subcontractor">
+                                        data-type="subcontractor"
+                                        @checked($quotes->final_for_sub_contractor)>
                                     {{ __('Final Estimation for Subcontractor') }}
                                 </label>
                             </li>

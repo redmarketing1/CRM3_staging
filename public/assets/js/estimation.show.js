@@ -906,13 +906,28 @@ $(document).ready(function () {
       }
     });
   }), "updateQuateTypeStatus", function updateQuateTypeStatus(Checkbox, QuoteId, Type) {
-    console.log(Checkbox, QuoteId, Type);
-    var $selector = $("#QuateTypesStatus[data-id=\"".concat(QuoteId, "\"]"));
-    if (Type == 'subcontractor' && Checkbox.checked) {
-      console.log($selector.find('[data-type="clientQuote"]'));
-
-      // removeCellColors(QuoteId, 'client');
+    var checkboxValue = Checkbox ? 1 : 0;
+    var $cardQuote = $(".cardQuote[data-cardquoteid=\"".concat(QuoteId, "\"]"));
+    $cardQuote.removeClass('quote clientQuote subcontractor');
+    if (Checkbox) {
+      if (Type === 'quote') {
+        $cardQuote.addClass('quote');
+      }
+      if (Type === 'clientQuote') {
+        $cardQuote.addClass('clientQuote');
+      }
+      if (Type === 'subcontractor') {
+        $cardQuote.addClass('subcontractor');
+      }
     }
+    $.ajax({
+      url: route('estimation.quateTypesStatus', QuoteId),
+      type: "POST",
+      data: {
+        type: Type,
+        checkbox: checkboxValue
+      }
+    });
   }));
   $(document).ajaxComplete(function () {
     if ($('#sub-contractor').length > 0) {

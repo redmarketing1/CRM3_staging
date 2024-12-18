@@ -20,6 +20,9 @@ Route::prefix('project')->group(function () {
         Route::match(['get', 'post', 'PUT'], 'duplicateQuoteCard/{id}', 'QuoteCardController@duplicateQuoteCard')
             ->name('estimation.duplicateQuoteCard');
 
+        Route::post('quateTypesStatus/{id}', 'QuoteCardController@quateTypesStatus')
+            ->name('estimation.quateTypesStatus');
+            
         Route::delete('deleteQuote/{id}', 'QuoteCardController@deleteQuote')
             ->name('estimation.deleteQuote');
 

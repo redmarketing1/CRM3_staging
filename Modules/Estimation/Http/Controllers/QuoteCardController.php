@@ -110,13 +110,44 @@ class QuoteCardController extends Controller
         }
     }
 
+
+    /**
+     * Update Quate Type Status 
+     */
+    public function quateTypesStatus(Request $request)
+    {
+        $estimateQuote = EstimateQuote::findOrFail($request->id);
+        $type          = $request->type;
+        $checkbox      = $request->integer('checkbox');
+    
+        switch ($type) {
+            case 'clientQuote':
+                $estimateQuote->final_for_client = $checkbox;
+                break;
+            case 'subcontractor':
+                $estimateQuote->final_for_sub_contractor = $checkbox;
+                break;
+            case 'quote':
+                $estimateQuote->is_final = $checkbox;
+                break;
+        }
+
+        $estimateQuote->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quote status updated successfully',
+        ]);
+
+    }
+
     /**
      * Delete Quote and their related items 
      */
     public function deleteQuote(Request $request)
     {
         $estimateQuote = EstimateQuote::findOrFail($request->id);
-        foreach($estimateQuote->quoteItem as $item){
+        foreach ($estimateQuote->quoteItem as $item) {
             $item->delete();
         }
         $estimateQuote->delete();

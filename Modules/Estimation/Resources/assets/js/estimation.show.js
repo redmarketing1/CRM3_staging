@@ -1067,17 +1067,31 @@ $(document).ready(function () {
             });
         },
 
-        updateQuateTypeStatus(Checkbox, QuoteId, Type) {
-            console.log(Checkbox, QuoteId, Type);
-            const $selector = $(`#QuateTypesStatus[data-id="${QuoteId}"]`);
+        updateQuateTypeStatus(Checkbox, QuoteId, Type) { 
+            const checkboxValue = Checkbox ? 1 : 0;   
+            const $cardQuote = $(`.cardQuote[data-cardquoteid="${QuoteId}"]`);
 
-            if (Type == 'subcontractor' && Checkbox.checked) {
-                console.log($selector.find('[data-type="clientQuote"]'));
+            $cardQuote.removeClass('quote clientQuote subcontractor');
 
-                // removeCellColors(QuoteId, 'client');
+            if (Checkbox) {
+                if (Type === 'quote') {
+                    $cardQuote.addClass('quote');
+                }
+                if (Type === 'clientQuote') {
+                    $cardQuote.addClass('clientQuote');
+                }
+                if (Type === 'subcontractor') {
+                    $cardQuote.addClass('subcontractor');
+                }
             }
 
-        }
+            $.ajax({
+                url: route('estimation.quateTypesStatus', QuoteId),
+                type: "POST",
+                data: { type: Type, checkbox: checkboxValue },
+            });
+
+        },
     };
 
     $(document).ajaxComplete(function () {
