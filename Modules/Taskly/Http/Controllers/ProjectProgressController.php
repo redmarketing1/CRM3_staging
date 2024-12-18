@@ -21,6 +21,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Models\InvoicePayment;
 use App\Services\LexoOfficeService;
 use Butschster\Head\Facades\Meta;
+use Illuminate\Support\Facades\Log;
 use Modules\Account\Entities\BankAccount;
 use Modules\ProductService\Entities\Tax;
 use Modules\Taskly\Emails\InvoiceForClientMail;
@@ -1000,10 +1001,16 @@ class ProjectProgressController extends Controller
 			Invoice::starting_number($invoice->invoice_id + 1, 'invoice');
 
 			foreach ($estimation_quote_items as $item) {
+
 				$latest_progress = 0;
 				$previous_progress = 0;
+				
 				$latest_invoice_payment = 0;
+				$previous_invoice_payment = 0;
+				
+				$new_progress = 0;
 				$overallprog = 0;
+				
 				if ($item->progress) {
 					// Fetch progress records related to the current product
 					$progress = ProjectProgress::where("product_id", $item->product_id)
@@ -1020,23 +1027,39 @@ class ProjectProgressController extends Controller
 					
 					$latest_progress = isset($progress) ? $progress->progress : 0;
 					$previous_progress = isset($old_progress) ? $old_progress->progress : 0;
+
 					$latest_invoice_payment = isset($progress) ? $progress->progress_payment : 0;
-				}
-				
-				$new_progress = floatval($latest_progress) - floatval($previous_progress);
-				$progress_amount = 0;
-				$price = $item->price;
-				$total_price = $item->total_price;
-				$qty = 0;
-				if ($new_progress > 0) {
-					$qty = ($new_progress / 100) * $item->projectEstimationProduct->quantity;
-					
-					$progress_amount = ($new_progress / 100) * $total_price;
+					$previous_invoice_payment = isset($old_progress) ? $old_progress->progress_payment : 0;
+
 				}
 
-				if($latest_invoice_payment >= $latest_progress){
-					$price = 0;
+				if($latest_progress > 0){
+					$new_progress = floatval($latest_progress) - floatval($previous_progress);
 				}
+
+				$price = 0;
+				$total_price = 0;
+				$rate = 0;
+				if ($latest_invoice_payment >= $latest_progress) {
+					$rate = max(0, ($previous_invoice_payment >= $previous_progress)
+						? $latest_invoice_payment - $previous_invoice_payment
+						: $latest_invoice_payment - $previous_progress);
+					// Log::info('Rate Inside 1st:'. ' '. $item->projectEstimationProduct->name . ':' . ' ' . $rate);
+				} else {
+					$rate = max(0, ($previous_invoice_payment >= $previous_progress)
+						? $latest_progress - $previous_invoice_payment
+						: $latest_progress - $previous_progress);
+					$progress->progress_payment += $rate;
+					$progress->save();
+					//Log::info('Rate Inside 2nd:'. ' '. $item->projectEstimationProduct->name . ':' . ' ' . $rate);
+				}
+                // Log::info('Rate After:'. ' '. $item->projectEstimationProduct->name . ':' . ' ' . $rate);
+				$price = ($rate / 100) * $item->price;
+                // Log::info('Orginal After:'. ' '.$item->projectEstimationProduct->name . ':' . ' ' . $price);
+				
+				$qty = $item->projectEstimationProduct->quantity;
+				$progress_amount = $price * $qty;
+				
 
 				// $currentProgressBar = $this->getProgressBar($new_progress);
 				// $totalProgressBar = $this->getProgressBar(floatval($new_progress) + floatval($previous_progress));
@@ -1053,13 +1076,23 @@ class ProjectProgressController extends Controller
 				$invoiceProduct->tax =  0;
 				$invoiceProduct->product_type = __('progress');
 				$invoiceProduct->description = 
-    			"<strong class='pname'>".__('Name').":</strong> <span class='pname_value'>" . $item->projectEstimationProduct->name . "</span><br>" .
-    			"<strong class='pquantity'>".__('Quantity').":</strong> <span class='pquantity_value'>" . $item->projectEstimationProduct->quantity . " " . $item->projectEstimationProduct->unit . "</span><br>" .
-    			"<strong class='pprice'>".__('Price').":</strong> <span class='pprice_value'>" . $item->price . "</span><br>" .
-    			"<strong class='ptotal'>".__('Total Price').":</strong> <span class='ptotal_value'>" . $item->total_price . "</span><br>" .
-    			"<strong class='pprogress'>".__('Current Progress').":</strong> <span class='progress_value'>" . $new_progress . "</span><br>" .
-    			"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <span class='ptotalprogress_value'>" . (floatval($new_progress) + floatval($previous_progress)) . "</span><br>".
-				"<strong class='ptotalinvoiceprogress'>".__('Advance Payment').":</strong> <span class='ptotalinvoiceprogress_value'>" . $latest_invoice_payment . "</span>";
+					"<strong class='pname'>".__('Group ').":</strong> <span class='pname_value'>" . 
+					($item->projectEstimationProduct->group->group_name ?? '') . "</span> -- " .
+					"<strong class='ppos'>".__('POS ').":</strong> <span class='ppos_value'>" . 
+					($item->projectEstimationProduct->pos ?? '') . "</span> -- " .
+					"<strong class='pquantity'>".__('Quantity').":</strong> <span class='pquantity_value'>" . 
+					$item->projectEstimationProduct->quantity . " " . 
+					$item->projectEstimationProduct->unit . "</span> -- " .
+					"<strong class='pprice'>".__('Price').":</strong> <span class='pprice_value'>" . 
+					currency_format_with_sym($item->price) . "</span> -- " .
+					"<strong class='ptotal'>".__('Total Price').":</strong> <span class='ptotal_value'>" . 
+					currency_format_with_sym($item->total_price) . "</span> -- " .
+					"<strong class='pprogress'>".__('Current Progress').":</strong> <span class='progress_value'>" . 
+					$new_progress . "%</span> --" .
+					"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <span class='ptotalprogress_value'>" . 
+					(floatval($new_progress) + floatval($previous_progress)) . "%</span> --" .
+					"<strong class='ptotalinvoiceprogress'>".__('Payment').":</strong> <span class='ptotalinvoiceprogress_value'>" . 
+					($progress->progress_payment ?? 0) . "%</span>";
 				$invoiceProduct->progress = $new_progress;
 				$invoiceProduct->progress_amount = $progress_amount;
 				$invoiceProduct->save();

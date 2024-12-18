@@ -43,9 +43,11 @@ class LexoOfficeService
     {
         // Prepare the salutation
         if (isset($customer->salutation) && $customer->salutation == 'Mr.') {
-            $customerSalutation = __("Mr. salutation");
+            // $customerSalutation = __("Mr. salutation");
+            $customerSalutation = 'Herr';
         } else if (isset($customer->salutation) && $customer->salutation == 'Ms.') {
-            $customerSalutation = __("Ms. salutation");
+            // $customerSalutation = __("Ms. salutation");
+            $customerSalutation = 'Frau';
         }
 
         // Initialize roles (with a non-empty array to be safe, even if it's an empty object)
@@ -83,7 +85,7 @@ class LexoOfficeService
         } else {
             // Send only person data
             $payload['person'] = [
-                'salutation' => $customer->salutation ?? 'Herr/Frau',
+                'salutation' => $customerSalutation ?? 'Herr/Frau',
                 'firstName' => $customer->first_name,
                 'lastName' => $customer->last_name,
                 'emailAddress' => $customer->email,
@@ -114,7 +116,7 @@ class LexoOfficeService
                 'business' => [$customer->phone ?? $customer->mobile_no]
             ];
         }
-
+       
         // Ensure the payload is properly formatted
 
         // Send the API request
