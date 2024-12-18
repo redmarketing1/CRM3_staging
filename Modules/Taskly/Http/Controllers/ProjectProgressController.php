@@ -1057,15 +1057,9 @@ class ProjectProgressController extends Controller
     			"<strong class='pquantity'>".__('Quantity').":</strong> <span class='pquantity_value'>" . $item->projectEstimationProduct->quantity . " " . $item->projectEstimationProduct->unit . "</span><br>" .
     			"<strong class='pprice'>".__('Price').":</strong> <span class='pprice_value'>" . $item->price . "</span><br>" .
     			"<strong class='ptotal'>".__('Total Price').":</strong> <span class='ptotal_value'>" . $item->total_price . "</span><br>" .
-<<<<<<< HEAD
     			"<strong class='pprogress'>".__('Current Progress').":</strong> <span class='progress_value'>" . $new_progress . "</span><br>" .
     			"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <span class='ptotalprogress_value'>" . (floatval($new_progress) + floatval($previous_progress)) . "</span><br>".
 				"<strong class='ptotalinvoiceprogress'>".__('Advance Payment').":</strong> <span class='ptotalinvoiceprogress_value'>" . $latest_invoice_payment . "</span>";
-=======
-    			"<strong class='pprogress'>".__('Current Progress').":</strong> <span class='progress_value'>" . $new_progress . " (" . $new_progress . "%)</span><br>" .
-    			"<strong class='ptotalprogress'>".__('Total Progress').":</strong> <span class='ptotalprogress_value'>" . (floatval($new_progress) + floatval($previous_progress)) . " (" . (floatval($new_progress) + floatval($previous_progress)) . "%)</span><br>".
-				"<strong class='ptotalinvoiceprogress'>".__('Advance Payment').":</strong> <span class='ptotalinvoiceprogress_value'>" . $latest_invoice_payment . " (" . $latest_invoice_payment . "%)</span>";
->>>>>>> eb560c2 (from server)
 				$invoiceProduct->progress = $new_progress;
 				$invoiceProduct->progress_amount = $progress_amount;
 				$invoiceProduct->save();
