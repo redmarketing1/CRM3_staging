@@ -58,6 +58,13 @@ $(document).ready(function () {
                 this.updateAllCalculations();
             });
 
+            this.estimation.on('change', '#QuateTypesStatus', (event) => {
+                const Checkbox = $(event.currentTarget).is(':checked');
+                const Id = $(event.currentTarget).data('id');
+                const Type = $(event.currentTarget).data('type');
+                this.updateQuateTypeStatus(Checkbox, Id, Type);
+            });
+
             this.estimation.on('blur', 'input[name^="item"][name$="[discount]"]', (event) => {
                 const $input = $(event.target);
                 const value = this.parseGermanDecimal($input.val());
@@ -171,7 +178,7 @@ $(document).ready(function () {
             });
 
             $(document).on('click', '#delete-quate', function (event) {
-                event.preventDefault(); 
+                event.preventDefault();
                 Swal.fire({
                     title: 'Confirmation Delete',
                     text: 'Really! You want to remove them? You can\'t undo',
@@ -1058,6 +1065,18 @@ $(document).ready(function () {
                     }
                 }
             });
+        },
+
+        updateQuateTypeStatus(Checkbox, QuoteId, Type) {
+            console.log(Checkbox, QuoteId, Type);
+            const $selector = $(`#QuateTypesStatus[data-id="${QuoteId}"]`);
+
+            if (Type == 'subcontractor' && Checkbox.checked) {
+                console.log($selector.find('[data-type="clientQuote"]'));
+
+                // removeCellColors(QuoteId, 'client');
+            }
+
         }
     };
 

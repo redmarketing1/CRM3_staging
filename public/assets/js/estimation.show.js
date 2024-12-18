@@ -65,6 +65,12 @@ $(document).ready(function () {
       this.estimation.on('change', 'select[name^="item"][name$="[tax]"]', function () {
         _this.updateAllCalculations();
       });
+      this.estimation.on('change', '#QuateTypesStatus', function (event) {
+        var Checkbox = $(event.currentTarget).is(':checked');
+        var Id = $(event.currentTarget).data('id');
+        var Type = $(event.currentTarget).data('type');
+        _this.updateQuateTypeStatus(Checkbox, Id, Type);
+      });
       this.estimation.on('blur', 'input[name^="item"][name$="[discount]"]', function (event) {
         var $input = $(event.target);
         var value = _this.parseGermanDecimal($input.val());
@@ -841,7 +847,7 @@ $(document).ready(function () {
       var priceWithMarkup = _this19.applySinglePriceMarkup(basePrice, markup);
       $priceInput.val(_this19.formatGermanCurrency(priceWithMarkup));
     });
-  }), _defineProperty(_defineProperty(_defineProperty(_defineProperty(_EstimationTable, "updateTotalDisplay", function updateTotalDisplay(cardQuoteId, totals) {
+  }), _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_EstimationTable, "updateTotalDisplay", function updateTotalDisplay(cardQuoteId, totals) {
     $(".total-net-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(totals.netIncDiscount));
     $(".total-gross-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(totals.grossIncDiscount));
     $(".total-net[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(totals.net));
@@ -899,6 +905,14 @@ $(document).ready(function () {
         }
       }
     });
+  }), "updateQuateTypeStatus", function updateQuateTypeStatus(Checkbox, QuoteId, Type) {
+    console.log(Checkbox, QuoteId, Type);
+    var $selector = $("#QuateTypesStatus[data-id=\"".concat(QuoteId, "\"]"));
+    if (Type == 'subcontractor' && Checkbox.checked) {
+      console.log($selector.find('[data-type="clientQuote"]'));
+
+      // removeCellColors(QuoteId, 'client');
+    }
   }));
   $(document).ajaxComplete(function () {
     if ($('#sub-contractor').length > 0) {

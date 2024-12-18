@@ -45,11 +45,9 @@
 
                         @permission('estimation duplicate quote option')
                             <li>
-                                <a class="dropdown-item" 
-                                    href="javascript:void(0)"
-                                    data-url="{{ route('estimation.duplicateQuoteCard', ['id' => $quotes->id, 'mode' => 'duplicate']) }}" 
-                                    data-ajax-popup="true"
-                                    data-toggle="tooltip"  
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    data-url="{{ route('estimation.duplicateQuoteCard', ['id' => $quotes->id, 'mode' => 'duplicate']) }}"
+                                    data-ajax-popup="true" data-toggle="tooltip"
                                     data-title="{{ trans('Duplicate Card Quate') }}">
                                     <i class="fa-regular fa-copy"></i>
                                     {{ __('Duplicate') }}
@@ -59,13 +57,10 @@
 
                         @if (auth()->user()->type == 'company')
                             <li>
-                                <a class="dropdown-item" 
-                                    href="javascript:void(0)"
-                                    id="edit-clone-quate-modal"
+                                <a class="dropdown-item" href="javascript:void(0)" id="edit-clone-quate-modal"
                                     data-id="edit-clone-quate-modal"
-                                    data-url="{{ route('estimation.duplicateQuoteCard', ['id' => $quotes->id, 'mode' => 'edit', 'userID' => $quotes->user_id, 'title' => $quotes->title]) }}" 
-                                    data-ajax-popup="true"
-                                    data-toggle="tooltip" 
+                                    data-url="{{ route('estimation.duplicateQuoteCard', ['id' => $quotes->id, 'mode' => 'edit', 'userID' => $quotes->user_id, 'title' => $quotes->title]) }}"
+                                    data-ajax-popup="true" data-toggle="tooltip"
                                     data-title="{{ trans('Change Name or Contract') }}">
                                     <i class="fa-solid fa-pencil"></i>
                                     {{ trans('Change Name or Contract') }}
@@ -73,37 +68,43 @@
                             </li>
                         @endif
 
-                        <li>
-                            <a class="dropdown-item" 
-                                href="javascript:void(0)"
-                                id="delete-quate" 
-                                data-id="{{ $quotes->id }}">
-                                <i class="fa-regular fa-trash-can"></i>
-                                {{ __('Delete') }}
-                            </a>
-                        </li> 
+                        @permission('estimation delete')
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0)" id="delete-quate"
+                                    data-id="{{ $quotes->id }}">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                    {{ __('Delete') }}
+                                </a>
+                            </li>
+                        @endpermission
 
                         @if (auth()->user()->type == 'company')
                             <li>
                                 <label class="dropdown-item gap-2">
-                                    <input type="checkbox" id="final_quote_checkbox"
-                                        onchange="handleCheckboxChange(this, '{{ $quotes->id }}')">
+                                    <input type="checkbox"
+                                        id="QuateTypesStatus"
+                                        data-id="{{ $quotes->id }}"
+                                        data-type="quote">
                                     {{ __('Client Quote') }}
                                 </label>
                             </li>
 
                             <li>
                                 <label class="dropdown-item gap-2">
-                                    <input type="checkbox" id="client_quote_checkbox"
-                                        onchange="handleCheckboxChange(this, '{{ $quotes->id }}', 'client')">
+                                    <input type="checkbox" 
+                                        id="QuateTypesStatus"
+                                        data-id="{{ $quotes->id }}"
+                                        data-type="clientQuote">
                                     {{ __('Final Estimation for Client') }}
                                 </label>
                             </li>
 
                             <li>
                                 <label class="dropdown-item gap-2">
-                                    <input type="checkbox" id="sub_contractor_quote_checkbox"
-                                        onchange="handleCheckboxChange(this, '{{ $quotes->id }}', 'sub_contractor')">
+                                    <input type="checkbox"
+                                        id="QuateTypesStatus"
+                                        data-id="{{ $quotes->id }}"
+                                        data-type="subcontractor">
                                     {{ __('Final Estimation for Subcontractor') }}
                                 </label>
                             </li>
