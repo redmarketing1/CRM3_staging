@@ -54,10 +54,16 @@
                     </thead>
                     <tbody>
                         @if(count($estimation_quote_items) > 0)
+                            @php
+                                $group = '';
+                            @endphp
                             @foreach ($estimation_quote_items as $item)
-                                @if ($item->projectEstimationProduct->group->group_name)
+                                @if ($group != $item->projectEstimationProduct->group->group_name)
+                                    @php
+                                        $group = $item->projectEstimationProduct->group->group_name; // Update the group variable here
+                                    @endphp
                                     <tr class="group progress-group">
-                                        <td colspan="6">{{ $item->projectEstimationProduct->group->group_name }}</td>
+                                        <td colspan="6">{{ $group }}</td>
                                     </tr>
                                 @endif
                                 <tr>
