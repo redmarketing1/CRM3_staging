@@ -119,7 +119,13 @@ class QuoteCardController extends Controller
         $estimateQuote = EstimateQuote::findOrFail($request->id);
         $type          = $request->type;
         $checkbox      = $request->integer('checkbox');
-    
+
+        $estimateQuote->update([
+            'is_final'                 => 0,
+            'final_for_client'         => 0,
+            'final_for_sub_contractor' => 0,
+        ]);
+
         switch ($type) {
             case 'clientQuote':
                 $estimateQuote->final_for_client = $checkbox;

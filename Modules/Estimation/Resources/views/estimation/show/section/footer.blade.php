@@ -43,12 +43,12 @@
                 {{ __('Save') }}
             </button>
             @if (Auth::user()->type == 'company')
-                <button type="button" id="" onclick="saveTableData('preview')"
+                <button type="button" id="save-complete"
                     class="btn btn-secondary mx-2">{{ __('Preview & Complete') }}</button>
             @endif
         @elseif ($estimation->status = 2)
             @if (Auth::user()->type == 'company')
-                <button type="button" id="" onclick="saveTableData('preview')"
+                <button type="button" id="save-complete"
                     class="btn btn-secondary mx-2">{{ __('Save & Complete') }}</button>
             @endif
         @endif
