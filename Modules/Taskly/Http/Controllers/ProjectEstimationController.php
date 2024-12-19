@@ -2,39 +2,40 @@
 
 namespace Modules\Taskly\Http\Controllers;
 
-use Illuminate\Routing\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response as FacadesResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
-use ZipArchive;
 use PDF;
-use Modules\Taskly\Exports\ProjectEstimationExport;
-use Modules\Taskly\Emails\EstimationForClientMail;
-use Modules\Taskly\Emails\CommonEmailTemplate;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\Reader\Csv;
-use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use Batch;
+use ZipArchive;
 use App\Models\User;
 use App\Models\Email;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Models\SmartTemplate;
 use App\Models\SmartPromptQueue;
+use Butschster\Head\Facades\Meta;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 use Modules\Taskly\Entities\Project;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 use Modules\Taskly\Entities\ProjectFile;
-use Modules\Taskly\Entities\ProjectEstimation;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Modules\Taskly\Entities\EstimateQuote;
 use Modules\Taskly\Entities\EstimationGroup;
-use Modules\Taskly\Entities\ProjectEstimationProduct;
+use Modules\Taskly\Emails\CommonEmailTemplate;
 use Modules\Taskly\Entities\EstimateQuoteItem;
+use Modules\Taskly\Entities\ProjectEstimation;
+use Modules\Taskly\Emails\EstimationForClientMail;
 use Modules\Taskly\Entities\ProjectClientFeedback;
-use Maatwebsite\Excel\Facades\Excel;
-use Batch;
-use Butschster\Head\Facades\Meta;
+use Modules\Taskly\Exports\ProjectEstimationExport;
+use Modules\Taskly\Entities\ProjectEstimationProduct;
+use Illuminate\Support\Facades\Response as FacadesResponse;
 
 class ProjectEstimationController extends Controller
 {
@@ -1962,7 +1963,7 @@ class ProjectEstimationController extends Controller
 
         Meta::prependTitle(trans('Finalize Estimations'));
 
-        $id         = Crypt::decrypt($id);
+        $id         = is_string($id) && Str::startsWith($id, 'eyJ') ? Crypt::decrypt($id) : $id;
         $estimation = ProjectEstimation::whereId($id)->first();
         //    $settings 	= Utility::settings();
         $settings = array();

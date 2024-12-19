@@ -46,6 +46,10 @@ $(document).ready(function () {
                 this.saveTableData();
             });
 
+            this.estimation.on('click', '#save-complete', () => {
+                this.saveTableData('complete');
+            });
+
             this.estimation.on('input', '#table-search', () => {
                 this.searchTableItem();
             });
@@ -201,6 +205,7 @@ $(document).ready(function () {
         init() {
             if (!this.validateTemplates()) return;
 
+            this.initializeOriginalPrices();
             this.bindEvents();
             this.bindCalculationEvents();
             this.initializeSortable();
@@ -255,6 +260,31 @@ $(document).ready(function () {
             });
         },
 
+        initializeOriginalPrices() {
+            $('.item-price').each((_, element) => {
+                const $price = $(element);
+                const cardQuoteId = $price.data('cardquotesingleprice');
+                const itemId = $price.closest('tr').data('itemid');
+                const currentPrice = this.parseGermanDecimal($price.val());
+                const markup = this.parseGermanDecimal(
+                    $(`input[name="item[${cardQuoteId}][markup]"]`).val()
+                ) || 0;
+
+                // Calculate the original price by reverse-applying the markup
+                const originalPrice = markup !== 0 ?
+                    currentPrice / (1 + markup / 100) :
+                    currentPrice;
+
+                const key = `${cardQuoteId}-${itemId}`;
+                this.originalPrices.set(key, originalPrice);
+
+                // Update the display price with the correct markup
+                if (markup !== 0) {
+                    $price.val(this.formatGermanCurrency(currentPrice));
+                }
+            });
+        },
+
         toggleFullScreen() {
             const estimationSection = document.querySelector('.estimation-show');
             if (!estimationSection) return;
@@ -291,7 +321,7 @@ $(document).ready(function () {
             }
         },
 
-        saveTableData() {
+        saveTableData(isComplete = '') {
             // if (!this.autoSaveEnabled) return;
 
             const columns = {};
@@ -343,7 +373,12 @@ $(document).ready(function () {
 
                     $('.lastSaveTimestamp').text(lastSavedText);
                     $('#save-button').html(`Saved last changed.`);
-                    window.location.reload();
+
+                    if (isComplete) {
+                        window.location.href = route('estimations.finalize.estimate', data.form.id);
+                    } else {
+                        window.location.reload();
+                    }
                 },
                 error: (error) => {
                     toastrs('error', 'Failed to save changes.');
@@ -513,25 +548,21 @@ $(document).ready(function () {
             return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
         },
 
-        storeOriginalPrices() {
-            if (this.originalPrices.size === 0) {
-                $('.item-price').each((_, element) => {
-                    const $price = $(element);
-                    const cardQuoteId = $price.data('cardquotesingleprice');
-                    const itemId = $price.closest('tr').data('itemid');
-                    const key = `${cardQuoteId}-${itemId}`;
-                    const originalPrice = this.parseGermanDecimal($price.val());
-                    this.originalPrices.set(key, originalPrice);
-                });
-            }
-        },
-
         updateBasePrice($input) {
             const cardQuoteId = $input.data('cardquotesingleprice');
             const itemId = $input.closest('tr').data('itemid');
             const key = `${cardQuoteId}-${itemId}`;
-            const newBasePrice = this.parseGermanDecimal($input.val());
-            this.originalPrices.set(key, newBasePrice);
+            const currentPrice = this.parseGermanDecimal($input.val());
+            const markup = this.parseGermanDecimal(
+                $(`input[name="item[${cardQuoteId}][markup]"]`).val()
+            ) || 0;
+
+            // Store the original price without markup
+            const originalPrice = markup !== 0 ?
+                currentPrice / (1 + markup / 100) :
+                currentPrice;
+
+            this.originalPrices.set(key, originalPrice);
         },
 
         addItems(type) {
@@ -828,15 +859,6 @@ $(document).ready(function () {
             }).format(value);
         },
 
-        storeOriginalPrices() {
-            $('.item-price').each((_, element) => {
-                const $price = $(element);
-                const id = $price.data('cardquotesingleprice');
-                const originalPrice = this.parseGermanDecimal($price.val());
-                this.originalPrices.set(`${id}-${$price.closest('tr').data('itemid')}`, originalPrice);
-            });
-        },
-
         styleNegativeInput($input, value) {
             if (value < 0) {
                 $input.css({
@@ -852,10 +874,6 @@ $(document).ready(function () {
         },
 
         applyMarkupToSinglePrices(cardQuoteId, markup) {
-            if (this.originalPrices.size === 0) {
-                this.storeOriginalPrices();
-            }
-
             $(`.item-price[data-cardquotesingleprice="${cardQuoteId}"]`).each((_, element) => {
                 const $price = $(element);
                 const itemId = $price.closest('tr').data('itemid');
