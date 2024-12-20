@@ -26,6 +26,7 @@ $(document).ready(function () {
     },
     bindEvents: function bindEvents() {
       var _this = this;
+      this.bindColumnVisibilityEvents();
       this.estimation.find('button[data-actioninsert]').on('click', function (event) {
         event.preventDefault();
         var button = $(event.currentTarget);
@@ -64,10 +65,14 @@ $(document).ready(function () {
         _this.updateAllCalculations();
       });
       this.estimation.on('change', '#QuateTypesStatus', function (event) {
-        var Checkbox = $(event.currentTarget).is(':checked');
-        var Id = $(event.currentTarget).data('id');
-        var Type = $(event.currentTarget).data('type');
-        _this.updateQuateTypeStatus(Checkbox, Id, Type);
+        var $checkbox = $(event.currentTarget);
+        var quoteId = $checkbox.data('id');
+        var type = $checkbox.data('type');
+
+        // Uncheck other checkboxes of same type
+        $("#QuateTypesStatus[data-type=\"".concat(type, "\"]")).not($checkbox).prop('checked', false);
+        _this.hasUnsavedChanges = true;
+        _this.updateQuateTypeStatus($checkbox.is(':checked'), quoteId, type);
       });
       this.estimation.on('blur', 'input[name^="item"][name$="[discount]"]', function (event) {
         var $input = $(event.target);
@@ -259,6 +264,68 @@ $(document).ready(function () {
         }
       });
     },
+    bindColumnVisibilityEvents: function bindColumnVisibilityEvents() {
+      var _this8 = this;
+      $('.columnToggle').on('change', function (e) {
+        var $checkbox = $(e.target);
+        var column = $checkbox.data('column');
+        var quoteId = $checkbox.data('quoteid');
+        if (column === 'quote') {
+          _this8.toggleQuoteColumns(quoteId, $checkbox.is(':checked'));
+        } else {
+          _this8.toggleColumn(column, $checkbox.is(':checked'));
+        }
+      });
+    },
+    toggleQuoteColumns: function toggleQuoteColumns(quoteId, isVisible) {
+      var selectors = ["[data-cardquoteid=\"".concat(quoteId, "\"]"), "[data-cardquotesingleprice=\"".concat(quoteId, "\"]"), "[data-cardquotetotalprice=\"".concat(quoteId, "\"]"), "[data-cardquotegrouptotalprice=\"".concat(quoteId, "\"]")];
+      var display = isVisible ? '' : 'none';
+      selectors.forEach(function (selector) {
+        var $elements = $(selector);
+        $elements.each(function (_, el) {
+          var $el = $(el);
+          if ($el.is('td, th')) {
+            $el.css('display', display);
+          } else if ($el.closest('td, th').length) {
+            $el.closest('td, th').css('display', display);
+          }
+        });
+      });
+    },
+    toggleColumn: function toggleColumn(columnName, isVisible) {
+      var columnSelectors = [".column_".concat(columnName), "th.column_".concat(columnName), "td.column_".concat(columnName)];
+      var display = isVisible ? '' : 'none';
+      columnSelectors.forEach(function (selector) {
+        var $elements = $(selector);
+        $elements.css('display', display);
+      });
+      if (columnName === 'name' || columnName === 'group') {
+        $('.column_name.desc_column').css('display', display);
+      }
+      this.updateTableLayout();
+    },
+    updateTableLayout: function updateTableLayout() {
+      var visibleQuoteCount = $('.columnToggle[data-column="quote"]:checked').length;
+      var hasDescription = $('.columnToggle[data-column="name"]').is(':checked');
+      $('tr.item_child td[colspan]').each(function () {
+        var $td = $(this);
+        if (hasDescription) {
+          $td.attr('colspan', 7);
+        } else {
+          $td.css('display', 'none');
+        }
+      });
+
+      // Update group title colspan
+      $('.column_name.grouptitle').each(function () {
+        var $td = $(this);
+        var baseColspan = $('.columnToggle:not([data-quoteid]):checked').length;
+        $td.attr('colspan', baseColspan);
+      });
+
+      // Force redraw for proper layout
+      $(window).trigger('resize');
+    },
     toggleFullScreen: function toggleFullScreen() {
       var estimationSection = document.querySelector('.estimation-show');
       if (!estimationSection) return;
@@ -271,7 +338,7 @@ $(document).ready(function () {
       }
     },
     autoSaveHandler: function autoSaveHandler() {
-      var _this8 = this;
+      var _this9 = this;
       if (!this.autoSaveEnabled || !$('#quote_form').length || !this.hasUnsavedChanges) return;
       if (this.saveTimeout) {
         clearTimeout(this.saveTimeout);
@@ -283,15 +350,15 @@ $(document).ready(function () {
         this.lastSaveTime = currentTime;
       } else {
         this.saveTimeout = setTimeout(function () {
-          if (_this8.hasUnsavedChanges && _this8.autoSaveEnabled) {
-            _this8.saveTableData();
-            _this8.lastSaveTime = Date.now();
+          if (_this9.hasUnsavedChanges && _this9.autoSaveEnabled) {
+            _this9.saveTableData();
+            _this9.lastSaveTime = Date.now();
           }
         }, this.saveInterval);
       }
     },
     saveTableData: function saveTableData() {
-      var _this9 = this;
+      var _this10 = this;
       var isComplete = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
       // if (!this.autoSaveEnabled) return;
 
@@ -304,15 +371,15 @@ $(document).ready(function () {
       cardQuoteIds.forEach(function (cardQuoteId) {
         columns[cardQuoteId] = {
           settings: {
-            markup: _this9.parseGermanDecimal($("input[name=\"item[".concat(cardQuoteId, "][markup]\"]")).val() || '0'),
-            cashDiscount: _this9.parseGermanDecimal($("input[name=\"item[".concat(cardQuoteId, "][discount]\"]")).val() || '0'),
-            vat: _this9.parseGermanDecimal($("select[name=\"item[".concat(cardQuoteId, "][tax]\"]")).val() || '0')
+            markup: _this10.parseGermanDecimal($("input[name=\"item[".concat(cardQuoteId, "][markup]\"]")).val() || '0'),
+            cashDiscount: _this10.parseGermanDecimal($("input[name=\"item[".concat(cardQuoteId, "][discount]\"]")).val() || '0'),
+            vat: _this10.parseGermanDecimal($("select[name=\"item[".concat(cardQuoteId, "][tax]\"]")).val() || '0')
           },
           totals: {
-            netIncludingDiscount: _this9.parseGermanDecimal($(".total-net-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text()),
-            grossIncludingDiscount: _this9.parseGermanDecimal($(".total-gross-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text()),
-            net: _this9.parseGermanDecimal($(".total-net[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text()),
-            gross: _this9.parseGermanDecimal($(".total-gross-total[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text())
+            netIncludingDiscount: _this10.parseGermanDecimal($(".total-net-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text()),
+            grossIncludingDiscount: _this10.parseGermanDecimal($(".total-gross-discount[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text()),
+            net: _this10.parseGermanDecimal($(".total-net[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text()),
+            gross: _this10.parseGermanDecimal($(".total-gross-total[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text())
           }
         };
       });
@@ -330,11 +397,11 @@ $(document).ready(function () {
           $('#save-button').html('Saving... <i class="fa fa-arrow-right-rotate rotate"></i>');
         },
         success: function success(idMappings) {
-          _this9.updateEntitiesWithNewIds(idMappings);
-          _this9.lastSaveTime = Date.now();
-          _this9.hasUnsavedChanges = false;
-          var lastSavedText = _this9.formatTimeAgo(_this9.lastSaveTime);
-          _this9.startTimeAgoUpdates();
+          _this10.updateEntitiesWithNewIds(idMappings);
+          _this10.lastSaveTime = Date.now();
+          _this10.hasUnsavedChanges = false;
+          var lastSavedText = _this10.formatTimeAgo(_this10.lastSaveTime);
+          _this10.startTimeAgoUpdates();
           $('.lastSaveTimestamp').text(lastSavedText);
           $('#save-button').html("Saved last changed.");
           if (isComplete) {
@@ -346,7 +413,7 @@ $(document).ready(function () {
         error: function error(_error) {
           toastrs('error', 'Failed to save changes.');
           $('.lastSaveTimestamp').text('is failed.');
-          _this9.hasUnsavedChanges = true;
+          _this10.hasUnsavedChanges = true;
         }
       });
     },
@@ -367,19 +434,19 @@ $(document).ready(function () {
       return "".concat(days, " day").concat(days > 1 ? 's' : '', " ago");
     },
     startTimeAgoUpdates: function startTimeAgoUpdates() {
-      var _this10 = this;
+      var _this11 = this;
       if (this.timeAgoInterval) {
         clearInterval(this.timeAgoInterval);
       }
       this.timeAgoInterval = setInterval(function () {
-        if (_this10.lastSaveTime) {
-          var lastSavedText = _this10.formatTimeAgo(_this10.lastSaveTime);
+        if (_this11.lastSaveTime) {
+          var lastSavedText = _this11.formatTimeAgo(_this11.lastSaveTime);
           $('.lastSaveTimestamp').text(lastSavedText);
         }
       }, 60000);
     },
     prepareNewItemsForSubmission: function prepareNewItemsForSubmission() {
-      var _this11 = this;
+      var _this12 = this;
       var newItems = [];
       var groupRows = document.querySelectorAll('.group_row');
       groupRows.forEach(function (row) {
@@ -413,10 +480,10 @@ $(document).ready(function () {
           name: name,
           description: description,
           comment: comment,
-          quantity: _this11.parseGermanDecimal(((_row$querySelector3 = row.querySelector('.item-quantity')) === null || _row$querySelector3 === void 0 ? void 0 : _row$querySelector3.value) || '0'),
+          quantity: _this12.parseGermanDecimal(((_row$querySelector3 = row.querySelector('.item-quantity')) === null || _row$querySelector3 === void 0 ? void 0 : _row$querySelector3.value) || '0'),
           unit: ((_row$querySelector4 = row.querySelector('.item-unit')) === null || _row$querySelector4 === void 0 ? void 0 : _row$querySelector4.value) || 0,
           optional: (_row$querySelector5 = row.querySelector('.item-optional')) !== null && _row$querySelector5 !== void 0 && _row$querySelector5.checked ? 0 : 1,
-          prices: type == 'item' ? _this11.updateItemPriceAndTotal(itemId) : _this11.updateCommentPrices()
+          prices: type == 'item' ? _this12.updateItemPriceAndTotal(itemId) : _this12.updateCommentPrices()
         };
         newItems.push(item);
       });
@@ -496,7 +563,7 @@ $(document).ready(function () {
       this.originalPrices.set(key, originalPrice);
     },
     addItems: function addItems(type) {
-      var _this12 = this;
+      var _this13 = this;
       if (!this.templates[type]) return;
       var timestamp = Date.now();
       var template = this.templates[type];
@@ -529,7 +596,7 @@ $(document).ready(function () {
           if (quoteId) cardQuoteIds.add(quoteId);
         });
         cardQuoteIds.forEach(function (cardQuoteId) {
-          var groupTotal = _this12.calculateGroupTotal(groupRow, cardQuoteId);
+          var groupTotal = _this13.calculateGroupTotal(groupRow, cardQuoteId);
           groupRow.find("[data-cardquotegrouptotalprice=\"".concat(cardQuoteId, "\"]")).text(groupTotal);
         });
       }
@@ -589,7 +656,7 @@ $(document).ready(function () {
       });
     },
     initializeSortable: function initializeSortable() {
-      var _this13 = this;
+      var _this14 = this;
       $("#estimation-items").sortable({
         items: 'tr.group_row, tr.item_row, tr.item_comment',
         handle: '.reorder-item, .reorder_group_btn',
@@ -653,10 +720,10 @@ $(document).ready(function () {
               descRow.attr('data-groupid', newGroupId);
             }
           }
-          _this13.updatePOSNumbers();
-          _this13.updateAllCalculations();
-          _this13.hasUnsavedChanges = true;
-          _this13.autoSaveHandler();
+          _this14.updatePOSNumbers();
+          _this14.updateAllCalculations();
+          _this14.hasUnsavedChanges = true;
+          _this14.autoSaveHandler();
         }
       });
     },
@@ -747,16 +814,16 @@ $(document).ready(function () {
       }
     },
     applyMarkupToSinglePrices: function applyMarkupToSinglePrices(cardQuoteId, markup) {
-      var _this14 = this;
+      var _this15 = this;
       $(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]")).each(function (_, element) {
         var $price = $(element);
         var itemId = $price.closest('tr').data('itemid');
         var key = "".concat(cardQuoteId, "-").concat(itemId);
-        var basePrice = _this14.originalPrices.get(key);
+        var basePrice = _this15.originalPrices.get(key);
         if (basePrice !== undefined) {
           var newPrice = markup === 0 ? basePrice : basePrice * (1 + markup / 100);
-          $price.val(_this14.formatGermanCurrency(newPrice));
-          _this14.styleNegativeInput($price, newPrice);
+          $price.val(_this15.formatGermanCurrency(newPrice));
+          _this15.styleNegativeInput($price, newPrice);
         }
       });
     },
@@ -770,7 +837,7 @@ $(document).ready(function () {
       return this.formatGermanCurrency(total);
     },
     calculateGroupTotal: function calculateGroupTotal(groupRow, cardQuoteId) {
-      var _this15 = this;
+      var _this16 = this;
       var total = 0;
       var groupId = groupRow.data('groupid');
 
@@ -782,8 +849,8 @@ $(document).ready(function () {
         if ($item.find('.item-optional').is(':checked')) {
           return;
         }
-        var quantity = _this15.parseGermanDecimal($item.find('.item-quantity').val() || '0');
-        var price = _this15.parseGermanDecimal($item.find(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]")).val() || '0');
+        var quantity = _this16.parseGermanDecimal($item.find('.item-quantity').val() || '0');
+        var price = _this16.parseGermanDecimal($item.find(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]")).val() || '0');
         var itemTotal = quantity * price;
         total += itemTotal;
       });
@@ -792,10 +859,10 @@ $(document).ready(function () {
       return total === 0 ? '-' : this.formatGermanCurrency(total);
     },
     calculateTotals: function calculateTotals(cardQuoteId) {
-      var _this16 = this;
+      var _this17 = this;
       var netTotal = 0;
       $(".group_row [data-cardquotegrouptotalprice=\"".concat(cardQuoteId, "\"]")).each(function (_, element) {
-        var groupTotal = _this16.parseGermanDecimal($(element).text());
+        var groupTotal = _this17.parseGermanDecimal($(element).text());
         if (!isNaN(groupTotal)) netTotal += groupTotal;
       });
       var cashDiscount = this.parseGermanDecimal($("input[name=\"item[".concat(cardQuoteId, "][discount]\"]")).val()) || 0;
@@ -811,30 +878,30 @@ $(document).ready(function () {
       $(".totalnr.total-gross-total[data-cardquoteid=\"".concat(cardQuoteId, "\"]")).text(this.formatGermanCurrency(grossTotal));
     },
     bindCalculationEvents: function bindCalculationEvents() {
-      var _this17 = this;
+      var _this18 = this;
       // Update on quantity change
       this.estimation.on('input', '.item-quantity', function (e) {
         var $row = $(e.target).closest('tr');
-        _this17.updateRowCalculations($row);
-        _this17.updateAllCalculations();
+        _this18.updateRowCalculations($row);
+        _this18.updateAllCalculations();
       });
 
       // Update on price change
       this.estimation.on('input', '.item-price', function (e) {
         var $row = $(e.target).closest('tr');
-        _this17.updateRowCalculations($row);
-        _this17.updateAllCalculations();
+        _this18.updateRowCalculations($row);
+        _this18.updateAllCalculations();
       });
 
       // Update on optional checkbox change
       this.estimation.on('change', '.item-optional', function (e) {
         var $row = $(e.target).closest('tr');
-        _this17.updateRowCalculations($row);
-        _this17.updateAllCalculations();
+        _this18.updateRowCalculations($row);
+        _this18.updateAllCalculations();
       });
     },
     updateRowCalculations: function updateRowCalculations($row) {
-      var _this18 = this;
+      var _this19 = this;
       var itemId = $row.data('itemid');
       var cardQuoteIds = new Set();
       $('.column_single_price').each(function (_, el) {
@@ -842,13 +909,13 @@ $(document).ready(function () {
         if (quoteId) cardQuoteIds.add(quoteId);
       });
       cardQuoteIds.forEach(function (cardQuoteId) {
-        var total = _this18.calculateItemTotal($row, cardQuoteId);
+        var total = _this19.calculateItemTotal($row, cardQuoteId);
         $row.find("[data-cardquotetotalprice=\"".concat(cardQuoteId, "\"]")).text(total);
 
         // Update group total
         var $groupRow = $(".group_row[data-groupid=\"".concat($row.data('groupid'), "\"]"));
         if ($groupRow.length) {
-          var groupTotal = _this18.calculateGroupTotal($groupRow, cardQuoteId);
+          var groupTotal = _this19.calculateGroupTotal($groupRow, cardQuoteId);
           $groupRow.find("[data-cardquotegrouptotalprice=\"".concat(cardQuoteId, "\"]")).text(groupTotal);
         }
       });
@@ -871,14 +938,14 @@ $(document).ready(function () {
       return price * (1 + markup / 100);
     },
     updateItemPrices: function updateItemPrices(cardQuoteId) {
-      var _this19 = this;
+      var _this20 = this;
       var markup = this.parseGermanDecimal($("input[name=\"item[".concat(cardQuoteId, "][markup]\"]")).val()) || 0;
       $(".item_row").each(function (_, row) {
         var $row = $(row);
         var $priceInput = $row.find(".item-price[data-cardquotesingleprice=\"".concat(cardQuoteId, "\"]"));
-        var basePrice = _this19.parseGermanDecimal($priceInput.val());
-        var priceWithMarkup = _this19.applySinglePriceMarkup(basePrice, markup);
-        $priceInput.val(_this19.formatGermanCurrency(priceWithMarkup));
+        var basePrice = _this20.parseGermanDecimal($priceInput.val());
+        var priceWithMarkup = _this20.applySinglePriceMarkup(basePrice, markup);
+        $priceInput.val(_this20.formatGermanCurrency(priceWithMarkup));
       });
     },
     updateTotalDisplay: function updateTotalDisplay(cardQuoteId, totals) {
@@ -895,7 +962,7 @@ $(document).ready(function () {
       });
     },
     updateAllCalculations: function updateAllCalculations() {
-      var _this20 = this;
+      var _this21 = this;
       var cardQuoteIds = new Set();
       $('.column_single_price').each(function () {
         var quoteId = $(this).data('cardquoteid');
@@ -904,15 +971,15 @@ $(document).ready(function () {
       cardQuoteIds.forEach(function (cardQuoteId) {
         $('.item_row').each(function (_, row) {
           var $row = $(row);
-          var totalPrice = _this20.calculateItemTotal($row, cardQuoteId);
+          var totalPrice = _this21.calculateItemTotal($row, cardQuoteId);
           $row.find(".column_total_price[data-cardquotetotalprice=\"".concat(cardQuoteId, "\"]")).text(totalPrice);
         });
         $('.group_row').each(function (_, row) {
           var $row = $(row);
-          var groupTotal = _this20.calculateGroupTotal($row, cardQuoteId);
+          var groupTotal = _this21.calculateGroupTotal($row, cardQuoteId);
           $row.find("[data-cardquotegrouptotalprice=\"".concat(cardQuoteId, "\"]")).text(groupTotal);
         });
-        _this20.calculateTotals(cardQuoteId);
+        _this21.calculateTotals(cardQuoteId);
       });
     },
     searchTableItem: function searchTableItem() {
@@ -941,29 +1008,66 @@ $(document).ready(function () {
         row.style.display = name.includes(searchTerm) ? '' : 'none';
       });
     },
-    updateQuateTypeStatus: function updateQuateTypeStatus(Checkbox, QuoteId, Type) {
-      var checkboxValue = Checkbox ? 1 : 0;
-      var $cardQuote = $(".cardQuote[data-cardquoteid=\"".concat(QuoteId, "\"]"));
-      $cardQuote.removeClass('quote clientQuote subcontractor');
-      if (Checkbox) {
-        if (Type === 'quote') {
-          $cardQuote.addClass('quote');
-        }
-        if (Type === 'clientQuote') {
-          $cardQuote.addClass('clientQuote');
-        }
-        if (Type === 'subcontractor') {
-          $cardQuote.addClass('subcontractor');
+    updateQuateTypeStatus: function updateQuateTypeStatus(isChecked, quoteId, type) {
+      var _this22 = this;
+      var $currentQuote = $(".cardQuote[data-cardquoteid=\"".concat(quoteId, "\"]"));
+
+      // First handle color classes based on radio selections
+      var $radioButtons = $("input[type=\"radio\"][data-id=\"".concat(quoteId, "\"]"));
+      var checkedRadio = $radioButtons.filter(':checked').data('type');
+
+      // Remove all type classes first
+      $currentQuote.removeClass('quote clientQuote subcontractor');
+
+      // Add class for checked radio if exists
+      if (checkedRadio) {
+        $currentQuote.addClass(this.getTypeClass(checkedRadio));
+      }
+
+      // Then handle checkbox selections
+      if (type && isChecked) {
+        // If a checkbox is checked, it overrides the radio button class
+        $currentQuote.removeClass('quote clientQuote subcontractor');
+        $currentQuote.addClass(this.getTypeClass(type));
+
+        // Uncheck this type in other quotes
+        $("#QuateTypesStatus[data-type=\"".concat(type, "\"]")).not("[data-id=\"".concat(quoteId, "\"]")).prop('checked', false).each(function (_, el) {
+          var otherId = $(el).data('id');
+          $(".cardQuote[data-cardquoteid=\"".concat(otherId, "\"]")).removeClass(_this22.getTypeClass(type));
+        });
+      } else if (!isChecked && type) {
+        // If unchecking a checkbox, revert to radio button class if one is selected
+        if (checkedRadio) {
+          $currentQuote.removeClass(this.getTypeClass(type));
+          $currentQuote.addClass(this.getTypeClass(checkedRadio));
         }
       }
       $.ajax({
-        url: route('estimation.quateTypesStatus', QuoteId),
+        url: route('estimation.quateTypesStatus', quoteId),
         type: "POST",
         data: {
-          type: Type,
-          checkbox: checkboxValue
+          type: type,
+          checkbox: isChecked ? 1 : 0
+        },
+        success: function success() {
+          _this22.hasUnsavedChanges = false;
         }
       });
+      this.updateDropdownState(quoteId, type, isChecked);
+    },
+    getTypeClass: function getTypeClass(type) {
+      var typeClasses = {
+        'quote': 'quote',
+        'clientQuote': 'clientQuote',
+        'subcontractor': 'subcontractor'
+      };
+      return typeClasses[type] || '';
+    },
+    updateDropdownState: function updateDropdownState(quoteId, type, isChecked) {
+      $('.quote_options' + quoteId + ' .dropdown-item').removeClass('active');
+      if (isChecked) {
+        $(".quote_options".concat(quoteId, " [data-type=\"").concat(type, "\"]")).addClass('active');
+      }
     }
   };
   $(document).ajaxComplete(function () {

@@ -42,11 +42,11 @@
             data-cardQuoteID="{{ $quotes->id }}">
 
             <div class="font-bold text-lg">
-                <span> {{ $quotes->title ?? $quotes->subContractor->name }} </span>
+                <span> {{ $quotes->title ?? $quotes->subContractor->name ?? 'unknown' }} </span>
                 <div class="company-total-settings">
                     <i class="ti ti-settings float-end" id="dropdownMenuButton{{ $quotes->id }}"
                         data-bs-toggle="dropdown" aria-expanded="false"></i>
-                    <ul class="dropdown-menu quote_options{{ $quotes->id }}"
+                    <ul class="dropdown-menu dropdown-menu-end quote_options{{ $quotes->id }}"
                         aria-labelledby="dropdownMenuButton{{ $quotes->id }}">
 
                         @permission('estimation duplicate quote option')
@@ -93,31 +93,31 @@
                                         data-id="{{ $quotes->id }}"
                                         data-type="quote"
                                         @checked($quotes->is_final)>
-                                    {{ __('Client Quote') }}
+                                    {{ __('Final Quote') }}
                                 </label>
                             </li>
 
                             <li>
                                 <label class="dropdown-item gap-2">
-                                    <input type="radio"
+                                    <input type="checkbox"
                                         name="QuateTypesStatus{{ $quotes->id }}"
                                         id="QuateTypesStatus"
                                         data-id="{{ $quotes->id }}"
                                         data-type="clientQuote"
                                         @checked($quotes->final_for_client)>
-                                    {{ __('Final Estimation for Client') }}
+                                    {{ __('Client Project Final') }}
                                 </label>
                             </li>
 
                             <li>
                                 <label class="dropdown-item gap-2">
-                                    <input type="radio"
+                                    <input type="checkbox"
                                         name="QuateTypesStatus{{ $quotes->id }}"
                                         id="QuateTypesStatus"
                                         data-id="{{ $quotes->id }}"
                                         data-type="subcontractor"
                                         @checked($quotes->final_for_sub_contractor)>
-                                    {{ __('Final Estimation for Subcontractor') }}
+                                    {{ __('Subcontractor Project Final') }}
                                 </label>
                             </li>
                         @endif

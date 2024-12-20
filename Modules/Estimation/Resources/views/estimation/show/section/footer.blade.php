@@ -1,6 +1,6 @@
 <div class="button-wrapper-fixed">
     @if (auth()->user()->type == 'company')
-        <div class="button-wrapper-left gap-3 insert-row">
+        <div class="footer-tools-button gap-2 insert-row">
             @permission('estimation add item option')
                 <button type="button" data-actionInsert="item">
                     <i class="fa-solid fa-plus"></i>
