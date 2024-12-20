@@ -481,51 +481,51 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        @if ($invoice->invoice_module == 'account')
+                        @if($invoice->invoice_module == "account")
                             <td></td>
                         @endif
-                        <td>{{ __('Total') }}</td>
+                        <td colspan="5">{{ __('Total') }}</td>
                         @if ($invoice->invoice_module == 'Fleet')
                             <td><b>{{ currency_format_with_sym($invoice->totalRate, $invoice->created_by, $invoice->workspace) }}</b>
                             </td>
                             <td></td>
                         @else
-                            <td>{{ $invoice->totalQuantity }}</td>
+                            {{-- <td>{{ $invoice->totalQuantity }}</td>
                             <td>-</td>
                             <td>{{ currency_format_with_sym($invoice->totalRate, $invoice->created_by, $invoice->workspace) }}
                             </td>
                             <td>{{ currency_format_with_sym($invoice->totalDiscount, $invoice->created_by, $invoice->workspace) }}
                             </td>
                             <td>{{ currency_format_with_sym($invoice->totalTaxPrice, $invoice->created_by, $invoice->workspace) }}
-                            </td>
-                            <td>{{ currency_format_with_sym($invoice->getSubTotal(), $invoice->created_by, $invoice->workspace) }}
+                            </td> --}}
+                            <td colspan="2">{{ currency_format_with_sym($invoice->getSubTotal(), $invoice->created_by, $invoice->workspace) }}
                             </td>
                         @endif
                     </tr>
                     <tr>
                         @php
-                            $colspan = 4;
-                            if ($invoice->invoice_module == 'account') {
+                            $colspan = 3;
+                            if($invoice->invoice_module == "account"){
                                 $colspan = 5;
                             }
                         @endphp
-
-                        <td colspan="{{ $colspan }}"></td>
-                        <td colspan="4" class="sub-total">
+                        <td colspan="{{$colspan}}"></td>
+                        <td colspan="5" class="sub-total">
                             <table class="total-table">
                                 @if ($invoice->invoice_module != 'Fleet')
+
+                                <tr>
+                                    <td>{{ __('Subtotal') }}:</td>
+                                    <td>{{ currency_format_with_sym($invoice->getSubTotal(), $invoice->created_by, $invoice->workspace) }}
+                                    </td>
+                                </tr>
+                                @if ($invoice->getTotalDiscount())
                                     <tr>
-                                        <td>{{ __('Subtotal') }}:</td>
-                                        <td>{{ currency_format_with_sym($invoice->getSubTotal(), $invoice->created_by, $invoice->workspace) }}
+                                        <td>{{ __('Discount') }}:</td>
+                                        <td>{{ currency_format_with_sym($invoice->getTotalDiscount(), $invoice->created_by, $invoice->workspace) }}
                                         </td>
                                     </tr>
-                                    @if ($invoice->getTotalDiscount())
-                                        <tr>
-                                            <td>{{ __('Discount') }}:</td>
-                                            <td>{{ currency_format_with_sym($invoice->getTotalDiscount(), $invoice->created_by, $invoice->workspace) }}
-                                            </td>
-                                        </tr>
-                                    @endif
+                                @endif
                                 @endif
                                 @if (!empty($invoice->taxesData))
                                     @foreach ($invoice->taxesData as $taxName => $taxPrice)
