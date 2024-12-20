@@ -1046,6 +1046,7 @@ class ProjectProgressController extends Controller
                 $price       = 0;
                 $total_price = 0;
                 $rate        = 0;
+				$qty = $item->projectEstimationProduct->quantity;
                 if ($latest_invoice_payment >= $latest_progress) {
                     $rate = max(0, ($previous_invoice_payment >= $previous_progress)
                         ? $latest_invoice_payment - $previous_invoice_payment
@@ -1060,10 +1061,9 @@ class ProjectProgressController extends Controller
                     //Log::info('Rate Inside 2nd:'. ' '. $item->projectEstimationProduct->name . ':' . ' ' . $rate);
                 }
                 // Log::info('Rate After:'. ' '. $item->projectEstimationProduct->name . ':' . ' ' . $rate);
-                $price = ($rate / 100) * $item->price;
+                $qty = ($rate / 100) * $item->projectEstimationProduct->quantity;
                 // Log::info('Orginal After:'. ' '.$item->projectEstimationProduct->name . ':' . ' ' . $price);
 
-                $qty             = $item->projectEstimationProduct->quantity;
                 $progress_amount = $price * $qty;
 
 
@@ -1082,9 +1082,9 @@ class ProjectProgressController extends Controller
                 $invoiceProduct->tax             = 0;
                 $invoiceProduct->product_type    = __('progress');
                 $invoiceProduct->description     =
-                    "<strong class='pname'>" . __('Group ') . ":</strong> <span class='pname_value'>" .
+                    "<strong class='pname'>" . __('Group') . ":</strong> <span class='pname_value'>" .
                     ($item->projectEstimationProduct->group->group_name ?? '') . "</span> -- " .
-                    "<strong class='ppos'>" . __('POS ') . ":</strong> <span class='ppos_value'>" .
+                    "<strong class='ppos'>" . __('POS') . ":</strong> <span class='ppos_value'>" .
                     ($item->projectEstimationProduct->pos ?? '') . "</span> -- " .
                     "<strong class='pquantity'>" . __('Quantity') . ":</strong> <span class='pquantity_value'>" .
                     $item->projectEstimationProduct->quantity . " " .

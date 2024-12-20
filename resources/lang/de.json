@@ -3041,5 +3041,8 @@
   "Group": "Gruppe",
   "Current Progress": "Aktueller Fortschritt",
   "Total Progress": "Gesamtfortschritt",
-  "Total Price": "Gesamtpreis"
+  "Total Price": "Gesamtpreis",
+  "Create Project Progress": "Projektfortschritt erstellen",
+  "Show Finance": "Finanzen anzeigen."
+  
 }
