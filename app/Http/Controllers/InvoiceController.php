@@ -1067,6 +1067,7 @@ class InvoiceController extends Controller
             $item           = new \stdClass();
             $item->name     = 'Item ' . $i;
             $item->quantity = 1;
+            $item->unit = 'm';
             $item->tax      = 5;
             $item->discount = 50;
             $item->price    = 100;
