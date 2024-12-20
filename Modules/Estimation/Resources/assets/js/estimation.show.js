@@ -16,6 +16,8 @@ $(document).ready(function () {
         },
 
         bindEvents() {
+            this.bindColumnVisibilityEvents();
+
             this.estimation.find('button[data-actioninsert]').on('click', (event) => {
                 event.preventDefault();
                 const button = $(event.currentTarget);
@@ -63,10 +65,14 @@ $(document).ready(function () {
             });
 
             this.estimation.on('change', '#QuateTypesStatus', (event) => {
-                const Checkbox = $(event.currentTarget).is(':checked');
-                const Id = $(event.currentTarget).data('id');
-                const Type = $(event.currentTarget).data('type');
-                this.updateQuateTypeStatus(Checkbox, Id, Type);
+                const $checkbox = $(event.currentTarget);
+                const quoteId = $checkbox.data('id');
+                const type = $checkbox.data('type');
+
+                // Uncheck other checkboxes of same type
+                $(`#QuateTypesStatus[data-type="${type}"]`).not($checkbox).prop('checked', false);
+                this.hasUnsavedChanges = true;
+                this.updateQuateTypeStatus($checkbox.is(':checked'), quoteId, type);
             });
 
             this.estimation.on('blur', 'input[name^="item"][name$="[discount]"]', (event) => {
@@ -283,6 +289,88 @@ $(document).ready(function () {
                     $price.val(this.formatGermanCurrency(currentPrice));
                 }
             });
+        },
+
+        bindColumnVisibilityEvents() {
+            $('.columnToggle').on('change', (e) => {
+                const $checkbox = $(e.target);
+                const column = $checkbox.data('column');
+                const quoteId = $checkbox.data('quoteid');
+
+                if (column === 'quote') {
+                    this.toggleQuoteColumns(quoteId, $checkbox.is(':checked'));
+                } else {
+                    this.toggleColumn(column, $checkbox.is(':checked'));
+                }
+            });
+        },
+
+        toggleQuoteColumns(quoteId, isVisible) {
+            const selectors = [
+                `[data-cardquoteid="${quoteId}"]`,
+                `[data-cardquotesingleprice="${quoteId}"]`,
+                `[data-cardquotetotalprice="${quoteId}"]`,
+                `[data-cardquotegrouptotalprice="${quoteId}"]`
+            ];
+
+            const display = isVisible ? '' : 'none';
+
+            selectors.forEach(selector => {
+                const $elements = $(selector);
+                $elements.each((_, el) => {
+                    const $el = $(el);
+                    if ($el.is('td, th')) {
+                        $el.css('display', display);
+                    } else if ($el.closest('td, th').length) {
+                        $el.closest('td, th').css('display', display);
+                    }
+                });
+            });
+        },
+
+        toggleColumn(columnName, isVisible) {
+            const columnSelectors = [
+                `.column_${columnName}`,
+                `th.column_${columnName}`,
+                `td.column_${columnName}`
+            ];
+
+            const display = isVisible ? '' : 'none';
+
+            columnSelectors.forEach(selector => {
+                const $elements = $(selector);
+                $elements.css('display', display);
+            });
+
+            if (columnName === 'name' || columnName === 'group') {
+                $('.column_name.desc_column').css('display', display);
+            }
+
+            this.updateTableLayout();
+        },
+
+        updateTableLayout() {
+            const visibleQuoteCount = $('.columnToggle[data-column="quote"]:checked').length;
+            const hasDescription = $('.columnToggle[data-column="name"]').is(':checked');
+
+            $('tr.item_child td[colspan]').each(function () {
+                const $td = $(this);
+                if (hasDescription) {
+                    $td.attr('colspan', 7);
+                } else {
+                    $td.css('display', 'none');
+                }
+            });
+
+            // Update group title colspan
+            $('.column_name.grouptitle').each(function () {
+                const $td = $(this);
+                const baseColspan = $('.columnToggle:not([data-quoteid]):checked').length;
+                $td.attr('colspan', baseColspan);
+            });
+
+            // Force redraw for proper layout
+            $(window).trigger('resize');
         },
 
         toggleFullScreen() {
@@ -1105,31 +1193,74 @@ $(document).ready(function () {
             });
         },
 
-        updateQuateTypeStatus(Checkbox, QuoteId, Type) {
-            const checkboxValue = Checkbox ? 1 : 0;
-            const $cardQuote = $(`.cardQuote[data-cardquoteid="${QuoteId}"]`);
+        updateQuateTypeStatus(isChecked, quoteId, type) {
+            const $currentQuote = $(`.cardQuote[data-cardquoteid="${quoteId}"]`);
 
-            $cardQuote.removeClass('quote clientQuote subcontractor');
+            // First handle color classes based on radio selections
+            const $radioButtons = $(`input[type="radio"][data-id="${quoteId}"]`);
+            const checkedRadio = $radioButtons.filter(':checked').data('type');
 
-            if (Checkbox) {
-                if (Type === 'quote') {
-                    $cardQuote.addClass('quote');
-                }
-                if (Type === 'clientQuote') {
-                    $cardQuote.addClass('clientQuote');
-                }
-                if (Type === 'subcontractor') {
-                    $cardQuote.addClass('subcontractor');
+            // Remove all type classes first
+            $currentQuote.removeClass('quote clientQuote subcontractor');
+
+            // Add class for checked radio if exists
+            if (checkedRadio) {
+                $currentQuote.addClass(this.getTypeClass(checkedRadio));
+            }
+
+            // Then handle checkbox selections
+            if (type && isChecked) {
+                // If a checkbox is checked, it overrides the radio button class
+                $currentQuote.removeClass('quote clientQuote subcontractor');
+                $currentQuote.addClass(this.getTypeClass(type));
+
+                // Uncheck this type in other quotes
+                $(`#QuateTypesStatus[data-type="${type}"]`)
+                    .not(`[data-id="${quoteId}"]`)
+                    .prop('checked', false)
+                    .each((_, el) => {
+                        const otherId = $(el).data('id');
+                        $(`.cardQuote[data-cardquoteid="${otherId}"]`).removeClass(this.getTypeClass(type));
+                    });
+            } else if (!isChecked && type) {
+                // If unchecking a checkbox, revert to radio button class if one is selected
+                if (checkedRadio) {
+                    $currentQuote.removeClass(this.getTypeClass(type));
+                    $currentQuote.addClass(this.getTypeClass(checkedRadio));
                 }
             }
 
             $.ajax({
-                url: route('estimation.quateTypesStatus', QuoteId),
+                url: route('estimation.quateTypesStatus', quoteId),
                 type: "POST",
-                data: { type: Type, checkbox: checkboxValue },
+                data: {
+                    type: type,
+                    checkbox: isChecked ? 1 : 0
+                },
+                success: () => {
+                    this.hasUnsavedChanges = false;
+                }
             });
 
+            this.updateDropdownState(quoteId, type, isChecked);
         },
+
+        getTypeClass(type) {
+            const typeClasses = {
+                'quote': 'quote',
+                'clientQuote': 'clientQuote',
+                'subcontractor': 'subcontractor'
+            };
+            return typeClasses[type] || '';
+        },
+
+        updateDropdownState(quoteId, type, isChecked) {
+            $('.quote_options' + quoteId + ' .dropdown-item').removeClass('active');
+
+            if (isChecked) {
+                $(`.quote_options${quoteId} [data-type="${type}"]`).addClass('active');
+            }
+        }
     };
 
     $(document).ajaxComplete(function () {

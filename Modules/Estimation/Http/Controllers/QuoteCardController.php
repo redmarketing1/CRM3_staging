@@ -116,35 +116,76 @@ class QuoteCardController extends Controller
      */
     public function quateTypesStatus(Request $request)
     {
-        $estimateQuote = EstimateQuote::findOrFail($request->id);
-        $type          = $request->type;
-        $checkbox      = $request->integer('checkbox');
+        try {
+            DB::beginTransaction();
 
-        $estimateQuote->update([
-            'is_final'                 => 0,
-            'final_for_client'         => 0,
-            'final_for_sub_contractor' => 0,
-        ]);
+            // Find the current quote
+            $estimateQuote = EstimateQuote::findOrFail($request->id);
+            $type          = $request->type;
+            $checkbox      = $request->integer('checkbox');
 
-        switch ($type) {
-            case 'clientQuote':
-                $estimateQuote->final_for_client = $checkbox;
-                break;
-            case 'subcontractor':
-                $estimateQuote->final_for_sub_contractor = $checkbox;
-                break;
-            case 'quote':
-                $estimateQuote->is_final = $checkbox;
-                break;
+            // First, get all quotes from the same estimation
+            $allQuotes = EstimateQuote::where('project_estimation_id', $estimateQuote->project_estimation_id)->get();
+ 
+            
+            // Reset the specific type for all quotes
+            switch ($type) {
+                case 'clientQuote':
+                    $allQuotes->each(function ($quote) {
+                        $quote->final_for_client = 0;
+                        $quote->save();
+                    });
+                    break;
+
+                case 'subcontractor':
+                    $allQuotes->each(function ($quote) {
+                        $quote->final_for_sub_contractor = 0;
+                        $quote->save();
+                    });
+                    break;
+
+                case 'quote':
+                    $allQuotes->each(function ($quote) {
+                        $quote->is_final = 0;
+                        $quote->save();
+                    });
+                    break;
+            }
+
+            // Set the new value for the current quote if checkbox is checked
+            if ($checkbox) {
+                switch ($type) {
+                    case 'clientQuote':
+                        $estimateQuote->final_for_client = 1;
+                        break;
+
+                    case 'subcontractor':
+                        $estimateQuote->final_for_sub_contractor = 1;
+                        break;
+
+                    case 'quote':
+                        $estimateQuote->is_final = 1;
+                        break;
+                }
+                $estimateQuote->save();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Quote status updated successfully',
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update quote status',
+                'error'   => $e->getMessage(),
+            ], 500);
         }
-
-        $estimateQuote->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Quote status updated successfully',
-        ]);
-
     }
 
     /**

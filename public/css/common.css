@@ -153,8 +153,31 @@ th.border-left-right.finalized_sub_contractor_quote {
     user-select: none !important;
 }
 
-.estimation-show {
-    overflow-y: auto;
+.estimation-show .table-responsive {
+    overflow: hidden;
+}
+
+.estimation-show .table-responsive:hover {
+    scrollbar-width: thin;
+    overflow: auto;
+    transition: 0.5s;
+}
+
+.estimation-show .table-responsive::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    display: none;
+    transition: 0.5s;
+}
+
+.estimation-show .table-responsive:hover::-webkit-scrollbar {
+    display: block;
+    transition: 0.5s;
+}
+
+.estimation-show .table-responsive::-webkit-scrollbar-thumb {
+    background: rgb(213 213 213);
+    border-radius: 0px;
 }
 
 .estimation-show .context-menu {
@@ -1261,11 +1284,6 @@ button {
     border-radius: 3px;
 }
 
-button:hover {
-    filter: brightness(120%) !important;
-    cursor: pointer;
-}
-
 .redbtn {
     background: #a13c3c;
     color: #FFF;
@@ -1666,11 +1684,12 @@ tfoot th input,
 .total-line-top .total-discount input,
 .total-line-top .total-markup input,
 .total-line-top .total-discount select {
-    font-size: 13px;
-    padding: 4px !important;
+    font-size: 16px;
+    padding: 4px 10px !important;
     border: 2px solid #e1e1e1;
-    border-radius: 5px;
+    border-radius: 2px;
 }
+
 
 #estimation-edit-table tr.group,
 #estimation-edit-table tr.group:hover {
@@ -3533,11 +3552,7 @@ button#save-button.saving {
     width: 100%;
 }
 
-.button-wrapper-left {
-    display: flex;
-}
 
-.select-smart-template-div {}
 
 .buttons-top .dropdown {
     padding: 0 !important;
@@ -3548,8 +3563,6 @@ button#save-button.saving {
     display: inline-block;
 }
 
-.button-wrapper-left button,
-.buttons-top .dropdown.download-dropdown,
 .total-line-top .buttons-top button {
     font-size: 11px;
     padding: 5px 10px;
@@ -4743,17 +4756,6 @@ div#estimation-edit-table_wrapper .dt-search {
     align-content: space-around;
 }
 
-.total-line-top input#table-search,
-tfoot th input,
-.total-line-top .total-discount input,
-.total-line-top .total-markup input,
-.total-line-top .total-discount select {
-    font-size: 16px;
-    padding: 6px 8px !important;
-    border: 2px solid #e1e1e1;
-    border-radius: 5px;
-}
-
 #estimation-edit-table tr.group,
 #estimation-edit-table tr.group:hover,
 #estimation-edit-table tr.group td {
@@ -5886,10 +5888,6 @@ table#estimation-edit-table thead th.total-company-title {
     justify-content: space-between;
 }
 
-.button-wrapper-left {
-    display: flex;
-}
-
 .estimation-footer-box {
     margin: 100px 0 100px;
     display: flex;
@@ -6018,19 +6016,39 @@ td.border-left-right {
     border: 2px solid #c8e4bc;
 }
 
-.button-wrapper-left button,
-.buttons-top .dropdown.download-dropdown,
-.total-line-top .buttons-top button {
-    font-size: 11px;
-    padding: 5px 10px;
+.estimation-show .heading-option-button div.button {
+    font-size: 14px;
+    font-weight: 800;
+    padding: 6px 12px;
+    color: #001952;
     background: #f0f0f0;
-    border: 2px solid #e7e7e7;
-    border-radius: 3px;
+    border: 2px solid #e0e0e0;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
 }
 
-button:hover {
-    filter: brightness(120%) !important;
-    cursor: pointer;
+.estimation-show .footer-tools-button {
+    display: flex;
+}
+
+.estimation-show .footer-tools-button button {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 3px 13px;
+    background: #f0f0f0;
+    border: 2px solid #e0e0e0;
+    border-radius: 3px;
+    line-height: 100%;
+    max-height: 35px;
+}
+
+.estimation-show .footer-tools-button button:hover {
+    background: #e3efde;
+    color: #386626;
+    border-color: #c8e4bc;
 }
 
 .card {
@@ -6718,7 +6736,6 @@ td .btn-sm i {
 .projectestimation.finalizeEstimation,
 .project .project_progress,
 .card-body {
-    /* max-height: none; */
     border-radius: unset;
 }
 
@@ -7115,15 +7132,15 @@ body.project.show .description-card .card-body {
 }
 
 .table#estimation-edit-table .cardQuote.quote {
-    background-color: #fff5e1;
+    background-color: #e9ffe2;
 }
 
 .table#estimation-edit-table .total-main-title.cardQuote.quote {
-    background: #ffce66;
+    background: #87e769;
 }
 
 .table#estimation-edit-table .cardQuote.clientQuote {
-    background-color: #e6fbff;
+    background-color: #d3f2f8;
 }
 
 .table#estimation-edit-table .total-main-title.cardQuote.clientQuote {
@@ -7131,11 +7148,11 @@ body.project.show .description-card .card-body {
 }
 
 .table#estimation-edit-table .cardQuote.subcontractor {
-    background-color: #c9ffe5;
+    background-color: #ffe5b2;
 }
 
 .table#estimation-edit-table .total-main-title.cardQuote.subcontractor {
-    background-color: #30ef93;
+    background-color: #ffce66;
 }
 
 .grouptotal {
@@ -7252,6 +7269,7 @@ th.finalized_client_quote {
     background: #FFF !important;
 }
 
+.projectestimation .dash-container .dash-content .card-body,
 .projectestimation .dash-container .dash-content .card-body {
     height: 82vh !important;
     overflow-x: auto !important;
